@@ -1,0 +1,34 @@
+/* tokiwagi-ui: semantic state colors, light mode. Source of truth. */
+:root {
+  /* 成功 / success */
+  --tkw-color-semantic-success: #52D68F;
+  --tkw-color-semantic-success-hover: #3CCB7D;
+  --tkw-color-semantic-success-active: #2DB96C;
+  --tkw-color-semantic-success-subtle: #EAF9F1;
+  --tkw-color-semantic-success-on: #153A27;
+  --tkw-color-semantic-success-on-subtle: #153A27;
+
+  /* 警告 / warning */
+  --tkw-color-semantic-warning: #F6C84F;
+  --tkw-color-semantic-warning-hover: #EABB38;
+  --tkw-color-semantic-warning-active: #DCAA24;
+  --tkw-color-semantic-warning-subtle: #FFF8E1;
+  --tkw-color-semantic-warning-on: #43330D;
+  --tkw-color-semantic-warning-on-subtle: #43330D;
+
+  /* エラー / error */
+  --tkw-color-semantic-error: #F4767F;
+  --tkw-color-semantic-error-hover: #E9616D;
+  --tkw-color-semantic-error-active: #DE5662;
+  --tkw-color-semantic-error-subtle: #FDEDEF;
+  --tkw-color-semantic-error-on: #321217;
+  --tkw-color-semantic-error-on-subtle: #321217;
+
+  /* 情報 / info */
+  --tkw-color-semantic-info: #62AEF4;
+  --tkw-color-semantic-info-hover: #4B9FEB;
+  --tkw-color-semantic-info-active: #358FDD;
+  --tkw-color-semantic-info-subtle: #ECF6FF;
+  --tkw-color-semantic-info-on: #0D2438;
+  --tkw-color-semantic-info-on-subtle: #0D2438;
+}

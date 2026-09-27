@@ -1,0 +1,52 @@
+/* tokiwagi-ui: seven equal vivid primaries, light mode. Source of truth. */
+:root {
+  /* グリーン / green */
+  --tkw-color-primary-green: #64D99B;
+  --tkw-color-primary-green-hover: #4DCD89;
+  --tkw-color-primary-green-active: #39BE77;
+  --tkw-color-primary-green-subtle: #EAF9F0;
+  --tkw-color-primary-green-on: #153C29;
+  --tkw-color-primary-green-on-subtle: #153C29;
+  /* アクア / teal */
+  --tkw-color-primary-teal: #54D4D0;
+  --tkw-color-primary-teal-hover: #3EC6C2;
+  --tkw-color-primary-teal-active: #2BB6B2;
+  --tkw-color-primary-teal-subtle: #E8F9F8;
+  --tkw-color-primary-teal-on: #143B3D;
+  --tkw-color-primary-teal-on-subtle: #143B3D;
+  /* ブルー / blue */
+  --tkw-color-primary-blue: #70B5FA;
+  --tkw-color-primary-blue-hover: #59A5EE;
+  --tkw-color-primary-blue-active: #4595DF;
+  --tkw-color-primary-blue-subtle: #EDF5FF;
+  --tkw-color-primary-blue-on: #13243B;
+  --tkw-color-primary-blue-on-subtle: #13243B;
+  /* バイオレット / violet */
+  --tkw-color-primary-violet: #B091EF;
+  --tkw-color-primary-violet-hover: #A17FE3;
+  --tkw-color-primary-violet-active: #926DD6;
+  --tkw-color-primary-violet-subtle: #F4EFFD;
+  --tkw-color-primary-violet-on: #1C102B;
+  --tkw-color-primary-violet-on-subtle: #1C102B;
+  /* ピンク / rose */
+  --tkw-color-primary-rose: #F184B7;
+  --tkw-color-primary-rose-hover: #E970A8;
+  --tkw-color-primary-rose-active: #DB5D98;
+  --tkw-color-primary-rose-subtle: #FDEDF5;
+  --tkw-color-primary-rose-on: #351426;
+  --tkw-color-primary-rose-on-subtle: #351426;
+  /* コーラル / coral */
+  --tkw-color-primary-coral: #FA987C;
+  --tkw-color-primary-coral-hover: #F18768;
+  --tkw-color-primary-coral-active: #E57757;
+  --tkw-color-primary-coral-subtle: #FFF0EA;
+  --tkw-color-primary-coral-on: #3D2117;
+  --tkw-color-primary-coral-on-subtle: #3D2117;
+  /* イエロー / amber */
+  --tkw-color-primary-amber: #F3CC58;
+  --tkw-color-primary-amber-hover: #E8BE40;
+  --tkw-color-primary-amber-active: #DAAE2C;
+  --tkw-color-primary-amber-subtle: #FFF8E0;
+  --tkw-color-primary-amber-on: #443613;
+  --tkw-color-primary-amber-on-subtle: #443613;
+}

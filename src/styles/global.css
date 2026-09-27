@@ -1,0 +1,6 @@
+/* Application entry: Tailwind and the reusable Tokiwagi theme. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "../../tokens/tailwind.css";
+
+/* The showcase retains its existing element defaults instead of enabling Preflight. */

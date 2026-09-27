@@ -1,0 +1,114 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="アイコン/命名と用途の案" />
+
+# アイコンの用途一覧
+
+**状態：案（全項目・図形未制作）**
+
+`tokiwagi-ui` にアイコンを追加する前に、必要な用途と公開名を整理した一覧です。対象は `tokiwa-calendar-frontend` のアプリソース（生成物・依存パッケージを除く）です。2026-09-27 時点で、`UIcon` の指定値、動的な分岐、`buttons-hover` に渡す指定値を合わせて **54 種類の参照 ID** を確認しました。下表では同じ用途の参照をまとめ、**36 個の汎用アイコン名と 5 個のブランド名**に整理しています。ここでは用途と名前を決め、図形や実装方法は決めません。
+
+## 命名と統合の基準
+
+- 公開名は既存のアイコンセット名から独立した、小文字のケバブケースにする。
+- 同じ目的で使われている `baseline`・`sharp`・`outline` などの違いは一つの公開名にまとめる。
+- 図形が似ていても、操作・状態・対象が異なれば名前を分ける。例: `close` と `delete`、`copy` と `clipboard-copy`。
+- `success`・`warning`・`error`・`info` は既存のセマンティックカラートークンと意味を揃える。単なる選択の印は `check` とする。
+- ローディング用に回転させている矢印は、現状の用途に合わせて `loading` に含める。再読み込み操作には別名 `refresh` を使う。
+- ブランドロゴは操作用アイコンから分ける。色やブランドの表現は汎用アイコンと一律に扱わない。
+
+## 現在のフロントエンドから必要な名前
+
+### 移動・開閉
+
+| 公開名 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| `chevron-left` | 前の期間・前のページへ進む | `ic:baseline-arrow-back-ios-new` |
+| `chevron-right` | 次の期間・次のページへ進む | `ic:baseline-arrow-forward-ios` |
+| `chevron-up` | 展開中を示す・時刻を増やす | `ic:baseline-expand-less`, `ic:baseline-keyboard-arrow-up` |
+| `chevron-down` | 折りたたみ中を示す・時刻を減らす | `ic:baseline-expand-more`, `ic:baseline-keyboard-arrow-down` |
+| `menu` | 主メニューを開く | `ic:sharp-density-medium`、`NavigationSection.vue` の直書き SVG |
+| `panel-open` | 時間設定のサイドパネルを開く | `material-symbols:side-navigation` |
+| `close` | モーダル・フォーム・パネル・メニューを閉じる | `ic:baseline-close`, `ic:sharp-close`, `ic:sharp-clear`、`PopupImg.vue` と `NavigationSection.vue` の直書き SVG |
+
+### カレンダー・タスク・コピー
+
+| 公開名 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| `calendar` | カレンダー画面・日付を表す | `ic:baseline-calendar-month` |
+| `calendar-edit` | 予定を入力・編集する案内 | `ic:baseline-edit-calendar` |
+| `calendar-copy` | 予定を別の日付へ複製する | `mdi:calendar-blank-multiple` |
+| `task` | タスク画面を表す | `ic:baseline-task-alt` |
+| `copy` | データや内容を複製する | `ic:baseline-content-copy` |
+| `clipboard-copy` | クリップボードへコピーする | `mdi:clipboard-multiple-outline` |
+
+`calendar-copy` と `clipboard-copy` は、`Display.vue` で別々の操作として並ぶため分ける。
+
+### 操作・アカウント
+
+| 公開名 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| `edit` | 対象を編集する | `ic:baseline-edit`, `ic:sharp-edit` |
+| `delete` | 対象を削除する | `ic:baseline-delete`, `ic:sharp-delete` |
+| `upload` | ファイル・データの読み込み画面を開く | `ic:baseline-file-upload` |
+| `share` | カレンダーなどを共有する | `ic:baseline-share` |
+| `link` | アカウントなどを連携する | `material-symbols:link` |
+| `settings` | 設定を開く | `ic:baseline-settings` |
+| `user-add` | ユーザーを追加する | `ic:sharp-person-add` |
+| `sign-in` | ログインする | `ic:baseline-login` |
+| `sign-out` | ログアウトする | `ic:baseline-logout` |
+| `visibility-on` | パスワードを表示する | `heroicons:eye` |
+| `visibility-off` | パスワードを隠す | `heroicons:eye-slash` |
+| `lock` | 認証・権限の問題を示す | `ic:baseline-lock` |
+
+### 状態・案内
+
+| 公開名 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| `success` | 処理や認証の成功を示す | `ic:sharp-check-circle`, `i-heroicons-check-circle`, `material-symbols:check-circle-outline` |
+| `warning` | 続行可能な注意を示す | `ic:sharp-warning` |
+| `error` | 入力・通信・認証などの失敗を示す | `ic:sharp-error`, `ic:baseline-error`, `material-symbols:error-outline`, `i-heroicons-x-circle` |
+| `info` | 中立的な説明を示す | `ic:sharp-info` |
+| `help` | 使い方の案内を開く | `ic:baseline-help` |
+| `unavailable` | 現在利用できない機能を示す | `material-symbols:sad-tab-outline` |
+| `loading` | 処理中を示す | `line-md:loading-loop`, `svg-spinners:ring-resize`, `i-heroicons-arrow-path` |
+| `offline` | 通信できないことを示す | `ic:baseline-wifi-off` |
+| `timer` | 待機・時間制限を示す | `ic:baseline-timer` |
+| `mail-sent` | 認証メールの送信完了を示す | `pepicons-pop:letter-circle-filled` |
+| `getting-started` | 導入・初期ガイドを表す | `ic:baseline-rocket-launch` |
+
+`offline`・`timer`・`lock`・`error` は `getErrorIcon` のエラー種別から選ばれる。`loading` のうち回転矢印は `verify-email.vue` で `animate-spin` とともに使用されている。
+
+### ブランドロゴ
+
+| 公開名 | 現在の参照 ID |
+| --- | --- |
+| `brand-google` | `logos:google-icon` |
+| `brand-discord` | `logos:discord-icon` |
+| `brand-facebook` | `logos:facebook` |
+| `brand-x` | `logos:x` |
+| `brand-github` | `logos:github-icon` |
+
+## 現在は未使用だが、ライブラリの基本操作に必要な名前
+
+以下は現行フロントエンドの参照 ID にはない。コンポーネントを作る際の用途として追加する。
+
+| 用途 | 公開名 |
+| --- | --- |
+| 追加・数量の増減 | `plus`, `minus` |
+| 単純な選択済み・完了印 | `check` |
+| 検索と絞り込み | `search`, `filter` |
+| その他の操作 | `more-horizontal`, `more-vertical` |
+| 今日へ移動・時刻・繰り返し | `calendar-today`, `clock`, `repeat` |
+| 通知の有効・無効 | `bell`, `bell-off` |
+| 並べ替え・ドラッグ | `sort-ascending`, `sort-descending`, `drag-handle` |
+| 保存・書き出し | `save`, `download` |
+| 取り消し・やり直し・再読み込み | `undo`, `redo`, `refresh` |
+| 外部リンク・画面の起点 | `external-link`, `home` |
+| 個人・複数人・メール | `user`, `users`, `mail` |
+
+## 対象外
+
+- `TokiwaIcon.vue` は装飾的な背景表現で、操作用アイコンではない。
+- カレンダーのスクリーンショット・機能紹介画像・favicon はアイコン一覧に含めない。
+- 色見本の記号や文字は、この一覧の参照 ID 数には含めない。

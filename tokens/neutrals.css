@@ -1,0 +1,12 @@
+/* tokiwagi-ui: neutral colors, light mode. Source of truth. */
+:root {
+  --tkw-color-neutral-0: #FFFFFF;
+  --tkw-color-neutral-50: #FAFAFA;
+  --tkw-color-neutral-100: #F3F3F4;
+  --tkw-color-neutral-200: #E3E3E6;
+  --tkw-color-neutral-400: #A1A1AA;
+  --tkw-color-neutral-600: #686873;
+  --tkw-color-neutral-800: #35353B;
+  --tkw-color-neutral-900: #25262A;
+  --tkw-color-neutral-1000: #000000;
+}
