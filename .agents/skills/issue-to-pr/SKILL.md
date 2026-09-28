@@ -1,11 +1,11 @@
 ---
 name: issue-to-pr
-description: Tokiwagi UI の GitHub Issue を起点に、ブランチ作成、実装、承認後のコミット、指示された場合の PR 作成まで進める作業に使用する。単独のコミット作成には conventional-commit を使用する。
+description: Tokiwagi UI のコード・文書・設定を実装または修正するときに必ず使用する。Issue の特定からブランチ、実装、承認後のコミット、指示された場合の PR 作成まで進める。
 ---
 
 # Issue から PR まで
 
-対象は `HikariTakahashi/tokiwagi-ui`。`AGENT.md` と関連するリポジトリの指示を確認し、次の順に進める。既存の作業ツリーの変更は保持する。
+対象は `HikariTakahashi/tokiwagi-ui`。`AGENTS.md` と関連するリポジトリの指示を確認し、次の順に進める。既存の作業ツリーの変更は保持する。
 
 1. **Issue を特定する。** 既存 Issue を検索し、候補のタイトル、番号、要点を比較する。ユーザーの依頼と一致する Issue が一つなら採用し、複数あって判断できなければ候補を示して選択を求める。該当する Issue がなければ新規 Issue と判断する。
 2. **必要なら Issue を作成する。** 新規 Issue の作成には [github-issue](../github-issue/SKILL.md) skill を使用し、作成した番号と URL を記録する。重複する Issue を作らない。
