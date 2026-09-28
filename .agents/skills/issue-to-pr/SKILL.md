@@ -1,6 +1,6 @@
 ---
 name: issue-to-pr
-description: Tokiwagi UI の GitHub Issue を起点に、ブランチ作成、実装、承認後のコミット、指示された場合の PR 作成まで進める作業に使用する。単独のコミット作成には conventional-commit を使用する。
+description: Tokiwagi UI のコード・文書・設定を実装または修正するときに必ず使用する。Issue の特定からブランチ、実装、承認後のコミット、指示された場合の PR 作成まで進める。
 ---
 
 # Issue から PR まで

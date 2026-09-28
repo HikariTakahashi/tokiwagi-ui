@@ -1,3 +1,3 @@
 interface:
   display_name: "Issue から PR まで"
-  short_description: "Issue の特定から実装、承認後のコミット、指示された PR 作成まで進めます"
+  short_description: "Tokiwagi UI の実装・修正時に Issue から PR までの手順を適用します"
