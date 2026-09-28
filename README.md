@@ -2,6 +2,21 @@
 
 タスク管理アプリのためのデザインシステムです。Astro は紹介用のランディングページ、Storybook はカラーとアイコン案のルール参照・実装時の確認に使います。
 
+## VS Code の拡張機能
+
+VS Code で `tokiwagi-ui` フォルダーを開き、拡張機能ビューで `@recommended` と検索すると、[`.vscode/extensions.json`](.vscode/extensions.json) に登録した拡張機能が表示されます。必要なものを選んでインストールしてください。開発・ビルドに必須の拡張機能はありません。
+
+| 拡張機能 | 用途 |
+| --- | --- |
+| Astro (`astro-build.astro-vscode`) | `.astro` ファイルの補完・診断 |
+| Tailwind CSS IntelliSense (`bradlc.vscode-tailwindcss`) | Tailwind CSS v4 のクラス補完・検査 |
+| MDX (`unifiedjs.vscode-mdx`) | Storybook の `.mdx` 資料の編集 |
+| Bun for Visual Studio Code (`oven.bun-vscode`) | Bun のテスト表示・デバッグ |
+| CSS Variables (LSP) (`miclmn451.css-variables-vscode`) | カラートークンの補完・定義への移動 |
+| GitHub Pull Requests (`GitHub.vscode-pull-request-github`) | Issue・PR の確認とレビュー |
+
+Astro と Tailwind CSS IntelliSense は特に推奨します。CSS Variables (LSP) と GitHub Pull Requests は作業内容に応じて選べます。
+
 ## 起動
 
 Bun 1.3.9 以上を使用します。
