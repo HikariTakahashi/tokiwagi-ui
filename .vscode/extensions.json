@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "astro-build.astro-vscode",
+    "bradlc.vscode-tailwindcss",
+    "unifiedjs.vscode-mdx",
+    "oven.bun-vscode",
+    "miclmn451.css-variables-vscode",
+    "GitHub.vscode-pull-request-github"
+  ]
+}
