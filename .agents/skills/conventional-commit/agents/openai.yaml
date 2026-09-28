@@ -1,0 +1,3 @@
+interface:
+  display_name: "Conventional Commit"
+  short_description: "形式に沿うコミット名を提案し、許可を得てからコミットします"

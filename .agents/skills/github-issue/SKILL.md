@@ -1,13 +1,35 @@
 ---
 name: github-issue
-description: Create or update a Tokiwagi UI GitHub Issue for a concrete remaining task, bug, or design decision.
+description: Tokiwagi UI の新規実装、不具合修正、残タスクを分類し、種別と重要度のラベルを付けて GitHub Issue を作成・更新する。
 ---
 
-# GitHub Issue
+# GitHub Issue の作成・更新
 
-Use this skill for work tracked in `HikariTakahashi/tokiwagi-ui`.
+`HikariTakahashi/tokiwagi-ui` で管理する作業にこのスキルを使う。
 
-1. Confirm the repository and `gh auth status`. Inspect the relevant source or documentation, then search open and closed Issues for duplicates with `gh issue list --state all --search`.
-2. If an Issue already covers the work, report its URL and update it only when the requested scope requires it. Otherwise, write a focused title and body using the fields in `.github/ISSUE_TEMPLATE/task.md`: background, work, completion criteria, and references. State observed facts separately from proposals.
-3. Create the Issue with `gh issue create --repo HikariTakahashi/tokiwagi-ui --title ... --body-file ...`. Use a temporary UTF-8 body file so Markdown and Japanese text retain their formatting. Do not add work outside the user's requested scope.
-4. Report the Issue URL and a brief description of its completion criteria.
+## Issue の種類
+
+| 種類 | 選ぶ場面 | テンプレート | タイトルの先頭 | 種別ラベル |
+| --- | --- | --- | --- | --- |
+| 新規実装 | 新しい機能や画面などを実装する | `.github/ISSUE_TEMPLATE/new-implementation.md` | `[新規実装]` | `種別: 新規実装` |
+| 不具合修正 | 既存の動作が期待と異なり、修正が必要 | `.github/ISSUE_TEMPLATE/bug-fix.md` | `[不具合修正]` | `種別: 不具合修正` |
+| 残タスク | 既存の作業や決定事項から残った、範囲が確定した作業を完了する | `.github/ISSUE_TEMPLATE/remaining-task.md` | `[残タスク]` | `種別: 残タスク` |
+
+依頼内容と調査結果に合う種類を選ぶ。種類を判断できないときは、確認できた事実を整理してから必要な点をユーザーに確認する。構想段階の内容を、確定した残タスクとして登録しない。
+
+## 重要度とラベル
+
+| 重要度ラベル | 判断の目安 |
+| --- | --- |
+| `重要度: 高` | 主要な機能を妨げる、または影響範囲が広い |
+| `重要度: 中` | 対応が必要だが、通常の作業順で進められる |
+| `重要度: 低` | 影響が限定的で、後から対応できる |
+
+作成・更新する Issue には、上記の種別ラベルと重要度ラベルをそれぞれ必ず1つ付ける。GitHub の既定ラベル `bug` や `enhancement` を種別ラベルの代わりに使わない。重要度を推測できない場合は、判断に必要な情報をユーザーに確認する。本文には `## 重要度と理由` を設け、選んだ重要度とその理由を簡潔に記す。
+
+## 作成・更新の手順
+
+1. リポジトリと `gh auth status` を確認する。関連するソースや文書を調べ、`gh issue list --state all --search` で未完了・完了済みの Issue に重複がないか検索する。`gh label list --repo HikariTakahashi/tokiwagi-ui` で必要なラベルを確認し、存在しない場合は `gh label create` で日本語の説明を付けて作成する。
+2. 既存の Issue が対象の作業を扱っている場合は URL を報告し、依頼された範囲で必要なときだけ更新する。その際、種別と重要度のラベルがそれぞれ1つになるよう `gh issue edit --add-label ... --remove-label ...` で調整する。該当する Issue がなければ、選んだテンプレートの項目に沿って、対象を絞ったタイトルと本文を書く。タイトルには表の分類表記を付け、確認できた事実と提案を分けて記す。
+3. `gh issue create --repo HikariTakahashi/tokiwagi-ui --title ... --body-file ... --label "種別: ..." --label "重要度: ..."` で Issue を作成する。Markdown と日本語の書式を保つため、本文には一時的な UTF-8 ファイルを使う。依頼範囲外の作業は追加しない。
+4. Issue の URL、付けた種別・重要度ラベル、完了条件の要点を報告する。
