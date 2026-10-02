@@ -42,7 +42,7 @@ export function IconBrowser() {
   const matches = filterIcons(iconCatalog, query, category);
   return <div className="tkw-icon-browser">
     <div className="tkw-icon-controls">
-      <label className="tkw-icon-search">公開名で検索<input type="search" placeholder="例：bell、calendar、off" value={query} onChange={event => setQuery(event.target.value)} /></label>
+      <label className="tkw-icon-search">公開名・別名で検索<input type="search" placeholder="例：bell、heart、ハート" value={query} onChange={event => setQuery(event.target.value)} /></label>
       <label>分類<select value={category} onChange={event => setCategory(event.target.value as IconCategory | 'all')}>
         <option value="all">すべて（{iconCatalog.length}）</option>
         {iconCategories.map(([key, label]) => <option key={key} value={key}>{label}（{iconCatalog.filter(icon => icon.category === key).length}）</option>)}
@@ -56,7 +56,7 @@ export function IconBrowser() {
       <button type="button" onClick={() => { setQuery(''); setCategory('all'); }}>絞り込みを解除</button>
     </div>
     <ColorTokens value={color} />
-    {matches.length === 0 ? <p className="tkw-icon-empty">該当するアイコンはありません。公開名や分類を変更してください。</p> :
+    {matches.length === 0 ? <p className="tkw-icon-empty">該当するアイコンはありません。公開名・別名や分類を変更してください。</p> :
       <ul className="tkw-icon-grid">{matches.map(icon => <li key={icon.name}>
         <a href={`./${icon.href}`} target="_top" className="tkw-icon-card">
           <span className="tkw-icon-swatch" style={pairStyle(color)}><IconImage icon={icon} size={size} /></span>
