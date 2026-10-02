@@ -2,110 +2,547 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="アイコン/命名と用途の案" />
 
+<style>{`
+  .tkw-icon-table { max-width: 100%; overflow-x: auto; margin: 16px 0; }
+  .tkw-icon-table:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+  .tkw-icon-table table { width: 100%; min-width: 720px; margin: 0; }
+  .tkw-icon-table td { overflow-wrap: anywhere; }
+`}</style>
+
+
 # アイコンの用途一覧
 
-**状態：案（全項目・図形未制作）**
+**状態：SVG 制作済み・公開名と用途は案（ライブラリへの組み込み前）**
 
-`tokiwagi-ui` にアイコンを追加する前に、必要な用途と公開名を整理した一覧です。対象は `tokiwa-calendar-frontend` のアプリソース（生成物・依存パッケージを除く）です。2026-09-27 時点で、`UIcon` の指定値、動的な分岐、`buttons-hover` に渡す指定値を合わせて **54 種類の参照 ID** を確認しました。下表では同じ用途の参照をまとめ、**36 個の汎用アイコン名と 5 個のブランド名**に整理しています。ここでは用途と名前を決め、図形や実装方法は決めません。
+2026-10-02 時点の制作済み SVG をもとに、`tokiwagi-ui` の命名基準と用途を整理しています。提供フォルダ `icons` には、番号付きファイルを含めて **329 ファイル**あります。下表は全ファイルの図柄を確認し、公開名の案と元ファイル名を対応付けたものです。SVG の改名・取り込み、既存アプリへの置き換えはまだ行っていません。
 
-## 命名と統合の基準
+## 命名基準
 
-- 公開名は既存のアイコンセット名から独立した、小文字のケバブケースにする。
-- 同じ目的で使われている `baseline`・`sharp`・`outline` などの違いは一つの公開名にまとめる。
-- 図形が似ていても、操作・状態・対象が異なれば名前を分ける。例: `close` と `delete`、`copy` と `clipboard-copy`。
-- `success`・`warning`・`error`・`info` は既存のセマンティックカラートークンと意味を揃える。単なる選択の印は `check` とする。
-- ローディング用に回転させている矢印は、現状の用途に合わせて `loading` に含める。再読み込み操作には別名 `refresh` を使う。
-- ブランドロゴは操作用アイコンから分ける。色やブランドの表現は汎用アイコンと一律に扱わない。
+- 公開名は小文字のケバブケースとし、既存のアイコンセット名や `baseline`・`sharp`・`outline` などの識別子を含めない。
+- 名前の順序は「対象または枠 → 操作・記号 → 方向 → 状態」を基本とする。例：`calendar-plus`、`circle-chevron-left`、`search-check-off`。パネルを閉じる名前は `panel-close-left`・`panel-close-right` とする。
+- `calendar-` は予定、`task-` はタスクを操作する図柄。`circle-`・`square-`・`triangle-` は枠の形を表す。同じ記号でも、対象や枠が異なる図形は別名で管理する。
+- 方向は制作済み系列に合わせる。山形の記号は `chevron-top`・`chevron-bottom`・`chevron-left`・`chevron-right`、並べ替えの矢印は `up`・`down`、点やドラッグハンドルの向きは `horizontal`・`vertical` とする。横三点は現行名の `ellipsis` を使う。
+- 斜線付きの図柄には `-off` を付け、通常の図柄は状態接尾辞を省く。表示・非表示の対は `visibility-on`・`visibility-off` を使う。`-off` は状態を示す名前であり、ボタンの disabled 属性や操作可否を自動的に決めるものではない。
+- 操作名は `setting`・`tool`・`login`・`logout` などに統一する。綴りは `information` とし、`infomation`・`settig` や単複の揺れを公開名に持ち込まない。
+- `close` は閉じる・キャンセル、`delete` は削除、`minus` は除外・減少、`copy` は複製、`paperclip` は添付とする。図形が似ていても操作を混同しない。
+- `recurring` は循環する二本の矢印による定期的な繰り返し、`repeat` は円弧状の一本の矢印による再実行・再読み込みとする。三点を線で結ぶ図柄の公開名は `share` とし、同期とは区別する。
+- `success`・`warning`・`error`・`info` は表示文脈とセマンティックカラーの役割として扱う。公開名は `circle-check`・`triangle-information`・`circle-close`・`circle-information` などの図柄に対応させる。単純な選択・完了の印は `check`。`information` 系の実際の図柄は「!」なので、意味はラベルや説明文でも伝える。
+- 書き出し時の連番 `-1`・`-2` は公開名に使わず、図柄から対象・操作・状態を判別する。元ファイル名との対応は下表で保持する。表にない組み合わせを制作済みとは扱わない。
+- ブランドロゴは操作用アイコンと分け、`brand-` を付ける。今回の提供 SVG にはブランドロゴは含まれていない。
 
-## 現在のフロントエンドから必要な名前
+### 元ファイル名から修正が必要な点
+
+下記は図柄に基づく公開名の案です。元ファイル自体は改名していません。
+
+<div className="tkw-icon-table" role="region" aria-label="元ファイル名から修正が必要な点の表" tabIndex={0}>
+
+| 元ファイル名 | 公開名の案・理由 |
+| --- | --- |
+| `calendar.svg` / `calendar-off.svg` | 斜線の有無に合わせて、それぞれ `calendar-off` / `calendar` に入れ替える |
+| `task.svg` / `task-1.svg` | 斜線付きは `task-off`、通常のクリップボードは `task` |
+| `calendar-…-1.svg` | カレンダーの上部がない四角枠なので `square-…` にする |
+| `calendar-delete-2.svg` | 操作記号のない枠なので `square` |
+| `task-chevron-chevron-bottom.svg` / `task-tools.svg` / `task-clipboard.svg` | `task-chevron-bottom` / `task-tool` / `task-paperclip` に整理する |
+| `task-code.svg` / `task-code-1.svg` | 封筒は `task-mail`、コード記号は `task-code` |
+| `task-cut.svg` / `task-cut-1.svg` | 循環矢印は `task-recurring`、はさみは `task-cut` |
+| `task-history.svg` / `task-history-1.svg` | 三点の共有記号は `task-share`、履歴記号は `task-history` |
+| `task-undo.svg` / `task-undo-1.svg` | 右向きは `task-redo`、左向きは `task-undo` |
+| `search-close.svg` / `search-close-1.svg` | 斜線付きは `search-close-off`、通常は `search-close` |
+| `search-infomation.svg` / `search-infomation-1.svg` | 斜線付きは `search-information-off`、通常は `search-information` |
+| `sort-arrow-up-off.svg` / `sort-arrow-up-off-1.svg` | 矢印方向に合わせて `sort-arrow-down-off` / `sort-arrow-up-off` |
+| `login.svg` / `logout.svg`（それぞれの `-off` も同様） | 枠から出る図柄を `logout`、枠へ入る図柄を `login` とする |
+| `sync.svg`・`sync-off.svg`・各枠の `…-sync.svg` | 共有記号なので `share`・`share-off`・`…-share` |
+| `infomation` を含む名前 / `triangle-settig.svg` | 綴りを `information` / `triangle-setting` に修正する |
+
+</div>
+
+## アイコン名および用途
+
+元ファイル名は提供フォルダ内の名前です。公開名は上記基準を適用した案で、ライブラリの実装済み API を意味しません。用途は UI で選ぶ際の目安です。カレンダー・タスク系列はその対象の操作、枠付き系列は同じ操作・状態の表示に使います。三角枠であることだけで警告を意味するわけではありません。
+
+### 基本アイコン（132 個）
+
+<div className="tkw-icon-table" role="region" aria-label="基本アイコン（132 個）の表" tabIndex={0}>
+
+| 公開名の案 | 元ファイル名 | 用途 |
+| --- | --- | --- |
+| `bell` | `bell.svg` | 通知・リマインダー |
+| `bell-off` | `bell-off.svg` | 無効・停止状態：通知・リマインダー |
+| `bookmark` | `bookmark.svg` | ブックマーク・あとで見る |
+| `bookmark-off` | `bookmark-off.svg` | 無効・停止状態：ブックマーク・あとで見る |
+| `check` | `check.svg` | 選択済み・完了 |
+| `chevron-bottom` | `chevron-bottom.svg` | 下方向への移動・展開 |
+| `chevron-bottom-off` | `chevron-bottom-off.svg` | 無効・停止状態：下方向への移動・展開 |
+| `chevron-left` | `chevron-left.svg` | 前の項目・期間への移動 |
+| `chevron-left-off` | `chevron-left-off.svg` | 無効・停止状態：前の項目・期間への移動 |
+| `chevron-right` | `chevron-right.svg` | 次の項目・期間への移動 |
+| `chevron-right-off` | `chevron-right-off.svg` | 無効・停止状態：次の項目・期間への移動 |
+| `chevron-top` | `chevron-top.svg` | 上方向への移動・折りたたみ |
+| `chevron-top-off` | `chevron-top-off.svg` | 無効・停止状態：上方向への移動・折りたたみ |
+| `clock` | `clock.svg` | 時刻・所要時間 |
+| `clock-off` | `clock-off.svg` | 無効・停止状態：時刻・所要時間 |
+| `close` | `close.svg` | 表示を閉じる・操作をキャンセルする |
+| `code` | `code.svg` | コード・埋め込み情報 |
+| `code-off` | `code-off.svg` | 無効・停止状態：コード・埋め込み情報 |
+| `copy` | `copy.svg` | 内容を複製する |
+| `copy-off` | `copy-off.svg` | 無効・停止状態：内容を複製する |
+| `cut` | `cut.svg` | 内容を切り取る |
+| `cut-off` | `cut-off.svg` | 無効・停止状態：内容を切り取る |
+| `dashboard` | `dashboard.svg` | ダッシュボード・概要 |
+| `dashboard-off` | `dashboard-off.svg` | 無効・停止状態：ダッシュボード・概要 |
+| `delete` | `delete.svg` | 対象を削除する |
+| `delete-off` | `delete-off.svg` | 無効・停止状態：対象を削除する |
+| `download` | `download.svg` | ファイル・データを書き出す |
+| `download-off` | `download-off.svg` | 無効・停止状態：ファイル・データを書き出す |
+| `edit` | `edit.svg` | 対象を編集する |
+| `edit-off` | `edit-off.svg` | 無効・停止状態：対象を編集する |
+| `ellipsis` | `ellipsis.svg` | その他の操作（横三点） |
+| `ellipsis-off` | `ellipsis-off.svg` | 無効・停止状態：その他の操作（横三点） |
+| `ellipsis-vertical` | `ellipsis-vertical.svg` | その他の操作（縦三点） |
+| `ellipsis-vertical-off` | `ellipsis-vertical-off.svg` | 無効・停止状態：その他の操作（縦三点） |
+| `filter` | `filter.svg` | 条件で絞り込む |
+| `filter-off` | `filter-off.svg` | 無効・停止状態：条件で絞り込む |
+| `grip-horizontal` | `grip-horizontal.svg` | 横長のドラッグハンドル |
+| `grip-horizontal-off` | `grip-horizontal-off.svg` | 無効・停止状態：横長のドラッグハンドル |
+| `grip-vertical` | `grip-vertical.svg` | 縦長のドラッグハンドル |
+| `grip-vertical-off` | `grip-vertical-off.svg` | 無効・停止状態：縦長のドラッグハンドル |
+| `help` | `help.svg` | ヘルプ・使い方の案内 |
+| `help-off` | `help-off.svg` | 無効・停止状態：ヘルプ・使い方の案内 |
+| `history` | `history.svg` | 操作履歴・過去の状態 |
+| `history-off` | `history-off.svg` | 無効・停止状態：操作履歴・過去の状態 |
+| `image` | `image.svg` | 画像・画像の挿入 |
+| `image-off` | `image-off.svg` | 無効・停止状態：画像・画像の挿入 |
+| `information` | `infomation.svg` | 補足情報・注意の案内（感嘆符の図柄） |
+| `information-off` | `infomation-off.svg` | 無効・停止状態：補足情報・注意の案内（感嘆符の図柄） |
+| `like` | `like.svg` | いいね・お気に入り |
+| `like-off` | `like-off.svg` | 無効・停止状態：いいね・お気に入り |
+| `link` | `link.svg` | リンク・関連付け |
+| `link-off` | `link-off.svg` | 無効・停止状態：リンク・関連付け |
+| `lock` | `lock.svg` | ロック・アクセス制限 |
+| `lock-off` | `lock-off.svg` | 無効・停止状態：ロック・アクセス制限 |
+| `login` | `logout.svg` | ログインする（枠へ入る矢印） |
+| `login-off` | `logout-off.svg` | 無効・停止状態：ログインする（枠へ入る矢印） |
+| `logout` | `login.svg` | ログアウトする（枠から出る矢印） |
+| `logout-off` | `login-off.svg` | 無効・停止状態：ログアウトする（枠から出る矢印） |
+| `mail` | `mail.svg` | メール・メッセージ |
+| `mail-off` | `mail-off.svg` | 無効・停止状態：メール・メッセージ |
+| `menu` | `menu.svg` | 主メニューを開く |
+| `menu-off` | `menu-off.svg` | 無効・停止状態：主メニューを開く |
+| `minus` | `minus.svg` | 項目の除外・数量を減らす |
+| `minus-off` | `minus-off.svg` | 無効・停止状態：項目の除外・数量を減らす |
+| `moon` | `moon.svg` | ダークモード |
+| `moon-off` | `moon-off.svg` | 無効・停止状態：ダークモード |
+| `panel` | `panel.svg` | パネル分割のレイアウト |
+| `panel-close-left` | `panel-close-left.svg` | 左側パネルを閉じる |
+| `panel-close-left-off` | `panel-close-left-off.svg` | 無効・停止状態：左側パネルを閉じる |
+| `panel-close-right` | `panel-close-right.svg` | 右側パネルを閉じる |
+| `panel-close-right-off` | `panel-close-right-off.svg` | 無効・停止状態：右側パネルを閉じる |
+| `panel-left` | `panel-left.svg` | 左側パネルの表示 |
+| `panel-left-off` | `panel-left-off.svg` | 無効・停止状態：左側パネルの表示 |
+| `panel-off` | `panel-off.svg` | 無効・停止状態：パネル分割のレイアウト |
+| `panel-right` | `panel-right.svg` | 右側パネルの表示 |
+| `panel-right-off` | `panel-right-off.svg` | 無効・停止状態：右側パネルの表示 |
+| `paperclip` | `paperclip.svg` | ファイルを添付する |
+| `paperclip-off` | `paperclip-off.svg` | 無効・停止状態：ファイルを添付する |
+| `pin` | `pin.svg` | 対象を固定する |
+| `pin-off` | `pin-off.svg` | 無効・停止状態：対象を固定する |
+| `plus` | `plus.svg` | 項目の追加・数量を増やす |
+| `plus-off` | `plus-off.svg` | 無効・停止状態：項目の追加・数量を増やす |
+| `recurring` | `recurring.svg` | 周期的な繰り返し・定期実行（循環する二本の矢印） |
+| `recurring-off` | `recurring-off.svg` | 無効・停止状態：周期的な繰り返し・定期実行（循環する二本の矢印） |
+| `redo` | `redo.svg` | 取り消した操作をやり直す |
+| `redo-off` | `redo-off.svg` | 無効・停止状態：取り消した操作をやり直す |
+| `repeat` | `repeat.svg` | 再実行・再読み込み（円弧状の一本の矢印） |
+| `repeat-off` | `repeat-off.svg` | 無効・停止状態：再実行・再読み込み（円弧状の一本の矢印） |
+| `save` | `save.svg` | 変更を保存する |
+| `save-off` | `save-off.svg` | 無効・停止状態：変更を保存する |
+| `search` | `search.svg` | 検索する |
+| `search-check` | `search-check.svg` | 検索条件の確定・検索結果の選択 |
+| `search-check-off` | `search-check-off.svg` | 無効・停止状態：検索条件の確定・検索結果の選択 |
+| `search-close` | `search-close-1.svg` | 検索の解除・検索条件のクリア |
+| `search-close-off` | `search-close.svg` | 無効・停止状態：検索の解除・検索条件のクリア |
+| `search-code` | `search-code.svg` | コードを検索する |
+| `search-code-off` | `search-code-off.svg` | 無効・停止状態：コードを検索する |
+| `search-information` | `search-infomation-1.svg` | 検索に関する補足・注意 |
+| `search-information-off` | `search-infomation.svg` | 無効・停止状態：検索に関する補足・注意 |
+| `search-off` | `search-off.svg` | 無効・停止状態：検索する |
+| `setting` | `setting.svg` | 設定を開く |
+| `setting-off` | `setting-off.svg` | 無効・停止状態：設定を開く |
+| `share` | `sync.svg` | 対象を共有する（三つの点を結ぶ図柄） |
+| `share-off` | `sync-off.svg` | 無効・停止状態：対象を共有する（三つの点を結ぶ図柄） |
+| `sort` | `sort.svg` | 並べ替え方法を切り替える |
+| `sort-alphabet-down` | `sort-alphabet-down.svg` | 文字を昇順（A → Z）に並べる |
+| `sort-alphabet-down-off` | `sort-alphabet-down-off.svg` | 無効・停止状態：文字を昇順（A → Z）に並べる |
+| `sort-alphabet-up` | `sort-alphabet-up.svg` | 文字を降順（Z → A）に並べる |
+| `sort-alphabet-up-off` | `sort-alphabet-up-off.svg` | 無効・停止状態：文字を降順（Z → A）に並べる |
+| `sort-arrow-down` | `sort-arrow-down.svg` | 下向き矢印で並べ替え方向を示す |
+| `sort-arrow-down-off` | `sort-arrow-up-off.svg` | 無効・停止状態：下向き矢印で並べ替え方向を示す |
+| `sort-arrow-up` | `sort-arrow-up.svg` | 上向き矢印で並べ替え方向を示す |
+| `sort-arrow-up-off` | `sort-arrow-up-off-1.svg` | 無効・停止状態：上向き矢印で並べ替え方向を示す |
+| `sort-number-down` | `sort-number-down.svg` | 数値を昇順（0 → 1）に並べる |
+| `sort-number-down-off` | `sort-number-down-off.svg` | 無効・停止状態：数値を昇順（0 → 1）に並べる |
+| `sort-number-up` | `sort-number-up.svg` | 数値を降順（1 → 0）に並べる |
+| `sort-number-up-off` | `sort-number-up-off.svg` | 無効・停止状態：数値を降順（1 → 0）に並べる |
+| `sort-off` | `sort-off.svg` | 無効・停止状態：並べ替え方法を切り替える |
+| `sun` | `sun.svg` | ライトモード |
+| `sun-off` | `sun-off.svg` | 無効・停止状態：ライトモード |
+| `tool` | `tool.svg` | ツール・管理操作 |
+| `tool-off` | `tool-off.svg` | 無効・停止状態：ツール・管理操作 |
+| `undo` | `undo.svg` | 直前の操作を取り消す |
+| `undo-off` | `undo-off.svg` | 無効・停止状態：直前の操作を取り消す |
+| `upload` | `upload.svg` | ファイル・データを読み込む |
+| `upload-off` | `upload-off.svg` | 無効・停止状態：ファイル・データを読み込む |
+| `visibility-off` | `visibility-off.svg` | 内容・パスワードを隠す |
+| `visibility-on` | `visibility-on.svg` | 内容・パスワードを表示する |
+| `zoom-in` | `zoom-in.svg` | 表示を拡大する |
+| `zoom-in-off` | `zoom-in-off.svg` | 無効・停止状態：表示を拡大する |
+| `zoom-out` | `zoom-out.svg` | 表示を縮小する |
+| `zoom-out-off` | `zoom-out-off.svg` | 無効・停止状態：表示を縮小する |
+
+</div>
+
+### カレンダー（40 個）
+
+<div className="tkw-icon-table" role="region" aria-label="カレンダー（40 個）の表" tabIndex={0}>
+
+| 公開名の案 | 元ファイル名 | 用途 |
+| --- | --- | --- |
+| `calendar` | `calendar-off.svg` | カレンダー・日付・予定 |
+| `calendar-bell` | `calendar-bell.svg` | 予定：通知・リマインダー |
+| `calendar-bookmark` | `calendar-bookmark.svg` | 予定：ブックマーク・あとで見る |
+| `calendar-check` | `calendar-check.svg` | 予定：選択済み・完了 |
+| `calendar-chevron-bottom` | `calendar-chevron-bottom.svg` | 予定：下方向への移動・展開 |
+| `calendar-chevron-left` | `calendar-chevron-left.svg` | 予定：前の項目・期間への移動 |
+| `calendar-chevron-right` | `calendar-chevron-right.svg` | 予定：次の項目・期間への移動 |
+| `calendar-chevron-top` | `calendar-chevron-top.svg` | 予定：上方向への移動・折りたたみ |
+| `calendar-clock` | `calendar-clock.svg` | 予定：時刻・所要時間 |
+| `calendar-close` | `calendar-close.svg` | 予定：表示を閉じる・操作をキャンセルする |
+| `calendar-code` | `calendar-code.svg` | 予定：コード・埋め込み情報 |
+| `calendar-copy` | `calendar-copy.svg` | 予定：内容を複製する |
+| `calendar-cut` | `calendar-cut.svg` | 予定：内容を切り取る |
+| `calendar-delete` | `calendar-delete.svg` | 予定：対象を削除する |
+| `calendar-download` | `calendar-download.svg` | 予定：ファイル・データを書き出す |
+| `calendar-edit` | `calendar-edit.svg` | 予定：対象を編集する |
+| `calendar-filter` | `calendar-filter.svg` | 予定：条件で絞り込む |
+| `calendar-help` | `calendar-help.svg` | 予定：ヘルプ・使い方の案内 |
+| `calendar-history` | `calendar-history.svg` | 予定：操作履歴・過去の状態 |
+| `calendar-image` | `calendar-image.svg` | 予定：画像・画像の挿入 |
+| `calendar-information` | `calendar-infomation.svg` | 予定：補足情報・注意の案内（感嘆符の図柄） |
+| `calendar-like` | `calendar-like.svg` | 予定：いいね・お気に入り |
+| `calendar-link` | `calendar-link.svg` | 予定：リンク・関連付け |
+| `calendar-lock` | `calendar-lock.svg` | 予定：ロック・アクセス制限 |
+| `calendar-mail` | `calendar-mail.svg` | 予定：メール・メッセージ |
+| `calendar-minus` | `calendar-minus.svg` | 予定：項目の除外・数量を減らす |
+| `calendar-off` | `calendar.svg` | 無効・停止状態：カレンダー・日付・予定 |
+| `calendar-paperclip` | `calendar-paperclip.svg` | 予定：ファイルを添付する |
+| `calendar-pin` | `calendar-pin.svg` | 予定：対象を固定する |
+| `calendar-plus` | `calendar-plus.svg` | 予定：項目の追加・数量を増やす |
+| `calendar-recurring` | `calendar-recurring.svg` | 予定：周期的な繰り返し・定期実行（循環する二本の矢印） |
+| `calendar-redo` | `calendar-redo.svg` | 予定：取り消した操作をやり直す |
+| `calendar-repeat` | `calendar-repeat.svg` | 予定：再実行・再読み込み（円弧状の一本の矢印） |
+| `calendar-save` | `calendar-save.svg` | 予定：変更を保存する |
+| `calendar-search` | `calendar-search.svg` | 予定：検索する |
+| `calendar-setting` | `calendar-setting.svg` | 予定：設定を開く |
+| `calendar-share` | `calendar-sync.svg` | 予定：対象を共有する（三つの点を結ぶ図柄） |
+| `calendar-tool` | `calendar-tool.svg` | 予定：ツール・管理操作 |
+| `calendar-undo` | `calendar-undo.svg` | 予定：直前の操作を取り消す |
+| `calendar-upload` | `calendar-upload.svg` | 予定：ファイル・データを読み込む |
+
+</div>
+
+### タスク（40 個）
+
+<div className="tkw-icon-table" role="region" aria-label="タスク（40 個）の表" tabIndex={0}>
+
+| 公開名の案 | 元ファイル名 | 用途 |
+| --- | --- | --- |
+| `task` | `task-1.svg` | タスク・作業一覧 |
+| `task-bell` | `task-bell.svg` | タスク：通知・リマインダー |
+| `task-bookmark` | `task-bookmark.svg` | タスク：ブックマーク・あとで見る |
+| `task-check` | `task-check.svg` | タスク：選択済み・完了 |
+| `task-chevron-bottom` | `task-chevron-chevron-bottom.svg` | タスク：下方向への移動・展開 |
+| `task-chevron-left` | `task-chevron-left.svg` | タスク：前の項目・期間への移動 |
+| `task-chevron-right` | `task-chevron-right.svg` | タスク：次の項目・期間への移動 |
+| `task-chevron-top` | `task-chevron-top.svg` | タスク：上方向への移動・折りたたみ |
+| `task-clock` | `task-clock.svg` | タスク：時刻・所要時間 |
+| `task-close` | `task-close.svg` | タスク：表示を閉じる・操作をキャンセルする |
+| `task-code` | `task-code-1.svg` | タスク：コード・埋め込み情報 |
+| `task-copy` | `task-copy.svg` | タスク：内容を複製する |
+| `task-cut` | `task-cut-1.svg` | タスク：内容を切り取る |
+| `task-delete` | `task-delete.svg` | タスク：対象を削除する |
+| `task-download` | `task-download.svg` | タスク：ファイル・データを書き出す |
+| `task-edit` | `task-edit.svg` | タスク：対象を編集する |
+| `task-filter` | `task-filter.svg` | タスク：条件で絞り込む |
+| `task-help` | `task-help.svg` | タスク：ヘルプ・使い方の案内 |
+| `task-history` | `task-history-1.svg` | タスク：操作履歴・過去の状態 |
+| `task-image` | `task-image.svg` | タスク：画像・画像の挿入 |
+| `task-information` | `task-infomation.svg` | タスク：補足情報・注意の案内（感嘆符の図柄） |
+| `task-like` | `task-like.svg` | タスク：いいね・お気に入り |
+| `task-link` | `task-link.svg` | タスク：リンク・関連付け |
+| `task-lock` | `task-lock.svg` | タスク：ロック・アクセス制限 |
+| `task-mail` | `task-code.svg` | タスク：メール・メッセージ |
+| `task-minus` | `task-minus.svg` | タスク：項目の除外・数量を減らす |
+| `task-off` | `task.svg` | 無効・停止状態：タスク・作業一覧 |
+| `task-paperclip` | `task-clipboard.svg` | タスク：ファイルを添付する |
+| `task-pin` | `task-pin.svg` | タスク：対象を固定する |
+| `task-plus` | `task-plus.svg` | タスク：項目の追加・数量を増やす |
+| `task-recurring` | `task-cut.svg` | タスク：周期的な繰り返し・定期実行（循環する二本の矢印） |
+| `task-redo` | `task-undo.svg` | タスク：取り消した操作をやり直す |
+| `task-repeat` | `task-repeat.svg` | タスク：再実行・再読み込み（円弧状の一本の矢印） |
+| `task-save` | `task-save.svg` | タスク：変更を保存する |
+| `task-search` | `task-search.svg` | タスク：検索する |
+| `task-setting` | `task-setting.svg` | タスク：設定を開く |
+| `task-share` | `task-history.svg` | タスク：対象を共有する（三つの点を結ぶ図柄） |
+| `task-tool` | `task-tools.svg` | タスク：ツール・管理操作 |
+| `task-undo` | `task-undo-1.svg` | タスク：直前の操作を取り消す |
+| `task-upload` | `task-upload.svg` | タスク：ファイル・データを読み込む |
+
+</div>
+
+### 円枠（38 個）
+
+<div className="tkw-icon-table" role="region" aria-label="円枠（38 個）の表" tabIndex={0}>
+
+| 公開名の案 | 元ファイル名 | 用途 |
+| --- | --- | --- |
+| `circle` | `circle.svg` | 円形の枠・未選択の印 |
+| `circle-bell` | `circle-bell.svg` | 円枠：通知・リマインダー |
+| `circle-bookmark` | `circle-bookmark.svg` | 円枠：ブックマーク・あとで見る |
+| `circle-check` | `circle-check.svg` | 円枠：選択済み・完了 |
+| `circle-chevron-bottom` | `circle-chevron-bottom.svg` | 円枠：下方向への移動・展開 |
+| `circle-chevron-left` | `circle-chevron-left.svg` | 円枠：前の項目・期間への移動 |
+| `circle-chevron-right` | `circle-chevron-right.svg` | 円枠：次の項目・期間への移動 |
+| `circle-chevron-top` | `circle-chevron-top.svg` | 円枠：上方向への移動・折りたたみ |
+| `circle-close` | `circle-close.svg` | 円枠：表示を閉じる・操作をキャンセルする |
+| `circle-code` | `circle-code.svg` | 円枠：コード・埋め込み情報 |
+| `circle-copy` | `circle-copy.svg` | 円枠：内容を複製する |
+| `circle-cut` | `circle-cut.svg` | 円枠：内容を切り取る |
+| `circle-delete` | `circle-delete.svg` | 円枠：対象を削除する |
+| `circle-download` | `circle-download.svg` | 円枠：ファイル・データを書き出す |
+| `circle-edit` | `circle-edit.svg` | 円枠：対象を編集する |
+| `circle-filter` | `circle-filter.svg` | 円枠：条件で絞り込む |
+| `circle-help` | `circle-help.svg` | 円枠：ヘルプ・使い方の案内 |
+| `circle-image` | `circle-image.svg` | 円枠：画像・画像の挿入 |
+| `circle-information` | `circle-information.svg` | 円枠：補足情報・注意の案内（感嘆符の図柄） |
+| `circle-like` | `circle-like.svg` | 円枠：いいね・お気に入り |
+| `circle-link` | `circle-link.svg` | 円枠：リンク・関連付け |
+| `circle-lock` | `circle-lock.svg` | 円枠：ロック・アクセス制限 |
+| `circle-mail` | `circle-mail.svg` | 円枠：メール・メッセージ |
+| `circle-minus` | `circle-minus.svg` | 円枠：項目の除外・数量を減らす |
+| `circle-off` | `circle-off.svg` | 無効・停止状態：円形の枠・未選択の印 |
+| `circle-paperclip` | `circle-paperclip.svg` | 円枠：ファイルを添付する |
+| `circle-pin` | `circle-pin.svg` | 円枠：対象を固定する |
+| `circle-plus` | `circle-plus.svg` | 円枠：項目の追加・数量を増やす |
+| `circle-recurring` | `circle-recurring.svg` | 円枠：周期的な繰り返し・定期実行（循環する二本の矢印） |
+| `circle-redo` | `circle-redo.svg` | 円枠：取り消した操作をやり直す |
+| `circle-repeat` | `circle-repeat.svg` | 円枠：再実行・再読み込み（円弧状の一本の矢印） |
+| `circle-save` | `circle-save.svg` | 円枠：変更を保存する |
+| `circle-search` | `circle-search.svg` | 円枠：検索する |
+| `circle-setting` | `circle-setting.svg` | 円枠：設定を開く |
+| `circle-share` | `circle-sync.svg` | 円枠：対象を共有する（三つの点を結ぶ図柄） |
+| `circle-tool` | `circle-tool.svg` | 円枠：ツール・管理操作 |
+| `circle-undo` | `circle-undo.svg` | 円枠：直前の操作を取り消す |
+| `circle-upload` | `circle-upload.svg` | 円枠：ファイル・データを読み込む |
+
+</div>
+
+### 四角枠（39 個）
+
+<div className="tkw-icon-table" role="region" aria-label="四角枠（39 個）の表" tabIndex={0}>
+
+| 公開名の案 | 元ファイル名 | 用途 |
+| --- | --- | --- |
+| `square` | `calendar-delete-2.svg` | 四角形の枠 |
+| `square-bell` | `calendar-bell-1.svg` | 四角枠：通知・リマインダー |
+| `square-bookmark` | `calendar-bookmark-1.svg` | 四角枠：ブックマーク・あとで見る |
+| `square-check` | `square-check.svg` | 四角枠：選択済み・完了 |
+| `square-chevron-bottom` | `square-chevron-bottom.svg` | 四角枠：下方向への移動・展開 |
+| `square-chevron-left` | `square-chevron-left.svg` | 四角枠：前の項目・期間への移動 |
+| `square-chevron-right` | `square-chevron-right.svg` | 四角枠：次の項目・期間への移動 |
+| `square-chevron-top` | `square-chevron-top.svg` | 四角枠：上方向への移動・折りたたみ |
+| `square-clock` | `square-clock.svg` | 四角枠：時刻・所要時間 |
+| `square-close` | `square-close.svg` | 四角枠：表示を閉じる・操作をキャンセルする |
+| `square-code` | `calendar-code-1.svg` | 四角枠：コード・埋め込み情報 |
+| `square-copy` | `square-copy.svg` | 四角枠：内容を複製する |
+| `square-cut` | `square-cut.svg` | 四角枠：内容を切り取る |
+| `square-delete` | `calendar-delete-1.svg` | 四角枠：対象を削除する |
+| `square-download` | `calendar-download-1.svg` | 四角枠：ファイル・データを書き出す |
+| `square-edit` | `square-edit.svg` | 四角枠：対象を編集する |
+| `square-filter` | `calendar-filter-1.svg` | 四角枠：条件で絞り込む |
+| `square-help` | `square-help.svg` | 四角枠：ヘルプ・使い方の案内 |
+| `square-history` | `square-history.svg` | 四角枠：操作履歴・過去の状態 |
+| `square-image` | `calendar-image-1.svg` | 四角枠：画像・画像の挿入 |
+| `square-information` | `square-infomation.svg` | 四角枠：補足情報・注意の案内（感嘆符の図柄） |
+| `square-like` | `square-like.svg` | 四角枠：いいね・お気に入り |
+| `square-link` | `square-link.svg` | 四角枠：リンク・関連付け |
+| `square-lock` | `calendar-lock-1.svg` | 四角枠：ロック・アクセス制限 |
+| `square-mail` | `calendar-mail-1.svg` | 四角枠：メール・メッセージ |
+| `square-minus` | `square-minus.svg` | 四角枠：項目の除外・数量を減らす |
+| `square-paperclip` | `square-paperclip.svg` | 四角枠：ファイルを添付する |
+| `square-pin` | `calendar-pin-1.svg` | 四角枠：対象を固定する |
+| `square-plus` | `square-plus.svg` | 四角枠：項目の追加・数量を増やす |
+| `square-recurring` | `square-recurring.svg` | 四角枠：周期的な繰り返し・定期実行（循環する二本の矢印） |
+| `square-redo` | `calendar-redo-1.svg` | 四角枠：取り消した操作をやり直す |
+| `square-repeat` | `square-repeat.svg` | 四角枠：再実行・再読み込み（円弧状の一本の矢印） |
+| `square-save` | `calendar-save-1.svg` | 四角枠：変更を保存する |
+| `square-search` | `square-search.svg` | 四角枠：検索する |
+| `square-setting` | `square-setting.svg` | 四角枠：設定を開く |
+| `square-share` | `square-sync.svg` | 四角枠：対象を共有する（三つの点を結ぶ図柄） |
+| `square-tool` | `square-tool.svg` | 四角枠：ツール・管理操作 |
+| `square-undo` | `calendar-undo-1.svg` | 四角枠：直前の操作を取り消す |
+| `square-upload` | `calendar-upload-1.svg` | 四角枠：ファイル・データを読み込む |
+
+</div>
+
+### 三角枠（40 個）
+
+<div className="tkw-icon-table" role="region" aria-label="三角枠（40 個）の表" tabIndex={0}>
+
+| 公開名の案 | 元ファイル名 | 用途 |
+| --- | --- | --- |
+| `triangle` | `triangle.svg` | 三角形の枠 |
+| `triangle-bell` | `triangle-bell.svg` | 三角枠：通知・リマインダー |
+| `triangle-bookmark` | `triangle-bookmark.svg` | 三角枠：ブックマーク・あとで見る |
+| `triangle-check` | `triangle-check.svg` | 三角枠：選択済み・完了 |
+| `triangle-chevron-bottom` | `triangle-chevron-bottom.svg` | 三角枠：下方向への移動・展開 |
+| `triangle-chevron-left` | `triangle-chevron-left.svg` | 三角枠：前の項目・期間への移動 |
+| `triangle-chevron-right` | `triangle-chevron-right.svg` | 三角枠：次の項目・期間への移動 |
+| `triangle-chevron-top` | `triangle-chevron-top.svg` | 三角枠：上方向への移動・折りたたみ |
+| `triangle-clock` | `triangle-clock.svg` | 三角枠：時刻・所要時間 |
+| `triangle-close` | `triangle-close.svg` | 三角枠：表示を閉じる・操作をキャンセルする |
+| `triangle-code` | `triangle-code.svg` | 三角枠：コード・埋め込み情報 |
+| `triangle-copy` | `triangle-copy.svg` | 三角枠：内容を複製する |
+| `triangle-cut` | `triangle-cut.svg` | 三角枠：内容を切り取る |
+| `triangle-delete` | `triangle-delete.svg` | 三角枠：対象を削除する |
+| `triangle-download` | `triangle-download.svg` | 三角枠：ファイル・データを書き出す |
+| `triangle-edit` | `triangle-edit.svg` | 三角枠：対象を編集する |
+| `triangle-filter` | `triangle-filter.svg` | 三角枠：条件で絞り込む |
+| `triangle-help` | `triangle-help.svg` | 三角枠：ヘルプ・使い方の案内 |
+| `triangle-history` | `triangle-history.svg` | 三角枠：操作履歴・過去の状態 |
+| `triangle-image` | `triangle-image.svg` | 三角枠：画像・画像の挿入 |
+| `triangle-information` | `triangle-infomation.svg` | 三角枠：補足情報・注意の案内（感嘆符の図柄） |
+| `triangle-like` | `triangle-like.svg` | 三角枠：いいね・お気に入り |
+| `triangle-link` | `triangle-link.svg` | 三角枠：リンク・関連付け |
+| `triangle-lock` | `triangle-lock.svg` | 三角枠：ロック・アクセス制限 |
+| `triangle-mail` | `triangle-mail.svg` | 三角枠：メール・メッセージ |
+| `triangle-minus` | `triangle-minus.svg` | 三角枠：項目の除外・数量を減らす |
+| `triangle-off` | `triangle-off.svg` | 無効・停止状態：三角形の枠 |
+| `triangle-paperclip` | `triangle-paperclip.svg` | 三角枠：ファイルを添付する |
+| `triangle-pin` | `triangle-pin.svg` | 三角枠：対象を固定する |
+| `triangle-plus` | `triangle-plus.svg` | 三角枠：項目の追加・数量を増やす |
+| `triangle-recurring` | `triangle-recurring.svg` | 三角枠：周期的な繰り返し・定期実行（循環する二本の矢印） |
+| `triangle-redo` | `triangle-redo.svg` | 三角枠：取り消した操作をやり直す |
+| `triangle-repeat` | `triangle-repeat.svg` | 三角枠：再実行・再読み込み（円弧状の一本の矢印） |
+| `triangle-save` | `triangle-save.svg` | 三角枠：変更を保存する |
+| `triangle-search` | `triangle-search.svg` | 三角枠：検索する |
+| `triangle-setting` | `triangle-settig.svg` | 三角枠：設定を開く |
+| `triangle-share` | `triangle-sync.svg` | 三角枠：対象を共有する（三つの点を結ぶ図柄） |
+| `triangle-tool` | `triangle-tool.svg` | 三角枠：ツール・管理操作 |
+| `triangle-undo` | `triangle-undo.svg` | 三角枠：直前の操作を取り消す |
+| `triangle-upload` | `triangle-upload.svg` | 三角枠：ファイル・データを読み込む |
+
+</div>
+
+## 既存フロントエンドの参照 ID との対応
+
+以下は 2026-09-27 の調査で確認した **54 種類の参照 ID** と直書き SVG の記録を引き継いだ移行案です。`tokiwa-calendar-frontend` の実装は変更していません。「未収録」は今回の提供 SVG に専用の図柄がない用途で、制作済み329個には含めません。
+
+`panel-left` は左側パネル表示の候補です。`circle-mail` はメール一般の図柄なので、送信完了の意味は文言で補います。`loading` は専用のアニメーション表現が必要であり、`repeat` の再読み込み操作とは分けて扱います。
+
 
 ### 移動・開閉
 
-| 公開名 | 用途 | 現在の参照 ID |
+<div className="tkw-icon-table" role="region" aria-label="移動・開閉の表" tabIndex={0}>
+
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
 | --- | --- | --- |
 | `chevron-left` | 前の期間・前のページへ進む | `ic:baseline-arrow-back-ios-new` |
 | `chevron-right` | 次の期間・次のページへ進む | `ic:baseline-arrow-forward-ios` |
-| `chevron-up` | 展開中を示す・時刻を増やす | `ic:baseline-expand-less`, `ic:baseline-keyboard-arrow-up` |
-| `chevron-down` | 折りたたみ中を示す・時刻を減らす | `ic:baseline-expand-more`, `ic:baseline-keyboard-arrow-down` |
+| `chevron-top` | 展開中を示す・時刻を増やす | `ic:baseline-expand-less`, `ic:baseline-keyboard-arrow-up` |
+| `chevron-bottom` | 折りたたみ中を示す・時刻を減らす | `ic:baseline-expand-more`, `ic:baseline-keyboard-arrow-down` |
 | `menu` | 主メニューを開く | `ic:sharp-density-medium`、`NavigationSection.vue` の直書き SVG |
-| `panel-open` | 時間設定のサイドパネルを開く | `material-symbols:side-navigation` |
+| `panel-left` | 時間設定のサイドパネルを開く | `material-symbols:side-navigation` |
 | `close` | モーダル・フォーム・パネル・メニューを閉じる | `ic:baseline-close`, `ic:sharp-close`, `ic:sharp-clear`、`PopupImg.vue` と `NavigationSection.vue` の直書き SVG |
+
+</div>
 
 ### カレンダー・タスク・コピー
 
-| 公開名 | 用途 | 現在の参照 ID |
+<div className="tkw-icon-table" role="region" aria-label="カレンダー・タスク・コピーの表" tabIndex={0}>
+
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
 | --- | --- | --- |
 | `calendar` | カレンダー画面・日付を表す | `ic:baseline-calendar-month` |
 | `calendar-edit` | 予定を入力・編集する案内 | `ic:baseline-edit-calendar` |
 | `calendar-copy` | 予定を別の日付へ複製する | `mdi:calendar-blank-multiple` |
 | `task` | タスク画面を表す | `ic:baseline-task-alt` |
 | `copy` | データや内容を複製する | `ic:baseline-content-copy` |
-| `clipboard-copy` | クリップボードへコピーする | `mdi:clipboard-multiple-outline` |
+| `clipboard-copy`（未収録） | クリップボードへコピーする | `mdi:clipboard-multiple-outline` |
 
-`calendar-copy` と `clipboard-copy` は、`Display.vue` で別々の操作として並ぶため分ける。
+</div>
+
+`calendar-copy` と `clipboard-copy` は、`Display.vue` で別々の操作として並ぶため用途を分ける。今回の `task-paperclip` は添付の図柄であり、クリップボードへのコピーには割り当てない。
 
 ### 操作・アカウント
 
-| 公開名 | 用途 | 現在の参照 ID |
+<div className="tkw-icon-table" role="region" aria-label="操作・アカウントの表" tabIndex={0}>
+
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
 | --- | --- | --- |
 | `edit` | 対象を編集する | `ic:baseline-edit`, `ic:sharp-edit` |
 | `delete` | 対象を削除する | `ic:baseline-delete`, `ic:sharp-delete` |
 | `upload` | ファイル・データの読み込み画面を開く | `ic:baseline-file-upload` |
 | `share` | カレンダーなどを共有する | `ic:baseline-share` |
 | `link` | アカウントなどを連携する | `material-symbols:link` |
-| `settings` | 設定を開く | `ic:baseline-settings` |
-| `user-add` | ユーザーを追加する | `ic:sharp-person-add` |
-| `sign-in` | ログインする | `ic:baseline-login` |
-| `sign-out` | ログアウトする | `ic:baseline-logout` |
+| `setting` | 設定を開く | `ic:baseline-settings` |
+| `user-add`（未収録） | ユーザーを追加する | `ic:sharp-person-add` |
+| `login` | ログインする | `ic:baseline-login` |
+| `logout` | ログアウトする | `ic:baseline-logout` |
 | `visibility-on` | パスワードを表示する | `heroicons:eye` |
 | `visibility-off` | パスワードを隠す | `heroicons:eye-slash` |
 | `lock` | 認証・権限の問題を示す | `ic:baseline-lock` |
 
+</div>
+
 ### 状態・案内
 
-| 公開名 | 用途 | 現在の参照 ID |
-| --- | --- | --- |
-| `success` | 処理や認証の成功を示す | `ic:sharp-check-circle`, `i-heroicons-check-circle`, `material-symbols:check-circle-outline` |
-| `warning` | 続行可能な注意を示す | `ic:sharp-warning` |
-| `error` | 入力・通信・認証などの失敗を示す | `ic:sharp-error`, `ic:baseline-error`, `material-symbols:error-outline`, `i-heroicons-x-circle` |
-| `info` | 中立的な説明を示す | `ic:sharp-info` |
-| `help` | 使い方の案内を開く | `ic:baseline-help` |
-| `unavailable` | 現在利用できない機能を示す | `material-symbols:sad-tab-outline` |
-| `loading` | 処理中を示す | `line-md:loading-loop`, `svg-spinners:ring-resize`, `i-heroicons-arrow-path` |
-| `offline` | 通信できないことを示す | `ic:baseline-wifi-off` |
-| `timer` | 待機・時間制限を示す | `ic:baseline-timer` |
-| `mail-sent` | 認証メールの送信完了を示す | `pepicons-pop:letter-circle-filled` |
-| `getting-started` | 導入・初期ガイドを表す | `ic:baseline-rocket-launch` |
+<div className="tkw-icon-table" role="region" aria-label="状態・案内の表" tabIndex={0}>
 
-`offline`・`timer`・`lock`・`error` は `getErrorIcon` のエラー種別から選ばれる。`loading` のうち回転矢印は `verify-email.vue` で `animate-spin` とともに使用されている。
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| `circle-check` | 処理や認証の成功を示す | `ic:sharp-check-circle`, `i-heroicons-check-circle`, `material-symbols:check-circle-outline` |
+| `triangle-information` | 続行可能な注意を示す | `ic:sharp-warning` |
+| `circle-close` | 入力・通信・認証などの失敗を示す | `ic:sharp-error`, `ic:baseline-error`, `material-symbols:error-outline`, `i-heroicons-x-circle` |
+| `circle-information` | 中立的な説明を示す | `ic:sharp-info` |
+| `help` | 使い方の案内を開く | `ic:baseline-help` |
+| `unavailable`（未収録） | 現在利用できない機能を示す | `material-symbols:sad-tab-outline` |
+| `loading`（未収録） | 処理中を示す | `line-md:loading-loop`, `svg-spinners:ring-resize`, `i-heroicons-arrow-path` |
+| `offline`（未収録） | 通信できないことを示す | `ic:baseline-wifi-off` |
+| `timer`（未収録） | 待機・時間制限を示す | `ic:baseline-timer` |
+| `circle-mail` | 認証メールの送信完了を示す | `pepicons-pop:letter-circle-filled` |
+| `getting-started`（未収録） | 導入・初期ガイドを表す | `ic:baseline-rocket-launch` |
+
+</div>
+
+`offline`・`timer`・`lock`・`circle-close` は `getErrorIcon` のエラー種別から選ばれる。`loading` のうち回転矢印は `verify-email.vue` で `animate-spin` とともに使用されている。
 
 ### ブランドロゴ
 
-| 公開名 | 現在の参照 ID |
+<div className="tkw-icon-table" role="region" aria-label="ブランドロゴの表" tabIndex={0}>
+
+| 対応する公開名の案 | 現在の参照 ID |
 | --- | --- |
-| `brand-google` | `logos:google-icon` |
-| `brand-discord` | `logos:discord-icon` |
-| `brand-facebook` | `logos:facebook` |
-| `brand-x` | `logos:x` |
-| `brand-github` | `logos:github-icon` |
+| `brand-google`（未収録） | `logos:google-icon` |
+| `brand-discord`（未収録） | `logos:discord-icon` |
+| `brand-facebook`（未収録） | `logos:facebook` |
+| `brand-x`（未収録） | `logos:x` |
+| `brand-github`（未収録） | `logos:github-icon` |
 
-## 現在は未使用だが、ライブラリの基本操作に必要な名前
+</div>
 
-以下は現行フロントエンドの参照 ID にはない。コンポーネントを作る際の用途として追加する。
+## 今回の SVG に含まれない追加候補
 
-| 用途 | 公開名 |
-| --- | --- |
-| 追加・数量の増減 | `plus`, `minus` |
-| 単純な選択済み・完了印 | `check` |
-| 検索と絞り込み | `search`, `filter` |
-| その他の操作 | `more-horizontal`, `more-vertical` |
-| 今日へ移動・時刻・繰り返し | `calendar-today`, `clock`, `repeat` |
-| 通知の有効・無効 | `bell`, `bell-off` |
-| 並べ替え・ドラッグ | `sort-ascending`, `sort-descending`, `drag-handle` |
-| 保存・書き出し | `save`, `download` |
-| 取り消し・やり直し・再読み込み | `undo`, `redo`, `refresh` |
-| 外部リンク・画面の起点 | `external-link`, `home` |
-| 個人・複数人・メール | `user`, `users`, `mail` |
+旧案のうち `calendar-today`・`external-link`・`home`・`user`・`users` は未収録です。`more-horizontal` / `more-vertical` は `ellipsis` / `ellipsis-vertical`、`drag-handle` は `grip-horizontal` / `grip-vertical`、`refresh` は `repeat` の用途として整理しました。旧 `sort-ascending` / `sort-descending` は対象に応じて文字・数値の並べ替え系列から選びます。
 
 ## 対象外
 
