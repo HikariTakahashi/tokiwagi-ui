@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/addon-docs/blocks';
 
-<Meta title="アイコン/命名と用途の案" />
+<Meta title="アイコン/アイコン名および用途" />
 
 <style>{`
   .tkw-icon-table { max-width: 100%; overflow-x: auto; margin: 16px 0; }
@@ -10,31 +10,15 @@ import { Meta } from '@storybook/addon-docs/blocks';
 `}</style>
 
 
-# アイコンの用途一覧
+# アイコン名および用途
 
 **状態：SVG 制作済み・公開名と用途は案（ライブラリへの組み込み前）**
 
-`icons` フォルダの **329 個の SVG** について、`tokiwagi-ui` の命名基準と用途を整理しています。下表に公開名の案、ファイル名、用途を示します。ライブラリへの組み込みと既存アプリへの適用は未実施です。
+`icons` フォルダの **329 個の SVG** について、公開名の案、ファイル名、用途を示します。ライブラリへの組み込みと既存アプリへの適用は未実施です。
 
-## 命名基準
+ファイル名は `icons` フォルダ内の名前です。公開名は「命名基準」を適用した案で、ライブラリの実装済み API を意味しません。用途は UI で選ぶ際の目安です。カレンダー・タスク系列はその対象の操作、枠付き系列は同じ操作・状態の表示に使います。三角枠であることだけで警告を意味するわけではありません。
 
-- 公開名は小文字のケバブケースとし、既存のアイコンセット名や `baseline`・`sharp`・`outline` などの識別子を含めない。
-- 名前の順序は「対象または枠 → 操作・記号 → 方向 → 状態」を基本とする。例：`calendar-plus`、`circle-chevron-left`、`search-check-off`。パネルを閉じる名前は `panel-close-left`・`panel-close-right` とする。
-- `calendar-` は予定、`task-` はタスクを操作する図柄。`circle-`・`square-`・`triangle-` は枠の形を表す。同じ記号でも、対象や枠が異なる図形は別名で管理する。
-- 方向は制作済み系列に合わせる。山形の記号は `chevron-top`・`chevron-bottom`・`chevron-left`・`chevron-right`、並べ替えの矢印は `up`・`down`、点やドラッグハンドルの向きは `horizontal`・`vertical` とする。横三点は現行名の `ellipsis` を使う。
-- 斜線付きの図柄には `-off` を付け、通常の図柄は状態接尾辞を省く。表示・非表示の対は `visibility-on`・`visibility-off` を使う。`-off` は状態を示す名前であり、ボタンの disabled 属性や操作可否を自動的に決めるものではない。
-- 操作名は `setting`・`tool`・`login`・`logout` などに統一する。綴りは `information` とする。
-- `close` は閉じる・キャンセル、`delete` は削除、`minus` は除外・減少、`copy` は複製、`paperclip` は添付とする。図形が似ていても操作を混同しない。
-- `recurring` は循環する二本の矢印による定期的な繰り返し、`repeat` は円弧状の一本の矢印による再実行・再読み込みとする。三点を線で結ぶ図柄の公開名は `share` とし、同期とは区別する。
-- `success`・`warning`・`error`・`info` は表示文脈とセマンティックカラーの役割として扱う。公開名は `circle-check`・`triangle-information`・`circle-close`・`circle-information` などの図柄に対応させる。単純な選択・完了の印は `check`。`information` 系の実際の図柄は「!」なので、意味はラベルや説明文でも伝える。
-- ファイル名と公開名に書き出し時の連番 `-1`・`-2` は使わず、図柄から対象・操作・状態を判別する。表にない組み合わせを制作済みとは扱わない。
-- ブランドロゴは操作用アイコンと分け、`brand-` を付ける。今回の提供 SVG にはブランドロゴは含まれていない。
-
-## アイコン名および用途
-
-ファイル名は `icons` フォルダ内の名前です。公開名は上記基準を適用した案で、ライブラリの実装済み API を意味しません。用途は UI で選ぶ際の目安です。カレンダー・タスク系列はその対象の操作、枠付き系列は同じ操作・状態の表示に使います。三角枠であることだけで警告を意味するわけではありません。
-
-### 基本アイコン（132 個）
+## 基本アイコン（132 個）
 
 <div className="tkw-icon-table" role="region" aria-label="基本アイコン（132 個）の表" tabIndex={0}>
 
@@ -175,7 +159,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 </div>
 
-### カレンダー（40 個）
+## カレンダー（40 個）
 
 <div className="tkw-icon-table" role="region" aria-label="カレンダー（40 個）の表" tabIndex={0}>
 
@@ -224,7 +208,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 </div>
 
-### タスク（40 個）
+## タスク（40 個）
 
 <div className="tkw-icon-table" role="region" aria-label="タスク（40 個）の表" tabIndex={0}>
 
@@ -273,7 +257,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 </div>
 
-### 円枠（38 個）
+## 円枠（38 個）
 
 <div className="tkw-icon-table" role="region" aria-label="円枠（38 個）の表" tabIndex={0}>
 
@@ -320,7 +304,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 </div>
 
-### 四角枠（39 個）
+## 四角枠（39 個）
 
 <div className="tkw-icon-table" role="region" aria-label="四角枠（39 個）の表" tabIndex={0}>
 
@@ -368,7 +352,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 </div>
 
-### 三角枠（40 個）
+## 三角枠（40 個）
 
 <div className="tkw-icon-table" role="region" aria-label="三角枠（40 個）の表" tabIndex={0}>
 

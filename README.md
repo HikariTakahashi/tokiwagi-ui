@@ -35,7 +35,7 @@ bun run storybook  # Storybook: http://localhost:6006
 
 - カラー値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` の全93トークンが定義元です。Storybook の見本・HEX・コントラスト表示はこれらを読み込みます。
 - カラーの使用ルールと操作例は Storybook の「カラー」にあります。CSS を編集して保存すると開発中の表示に反映されます。
-- アイコンの公開名、用途、既存アプリの参照 ID は Storybook の「アイコン/命名と用途の案」で管理します。図形は未制作です。
+- アイコンの公開名、用途、既存アプリの参照 ID は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」で管理します。SVG 図形は制作済みで、ライブラリへの組み込み前です。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
 
 ## 検証と静的ビルド

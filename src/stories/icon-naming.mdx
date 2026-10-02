@@ -1,0 +1,21 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="アイコン/命名基準" />
+
+**状態：公開名と用途は案（ライブラリへの組み込み前）**
+
+`icons` フォルダの329個のSVGに適用する命名基準です。
+
+# 命名基準
+
+- 公開名は小文字のケバブケースとし、既存のアイコンセット名や `baseline`・`sharp`・`outline` などの識別子を含めない。
+- 名前の順序は「対象または枠 → 操作・記号 → 方向 → 状態」を基本とする。例：`calendar-plus`、`circle-chevron-left`、`search-check-off`。パネルを閉じる名前は `panel-close-left`・`panel-close-right` とする。
+- `calendar-` は予定、`task-` はタスクを操作する図柄。`circle-`・`square-`・`triangle-` は枠の形を表す。同じ記号でも、対象や枠が異なる図形は別名で管理する。
+- 方向は制作済み系列に合わせる。山形の記号は `chevron-top`・`chevron-bottom`・`chevron-left`・`chevron-right`、並べ替えの矢印は `up`・`down`、点やドラッグハンドルの向きは `horizontal`・`vertical` とする。横三点は現行名の `ellipsis` を使う。
+- 斜線付きの図柄には `-off` を付け、通常の図柄は状態接尾辞を省く。表示・非表示の対は `visibility-on`・`visibility-off` を使う。`-off` は状態を示す名前であり、ボタンの disabled 属性や操作可否を自動的に決めるものではない。
+- 操作名は `setting`・`tool`・`login`・`logout` などに統一する。綴りは `information` とする。
+- `close` は閉じる・キャンセル、`delete` は削除、`minus` は除外・減少、`copy` は複製、`paperclip` は添付とする。図形が似ていても操作を混同しない。
+- `recurring` は循環する二本の矢印による定期的な繰り返し、`repeat` は円弧状の一本の矢印による再実行・再読み込みとする。三点を線で結ぶ図柄の公開名は `share` とし、同期とは区別する。
+- `success`・`warning`・`error`・`info` は表示文脈とセマンティックカラーの役割として扱う。公開名は `circle-check`・`triangle-information`・`circle-close`・`circle-information` などの図柄に対応させる。単純な選択・完了の印は `check`。`information` 系の実際の図柄は「!」なので、意味はラベルや説明文でも伝える。
+- ファイル名と公開名に書き出し時の連番 `-1`・`-2` は使わず、図柄から対象・操作・状態を判別する。表にない組み合わせを制作済みとは扱わない。
+- ブランドロゴは操作用アイコンと分け、`brand-` を付ける。今回の提供 SVG にはブランドロゴは含まれていない。
