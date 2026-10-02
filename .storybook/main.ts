@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 
 const config: StorybookConfig = {
   framework: '@storybook/html-vite',
+  staticDirs: [{ from: '../icons', to: '/icons' }],
   stories: ['../src/stories/**/*.mdx', '../src/stories/**/*.stories.ts'],
   addons: [{
     name: '@storybook/addon-docs',

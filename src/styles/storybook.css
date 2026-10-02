@@ -80,3 +80,42 @@
 .tkw-icon-doc .tkw-icon-table { max-width: 100%; overflow-x: auto; margin: 16px 0; }
 .tkw-icon-doc .tkw-icon-table:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .tkw-icon-doc .tkw-icon-table table { min-width: 720px; margin: 0; }
+
+/* SVGカタログと個別見本。色値は既存のトークンを参照する。 */
+.tkw-icon-browser, .tkw-icon-preview { color: var(--tkw-color-neutral-900); margin: 24px 0; }
+.tkw-icon-browser *, .tkw-icon-preview * { box-sizing: border-box; }
+.tkw-icon-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.tkw-icon-controls label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 600; max-width: 100%; }
+.tkw-icon-search { flex: 1 1 220px; }
+.tkw-icon-controls input, .tkw-icon-controls select { font: inherit; font-size: 14px; min-height: 40px; min-width: 0; max-width: 100%; padding: 8px 10px; border: 1px solid var(--tkw-color-neutral-600); border-radius: 6px; color: var(--tkw-color-neutral-900); background: var(--tkw-color-neutral-0); }
+.tkw-icon-result-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+.tkw-icon-browser button, .tkw-icon-actions button, .tkw-icon-actions a { font: inherit; font-size: 13px; padding: 10px 14px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 6px; background: var(--tkw-color-neutral-0); color: var(--tkw-color-neutral-900); cursor: pointer; text-decoration: none; }
+.tkw-icon-browser button:hover, .tkw-icon-actions button:hover, .tkw-icon-actions a:hover { background: var(--tkw-color-neutral-50); border-color: var(--tkw-color-neutral-600); }
+.tkw-icon-browser button:active, .tkw-icon-actions button:active, .tkw-icon-actions a:active { background: var(--tkw-color-neutral-100); }
+.tkw-icon-browser :is(input, select, button, a):focus-visible, .tkw-icon-preview :is(select, button, a):focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 3px; }
+.tkw-icon-doc .tkw-icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); list-style: none; padding: 0; gap: 12px; margin: 20px 0; }
+.tkw-icon-doc .tkw-icon-grid > li { padding: 0; margin: 0; min-width: 0; }
+.tkw-icon-doc .tkw-icon-card { display: flex; flex-direction: column; height: 100%; gap: 10px; padding: 10px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 10px; color: var(--tkw-color-neutral-900); background: var(--tkw-color-neutral-0); text-decoration: none; }
+.tkw-icon-card:hover { border-color: var(--tkw-color-neutral-600); box-shadow: 0 2px 8px var(--tkw-color-neutral-100); }
+.tkw-icon-card:active { background: var(--tkw-color-neutral-50); }
+.tkw-icon-doc .tkw-icon-card code { white-space: normal; overflow-wrap: anywhere; min-width: 0; border: 0; padding: 0; background: transparent; font-size: 12px; line-height: 1.5; text-align: center; }
+.tkw-icon-swatch { display: flex; align-items: center; justify-content: center; min-height: 76px; border-radius: 6px; }
+.tkw-icon-image { display: inline-flex; flex-shrink: 0; line-height: 0; }
+.tkw-icon-image svg { display: block; flex-shrink: 0; }
+.tkw-icon-doc .tkw-icon-token-note, .tkw-icon-doc .tkw-icon-size-note { font-size: 12px; line-height: 1.8; color: var(--tkw-color-neutral-600); }
+.tkw-icon-doc .tkw-icon-token-note code { white-space: normal; overflow-wrap: anywhere; font-size: 11px; }
+.tkw-icon-empty { padding: 28px 16px; background: var(--tkw-color-neutral-50); border-radius: 8px; }
+.tkw-icon-preview { padding: 20px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 12px; background: var(--tkw-color-neutral-0); }
+.tkw-icon-sizes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+.tkw-icon-sizes figure { margin: 0; min-width: 0; }
+.tkw-icon-sizes .tkw-icon-swatch { min-height: 96px; border: 1px solid var(--tkw-color-neutral-200); }
+.tkw-icon-sizes figcaption { margin-top: 8px; text-align: center; font-size: 12px; }
+.tkw-icon-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.tkw-icon-doc .tkw-icon-feedback { min-height: 1.5em; margin: 10px 0; font-size: 12px; }
+@media (max-width: 560px) {
+  .tkw-icon-controls > label { flex: 1 1 130px; }
+  .tkw-icon-controls > .tkw-icon-search { flex-basis: 100%; }
+  .tkw-icon-doc .tkw-icon-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tkw-icon-preview { padding: 14px; }
+  .tkw-icon-sizes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

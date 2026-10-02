@@ -1,0 +1,49 @@
+/** 図形は icons/ の原本から読み込む。表示用変換で座標や線幅を編集しない。 */
+export const iconCategories = [
+  ['basic', '基本アイコン'], ['calendar', 'カレンダー'], ['task', 'タスク'],
+  ['circle', '円枠'], ['square', '四角枠'], ['triangle', '三角枠'],
+] as const;
+export type IconCategory = typeof iconCategories[number][0];
+export type IconAsset = { name: string; category: IconCategory; svg: string; href: string };
+export const iconSizes = [16, 20, 24, 32] as const;
+
+export function createIconCatalog(sources: Record<string, string>): IconAsset[] {
+  const names = new Set<string>();
+  return Object.entries(sources).map(([path, svg]) => {
+    const name = path.split('/').pop()!.replace(/\.svg$/, '');
+    if (!/^[a-z]+(?:-[a-z]+)*$/.test(name) || names.has(name)) {
+      throw new Error(`不正または重複したアイコン名: ${name}`);
+    }
+    names.add(name);
+    if (!svg.includes('viewBox="0 0 32 32"')) throw new Error(`不正なviewBox: ${name}`);
+    const category = iconCategories.find(([key]) => key !== 'basic' && (name === key || name.startsWith(`${key}-`)))?.[0] ?? 'basic';
+    return { name, category, svg, href: `?path=/docs/icons-${name}--docs` };
+  }).sort((a, b) => a.name.localeCompare(b.name, 'en'));
+}
+
+export function filterIcons(icons: IconAsset[], query: string, category: IconCategory | 'all') {
+  const search = query.trim().toLowerCase();
+  return icons.filter(icon => (category === 'all' || icon.category === category) && icon.name.includes(search));
+}
+
+/** 呼び出し側がインスタンスごとに異なるprefixを渡す。入力は収録済み原本のみ。 */
+export function renderIconSvg(svg: string, prefix: string, size: number = 32): string {
+  if (!/^[a-zA-Z][\w-]*$/.test(prefix)) throw new Error('SVGのID接頭辞が不正です');
+  if (!Number.isFinite(size) || size <= 0) throw new Error('SVGのサイズが不正です');
+  const ids = new Map([...svg.matchAll(/\bid="([^"]+)"/g)].map((match, index) => [match[1]!, `${prefix}-${index}`]));
+  return svg
+    .replace(/\b(fill|stroke)="black"/g, '$1="currentColor"')
+    .replace(/\bid="([^"]+)"/g, (_, id: string) => `id="${ids.get(id)}"`)
+    .replace(/url\(#([^)]+)\)/g, (_, id: string) => {
+      const target = ids.get(id);
+      if (!target) throw new Error(`SVG内の参照先がありません: ${id}`);
+      return `url(#${target})`;
+    })
+    .replace(/<svg\b[^>]*>/, root => root
+      .replace(/\b(width|height)="[^"]*"/g, `$1="${size}"`)
+      .replace('<svg', '<svg aria-hidden="true" focusable="false"'));
+}
+
+export function originalIconUrl(icon: IconAsset): string {
+  return `./icons/${icon.name}.svg`;
+}
