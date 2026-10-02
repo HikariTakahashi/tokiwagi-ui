@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { readFileSync, readdirSync } from 'node:fs';
 
 const stories = new URL('../stories/', import.meta.url);
-const detailDirectory = new URL('icons/', stories);
+const detailDirectory = new URL('../icons/', stories);
 const files = readdirSync(detailDirectory).filter(name => name.endsWith('.mdx')).sort();
 const details = files.map(file => ({
   name: file.slice(0, -4),
@@ -10,7 +10,8 @@ const details = files.map(file => ({
 }));
 const catalog = readFileSync(new URL('icons.mdx', stories), 'utf8');
 const assets = new URL('../../icons/', import.meta.url);
-const names = readdirSync(assets).filter(name => name.endsWith('.svg')).map(name => name.slice(0, -4)).sort();
+const names = readdirSync(assets, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
+const readmes = new Map(names.map(name => [name, readFileSync(new URL(`${name}/README.md`, assets), 'utf8')]));
 
 // 制作済み329図柄の原本と個別ページを突き合わせ、欠落・重複・孤立ページを検出する。
 test('全329アイコンの原本と個別ページが一対一に対応する', () => {
@@ -20,6 +21,9 @@ test('全329アイコンの原本と個別ページが一対一に対応する',
   expect(catalog).toContain('<IconBrowser />');
   for (const { name, source } of details) {
     expect(source).toContain(`<IconPreview name="${name}" />`);
+    expect(source).toContain(`import readme from '../../icons/${name}/README.md?raw';`);
+    expect(source).toContain('<Markdown>{readme}</Markdown>');
+    expect(readFileSync(new URL(`${name}/${name}.svg`, assets), 'utf8')).toContain('viewBox="0 0 32 32"');
   }
 });
 
@@ -27,13 +31,14 @@ test('全329アイコンの原本と個別ページが一対一に対応する',
 test('各アイコンに指定された6セクションと識別情報がある', () => {
   const sections = ['概要', '使用場面', '状態の表し方', '使用しない場面', '表示とアクセシビリティ', '関連アイコンと使い分け'];
   for (const { name, source } of details) {
+    const readme = readmes.get(name)!;
     expect(source).toContain(`id="icons-${name}"`);
-    expect(source).toContain(`ファイル：\`${name}.svg\``);
+    expect(readme).toContain(`ファイル：\`${name}.svg\``);
     expect(source).toContain('[アイコン一覧へ戻る](?path=/docs/アイコン-アイコン名および用途--docs)');
-    const headings = [...source.matchAll(/^## (.+)$/gm)].map(match => match[1]);
+    const headings = [...readme.matchAll(/^## (.+)$/gm)].map(match => match[1]);
     expect(headings).toEqual(sections);
-    for (const body of source.split(/^## .+$/m).slice(1)) {
-      expect(body.replace('</div>', '').trim().length).toBeGreaterThan(0);
+    for (const body of readme.split(/^## .+$/m).slice(1)) {
+      expect(body.trim().length).toBeGreaterThan(0);
     }
   }
 });
@@ -47,7 +52,7 @@ test('アイコン資料の内部リンクに存在しないページがない',
     'icons-display--docs',
     ...details.map(detail => `icons-${detail.name}--docs`),
   ]);
-  const sources = [catalog, ...details.map(detail => detail.source),
+  const sources = [catalog, ...details.map(detail => detail.source), ...readmes.values(),
     readFileSync(new URL('icon-naming.mdx', stories), 'utf8'),
     readFileSync(new URL('icon-migration.mdx', stories), 'utf8'),
     readFileSync(new URL('icon-display.mdx', stories), 'utf8')];

@@ -1,4 +1,4 @@
-/** 個別MDXの「概要」にある別名行を読む。MDXやJavaScriptは実行しない。 */
+/** 個別READMEの「概要」にある別名行を読む。MarkdownやJavaScriptは実行しない。 */
 export function parseIconSearchLabels(source: string, name: string): readonly string[] {
   const overview = source.split(/^## 概要[ \t]*\r?$/m)[1]?.split(/^## /m)[0] ?? '';
   const lines = overview.split(/\r?\n/).filter(line => /^別名/.test(line));

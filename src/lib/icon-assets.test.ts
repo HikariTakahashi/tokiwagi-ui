@@ -3,9 +3,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { createIconCatalog, filterIcons, iconCategories, iconSizes, originalIconUrl, renderIconSvg } from './icon-assets';
 
 const directory = new URL('../../icons/', import.meta.url);
-const sources = Object.fromEntries(readdirSync(directory).filter(file => file.endsWith('.svg')).map(file => [file, readFileSync(new URL(file, directory), 'utf8')]));
-const detailDirectory = new URL('../stories/icons/', import.meta.url);
-const documents = Object.fromEntries(readdirSync(detailDirectory).filter(file => file.endsWith('.mdx')).map(file => [file, readFileSync(new URL(file, detailDirectory), 'utf8')]));
+const names = readdirSync(directory).filter(name => readdirSync(new URL(`${name}/`, directory)).includes(`${name}.svg`));
+const sources = Object.fromEntries(names.map(name => [`${name}/${name}.svg`, readFileSync(new URL(`${name}/${name}.svg`, directory), 'utf8')]));
+const documents = Object.fromEntries(names.map(name => [`${name}/README.md`, readFileSync(new URL(`${name}/README.md`, directory), 'utf8')]));
 const catalog = createIconCatalog(sources, documents);
 
 // 既存6分類と全個別ページの分類を照合し、図柄の移動・欠落とリンクの不整合を検出する。
@@ -13,7 +13,7 @@ test('原本329個が既存の分類と個別ページに対応する', () => {
   expect(catalog).toHaveLength(329);
   expect(iconCategories.map(([key]) => catalog.filter(icon => icon.category === key).length)).toEqual([132, 40, 40, 38, 39, 40]);
   for (const icon of catalog) {
-    const detail = readFileSync(new URL(`../stories/icons/${icon.name}.mdx`, import.meta.url), 'utf8');
+    const detail = readFileSync(new URL(`../icons/${icon.name}.mdx`, import.meta.url), 'utf8');
     const label = iconCategories.find(([key]) => key === icon.category)![1];
     expect(detail).toContain(`title="アイコン/個別ルール/${label}/${icon.name}"`);
     expect(icon.href).toBe(`?path=/docs/icons-${icon.name}--docs`);
@@ -41,10 +41,10 @@ test('公開名を知らなくても別名で基本形と派生形を検索で�
   expect(filterIcons(catalog, '', 'circle')).toEqual(catalog.filter(icon => icon.category === 'circle'));
 });
 
-// 全MDXの別名行と実際の検索対象を照合し、登録漏れや読み込み時の別名の脱落を防ぐ。
-test('全329件でMDXに記載した英語と日本語の別名が検索に使われる', () => {
+// 全READMEの別名行と実際の検索対象を照合し、登録漏れや読み込み時の別名の脱落を防ぐ。
+test('全329件でREADMEに記載した英語と日本語の別名が検索に使われる', () => {
   for (const icon of catalog) {
-    const line = documents[`${icon.name}.mdx`]!.split('\n').find(line => line.startsWith('別名：'))!;
+    const line = documents[`${icon.name}/README.md`]!.split('\n').find(line => line.startsWith('別名：'))!;
     const labels = [...line.matchAll(/`([^`]+)`/g)].map(match => match[1]);
     expect(icon.searchLabels).toEqual(labels);
     expect(icon.searchLabels.some(label => /[a-z]/i.test(label))).toBe(true);
@@ -53,22 +53,23 @@ test('全329件でMDXに記載した英語と日本語の別名が検索に使�
   }
 });
 
-// MDXの別名だけを変更した場合、別の辞書を修正せず新しい検索語がカタログへ反映される。
-test('別名の管理元は個別MDXだけである', () => {
-  const documents = { 'like.mdx': '## 概要\n\n別名：`CustomHeart`、`独自の別名`\n\n## 使用場面\n' };
-  const icons = createIconCatalog({ 'like.svg': sources['like.svg']! }, documents);
+// READMEの別名だけを変更した場合、別の辞書を修正せず新しい検索語がカタログへ反映される。
+test('別名の管理元は個別READMEだけである', () => {
+  const documents = { 'like/README.md': '## 概要\n\n別名：`CustomHeart`、`独自の別名`\n\n## 使用場面\n' };
+  const icons = createIconCatalog({ 'like/like.svg': sources['like/like.svg']! }, documents);
   expect(filterIcons(icons, 'customheart', 'all').map(icon => icon.name)).toEqual(['like']);
   expect(filterIcons(icons, '独自の別名', 'all').map(icon => icon.name)).toEqual(['like']);
   expect(filterIcons(icons, 'favorite', 'all')).toHaveLength(0);
 });
 
-// ファイル名でSVGとMDXを対応付け、欠落・孤立・重複をアイコン名付きで検出する。
-test('SVGとMDXの対応が不正なときは原因を特定できる', () => {
-  const source = { 'bell.svg': sources['bell.svg']! };
-  expect(() => createIconCatalog(source, {})).toThrow('個別MDXがありません: bell');
-  expect(() => createIconCatalog({}, { 'bell.mdx': documents['bell.mdx']! })).toThrow('原本SVGがありません: bell');
-  expect(() => createIconCatalog(source, { 'a/bell.mdx': '', 'b/bell.mdx': '' })).toThrow('重複しています: bell');
-  expect(() => createIconCatalog(source, { 'bell.mdx': '## 概要\n\n本文のみ' })).toThrow('別名行が欠落または不正です: bell');
+// ディレクトリ名でSVGとREADMEを対応付け、欠落・孤立・重複をアイコン名付きで検出する。
+test('SVGとREADMEの対応が不正なときは原因を特定できる', () => {
+  const source = { 'bell/bell.svg': sources['bell/bell.svg']! };
+  expect(() => createIconCatalog(source, {})).toThrow('個別READMEがありません: bell');
+  expect(() => createIconCatalog({}, { 'bell/README.md': documents['bell/README.md']! })).toThrow('原本SVGがありません: bell');
+  expect(() => createIconCatalog(source, { 'a/bell/README.md': '', 'b/bell/README.md': '' })).toThrow('重複しています: bell');
+  expect(() => createIconCatalog(source, { 'bell/README.md': '## 概要\n\n本文のみ' })).toThrow('別名行が欠落または不正です: bell');
+  expect(() => createIconCatalog({ 'other/bell.svg': sources['bell/bell.svg']! }, {})).toThrow('配置先');
 });
 
 // 全原本で変換前後の座標・線幅・角・viewBoxを照合し、色変更による変形やfill=noneの喪失を防ぐ。
@@ -90,7 +91,7 @@ describe('クリッピングと複数表示', () => {
   test('moonとtoolの参照は表示インスタンス間で衝突しない', () => {
     const allIds: string[] = [];
     for (const name of ['moon', 'tool']) for (const size of iconSizes) {
-      const rendered = renderIconSvg(sources[`${name}.svg`]!, `${name}-${size}`, size);
+      const rendered = renderIconSvg(sources[`${name}/${name}.svg`]!, `${name}-${size}`, size);
       const ids = [...rendered.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]!);
       allIds.push(...ids);
       expect(ids).toHaveLength(1);
@@ -106,8 +107,8 @@ describe('クリッピングと複数表示', () => {
 test('ダウンロードは全329個の原本SVGをそのまま返す', () => {
   for (const icon of catalog) {
     const url = originalIconUrl(icon);
-    expect(url).toBe(`./icons/${icon.name}.svg`);
-    expect(readFileSync(new URL(`../../${url}`, import.meta.url), 'utf8')).toBe(icon.svg);
+    expect(url).toBe(`./icon-assets/${icon.name}/${icon.name}.svg`);
+    expect(readFileSync(new URL(`../../icons/${icon.name}/${icon.name}.svg`, import.meta.url), 'utf8')).toBe(icon.svg);
   }
 });
 
@@ -124,7 +125,7 @@ test('収録SVGは図形とクリッピング要素のみを含む', () => {
 
 // 不正名・重複名・viewBox違いを黙って収録せず、原因を特定できるエラーにする。
 test('不正な原本を収録時に検出する', () => {
-  expect(() => createIconCatalog({ 'wrong_name.svg': sources['bell.svg']! }, documents)).toThrow('不正');
-  expect(() => createIconCatalog({ 'a/bell.svg': sources['bell.svg']!, 'b/bell.svg': sources['bell.svg']! }, documents)).toThrow('重複');
-  expect(() => createIconCatalog({ 'bell.svg': '<svg />' }, documents)).toThrow('viewBox');
+  expect(() => createIconCatalog({ 'wrong_name/wrong_name.svg': sources['bell/bell.svg']! }, documents)).toThrow('不正');
+  expect(() => createIconCatalog({ 'a/bell/bell.svg': sources['bell/bell.svg']!, 'b/bell/bell.svg': sources['bell/bell.svg']! }, documents)).toThrow('重複');
+  expect(() => createIconCatalog({ 'bell/bell.svg': '<svg />' }, documents)).toThrow('viewBox');
 });
