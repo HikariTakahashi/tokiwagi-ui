@@ -2,508 +2,373 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="アイコン/アイコン名および用途" />
 
-<style>{`
-  .tkw-icon-table { max-width: 100%; overflow-x: auto; margin: 16px 0; }
-  .tkw-icon-table:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
-  .tkw-icon-table table { width: 100%; min-width: 720px; margin: 0; }
-  .tkw-icon-table td { overflow-wrap: anywhere; }
-`}</style>
+<div className="tkw-icon-doc">
 
+# アイコン一覧
 
-# アイコン名および用途
+制作済み **329個**。名前から個別の使用ルールを開けます。
 
-**状態：SVG 制作済み・公開名と用途は案（ライブラリへの組み込み前）**
+`bell` のルールは確定済み、それ以外は詳細ルール案です。ライブラリへの組み込みと既存画面への適用は未実施です。
 
-`icons` フォルダの **329 個の SVG** について、公開名の案、ファイル名、用途を示します。ライブラリへの組み込みと既存アプリへの適用は未実施です。
+[命名基準](?path=/docs/アイコン-命名基準--docs) · [既存フロントエンドとの対応](?path=/docs/icons-migration--docs)
 
-ファイル名は `icons` フォルダ内の名前です。公開名は「命名基準」を適用した案で、ライブラリの実装済み API を意味しません。用途は UI で選ぶ際の目安です。カレンダー・タスク系列はその対象の操作、枠付き系列は同じ操作・状態の表示に使います。三角枠であることだけで警告を意味するわけではありません。
+## 基本アイコン（132個）
 
-## 基本アイコン（132 個）
-
-<div className="tkw-icon-table" role="region" aria-label="基本アイコン（132 個）の表" tabIndex={0}>
-
-| 公開名の案 | ファイル名 | 用途 |
-| --- | --- | --- |
-| `bell` | `bell.svg` | 通知・リマインダー |
-| `bell-off` | `bell-off.svg` | 無効・停止状態：通知・リマインダー |
-| `bookmark` | `bookmark.svg` | ブックマーク・あとで見る |
-| `bookmark-off` | `bookmark-off.svg` | 無効・停止状態：ブックマーク・あとで見る |
-| `check` | `check.svg` | 選択済み・完了 |
-| `chevron-bottom` | `chevron-bottom.svg` | 下方向への移動・展開 |
-| `chevron-bottom-off` | `chevron-bottom-off.svg` | 無効・停止状態：下方向への移動・展開 |
-| `chevron-left` | `chevron-left.svg` | 前の項目・期間への移動 |
-| `chevron-left-off` | `chevron-left-off.svg` | 無効・停止状態：前の項目・期間への移動 |
-| `chevron-right` | `chevron-right.svg` | 次の項目・期間への移動 |
-| `chevron-right-off` | `chevron-right-off.svg` | 無効・停止状態：次の項目・期間への移動 |
-| `chevron-top` | `chevron-top.svg` | 上方向への移動・折りたたみ |
-| `chevron-top-off` | `chevron-top-off.svg` | 無効・停止状態：上方向への移動・折りたたみ |
-| `clock` | `clock.svg` | 時刻・所要時間 |
-| `clock-off` | `clock-off.svg` | 無効・停止状態：時刻・所要時間 |
-| `close` | `close.svg` | 表示を閉じる・操作をキャンセルする |
-| `code` | `code.svg` | コード・埋め込み情報 |
-| `code-off` | `code-off.svg` | 無効・停止状態：コード・埋め込み情報 |
-| `copy` | `copy.svg` | 内容を複製する |
-| `copy-off` | `copy-off.svg` | 無効・停止状態：内容を複製する |
-| `cut` | `cut.svg` | 内容を切り取る |
-| `cut-off` | `cut-off.svg` | 無効・停止状態：内容を切り取る |
-| `dashboard` | `dashboard.svg` | ダッシュボード・概要 |
-| `dashboard-off` | `dashboard-off.svg` | 無効・停止状態：ダッシュボード・概要 |
-| `delete` | `delete.svg` | 対象を削除する |
-| `delete-off` | `delete-off.svg` | 無効・停止状態：対象を削除する |
-| `download` | `download.svg` | ファイル・データを書き出す |
-| `download-off` | `download-off.svg` | 無効・停止状態：ファイル・データを書き出す |
-| `edit` | `edit.svg` | 対象を編集する |
-| `edit-off` | `edit-off.svg` | 無効・停止状態：対象を編集する |
-| `ellipsis` | `ellipsis.svg` | その他の操作（横三点） |
-| `ellipsis-off` | `ellipsis-off.svg` | 無効・停止状態：その他の操作（横三点） |
-| `ellipsis-vertical` | `ellipsis-vertical.svg` | その他の操作（縦三点） |
-| `ellipsis-vertical-off` | `ellipsis-vertical-off.svg` | 無効・停止状態：その他の操作（縦三点） |
-| `filter` | `filter.svg` | 条件で絞り込む |
-| `filter-off` | `filter-off.svg` | 無効・停止状態：条件で絞り込む |
-| `grip-horizontal` | `grip-horizontal.svg` | 横長のドラッグハンドル |
-| `grip-horizontal-off` | `grip-horizontal-off.svg` | 無効・停止状態：横長のドラッグハンドル |
-| `grip-vertical` | `grip-vertical.svg` | 縦長のドラッグハンドル |
-| `grip-vertical-off` | `grip-vertical-off.svg` | 無効・停止状態：縦長のドラッグハンドル |
-| `help` | `help.svg` | ヘルプ・使い方の案内 |
-| `help-off` | `help-off.svg` | 無効・停止状態：ヘルプ・使い方の案内 |
-| `history` | `history.svg` | 操作履歴・過去の状態 |
-| `history-off` | `history-off.svg` | 無効・停止状態：操作履歴・過去の状態 |
-| `image` | `image.svg` | 画像・画像の挿入 |
-| `image-off` | `image-off.svg` | 無効・停止状態：画像・画像の挿入 |
-| `information` | `information.svg` | 補足情報・注意の案内（感嘆符の図柄） |
-| `information-off` | `information-off.svg` | 無効・停止状態：補足情報・注意の案内（感嘆符の図柄） |
-| `like` | `like.svg` | いいね・お気に入り |
-| `like-off` | `like-off.svg` | 無効・停止状態：いいね・お気に入り |
-| `link` | `link.svg` | リンク・関連付け |
-| `link-off` | `link-off.svg` | 無効・停止状態：リンク・関連付け |
-| `lock` | `lock.svg` | ロック・アクセス制限 |
-| `lock-off` | `lock-off.svg` | 無効・停止状態：ロック・アクセス制限 |
-| `login` | `login.svg` | ログインする（枠へ入る矢印） |
-| `login-off` | `login-off.svg` | 無効・停止状態：ログインする（枠へ入る矢印） |
-| `logout` | `logout.svg` | ログアウトする（枠から出る矢印） |
-| `logout-off` | `logout-off.svg` | 無効・停止状態：ログアウトする（枠から出る矢印） |
-| `mail` | `mail.svg` | メール・メッセージ |
-| `mail-off` | `mail-off.svg` | 無効・停止状態：メール・メッセージ |
-| `menu` | `menu.svg` | 主メニューを開く |
-| `menu-off` | `menu-off.svg` | 無効・停止状態：主メニューを開く |
-| `minus` | `minus.svg` | 項目の除外・数量を減らす |
-| `minus-off` | `minus-off.svg` | 無効・停止状態：項目の除外・数量を減らす |
-| `moon` | `moon.svg` | ダークモード |
-| `moon-off` | `moon-off.svg` | 無効・停止状態：ダークモード |
-| `panel` | `panel.svg` | パネル分割のレイアウト |
-| `panel-close-left` | `panel-close-left.svg` | 左側パネルを閉じる |
-| `panel-close-left-off` | `panel-close-left-off.svg` | 無効・停止状態：左側パネルを閉じる |
-| `panel-close-right` | `panel-close-right.svg` | 右側パネルを閉じる |
-| `panel-close-right-off` | `panel-close-right-off.svg` | 無効・停止状態：右側パネルを閉じる |
-| `panel-left` | `panel-left.svg` | 左側パネルの表示 |
-| `panel-left-off` | `panel-left-off.svg` | 無効・停止状態：左側パネルの表示 |
-| `panel-off` | `panel-off.svg` | 無効・停止状態：パネル分割のレイアウト |
-| `panel-right` | `panel-right.svg` | 右側パネルの表示 |
-| `panel-right-off` | `panel-right-off.svg` | 無効・停止状態：右側パネルの表示 |
-| `paperclip` | `paperclip.svg` | ファイルを添付する |
-| `paperclip-off` | `paperclip-off.svg` | 無効・停止状態：ファイルを添付する |
-| `pin` | `pin.svg` | 対象を固定する |
-| `pin-off` | `pin-off.svg` | 無効・停止状態：対象を固定する |
-| `plus` | `plus.svg` | 項目の追加・数量を増やす |
-| `plus-off` | `plus-off.svg` | 無効・停止状態：項目の追加・数量を増やす |
-| `recurring` | `recurring.svg` | 周期的な繰り返し・定期実行（循環する二本の矢印） |
-| `recurring-off` | `recurring-off.svg` | 無効・停止状態：周期的な繰り返し・定期実行（循環する二本の矢印） |
-| `redo` | `redo.svg` | 取り消した操作をやり直す |
-| `redo-off` | `redo-off.svg` | 無効・停止状態：取り消した操作をやり直す |
-| `repeat` | `repeat.svg` | 再実行・再読み込み（円弧状の一本の矢印） |
-| `repeat-off` | `repeat-off.svg` | 無効・停止状態：再実行・再読み込み（円弧状の一本の矢印） |
-| `save` | `save.svg` | 変更を保存する |
-| `save-off` | `save-off.svg` | 無効・停止状態：変更を保存する |
-| `search` | `search.svg` | 検索する |
-| `search-check` | `search-check.svg` | 検索条件の確定・検索結果の選択 |
-| `search-check-off` | `search-check-off.svg` | 無効・停止状態：検索条件の確定・検索結果の選択 |
-| `search-close` | `search-close.svg` | 検索の解除・検索条件のクリア |
-| `search-close-off` | `search-close-off.svg` | 無効・停止状態：検索の解除・検索条件のクリア |
-| `search-code` | `search-code.svg` | コードを検索する |
-| `search-code-off` | `search-code-off.svg` | 無効・停止状態：コードを検索する |
-| `search-information` | `search-information.svg` | 検索に関する補足・注意 |
-| `search-information-off` | `search-information-off.svg` | 無効・停止状態：検索に関する補足・注意 |
-| `search-off` | `search-off.svg` | 無効・停止状態：検索する |
-| `setting` | `setting.svg` | 設定を開く |
-| `setting-off` | `setting-off.svg` | 無効・停止状態：設定を開く |
-| `share` | `share.svg` | 対象を共有する（三つの点を結ぶ図柄） |
-| `share-off` | `share-off.svg` | 無効・停止状態：対象を共有する（三つの点を結ぶ図柄） |
-| `sort` | `sort.svg` | 並べ替え方法を切り替える |
-| `sort-alphabet-down` | `sort-alphabet-down.svg` | 文字を昇順（A → Z）に並べる |
-| `sort-alphabet-down-off` | `sort-alphabet-down-off.svg` | 無効・停止状態：文字を昇順（A → Z）に並べる |
-| `sort-alphabet-up` | `sort-alphabet-up.svg` | 文字を降順（Z → A）に並べる |
-| `sort-alphabet-up-off` | `sort-alphabet-up-off.svg` | 無効・停止状態：文字を降順（Z → A）に並べる |
-| `sort-arrow-down` | `sort-arrow-down.svg` | 下向き矢印で並べ替え方向を示す |
-| `sort-arrow-down-off` | `sort-arrow-down-off.svg` | 無効・停止状態：下向き矢印で並べ替え方向を示す |
-| `sort-arrow-up` | `sort-arrow-up.svg` | 上向き矢印で並べ替え方向を示す |
-| `sort-arrow-up-off` | `sort-arrow-up-off.svg` | 無効・停止状態：上向き矢印で並べ替え方向を示す |
-| `sort-number-down` | `sort-number-down.svg` | 数値を昇順（0 → 1）に並べる |
-| `sort-number-down-off` | `sort-number-down-off.svg` | 無効・停止状態：数値を昇順（0 → 1）に並べる |
-| `sort-number-up` | `sort-number-up.svg` | 数値を降順（1 → 0）に並べる |
-| `sort-number-up-off` | `sort-number-up-off.svg` | 無効・停止状態：数値を降順（1 → 0）に並べる |
-| `sort-off` | `sort-off.svg` | 無効・停止状態：並べ替え方法を切り替える |
-| `sun` | `sun.svg` | ライトモード |
-| `sun-off` | `sun-off.svg` | 無効・停止状態：ライトモード |
-| `tool` | `tool.svg` | ツール・管理操作 |
-| `tool-off` | `tool-off.svg` | 無効・停止状態：ツール・管理操作 |
-| `undo` | `undo.svg` | 直前の操作を取り消す |
-| `undo-off` | `undo-off.svg` | 無効・停止状態：直前の操作を取り消す |
-| `upload` | `upload.svg` | ファイル・データを読み込む |
-| `upload-off` | `upload-off.svg` | 無効・停止状態：ファイル・データを読み込む |
-| `visibility-off` | `visibility-off.svg` | 内容・パスワードを隠す |
-| `visibility-on` | `visibility-on.svg` | 内容・パスワードを表示する |
-| `zoom-in` | `zoom-in.svg` | 表示を拡大する |
-| `zoom-in-off` | `zoom-in-off.svg` | 無効・停止状態：表示を拡大する |
-| `zoom-out` | `zoom-out.svg` | 表示を縮小する |
-| `zoom-out-off` | `zoom-out-off.svg` | 無効・停止状態：表示を縮小する |
-
-</div>
-
-## カレンダー（40 個）
-
-<div className="tkw-icon-table" role="region" aria-label="カレンダー（40 個）の表" tabIndex={0}>
-
-| 公開名の案 | ファイル名 | 用途 |
-| --- | --- | --- |
-| `calendar` | `calendar.svg` | カレンダー・日付・予定 |
-| `calendar-bell` | `calendar-bell.svg` | 予定：通知・リマインダー |
-| `calendar-bookmark` | `calendar-bookmark.svg` | 予定：ブックマーク・あとで見る |
-| `calendar-check` | `calendar-check.svg` | 予定：選択済み・完了 |
-| `calendar-chevron-bottom` | `calendar-chevron-bottom.svg` | 予定：下方向への移動・展開 |
-| `calendar-chevron-left` | `calendar-chevron-left.svg` | 予定：前の項目・期間への移動 |
-| `calendar-chevron-right` | `calendar-chevron-right.svg` | 予定：次の項目・期間への移動 |
-| `calendar-chevron-top` | `calendar-chevron-top.svg` | 予定：上方向への移動・折りたたみ |
-| `calendar-clock` | `calendar-clock.svg` | 予定：時刻・所要時間 |
-| `calendar-close` | `calendar-close.svg` | 予定：表示を閉じる・操作をキャンセルする |
-| `calendar-code` | `calendar-code.svg` | 予定：コード・埋め込み情報 |
-| `calendar-copy` | `calendar-copy.svg` | 予定：内容を複製する |
-| `calendar-cut` | `calendar-cut.svg` | 予定：内容を切り取る |
-| `calendar-delete` | `calendar-delete.svg` | 予定：対象を削除する |
-| `calendar-download` | `calendar-download.svg` | 予定：ファイル・データを書き出す |
-| `calendar-edit` | `calendar-edit.svg` | 予定：対象を編集する |
-| `calendar-filter` | `calendar-filter.svg` | 予定：条件で絞り込む |
-| `calendar-help` | `calendar-help.svg` | 予定：ヘルプ・使い方の案内 |
-| `calendar-history` | `calendar-history.svg` | 予定：操作履歴・過去の状態 |
-| `calendar-image` | `calendar-image.svg` | 予定：画像・画像の挿入 |
-| `calendar-information` | `calendar-information.svg` | 予定：補足情報・注意の案内（感嘆符の図柄） |
-| `calendar-like` | `calendar-like.svg` | 予定：いいね・お気に入り |
-| `calendar-link` | `calendar-link.svg` | 予定：リンク・関連付け |
-| `calendar-lock` | `calendar-lock.svg` | 予定：ロック・アクセス制限 |
-| `calendar-mail` | `calendar-mail.svg` | 予定：メール・メッセージ |
-| `calendar-minus` | `calendar-minus.svg` | 予定：項目の除外・数量を減らす |
-| `calendar-off` | `calendar-off.svg` | 無効・停止状態：カレンダー・日付・予定 |
-| `calendar-paperclip` | `calendar-paperclip.svg` | 予定：ファイルを添付する |
-| `calendar-pin` | `calendar-pin.svg` | 予定：対象を固定する |
-| `calendar-plus` | `calendar-plus.svg` | 予定：項目の追加・数量を増やす |
-| `calendar-recurring` | `calendar-recurring.svg` | 予定：周期的な繰り返し・定期実行（循環する二本の矢印） |
-| `calendar-redo` | `calendar-redo.svg` | 予定：取り消した操作をやり直す |
-| `calendar-repeat` | `calendar-repeat.svg` | 予定：再実行・再読み込み（円弧状の一本の矢印） |
-| `calendar-save` | `calendar-save.svg` | 予定：変更を保存する |
-| `calendar-search` | `calendar-search.svg` | 予定：検索する |
-| `calendar-setting` | `calendar-setting.svg` | 予定：設定を開く |
-| `calendar-share` | `calendar-share.svg` | 予定：対象を共有する（三つの点を結ぶ図柄） |
-| `calendar-tool` | `calendar-tool.svg` | 予定：ツール・管理操作 |
-| `calendar-undo` | `calendar-undo.svg` | 予定：直前の操作を取り消す |
-| `calendar-upload` | `calendar-upload.svg` | 予定：ファイル・データを読み込む |
-
-</div>
-
-## タスク（40 個）
-
-<div className="tkw-icon-table" role="region" aria-label="タスク（40 個）の表" tabIndex={0}>
-
-| 公開名の案 | ファイル名 | 用途 |
-| --- | --- | --- |
-| `task` | `task.svg` | タスク・作業一覧 |
-| `task-bell` | `task-bell.svg` | タスク：通知・リマインダー |
-| `task-bookmark` | `task-bookmark.svg` | タスク：ブックマーク・あとで見る |
-| `task-check` | `task-check.svg` | タスク：選択済み・完了 |
-| `task-chevron-bottom` | `task-chevron-bottom.svg` | タスク：下方向への移動・展開 |
-| `task-chevron-left` | `task-chevron-left.svg` | タスク：前の項目・期間への移動 |
-| `task-chevron-right` | `task-chevron-right.svg` | タスク：次の項目・期間への移動 |
-| `task-chevron-top` | `task-chevron-top.svg` | タスク：上方向への移動・折りたたみ |
-| `task-clock` | `task-clock.svg` | タスク：時刻・所要時間 |
-| `task-close` | `task-close.svg` | タスク：表示を閉じる・操作をキャンセルする |
-| `task-code` | `task-code.svg` | タスク：コード・埋め込み情報 |
-| `task-copy` | `task-copy.svg` | タスク：内容を複製する |
-| `task-cut` | `task-cut.svg` | タスク：内容を切り取る |
-| `task-delete` | `task-delete.svg` | タスク：対象を削除する |
-| `task-download` | `task-download.svg` | タスク：ファイル・データを書き出す |
-| `task-edit` | `task-edit.svg` | タスク：対象を編集する |
-| `task-filter` | `task-filter.svg` | タスク：条件で絞り込む |
-| `task-help` | `task-help.svg` | タスク：ヘルプ・使い方の案内 |
-| `task-history` | `task-history.svg` | タスク：操作履歴・過去の状態 |
-| `task-image` | `task-image.svg` | タスク：画像・画像の挿入 |
-| `task-information` | `task-information.svg` | タスク：補足情報・注意の案内（感嘆符の図柄） |
-| `task-like` | `task-like.svg` | タスク：いいね・お気に入り |
-| `task-link` | `task-link.svg` | タスク：リンク・関連付け |
-| `task-lock` | `task-lock.svg` | タスク：ロック・アクセス制限 |
-| `task-mail` | `task-mail.svg` | タスク：メール・メッセージ |
-| `task-minus` | `task-minus.svg` | タスク：項目の除外・数量を減らす |
-| `task-off` | `task-off.svg` | 無効・停止状態：タスク・作業一覧 |
-| `task-paperclip` | `task-paperclip.svg` | タスク：ファイルを添付する |
-| `task-pin` | `task-pin.svg` | タスク：対象を固定する |
-| `task-plus` | `task-plus.svg` | タスク：項目の追加・数量を増やす |
-| `task-recurring` | `task-recurring.svg` | タスク：周期的な繰り返し・定期実行（循環する二本の矢印） |
-| `task-redo` | `task-redo.svg` | タスク：取り消した操作をやり直す |
-| `task-repeat` | `task-repeat.svg` | タスク：再実行・再読み込み（円弧状の一本の矢印） |
-| `task-save` | `task-save.svg` | タスク：変更を保存する |
-| `task-search` | `task-search.svg` | タスク：検索する |
-| `task-setting` | `task-setting.svg` | タスク：設定を開く |
-| `task-share` | `task-share.svg` | タスク：対象を共有する（三つの点を結ぶ図柄） |
-| `task-tool` | `task-tool.svg` | タスク：ツール・管理操作 |
-| `task-undo` | `task-undo.svg` | タスク：直前の操作を取り消す |
-| `task-upload` | `task-upload.svg` | タスク：ファイル・データを読み込む |
-
-</div>
-
-## 円枠（38 個）
-
-<div className="tkw-icon-table" role="region" aria-label="円枠（38 個）の表" tabIndex={0}>
-
-| 公開名の案 | ファイル名 | 用途 |
-| --- | --- | --- |
-| `circle` | `circle.svg` | 円形の枠・未選択の印 |
-| `circle-bell` | `circle-bell.svg` | 円枠：通知・リマインダー |
-| `circle-bookmark` | `circle-bookmark.svg` | 円枠：ブックマーク・あとで見る |
-| `circle-check` | `circle-check.svg` | 円枠：選択済み・完了 |
-| `circle-chevron-bottom` | `circle-chevron-bottom.svg` | 円枠：下方向への移動・展開 |
-| `circle-chevron-left` | `circle-chevron-left.svg` | 円枠：前の項目・期間への移動 |
-| `circle-chevron-right` | `circle-chevron-right.svg` | 円枠：次の項目・期間への移動 |
-| `circle-chevron-top` | `circle-chevron-top.svg` | 円枠：上方向への移動・折りたたみ |
-| `circle-close` | `circle-close.svg` | 円枠：表示を閉じる・操作をキャンセルする |
-| `circle-code` | `circle-code.svg` | 円枠：コード・埋め込み情報 |
-| `circle-copy` | `circle-copy.svg` | 円枠：内容を複製する |
-| `circle-cut` | `circle-cut.svg` | 円枠：内容を切り取る |
-| `circle-delete` | `circle-delete.svg` | 円枠：対象を削除する |
-| `circle-download` | `circle-download.svg` | 円枠：ファイル・データを書き出す |
-| `circle-edit` | `circle-edit.svg` | 円枠：対象を編集する |
-| `circle-filter` | `circle-filter.svg` | 円枠：条件で絞り込む |
-| `circle-help` | `circle-help.svg` | 円枠：ヘルプ・使い方の案内 |
-| `circle-image` | `circle-image.svg` | 円枠：画像・画像の挿入 |
-| `circle-information` | `circle-information.svg` | 円枠：補足情報・注意の案内（感嘆符の図柄） |
-| `circle-like` | `circle-like.svg` | 円枠：いいね・お気に入り |
-| `circle-link` | `circle-link.svg` | 円枠：リンク・関連付け |
-| `circle-lock` | `circle-lock.svg` | 円枠：ロック・アクセス制限 |
-| `circle-mail` | `circle-mail.svg` | 円枠：メール・メッセージ |
-| `circle-minus` | `circle-minus.svg` | 円枠：項目の除外・数量を減らす |
-| `circle-off` | `circle-off.svg` | 無効・停止状態：円形の枠・未選択の印 |
-| `circle-paperclip` | `circle-paperclip.svg` | 円枠：ファイルを添付する |
-| `circle-pin` | `circle-pin.svg` | 円枠：対象を固定する |
-| `circle-plus` | `circle-plus.svg` | 円枠：項目の追加・数量を増やす |
-| `circle-recurring` | `circle-recurring.svg` | 円枠：周期的な繰り返し・定期実行（循環する二本の矢印） |
-| `circle-redo` | `circle-redo.svg` | 円枠：取り消した操作をやり直す |
-| `circle-repeat` | `circle-repeat.svg` | 円枠：再実行・再読み込み（円弧状の一本の矢印） |
-| `circle-save` | `circle-save.svg` | 円枠：変更を保存する |
-| `circle-search` | `circle-search.svg` | 円枠：検索する |
-| `circle-setting` | `circle-setting.svg` | 円枠：設定を開く |
-| `circle-share` | `circle-share.svg` | 円枠：対象を共有する（三つの点を結ぶ図柄） |
-| `circle-tool` | `circle-tool.svg` | 円枠：ツール・管理操作 |
-| `circle-undo` | `circle-undo.svg` | 円枠：直前の操作を取り消す |
-| `circle-upload` | `circle-upload.svg` | 円枠：ファイル・データを読み込む |
-
-</div>
-
-## 四角枠（39 個）
-
-<div className="tkw-icon-table" role="region" aria-label="四角枠（39 個）の表" tabIndex={0}>
-
-| 公開名の案 | ファイル名 | 用途 |
-| --- | --- | --- |
-| `square` | `square.svg` | 四角形の枠 |
-| `square-bell` | `square-bell.svg` | 四角枠：通知・リマインダー |
-| `square-bookmark` | `square-bookmark.svg` | 四角枠：ブックマーク・あとで見る |
-| `square-check` | `square-check.svg` | 四角枠：選択済み・完了 |
-| `square-chevron-bottom` | `square-chevron-bottom.svg` | 四角枠：下方向への移動・展開 |
-| `square-chevron-left` | `square-chevron-left.svg` | 四角枠：前の項目・期間への移動 |
-| `square-chevron-right` | `square-chevron-right.svg` | 四角枠：次の項目・期間への移動 |
-| `square-chevron-top` | `square-chevron-top.svg` | 四角枠：上方向への移動・折りたたみ |
-| `square-clock` | `square-clock.svg` | 四角枠：時刻・所要時間 |
-| `square-close` | `square-close.svg` | 四角枠：表示を閉じる・操作をキャンセルする |
-| `square-code` | `square-code.svg` | 四角枠：コード・埋め込み情報 |
-| `square-copy` | `square-copy.svg` | 四角枠：内容を複製する |
-| `square-cut` | `square-cut.svg` | 四角枠：内容を切り取る |
-| `square-delete` | `square-delete.svg` | 四角枠：対象を削除する |
-| `square-download` | `square-download.svg` | 四角枠：ファイル・データを書き出す |
-| `square-edit` | `square-edit.svg` | 四角枠：対象を編集する |
-| `square-filter` | `square-filter.svg` | 四角枠：条件で絞り込む |
-| `square-help` | `square-help.svg` | 四角枠：ヘルプ・使い方の案内 |
-| `square-history` | `square-history.svg` | 四角枠：操作履歴・過去の状態 |
-| `square-image` | `square-image.svg` | 四角枠：画像・画像の挿入 |
-| `square-information` | `square-information.svg` | 四角枠：補足情報・注意の案内（感嘆符の図柄） |
-| `square-like` | `square-like.svg` | 四角枠：いいね・お気に入り |
-| `square-link` | `square-link.svg` | 四角枠：リンク・関連付け |
-| `square-lock` | `square-lock.svg` | 四角枠：ロック・アクセス制限 |
-| `square-mail` | `square-mail.svg` | 四角枠：メール・メッセージ |
-| `square-minus` | `square-minus.svg` | 四角枠：項目の除外・数量を減らす |
-| `square-paperclip` | `square-paperclip.svg` | 四角枠：ファイルを添付する |
-| `square-pin` | `square-pin.svg` | 四角枠：対象を固定する |
-| `square-plus` | `square-plus.svg` | 四角枠：項目の追加・数量を増やす |
-| `square-recurring` | `square-recurring.svg` | 四角枠：周期的な繰り返し・定期実行（循環する二本の矢印） |
-| `square-redo` | `square-redo.svg` | 四角枠：取り消した操作をやり直す |
-| `square-repeat` | `square-repeat.svg` | 四角枠：再実行・再読み込み（円弧状の一本の矢印） |
-| `square-save` | `square-save.svg` | 四角枠：変更を保存する |
-| `square-search` | `square-search.svg` | 四角枠：検索する |
-| `square-setting` | `square-setting.svg` | 四角枠：設定を開く |
-| `square-share` | `square-share.svg` | 四角枠：対象を共有する（三つの点を結ぶ図柄） |
-| `square-tool` | `square-tool.svg` | 四角枠：ツール・管理操作 |
-| `square-undo` | `square-undo.svg` | 四角枠：直前の操作を取り消す |
-| `square-upload` | `square-upload.svg` | 四角枠：ファイル・データを読み込む |
-
-</div>
-
-## 三角枠（40 個）
-
-<div className="tkw-icon-table" role="region" aria-label="三角枠（40 個）の表" tabIndex={0}>
-
-| 公開名の案 | ファイル名 | 用途 |
-| --- | --- | --- |
-| `triangle` | `triangle.svg` | 三角形の枠 |
-| `triangle-bell` | `triangle-bell.svg` | 三角枠：通知・リマインダー |
-| `triangle-bookmark` | `triangle-bookmark.svg` | 三角枠：ブックマーク・あとで見る |
-| `triangle-check` | `triangle-check.svg` | 三角枠：選択済み・完了 |
-| `triangle-chevron-bottom` | `triangle-chevron-bottom.svg` | 三角枠：下方向への移動・展開 |
-| `triangle-chevron-left` | `triangle-chevron-left.svg` | 三角枠：前の項目・期間への移動 |
-| `triangle-chevron-right` | `triangle-chevron-right.svg` | 三角枠：次の項目・期間への移動 |
-| `triangle-chevron-top` | `triangle-chevron-top.svg` | 三角枠：上方向への移動・折りたたみ |
-| `triangle-clock` | `triangle-clock.svg` | 三角枠：時刻・所要時間 |
-| `triangle-close` | `triangle-close.svg` | 三角枠：表示を閉じる・操作をキャンセルする |
-| `triangle-code` | `triangle-code.svg` | 三角枠：コード・埋め込み情報 |
-| `triangle-copy` | `triangle-copy.svg` | 三角枠：内容を複製する |
-| `triangle-cut` | `triangle-cut.svg` | 三角枠：内容を切り取る |
-| `triangle-delete` | `triangle-delete.svg` | 三角枠：対象を削除する |
-| `triangle-download` | `triangle-download.svg` | 三角枠：ファイル・データを書き出す |
-| `triangle-edit` | `triangle-edit.svg` | 三角枠：対象を編集する |
-| `triangle-filter` | `triangle-filter.svg` | 三角枠：条件で絞り込む |
-| `triangle-help` | `triangle-help.svg` | 三角枠：ヘルプ・使い方の案内 |
-| `triangle-history` | `triangle-history.svg` | 三角枠：操作履歴・過去の状態 |
-| `triangle-image` | `triangle-image.svg` | 三角枠：画像・画像の挿入 |
-| `triangle-information` | `triangle-information.svg` | 三角枠：補足情報・注意の案内（感嘆符の図柄） |
-| `triangle-like` | `triangle-like.svg` | 三角枠：いいね・お気に入り |
-| `triangle-link` | `triangle-link.svg` | 三角枠：リンク・関連付け |
-| `triangle-lock` | `triangle-lock.svg` | 三角枠：ロック・アクセス制限 |
-| `triangle-mail` | `triangle-mail.svg` | 三角枠：メール・メッセージ |
-| `triangle-minus` | `triangle-minus.svg` | 三角枠：項目の除外・数量を減らす |
-| `triangle-off` | `triangle-off.svg` | 無効・停止状態：三角形の枠 |
-| `triangle-paperclip` | `triangle-paperclip.svg` | 三角枠：ファイルを添付する |
-| `triangle-pin` | `triangle-pin.svg` | 三角枠：対象を固定する |
-| `triangle-plus` | `triangle-plus.svg` | 三角枠：項目の追加・数量を増やす |
-| `triangle-recurring` | `triangle-recurring.svg` | 三角枠：周期的な繰り返し・定期実行（循環する二本の矢印） |
-| `triangle-redo` | `triangle-redo.svg` | 三角枠：取り消した操作をやり直す |
-| `triangle-repeat` | `triangle-repeat.svg` | 三角枠：再実行・再読み込み（円弧状の一本の矢印） |
-| `triangle-save` | `triangle-save.svg` | 三角枠：変更を保存する |
-| `triangle-search` | `triangle-search.svg` | 三角枠：検索する |
-| `triangle-setting` | `triangle-setting.svg` | 三角枠：設定を開く |
-| `triangle-share` | `triangle-share.svg` | 三角枠：対象を共有する（三つの点を結ぶ図柄） |
-| `triangle-tool` | `triangle-tool.svg` | 三角枠：ツール・管理操作 |
-| `triangle-undo` | `triangle-undo.svg` | 三角枠：直前の操作を取り消す |
-| `triangle-upload` | `triangle-upload.svg` | 三角枠：ファイル・データを読み込む |
-
-</div>
-
-## 既存フロントエンドの参照 ID との対応
-
-以下は 2026-09-27 の調査で確認した **54 種類の参照 ID** と直書き SVG の記録を引き継いだ移行案です。`tokiwa-calendar-frontend` の実装は変更していません。「未収録」は今回の提供 SVG に専用の図柄がない用途で、制作済み329個には含めません。
-
-`panel-left` は左側パネル表示の候補です。`circle-mail` はメール一般の図柄なので、送信完了の意味は文言で補います。`loading` は専用のアニメーション表現が必要であり、`repeat` の再読み込み操作とは分けて扱います。
-
-
-### 移動・開閉
-
-<div className="tkw-icon-table" role="region" aria-label="移動・開閉の表" tabIndex={0}>
-
-| 対応する公開名の案 | 用途 | 現在の参照 ID |
-| --- | --- | --- |
-| `chevron-left` | 前の期間・前のページへ進む | `ic:baseline-arrow-back-ios-new` |
-| `chevron-right` | 次の期間・次のページへ進む | `ic:baseline-arrow-forward-ios` |
-| `chevron-top` | 展開中を示す・時刻を増やす | `ic:baseline-expand-less`, `ic:baseline-keyboard-arrow-up` |
-| `chevron-bottom` | 折りたたみ中を示す・時刻を減らす | `ic:baseline-expand-more`, `ic:baseline-keyboard-arrow-down` |
-| `menu` | 主メニューを開く | `ic:sharp-density-medium`、`NavigationSection.vue` の直書き SVG |
-| `panel-left` | 時間設定のサイドパネルを開く | `material-symbols:side-navigation` |
-| `close` | モーダル・フォーム・パネル・メニューを閉じる | `ic:baseline-close`, `ic:sharp-close`, `ic:sharp-clear`、`PopupImg.vue` と `NavigationSection.vue` の直書き SVG |
-
-</div>
-
-### カレンダー・タスク・コピー
-
-<div className="tkw-icon-table" role="region" aria-label="カレンダー・タスク・コピーの表" tabIndex={0}>
-
-| 対応する公開名の案 | 用途 | 現在の参照 ID |
-| --- | --- | --- |
-| `calendar` | カレンダー画面・日付を表す | `ic:baseline-calendar-month` |
-| `calendar-edit` | 予定を入力・編集する案内 | `ic:baseline-edit-calendar` |
-| `calendar-copy` | 予定を別の日付へ複製する | `mdi:calendar-blank-multiple` |
-| `task` | タスク画面を表す | `ic:baseline-task-alt` |
-| `copy` | データや内容を複製する | `ic:baseline-content-copy` |
-| `clipboard-copy`（未収録） | クリップボードへコピーする | `mdi:clipboard-multiple-outline` |
-
-</div>
-
-`calendar-copy` と `clipboard-copy` は、`Display.vue` で別々の操作として並ぶため用途を分ける。今回の `task-paperclip` は添付の図柄であり、クリップボードへのコピーには割り当てない。
-
-### 操作・アカウント
-
-<div className="tkw-icon-table" role="region" aria-label="操作・アカウントの表" tabIndex={0}>
-
-| 対応する公開名の案 | 用途 | 現在の参照 ID |
-| --- | --- | --- |
-| `edit` | 対象を編集する | `ic:baseline-edit`, `ic:sharp-edit` |
-| `delete` | 対象を削除する | `ic:baseline-delete`, `ic:sharp-delete` |
-| `upload` | ファイル・データの読み込み画面を開く | `ic:baseline-file-upload` |
-| `share` | カレンダーなどを共有する | `ic:baseline-share` |
-| `link` | アカウントなどを連携する | `material-symbols:link` |
-| `setting` | 設定を開く | `ic:baseline-settings` |
-| `user-add`（未収録） | ユーザーを追加する | `ic:sharp-person-add` |
-| `login` | ログインする | `ic:baseline-login` |
-| `logout` | ログアウトする | `ic:baseline-logout` |
-| `visibility-on` | パスワードを表示する | `heroicons:eye` |
-| `visibility-off` | パスワードを隠す | `heroicons:eye-slash` |
-| `lock` | 認証・権限の問題を示す | `ic:baseline-lock` |
-
-</div>
-
-### 状態・案内
-
-<div className="tkw-icon-table" role="region" aria-label="状態・案内の表" tabIndex={0}>
-
-| 対応する公開名の案 | 用途 | 現在の参照 ID |
-| --- | --- | --- |
-| `circle-check` | 処理や認証の成功を示す | `ic:sharp-check-circle`, `i-heroicons-check-circle`, `material-symbols:check-circle-outline` |
-| `triangle-information` | 続行可能な注意を示す | `ic:sharp-warning` |
-| `circle-close` | 入力・通信・認証などの失敗を示す | `ic:sharp-error`, `ic:baseline-error`, `material-symbols:error-outline`, `i-heroicons-x-circle` |
-| `circle-information` | 中立的な説明を示す | `ic:sharp-info` |
-| `help` | 使い方の案内を開く | `ic:baseline-help` |
-| `unavailable`（未収録） | 現在利用できない機能を示す | `material-symbols:sad-tab-outline` |
-| `loading`（未収録） | 処理中を示す | `line-md:loading-loop`, `svg-spinners:ring-resize`, `i-heroicons-arrow-path` |
-| `offline`（未収録） | 通信できないことを示す | `ic:baseline-wifi-off` |
-| `timer`（未収録） | 待機・時間制限を示す | `ic:baseline-timer` |
-| `circle-mail` | 認証メールの送信完了を示す | `pepicons-pop:letter-circle-filled` |
-| `getting-started`（未収録） | 導入・初期ガイドを表す | `ic:baseline-rocket-launch` |
-
-</div>
-
-`offline`・`timer`・`lock`・`circle-close` は `getErrorIcon` のエラー種別から選ばれる。`loading` のうち回転矢印は `verify-email.vue` で `animate-spin` とともに使用されている。
-
-### ブランドロゴ
-
-<div className="tkw-icon-table" role="region" aria-label="ブランドロゴの表" tabIndex={0}>
-
-| 対応する公開名の案 | 現在の参照 ID |
+| 名前 | ファイル |
 | --- | --- |
-| `brand-google`（未収録） | `logos:google-icon` |
-| `brand-discord`（未収録） | `logos:discord-icon` |
-| `brand-facebook`（未収録） | `logos:facebook` |
-| `brand-x`（未収録） | `logos:x` |
-| `brand-github`（未収録） | `logos:github-icon` |
+| [`bell`](?path=/docs/icons-bell--docs) | `bell.svg` |
+| [`bell-off`](?path=/docs/icons-bell-off--docs) | `bell-off.svg` |
+| [`bookmark`](?path=/docs/icons-bookmark--docs) | `bookmark.svg` |
+| [`bookmark-off`](?path=/docs/icons-bookmark-off--docs) | `bookmark-off.svg` |
+| [`check`](?path=/docs/icons-check--docs) | `check.svg` |
+| [`chevron-bottom`](?path=/docs/icons-chevron-bottom--docs) | `chevron-bottom.svg` |
+| [`chevron-bottom-off`](?path=/docs/icons-chevron-bottom-off--docs) | `chevron-bottom-off.svg` |
+| [`chevron-left`](?path=/docs/icons-chevron-left--docs) | `chevron-left.svg` |
+| [`chevron-left-off`](?path=/docs/icons-chevron-left-off--docs) | `chevron-left-off.svg` |
+| [`chevron-right`](?path=/docs/icons-chevron-right--docs) | `chevron-right.svg` |
+| [`chevron-right-off`](?path=/docs/icons-chevron-right-off--docs) | `chevron-right-off.svg` |
+| [`chevron-top`](?path=/docs/icons-chevron-top--docs) | `chevron-top.svg` |
+| [`chevron-top-off`](?path=/docs/icons-chevron-top-off--docs) | `chevron-top-off.svg` |
+| [`clock`](?path=/docs/icons-clock--docs) | `clock.svg` |
+| [`clock-off`](?path=/docs/icons-clock-off--docs) | `clock-off.svg` |
+| [`close`](?path=/docs/icons-close--docs) | `close.svg` |
+| [`code`](?path=/docs/icons-code--docs) | `code.svg` |
+| [`code-off`](?path=/docs/icons-code-off--docs) | `code-off.svg` |
+| [`copy`](?path=/docs/icons-copy--docs) | `copy.svg` |
+| [`copy-off`](?path=/docs/icons-copy-off--docs) | `copy-off.svg` |
+| [`cut`](?path=/docs/icons-cut--docs) | `cut.svg` |
+| [`cut-off`](?path=/docs/icons-cut-off--docs) | `cut-off.svg` |
+| [`dashboard`](?path=/docs/icons-dashboard--docs) | `dashboard.svg` |
+| [`dashboard-off`](?path=/docs/icons-dashboard-off--docs) | `dashboard-off.svg` |
+| [`delete`](?path=/docs/icons-delete--docs) | `delete.svg` |
+| [`delete-off`](?path=/docs/icons-delete-off--docs) | `delete-off.svg` |
+| [`download`](?path=/docs/icons-download--docs) | `download.svg` |
+| [`download-off`](?path=/docs/icons-download-off--docs) | `download-off.svg` |
+| [`edit`](?path=/docs/icons-edit--docs) | `edit.svg` |
+| [`edit-off`](?path=/docs/icons-edit-off--docs) | `edit-off.svg` |
+| [`ellipsis`](?path=/docs/icons-ellipsis--docs) | `ellipsis.svg` |
+| [`ellipsis-off`](?path=/docs/icons-ellipsis-off--docs) | `ellipsis-off.svg` |
+| [`ellipsis-vertical`](?path=/docs/icons-ellipsis-vertical--docs) | `ellipsis-vertical.svg` |
+| [`ellipsis-vertical-off`](?path=/docs/icons-ellipsis-vertical-off--docs) | `ellipsis-vertical-off.svg` |
+| [`filter`](?path=/docs/icons-filter--docs) | `filter.svg` |
+| [`filter-off`](?path=/docs/icons-filter-off--docs) | `filter-off.svg` |
+| [`grip-horizontal`](?path=/docs/icons-grip-horizontal--docs) | `grip-horizontal.svg` |
+| [`grip-horizontal-off`](?path=/docs/icons-grip-horizontal-off--docs) | `grip-horizontal-off.svg` |
+| [`grip-vertical`](?path=/docs/icons-grip-vertical--docs) | `grip-vertical.svg` |
+| [`grip-vertical-off`](?path=/docs/icons-grip-vertical-off--docs) | `grip-vertical-off.svg` |
+| [`help`](?path=/docs/icons-help--docs) | `help.svg` |
+| [`help-off`](?path=/docs/icons-help-off--docs) | `help-off.svg` |
+| [`history`](?path=/docs/icons-history--docs) | `history.svg` |
+| [`history-off`](?path=/docs/icons-history-off--docs) | `history-off.svg` |
+| [`image`](?path=/docs/icons-image--docs) | `image.svg` |
+| [`image-off`](?path=/docs/icons-image-off--docs) | `image-off.svg` |
+| [`information`](?path=/docs/icons-information--docs) | `information.svg` |
+| [`information-off`](?path=/docs/icons-information-off--docs) | `information-off.svg` |
+| [`like`](?path=/docs/icons-like--docs) | `like.svg` |
+| [`like-off`](?path=/docs/icons-like-off--docs) | `like-off.svg` |
+| [`link`](?path=/docs/icons-link--docs) | `link.svg` |
+| [`link-off`](?path=/docs/icons-link-off--docs) | `link-off.svg` |
+| [`lock`](?path=/docs/icons-lock--docs) | `lock.svg` |
+| [`lock-off`](?path=/docs/icons-lock-off--docs) | `lock-off.svg` |
+| [`login`](?path=/docs/icons-login--docs) | `login.svg` |
+| [`login-off`](?path=/docs/icons-login-off--docs) | `login-off.svg` |
+| [`logout`](?path=/docs/icons-logout--docs) | `logout.svg` |
+| [`logout-off`](?path=/docs/icons-logout-off--docs) | `logout-off.svg` |
+| [`mail`](?path=/docs/icons-mail--docs) | `mail.svg` |
+| [`mail-off`](?path=/docs/icons-mail-off--docs) | `mail-off.svg` |
+| [`menu`](?path=/docs/icons-menu--docs) | `menu.svg` |
+| [`menu-off`](?path=/docs/icons-menu-off--docs) | `menu-off.svg` |
+| [`minus`](?path=/docs/icons-minus--docs) | `minus.svg` |
+| [`minus-off`](?path=/docs/icons-minus-off--docs) | `minus-off.svg` |
+| [`moon`](?path=/docs/icons-moon--docs) | `moon.svg` |
+| [`moon-off`](?path=/docs/icons-moon-off--docs) | `moon-off.svg` |
+| [`panel`](?path=/docs/icons-panel--docs) | `panel.svg` |
+| [`panel-close-left`](?path=/docs/icons-panel-close-left--docs) | `panel-close-left.svg` |
+| [`panel-close-left-off`](?path=/docs/icons-panel-close-left-off--docs) | `panel-close-left-off.svg` |
+| [`panel-close-right`](?path=/docs/icons-panel-close-right--docs) | `panel-close-right.svg` |
+| [`panel-close-right-off`](?path=/docs/icons-panel-close-right-off--docs) | `panel-close-right-off.svg` |
+| [`panel-left`](?path=/docs/icons-panel-left--docs) | `panel-left.svg` |
+| [`panel-left-off`](?path=/docs/icons-panel-left-off--docs) | `panel-left-off.svg` |
+| [`panel-off`](?path=/docs/icons-panel-off--docs) | `panel-off.svg` |
+| [`panel-right`](?path=/docs/icons-panel-right--docs) | `panel-right.svg` |
+| [`panel-right-off`](?path=/docs/icons-panel-right-off--docs) | `panel-right-off.svg` |
+| [`paperclip`](?path=/docs/icons-paperclip--docs) | `paperclip.svg` |
+| [`paperclip-off`](?path=/docs/icons-paperclip-off--docs) | `paperclip-off.svg` |
+| [`pin`](?path=/docs/icons-pin--docs) | `pin.svg` |
+| [`pin-off`](?path=/docs/icons-pin-off--docs) | `pin-off.svg` |
+| [`plus`](?path=/docs/icons-plus--docs) | `plus.svg` |
+| [`plus-off`](?path=/docs/icons-plus-off--docs) | `plus-off.svg` |
+| [`recurring`](?path=/docs/icons-recurring--docs) | `recurring.svg` |
+| [`recurring-off`](?path=/docs/icons-recurring-off--docs) | `recurring-off.svg` |
+| [`redo`](?path=/docs/icons-redo--docs) | `redo.svg` |
+| [`redo-off`](?path=/docs/icons-redo-off--docs) | `redo-off.svg` |
+| [`repeat`](?path=/docs/icons-repeat--docs) | `repeat.svg` |
+| [`repeat-off`](?path=/docs/icons-repeat-off--docs) | `repeat-off.svg` |
+| [`save`](?path=/docs/icons-save--docs) | `save.svg` |
+| [`save-off`](?path=/docs/icons-save-off--docs) | `save-off.svg` |
+| [`search`](?path=/docs/icons-search--docs) | `search.svg` |
+| [`search-check`](?path=/docs/icons-search-check--docs) | `search-check.svg` |
+| [`search-check-off`](?path=/docs/icons-search-check-off--docs) | `search-check-off.svg` |
+| [`search-close`](?path=/docs/icons-search-close--docs) | `search-close.svg` |
+| [`search-close-off`](?path=/docs/icons-search-close-off--docs) | `search-close-off.svg` |
+| [`search-code`](?path=/docs/icons-search-code--docs) | `search-code.svg` |
+| [`search-code-off`](?path=/docs/icons-search-code-off--docs) | `search-code-off.svg` |
+| [`search-information`](?path=/docs/icons-search-information--docs) | `search-information.svg` |
+| [`search-information-off`](?path=/docs/icons-search-information-off--docs) | `search-information-off.svg` |
+| [`search-off`](?path=/docs/icons-search-off--docs) | `search-off.svg` |
+| [`setting`](?path=/docs/icons-setting--docs) | `setting.svg` |
+| [`setting-off`](?path=/docs/icons-setting-off--docs) | `setting-off.svg` |
+| [`share`](?path=/docs/icons-share--docs) | `share.svg` |
+| [`share-off`](?path=/docs/icons-share-off--docs) | `share-off.svg` |
+| [`sort`](?path=/docs/icons-sort--docs) | `sort.svg` |
+| [`sort-alphabet-down`](?path=/docs/icons-sort-alphabet-down--docs) | `sort-alphabet-down.svg` |
+| [`sort-alphabet-down-off`](?path=/docs/icons-sort-alphabet-down-off--docs) | `sort-alphabet-down-off.svg` |
+| [`sort-alphabet-up`](?path=/docs/icons-sort-alphabet-up--docs) | `sort-alphabet-up.svg` |
+| [`sort-alphabet-up-off`](?path=/docs/icons-sort-alphabet-up-off--docs) | `sort-alphabet-up-off.svg` |
+| [`sort-arrow-down`](?path=/docs/icons-sort-arrow-down--docs) | `sort-arrow-down.svg` |
+| [`sort-arrow-down-off`](?path=/docs/icons-sort-arrow-down-off--docs) | `sort-arrow-down-off.svg` |
+| [`sort-arrow-up`](?path=/docs/icons-sort-arrow-up--docs) | `sort-arrow-up.svg` |
+| [`sort-arrow-up-off`](?path=/docs/icons-sort-arrow-up-off--docs) | `sort-arrow-up-off.svg` |
+| [`sort-number-down`](?path=/docs/icons-sort-number-down--docs) | `sort-number-down.svg` |
+| [`sort-number-down-off`](?path=/docs/icons-sort-number-down-off--docs) | `sort-number-down-off.svg` |
+| [`sort-number-up`](?path=/docs/icons-sort-number-up--docs) | `sort-number-up.svg` |
+| [`sort-number-up-off`](?path=/docs/icons-sort-number-up-off--docs) | `sort-number-up-off.svg` |
+| [`sort-off`](?path=/docs/icons-sort-off--docs) | `sort-off.svg` |
+| [`sun`](?path=/docs/icons-sun--docs) | `sun.svg` |
+| [`sun-off`](?path=/docs/icons-sun-off--docs) | `sun-off.svg` |
+| [`tool`](?path=/docs/icons-tool--docs) | `tool.svg` |
+| [`tool-off`](?path=/docs/icons-tool-off--docs) | `tool-off.svg` |
+| [`undo`](?path=/docs/icons-undo--docs) | `undo.svg` |
+| [`undo-off`](?path=/docs/icons-undo-off--docs) | `undo-off.svg` |
+| [`upload`](?path=/docs/icons-upload--docs) | `upload.svg` |
+| [`upload-off`](?path=/docs/icons-upload-off--docs) | `upload-off.svg` |
+| [`visibility-off`](?path=/docs/icons-visibility-off--docs) | `visibility-off.svg` |
+| [`visibility-on`](?path=/docs/icons-visibility-on--docs) | `visibility-on.svg` |
+| [`zoom-in`](?path=/docs/icons-zoom-in--docs) | `zoom-in.svg` |
+| [`zoom-in-off`](?path=/docs/icons-zoom-in-off--docs) | `zoom-in-off.svg` |
+| [`zoom-out`](?path=/docs/icons-zoom-out--docs) | `zoom-out.svg` |
+| [`zoom-out-off`](?path=/docs/icons-zoom-out-off--docs) | `zoom-out-off.svg` |
+
+## カレンダー（40個）
+
+| 名前 | ファイル |
+| --- | --- |
+| [`calendar`](?path=/docs/icons-calendar--docs) | `calendar.svg` |
+| [`calendar-bell`](?path=/docs/icons-calendar-bell--docs) | `calendar-bell.svg` |
+| [`calendar-bookmark`](?path=/docs/icons-calendar-bookmark--docs) | `calendar-bookmark.svg` |
+| [`calendar-check`](?path=/docs/icons-calendar-check--docs) | `calendar-check.svg` |
+| [`calendar-chevron-bottom`](?path=/docs/icons-calendar-chevron-bottom--docs) | `calendar-chevron-bottom.svg` |
+| [`calendar-chevron-left`](?path=/docs/icons-calendar-chevron-left--docs) | `calendar-chevron-left.svg` |
+| [`calendar-chevron-right`](?path=/docs/icons-calendar-chevron-right--docs) | `calendar-chevron-right.svg` |
+| [`calendar-chevron-top`](?path=/docs/icons-calendar-chevron-top--docs) | `calendar-chevron-top.svg` |
+| [`calendar-clock`](?path=/docs/icons-calendar-clock--docs) | `calendar-clock.svg` |
+| [`calendar-close`](?path=/docs/icons-calendar-close--docs) | `calendar-close.svg` |
+| [`calendar-code`](?path=/docs/icons-calendar-code--docs) | `calendar-code.svg` |
+| [`calendar-copy`](?path=/docs/icons-calendar-copy--docs) | `calendar-copy.svg` |
+| [`calendar-cut`](?path=/docs/icons-calendar-cut--docs) | `calendar-cut.svg` |
+| [`calendar-delete`](?path=/docs/icons-calendar-delete--docs) | `calendar-delete.svg` |
+| [`calendar-download`](?path=/docs/icons-calendar-download--docs) | `calendar-download.svg` |
+| [`calendar-edit`](?path=/docs/icons-calendar-edit--docs) | `calendar-edit.svg` |
+| [`calendar-filter`](?path=/docs/icons-calendar-filter--docs) | `calendar-filter.svg` |
+| [`calendar-help`](?path=/docs/icons-calendar-help--docs) | `calendar-help.svg` |
+| [`calendar-history`](?path=/docs/icons-calendar-history--docs) | `calendar-history.svg` |
+| [`calendar-image`](?path=/docs/icons-calendar-image--docs) | `calendar-image.svg` |
+| [`calendar-information`](?path=/docs/icons-calendar-information--docs) | `calendar-information.svg` |
+| [`calendar-like`](?path=/docs/icons-calendar-like--docs) | `calendar-like.svg` |
+| [`calendar-link`](?path=/docs/icons-calendar-link--docs) | `calendar-link.svg` |
+| [`calendar-lock`](?path=/docs/icons-calendar-lock--docs) | `calendar-lock.svg` |
+| [`calendar-mail`](?path=/docs/icons-calendar-mail--docs) | `calendar-mail.svg` |
+| [`calendar-minus`](?path=/docs/icons-calendar-minus--docs) | `calendar-minus.svg` |
+| [`calendar-off`](?path=/docs/icons-calendar-off--docs) | `calendar-off.svg` |
+| [`calendar-paperclip`](?path=/docs/icons-calendar-paperclip--docs) | `calendar-paperclip.svg` |
+| [`calendar-pin`](?path=/docs/icons-calendar-pin--docs) | `calendar-pin.svg` |
+| [`calendar-plus`](?path=/docs/icons-calendar-plus--docs) | `calendar-plus.svg` |
+| [`calendar-recurring`](?path=/docs/icons-calendar-recurring--docs) | `calendar-recurring.svg` |
+| [`calendar-redo`](?path=/docs/icons-calendar-redo--docs) | `calendar-redo.svg` |
+| [`calendar-repeat`](?path=/docs/icons-calendar-repeat--docs) | `calendar-repeat.svg` |
+| [`calendar-save`](?path=/docs/icons-calendar-save--docs) | `calendar-save.svg` |
+| [`calendar-search`](?path=/docs/icons-calendar-search--docs) | `calendar-search.svg` |
+| [`calendar-setting`](?path=/docs/icons-calendar-setting--docs) | `calendar-setting.svg` |
+| [`calendar-share`](?path=/docs/icons-calendar-share--docs) | `calendar-share.svg` |
+| [`calendar-tool`](?path=/docs/icons-calendar-tool--docs) | `calendar-tool.svg` |
+| [`calendar-undo`](?path=/docs/icons-calendar-undo--docs) | `calendar-undo.svg` |
+| [`calendar-upload`](?path=/docs/icons-calendar-upload--docs) | `calendar-upload.svg` |
+
+## タスク（40個）
+
+| 名前 | ファイル |
+| --- | --- |
+| [`task`](?path=/docs/icons-task--docs) | `task.svg` |
+| [`task-bell`](?path=/docs/icons-task-bell--docs) | `task-bell.svg` |
+| [`task-bookmark`](?path=/docs/icons-task-bookmark--docs) | `task-bookmark.svg` |
+| [`task-check`](?path=/docs/icons-task-check--docs) | `task-check.svg` |
+| [`task-chevron-bottom`](?path=/docs/icons-task-chevron-bottom--docs) | `task-chevron-bottom.svg` |
+| [`task-chevron-left`](?path=/docs/icons-task-chevron-left--docs) | `task-chevron-left.svg` |
+| [`task-chevron-right`](?path=/docs/icons-task-chevron-right--docs) | `task-chevron-right.svg` |
+| [`task-chevron-top`](?path=/docs/icons-task-chevron-top--docs) | `task-chevron-top.svg` |
+| [`task-clock`](?path=/docs/icons-task-clock--docs) | `task-clock.svg` |
+| [`task-close`](?path=/docs/icons-task-close--docs) | `task-close.svg` |
+| [`task-code`](?path=/docs/icons-task-code--docs) | `task-code.svg` |
+| [`task-copy`](?path=/docs/icons-task-copy--docs) | `task-copy.svg` |
+| [`task-cut`](?path=/docs/icons-task-cut--docs) | `task-cut.svg` |
+| [`task-delete`](?path=/docs/icons-task-delete--docs) | `task-delete.svg` |
+| [`task-download`](?path=/docs/icons-task-download--docs) | `task-download.svg` |
+| [`task-edit`](?path=/docs/icons-task-edit--docs) | `task-edit.svg` |
+| [`task-filter`](?path=/docs/icons-task-filter--docs) | `task-filter.svg` |
+| [`task-help`](?path=/docs/icons-task-help--docs) | `task-help.svg` |
+| [`task-history`](?path=/docs/icons-task-history--docs) | `task-history.svg` |
+| [`task-image`](?path=/docs/icons-task-image--docs) | `task-image.svg` |
+| [`task-information`](?path=/docs/icons-task-information--docs) | `task-information.svg` |
+| [`task-like`](?path=/docs/icons-task-like--docs) | `task-like.svg` |
+| [`task-link`](?path=/docs/icons-task-link--docs) | `task-link.svg` |
+| [`task-lock`](?path=/docs/icons-task-lock--docs) | `task-lock.svg` |
+| [`task-mail`](?path=/docs/icons-task-mail--docs) | `task-mail.svg` |
+| [`task-minus`](?path=/docs/icons-task-minus--docs) | `task-minus.svg` |
+| [`task-off`](?path=/docs/icons-task-off--docs) | `task-off.svg` |
+| [`task-paperclip`](?path=/docs/icons-task-paperclip--docs) | `task-paperclip.svg` |
+| [`task-pin`](?path=/docs/icons-task-pin--docs) | `task-pin.svg` |
+| [`task-plus`](?path=/docs/icons-task-plus--docs) | `task-plus.svg` |
+| [`task-recurring`](?path=/docs/icons-task-recurring--docs) | `task-recurring.svg` |
+| [`task-redo`](?path=/docs/icons-task-redo--docs) | `task-redo.svg` |
+| [`task-repeat`](?path=/docs/icons-task-repeat--docs) | `task-repeat.svg` |
+| [`task-save`](?path=/docs/icons-task-save--docs) | `task-save.svg` |
+| [`task-search`](?path=/docs/icons-task-search--docs) | `task-search.svg` |
+| [`task-setting`](?path=/docs/icons-task-setting--docs) | `task-setting.svg` |
+| [`task-share`](?path=/docs/icons-task-share--docs) | `task-share.svg` |
+| [`task-tool`](?path=/docs/icons-task-tool--docs) | `task-tool.svg` |
+| [`task-undo`](?path=/docs/icons-task-undo--docs) | `task-undo.svg` |
+| [`task-upload`](?path=/docs/icons-task-upload--docs) | `task-upload.svg` |
+
+## 円枠（38個）
+
+| 名前 | ファイル |
+| --- | --- |
+| [`circle`](?path=/docs/icons-circle--docs) | `circle.svg` |
+| [`circle-bell`](?path=/docs/icons-circle-bell--docs) | `circle-bell.svg` |
+| [`circle-bookmark`](?path=/docs/icons-circle-bookmark--docs) | `circle-bookmark.svg` |
+| [`circle-check`](?path=/docs/icons-circle-check--docs) | `circle-check.svg` |
+| [`circle-chevron-bottom`](?path=/docs/icons-circle-chevron-bottom--docs) | `circle-chevron-bottom.svg` |
+| [`circle-chevron-left`](?path=/docs/icons-circle-chevron-left--docs) | `circle-chevron-left.svg` |
+| [`circle-chevron-right`](?path=/docs/icons-circle-chevron-right--docs) | `circle-chevron-right.svg` |
+| [`circle-chevron-top`](?path=/docs/icons-circle-chevron-top--docs) | `circle-chevron-top.svg` |
+| [`circle-close`](?path=/docs/icons-circle-close--docs) | `circle-close.svg` |
+| [`circle-code`](?path=/docs/icons-circle-code--docs) | `circle-code.svg` |
+| [`circle-copy`](?path=/docs/icons-circle-copy--docs) | `circle-copy.svg` |
+| [`circle-cut`](?path=/docs/icons-circle-cut--docs) | `circle-cut.svg` |
+| [`circle-delete`](?path=/docs/icons-circle-delete--docs) | `circle-delete.svg` |
+| [`circle-download`](?path=/docs/icons-circle-download--docs) | `circle-download.svg` |
+| [`circle-edit`](?path=/docs/icons-circle-edit--docs) | `circle-edit.svg` |
+| [`circle-filter`](?path=/docs/icons-circle-filter--docs) | `circle-filter.svg` |
+| [`circle-help`](?path=/docs/icons-circle-help--docs) | `circle-help.svg` |
+| [`circle-image`](?path=/docs/icons-circle-image--docs) | `circle-image.svg` |
+| [`circle-information`](?path=/docs/icons-circle-information--docs) | `circle-information.svg` |
+| [`circle-like`](?path=/docs/icons-circle-like--docs) | `circle-like.svg` |
+| [`circle-link`](?path=/docs/icons-circle-link--docs) | `circle-link.svg` |
+| [`circle-lock`](?path=/docs/icons-circle-lock--docs) | `circle-lock.svg` |
+| [`circle-mail`](?path=/docs/icons-circle-mail--docs) | `circle-mail.svg` |
+| [`circle-minus`](?path=/docs/icons-circle-minus--docs) | `circle-minus.svg` |
+| [`circle-off`](?path=/docs/icons-circle-off--docs) | `circle-off.svg` |
+| [`circle-paperclip`](?path=/docs/icons-circle-paperclip--docs) | `circle-paperclip.svg` |
+| [`circle-pin`](?path=/docs/icons-circle-pin--docs) | `circle-pin.svg` |
+| [`circle-plus`](?path=/docs/icons-circle-plus--docs) | `circle-plus.svg` |
+| [`circle-recurring`](?path=/docs/icons-circle-recurring--docs) | `circle-recurring.svg` |
+| [`circle-redo`](?path=/docs/icons-circle-redo--docs) | `circle-redo.svg` |
+| [`circle-repeat`](?path=/docs/icons-circle-repeat--docs) | `circle-repeat.svg` |
+| [`circle-save`](?path=/docs/icons-circle-save--docs) | `circle-save.svg` |
+| [`circle-search`](?path=/docs/icons-circle-search--docs) | `circle-search.svg` |
+| [`circle-setting`](?path=/docs/icons-circle-setting--docs) | `circle-setting.svg` |
+| [`circle-share`](?path=/docs/icons-circle-share--docs) | `circle-share.svg` |
+| [`circle-tool`](?path=/docs/icons-circle-tool--docs) | `circle-tool.svg` |
+| [`circle-undo`](?path=/docs/icons-circle-undo--docs) | `circle-undo.svg` |
+| [`circle-upload`](?path=/docs/icons-circle-upload--docs) | `circle-upload.svg` |
+
+## 四角枠（39個）
+
+| 名前 | ファイル |
+| --- | --- |
+| [`square`](?path=/docs/icons-square--docs) | `square.svg` |
+| [`square-bell`](?path=/docs/icons-square-bell--docs) | `square-bell.svg` |
+| [`square-bookmark`](?path=/docs/icons-square-bookmark--docs) | `square-bookmark.svg` |
+| [`square-check`](?path=/docs/icons-square-check--docs) | `square-check.svg` |
+| [`square-chevron-bottom`](?path=/docs/icons-square-chevron-bottom--docs) | `square-chevron-bottom.svg` |
+| [`square-chevron-left`](?path=/docs/icons-square-chevron-left--docs) | `square-chevron-left.svg` |
+| [`square-chevron-right`](?path=/docs/icons-square-chevron-right--docs) | `square-chevron-right.svg` |
+| [`square-chevron-top`](?path=/docs/icons-square-chevron-top--docs) | `square-chevron-top.svg` |
+| [`square-clock`](?path=/docs/icons-square-clock--docs) | `square-clock.svg` |
+| [`square-close`](?path=/docs/icons-square-close--docs) | `square-close.svg` |
+| [`square-code`](?path=/docs/icons-square-code--docs) | `square-code.svg` |
+| [`square-copy`](?path=/docs/icons-square-copy--docs) | `square-copy.svg` |
+| [`square-cut`](?path=/docs/icons-square-cut--docs) | `square-cut.svg` |
+| [`square-delete`](?path=/docs/icons-square-delete--docs) | `square-delete.svg` |
+| [`square-download`](?path=/docs/icons-square-download--docs) | `square-download.svg` |
+| [`square-edit`](?path=/docs/icons-square-edit--docs) | `square-edit.svg` |
+| [`square-filter`](?path=/docs/icons-square-filter--docs) | `square-filter.svg` |
+| [`square-help`](?path=/docs/icons-square-help--docs) | `square-help.svg` |
+| [`square-history`](?path=/docs/icons-square-history--docs) | `square-history.svg` |
+| [`square-image`](?path=/docs/icons-square-image--docs) | `square-image.svg` |
+| [`square-information`](?path=/docs/icons-square-information--docs) | `square-information.svg` |
+| [`square-like`](?path=/docs/icons-square-like--docs) | `square-like.svg` |
+| [`square-link`](?path=/docs/icons-square-link--docs) | `square-link.svg` |
+| [`square-lock`](?path=/docs/icons-square-lock--docs) | `square-lock.svg` |
+| [`square-mail`](?path=/docs/icons-square-mail--docs) | `square-mail.svg` |
+| [`square-minus`](?path=/docs/icons-square-minus--docs) | `square-minus.svg` |
+| [`square-paperclip`](?path=/docs/icons-square-paperclip--docs) | `square-paperclip.svg` |
+| [`square-pin`](?path=/docs/icons-square-pin--docs) | `square-pin.svg` |
+| [`square-plus`](?path=/docs/icons-square-plus--docs) | `square-plus.svg` |
+| [`square-recurring`](?path=/docs/icons-square-recurring--docs) | `square-recurring.svg` |
+| [`square-redo`](?path=/docs/icons-square-redo--docs) | `square-redo.svg` |
+| [`square-repeat`](?path=/docs/icons-square-repeat--docs) | `square-repeat.svg` |
+| [`square-save`](?path=/docs/icons-square-save--docs) | `square-save.svg` |
+| [`square-search`](?path=/docs/icons-square-search--docs) | `square-search.svg` |
+| [`square-setting`](?path=/docs/icons-square-setting--docs) | `square-setting.svg` |
+| [`square-share`](?path=/docs/icons-square-share--docs) | `square-share.svg` |
+| [`square-tool`](?path=/docs/icons-square-tool--docs) | `square-tool.svg` |
+| [`square-undo`](?path=/docs/icons-square-undo--docs) | `square-undo.svg` |
+| [`square-upload`](?path=/docs/icons-square-upload--docs) | `square-upload.svg` |
+
+## 三角枠（40個）
+
+| 名前 | ファイル |
+| --- | --- |
+| [`triangle`](?path=/docs/icons-triangle--docs) | `triangle.svg` |
+| [`triangle-bell`](?path=/docs/icons-triangle-bell--docs) | `triangle-bell.svg` |
+| [`triangle-bookmark`](?path=/docs/icons-triangle-bookmark--docs) | `triangle-bookmark.svg` |
+| [`triangle-check`](?path=/docs/icons-triangle-check--docs) | `triangle-check.svg` |
+| [`triangle-chevron-bottom`](?path=/docs/icons-triangle-chevron-bottom--docs) | `triangle-chevron-bottom.svg` |
+| [`triangle-chevron-left`](?path=/docs/icons-triangle-chevron-left--docs) | `triangle-chevron-left.svg` |
+| [`triangle-chevron-right`](?path=/docs/icons-triangle-chevron-right--docs) | `triangle-chevron-right.svg` |
+| [`triangle-chevron-top`](?path=/docs/icons-triangle-chevron-top--docs) | `triangle-chevron-top.svg` |
+| [`triangle-clock`](?path=/docs/icons-triangle-clock--docs) | `triangle-clock.svg` |
+| [`triangle-close`](?path=/docs/icons-triangle-close--docs) | `triangle-close.svg` |
+| [`triangle-code`](?path=/docs/icons-triangle-code--docs) | `triangle-code.svg` |
+| [`triangle-copy`](?path=/docs/icons-triangle-copy--docs) | `triangle-copy.svg` |
+| [`triangle-cut`](?path=/docs/icons-triangle-cut--docs) | `triangle-cut.svg` |
+| [`triangle-delete`](?path=/docs/icons-triangle-delete--docs) | `triangle-delete.svg` |
+| [`triangle-download`](?path=/docs/icons-triangle-download--docs) | `triangle-download.svg` |
+| [`triangle-edit`](?path=/docs/icons-triangle-edit--docs) | `triangle-edit.svg` |
+| [`triangle-filter`](?path=/docs/icons-triangle-filter--docs) | `triangle-filter.svg` |
+| [`triangle-help`](?path=/docs/icons-triangle-help--docs) | `triangle-help.svg` |
+| [`triangle-history`](?path=/docs/icons-triangle-history--docs) | `triangle-history.svg` |
+| [`triangle-image`](?path=/docs/icons-triangle-image--docs) | `triangle-image.svg` |
+| [`triangle-information`](?path=/docs/icons-triangle-information--docs) | `triangle-information.svg` |
+| [`triangle-like`](?path=/docs/icons-triangle-like--docs) | `triangle-like.svg` |
+| [`triangle-link`](?path=/docs/icons-triangle-link--docs) | `triangle-link.svg` |
+| [`triangle-lock`](?path=/docs/icons-triangle-lock--docs) | `triangle-lock.svg` |
+| [`triangle-mail`](?path=/docs/icons-triangle-mail--docs) | `triangle-mail.svg` |
+| [`triangle-minus`](?path=/docs/icons-triangle-minus--docs) | `triangle-minus.svg` |
+| [`triangle-off`](?path=/docs/icons-triangle-off--docs) | `triangle-off.svg` |
+| [`triangle-paperclip`](?path=/docs/icons-triangle-paperclip--docs) | `triangle-paperclip.svg` |
+| [`triangle-pin`](?path=/docs/icons-triangle-pin--docs) | `triangle-pin.svg` |
+| [`triangle-plus`](?path=/docs/icons-triangle-plus--docs) | `triangle-plus.svg` |
+| [`triangle-recurring`](?path=/docs/icons-triangle-recurring--docs) | `triangle-recurring.svg` |
+| [`triangle-redo`](?path=/docs/icons-triangle-redo--docs) | `triangle-redo.svg` |
+| [`triangle-repeat`](?path=/docs/icons-triangle-repeat--docs) | `triangle-repeat.svg` |
+| [`triangle-save`](?path=/docs/icons-triangle-save--docs) | `triangle-save.svg` |
+| [`triangle-search`](?path=/docs/icons-triangle-search--docs) | `triangle-search.svg` |
+| [`triangle-setting`](?path=/docs/icons-triangle-setting--docs) | `triangle-setting.svg` |
+| [`triangle-share`](?path=/docs/icons-triangle-share--docs) | `triangle-share.svg` |
+| [`triangle-tool`](?path=/docs/icons-triangle-tool--docs) | `triangle-tool.svg` |
+| [`triangle-undo`](?path=/docs/icons-triangle-undo--docs) | `triangle-undo.svg` |
+| [`triangle-upload`](?path=/docs/icons-triangle-upload--docs) | `triangle-upload.svg` |
 
 </div>
-
-## 今回の SVG に含まれない追加候補
-
-旧案のうち `calendar-today`・`external-link`・`home`・`user`・`users` は未収録です。`more-horizontal` / `more-vertical` は `ellipsis` / `ellipsis-vertical`、`drag-handle` は `grip-horizontal` / `grip-vertical`、`refresh` は `repeat` の用途として整理しました。旧 `sort-ascending` / `sort-descending` は対象に応じて文字・数値の並べ替え系列から選びます。
-
-## 対象外
-
-- `TokiwaIcon.vue` は装飾的な背景表現で、操作用アイコンではない。
-- カレンダーのスクリーンショット・機能紹介画像・favicon はアイコン一覧に含めない。
-- 色見本の記号や文字は、この一覧の参照 ID 数には含めない。

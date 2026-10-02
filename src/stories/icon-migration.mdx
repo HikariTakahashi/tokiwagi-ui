@@ -1,0 +1,116 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="アイコン/既存フロントエンドとの対応" id="icons-migration" />
+
+<div className="tkw-icon-doc">
+
+[アイコン一覧へ戻る](?path=/docs/アイコン-アイコン名および用途--docs)
+
+# 既存フロントエンドの参照 ID との対応
+
+以下は 2026-09-27 の調査で確認した **54 種類の参照 ID** と直書き SVG の記録を引き継いだ移行案です。`tokiwa-calendar-frontend` の実装は変更していません。「未収録」は今回の提供 SVG に専用の図柄がない用途で、制作済み329個には含めません。
+
+[`panel-left`](?path=/docs/icons-panel-left--docs) は左側パネル表示の候補です。[`circle-mail`](?path=/docs/icons-circle-mail--docs) はメール一般の図柄なので、送信完了の意味は文言で補います。`loading` は専用のアニメーション表現が必要であり、[`repeat`](?path=/docs/icons-repeat--docs) の再読み込み操作とは分けて扱います。
+
+
+### 移動・開閉
+
+<div className="tkw-icon-table" role="region" aria-label="移動・開閉の表" tabIndex={0}>
+
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| [`chevron-left`](?path=/docs/icons-chevron-left--docs) | 前の期間・前のページへ進む | `ic:baseline-arrow-back-ios-new` |
+| [`chevron-right`](?path=/docs/icons-chevron-right--docs) | 次の期間・次のページへ進む | `ic:baseline-arrow-forward-ios` |
+| [`chevron-top`](?path=/docs/icons-chevron-top--docs) | 展開中を示す・時刻を増やす | `ic:baseline-expand-less`, `ic:baseline-keyboard-arrow-up` |
+| [`chevron-bottom`](?path=/docs/icons-chevron-bottom--docs) | 折りたたみ中を示す・時刻を減らす | `ic:baseline-expand-more`, `ic:baseline-keyboard-arrow-down` |
+| [`menu`](?path=/docs/icons-menu--docs) | 主メニューを開く | `ic:sharp-density-medium`、`NavigationSection.vue` の直書き SVG |
+| [`panel-left`](?path=/docs/icons-panel-left--docs) | 時間設定のサイドパネルを開く | `material-symbols:side-navigation` |
+| [`close`](?path=/docs/icons-close--docs) | モーダル・フォーム・パネル・メニューを閉じる | `ic:baseline-close`, `ic:sharp-close`, `ic:sharp-clear`、`PopupImg.vue` と `NavigationSection.vue` の直書き SVG |
+
+</div>
+
+### カレンダー・タスク・コピー
+
+<div className="tkw-icon-table" role="region" aria-label="カレンダー・タスク・コピーの表" tabIndex={0}>
+
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| [`calendar`](?path=/docs/icons-calendar--docs) | カレンダー画面・日付を表す | `ic:baseline-calendar-month` |
+| [`calendar-edit`](?path=/docs/icons-calendar-edit--docs) | 予定を入力・編集する案内 | `ic:baseline-edit-calendar` |
+| [`calendar-copy`](?path=/docs/icons-calendar-copy--docs) | 予定を別の日付へ複製する | `mdi:calendar-blank-multiple` |
+| [`task`](?path=/docs/icons-task--docs) | タスク画面を表す | `ic:baseline-task-alt` |
+| [`copy`](?path=/docs/icons-copy--docs) | データや内容を複製する | `ic:baseline-content-copy` |
+| `clipboard-copy`（未収録） | クリップボードへコピーする | `mdi:clipboard-multiple-outline` |
+
+</div>
+
+[`calendar-copy`](?path=/docs/icons-calendar-copy--docs) と `clipboard-copy` は、`Display.vue` で別々の操作として並ぶため用途を分ける。今回の [`task-paperclip`](?path=/docs/icons-task-paperclip--docs) は添付の図柄であり、クリップボードへのコピーには割り当てない。
+
+### 操作・アカウント
+
+<div className="tkw-icon-table" role="region" aria-label="操作・アカウントの表" tabIndex={0}>
+
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| [`edit`](?path=/docs/icons-edit--docs) | 対象を編集する | `ic:baseline-edit`, `ic:sharp-edit` |
+| [`delete`](?path=/docs/icons-delete--docs) | 対象を削除する | `ic:baseline-delete`, `ic:sharp-delete` |
+| [`upload`](?path=/docs/icons-upload--docs) | ファイル・データの読み込み画面を開く | `ic:baseline-file-upload` |
+| [`share`](?path=/docs/icons-share--docs) | カレンダーなどを共有する | `ic:baseline-share` |
+| [`link`](?path=/docs/icons-link--docs) | アカウントなどを連携する | `material-symbols:link` |
+| [`setting`](?path=/docs/icons-setting--docs) | 設定を開く | `ic:baseline-settings` |
+| `user-add`（未収録） | ユーザーを追加する | `ic:sharp-person-add` |
+| [`login`](?path=/docs/icons-login--docs) | ログインする | `ic:baseline-login` |
+| [`logout`](?path=/docs/icons-logout--docs) | ログアウトする | `ic:baseline-logout` |
+| [`visibility-on`](?path=/docs/icons-visibility-on--docs) | パスワードを表示する | `heroicons:eye` |
+| [`visibility-off`](?path=/docs/icons-visibility-off--docs) | パスワードを隠す | `heroicons:eye-slash` |
+| [`lock`](?path=/docs/icons-lock--docs) | 認証・権限の問題を示す | `ic:baseline-lock` |
+
+</div>
+
+### 状態・案内
+
+<div className="tkw-icon-table" role="region" aria-label="状態・案内の表" tabIndex={0}>
+
+| 対応する公開名の案 | 用途 | 現在の参照 ID |
+| --- | --- | --- |
+| [`circle-check`](?path=/docs/icons-circle-check--docs) | 処理や認証の成功を示す | `ic:sharp-check-circle`, `i-heroicons-check-circle`, `material-symbols:check-circle-outline` |
+| [`triangle-information`](?path=/docs/icons-triangle-information--docs) | 続行可能な注意を示す | `ic:sharp-warning` |
+| [`circle-close`](?path=/docs/icons-circle-close--docs) | 入力・通信・認証などの失敗を示す | `ic:sharp-error`, `ic:baseline-error`, `material-symbols:error-outline`, `i-heroicons-x-circle` |
+| [`circle-information`](?path=/docs/icons-circle-information--docs) | 中立的な説明を示す | `ic:sharp-info` |
+| [`help`](?path=/docs/icons-help--docs) | 使い方の案内を開く | `ic:baseline-help` |
+| `unavailable`（未収録） | 現在利用できない機能を示す | `material-symbols:sad-tab-outline` |
+| `loading`（未収録） | 処理中を示す | `line-md:loading-loop`, `svg-spinners:ring-resize`, `i-heroicons-arrow-path` |
+| `offline`（未収録） | 通信できないことを示す | `ic:baseline-wifi-off` |
+| `timer`（未収録） | 待機・時間制限を示す | `ic:baseline-timer` |
+| [`circle-mail`](?path=/docs/icons-circle-mail--docs) | 認証メールの送信完了を示す | `pepicons-pop:letter-circle-filled` |
+| `getting-started`（未収録） | 導入・初期ガイドを表す | `ic:baseline-rocket-launch` |
+
+</div>
+
+`offline`・`timer`・[`lock`](?path=/docs/icons-lock--docs)・[`circle-close`](?path=/docs/icons-circle-close--docs) は `getErrorIcon` のエラー種別から選ばれる。`loading` のうち回転矢印は `verify-email.vue` で `animate-spin` とともに使用されている。
+
+### ブランドロゴ
+
+<div className="tkw-icon-table" role="region" aria-label="ブランドロゴの表" tabIndex={0}>
+
+| 対応する公開名の案 | 現在の参照 ID |
+| --- | --- |
+| `brand-google`（未収録） | `logos:google-icon` |
+| `brand-discord`（未収録） | `logos:discord-icon` |
+| `brand-facebook`（未収録） | `logos:facebook` |
+| `brand-x`（未収録） | `logos:x` |
+| `brand-github`（未収録） | `logos:github-icon` |
+
+</div>
+
+## 今回の SVG に含まれない追加候補
+
+旧案のうち `calendar-today`・`external-link`・`home`・`user`・`users` は未収録です。`more-horizontal` / `more-vertical` は [`ellipsis`](?path=/docs/icons-ellipsis--docs) / [`ellipsis-vertical`](?path=/docs/icons-ellipsis-vertical--docs)、`drag-handle` は [`grip-horizontal`](?path=/docs/icons-grip-horizontal--docs) / [`grip-vertical`](?path=/docs/icons-grip-vertical--docs)、`refresh` は [`repeat`](?path=/docs/icons-repeat--docs) の用途として整理しました。旧 `sort-ascending` / `sort-descending` は対象に応じて文字・数値の並べ替え系列から選びます。
+
+## 対象外
+
+- `TokiwaIcon.vue` は装飾的な背景表現で、操作用アイコンではない。
+- カレンダーのスクリーンショット・機能紹介画像・favicon はアイコン一覧に含めない。
+- 色見本の記号や文字は、この一覧の参照 ID 数には含めない。
+
+</div>

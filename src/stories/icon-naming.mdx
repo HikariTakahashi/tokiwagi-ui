@@ -2,7 +2,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="アイコン/命名基準" />
 
-**状態：公開名と用途は案（ライブラリへの組み込み前）**
+**状態：公開名と用途は案（`bell` の詳細ルールは確定済み・ライブラリへの組み込み前）**
 
 `icons` フォルダの329個のSVGに適用する命名基準です。
 
@@ -19,3 +19,5 @@ import { Meta } from '@storybook/addon-docs/blocks';
 - `success`・`warning`・`error`・`info` は表示文脈とセマンティックカラーの役割として扱う。公開名は `circle-check`・`triangle-information`・`circle-close`・`circle-information` などの図柄に対応させる。単純な選択・完了の印は `check`。`information` 系の実際の図柄は「!」なので、意味はラベルや説明文でも伝える。
 - ファイル名と公開名に書き出し時の連番 `-1`・`-2` は使わず、図柄から対象・操作・状態を判別する。表にない組み合わせを制作済みとは扱わない。
 - ブランドロゴは操作用アイコンと分け、`brand-` を付ける。今回の提供 SVG にはブランドロゴは含まれていない。
+
+各図柄の使用条件は[アイコン一覧](?path=/docs/アイコン-アイコン名および用途--docs)から個別ルールを参照してください。既存アプリの参照 ID は[既存フロントエンドとの対応](?path=/docs/icons-migration--docs)で管理します。
