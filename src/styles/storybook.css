@@ -70,3 +70,13 @@
   .tkw-variant-grid, .tkw-neutral-grid { grid-template-columns: 1fr; }
   .tkw-summary { flex-direction: column; }
 }
+
+/* アイコン資料：長い公開名や移行表を小さい画面でも読めるようにする。 */
+.tkw-icon-doc { min-width: 0; overflow-wrap: anywhere; }
+.tkw-icon-doc code { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.tkw-icon-doc table { width: 100%; table-layout: fixed; }
+.tkw-icon-doc th, .tkw-icon-doc td { overflow-wrap: anywhere; }
+.tkw-icon-doc a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.tkw-icon-doc .tkw-icon-table { max-width: 100%; overflow-x: auto; margin: 16px 0; }
+.tkw-icon-doc .tkw-icon-table:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.tkw-icon-doc .tkw-icon-table table { min-width: 720px; margin: 0; }
