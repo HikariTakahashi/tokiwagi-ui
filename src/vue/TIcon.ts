@@ -3,7 +3,7 @@ import { iconSizes, renderIconSvg } from '../lib/icon-assets';
 import { iconSources, isIconName, type IconName } from './icon-sources';
 
 export type IconSize = typeof iconSizes[number];
-export type TkwIconProps = {
+export type TIconProps = {
   name: IconName;
   size?: IconSize;
   color?: string;
@@ -11,8 +11,8 @@ export type TkwIconProps = {
 };
 
 /** 装飾用SVG。操作と読み上げ名は親のbutton/link、状態は併記テキストが担う。 */
-export const TkwIcon = defineComponent({
-  name: 'TkwIcon',
+export const TIcon = defineComponent({
+  name: 'TIcon',
   inheritAttrs: false,
   props: {
     name: { type: String as PropType<IconName>, required: true },
