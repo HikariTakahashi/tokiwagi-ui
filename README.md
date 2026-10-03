@@ -43,11 +43,92 @@ bun run storybook  # Storybook: http://localhost:6006
 ```sh
 bun test
 bun run check
+bun run check:react-compat
 bun run build
 bun run build:storybook
 ```
 
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue向けの `TIcon` と、その実コンポーネントをマウントするStorybook確認ページがあります。外部公開、既存 Nuxt 画面の置き換え、React・Astro のアプリ向け実コンポーネントは未実施です。
+Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React向けの `TIcon` と、各実コンポーネントをマウントするStorybook確認ページがあります。外部公開、既存 Nuxt 画面の置き換え、Astro のアプリ向け実コンポーネントは未実施です。
+
+`check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
+
+## Reactでの利用
+
+React 18・19とViteの `?raw` 読み込みに対応する環境を対象にします。入口は `src/react/index.ts`、パッケージの公開入口は `tokiwagi-ui/react` です。npm公開・配布ビルドは未実施で、ローカルパッケージとして利用します。Reactは利用側のpeer dependencyです。React・Vueのpeerはoptionalで、選んだ入口のフレームワークを利用側に導入してください。
+
+同じワークスペースのReactプロジェクトなら `bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）で取り込めます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。Reactの重複ロードを避けるため、Viteに `resolve: { dedupe: ['react', 'react-dom'] }` を設定します。アプリのReactとReact DOMは対応する同じバージョンを使います。
+
+```tsx
+import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/react';
+// アプリ全体で一度読み込む。色値の定義元はtokens/だけ。
+import 'tokiwagi-ui/tokens/colors.css';
+import 'tokiwagi-ui/tokens/semantic.css';
+
+const fromApi: string = 'calendar';
+const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
+
+export function Actions() {
+  return <>
+    <button type="button" aria-label="通知一覧を開く" className="notification-button">
+      <TIcon name="bell" size={24} className="notification-icon" />
+    </button>
+    <button type="button"><TIcon name="plus" size={20} /> タスクを追加</button>
+    <span>
+      <TIcon name={safeName} color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー
+    </span>
+  </>;
+}
+```
+
+```css
+.notification-button {
+  color: var(--tkw-color-primary-blue-on);
+  background: var(--tkw-color-primary-blue);
+  min-width: 44px;
+  min-height: 44px;
+}
+.notification-button:hover { background: var(--tkw-color-primary-blue-hover); }
+.notification-button:active { background: var(--tkw-color-primary-blue-active); }
+.notification-button:focus-visible {
+  outline: 3px solid var(--tkw-color-primary-blue-on-subtle);
+  outline-offset: 3px;
+}
+```
+
+| 指定 | 型・既定値 | 用途 |
+| --- | --- | --- |
+| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
+| `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ |
+| `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は既存トークンを参照 |
+| `className` | `string` | React形式のクラス名をSVGに適用 |
+
+`TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。公開名の誤記と非対応サイズは型検査で検出し、型を迂回した場合も日本語エラーを投げます。外部文字列は `isIconName()` で検証し、代替名は利用側で選びます。アプリ向け入口はREADME本文、Storybook専用コード、Vueランタイムを読み込みません。
+
+`TIcon` はVue版と同じ装飾用APIです。SVGの `aria-hidden="true"`、`focusable="false"`、viewBox、サイズを固定し、追加属性・イベント・children・refは転送しません。アイコンだけの操作には親のbutton/linkに操作名を付け、状態・情報には読み上げ可能なテキストを併記します。フォーカス、ホバー、押下、無効状態、操作領域は親が担います。クラスでviewBox・線幅・縦横比・サイズを上書きしないでください。
+
+黒い線と塗りだけを `currentColor` に変換し、原本の形状・透明な塗り・白いクリッピングを維持します。クリッピングIDはReactの `useId()` でインスタンスごとに分離します。SSRとクライアントでは同じコンポーネントツリーを描画してください。
+
+同じ文書に複数React rootを置く場合は、それぞれ異なる `identifierPrefix` を指定し、SSR側とクライアント側で同じ値を使います。単一rootでは追加設定は不要です（[React公式のuseId仕様](https://react.dev/reference/react/useId)）。
+
+```tsx
+// サーバー側：htmlをsidebar-root要素の内側に出力する。
+import { renderToString } from 'react-dom/server';
+import { TIcon } from 'tokiwagi-ui/react';
+const html = renderToString(<TIcon name="moon" />, { identifierPrefix: 'sidebar-' });
+```
+
+```tsx
+// クライアント側：サーバーと同じツリー・接頭辞を使用する。
+import { hydrateRoot } from 'react-dom/client';
+import { TIcon } from 'tokiwagi-ui/react';
+hydrateRoot(document.getElementById('sidebar-root')!, <TIcon name="moon" />, {
+  identifierPrefix: 'sidebar-',
+});
+```
+
+クライアント描画だけの場合は `createRoot(element, { identifierPrefix: 'sidebar-' })` を使います。別rootには別の接頭辞を指定します。
+
+Storybookの「コンポーネント/TIcon」でReactを選ぶと、全公開名・4サイズ・トークン色の実コンポーネントを確認できます。Vueとの切り替え、複数表示、アクセシビリティ例、公開API、導入・SSRの説明も同じページにまとめています。
 
 ## Vueでの利用
 
@@ -108,7 +189,7 @@ const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
 
 クリッピングIDはVueの `useId()` でインスタンスごとに分離し、SSRとハイドレーションで安定させます。同じHTML文書に複数のVueアプリを置く場合は、それぞれ `app.config.idPrefix` を別の値に設定し、SSR側・クライアント側では同じ値を使ってください（[Vue公式のuseId仕様](https://vuejs.org/api/composition-api-helpers.html#useid)）。通常の単一Nuxtアプリでは追加設定は不要です。
 
-Storybookの「アイコン/Vueコンポーネント」で全公開名の選択、16/20/24/32px、トークン色、moon/toolの複数表示、線・塗り、ラベル付き・アイコンだけのbutton、無効状態、キーボード操作を確認できます。
+Storybookの「コンポーネント/TIcon」でVueを選ぶと、同じ確認画面と使用例をVueの実コンポーネントで確認できます。選択した名前・サイズ・色はReactとの切り替え時も保持します。
 
 ## GitHub での開発
 
@@ -127,7 +208,7 @@ Issue の記載項目は `.github/ISSUE_TEMPLATE/` 内の3種類のテンプレ�
 - 差し替えは同名の原本を更新します。用途・使用ルール・別名は同じディレクトリの `README.md` に記載します。新規追加時は命名基準に従い、SVG、6セクションを持つ README、README を読み込む `src/icons/<公開名>.mdx` の個別ページを一組で追加します。名前・分類・一覧は原本から、検索用の別名は README から自動的に読み込みます。件数の受け入れ条件と文書も更新してください。
 - `src/lib/icon-assets.ts` が表示時に黒い線と塗りを `currentColor` に変換します。`fill="none"` とクリッピング用の白い塗りを保持し、ID参照は表示ごとに一意にします。表示用SVGを別途編集しません。
 - 原本ダウンロードはStorybookの `staticDirs` で `icons/` を `/icon-assets` に配信します。README の `?raw` 読み込みと静的配信のURLを分けています。静的ビルドにも原本がそのままコピーされ、サブディレクトリへの配置でも相対URLで参照できます。
-- 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。ReactはStorybookのMDX資料用で、アプリ向けコンポーネントAPIではありません。
-- Vueの公開名と原本へのimportは `bun run generate:icons` で `src/vue/icon-sources.ts` に生成します。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
+- 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。このコンポーネントはStorybookのMDX資料用です。アプリ向けAPIには `tokiwagi-ui/react` または `tokiwagi-ui/vue` の `TIcon` を使います。
+- Vue・React共通の公開名と原本へのimportは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。Vueの既存ファイルは共通データを再exportします。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
 - `bun test`、`bun run check`、`bun run build`、`bun run build:storybook` を実行します。一覧・個別ページで原本との一致、16/20/24/32pxの判読性、トークン色、同一図柄の複数表示、キーボード操作とモバイル表示を確認してください。
 - 小サイズで細部が判別しにくい図柄はサイズを上げるかラベルを併記します。全アイコンの16px利用を一律に推奨しません。詳しくはStorybookの「アイコン/共通表示ルール」を参照してください。
