@@ -47,7 +47,68 @@ bun run build
 bun run build:storybook
 ```
 
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。外部公開、既存 Nuxt アプリへの組み込み、Vue・React・Astro の実コンポーネント実装はこの構成に含みません。これらのコンポーネントを作る段階で各方式の Storybook を追加します。
+Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue向けの `TIcon` と、その実コンポーネントをマウントするStorybook確認ページがあります。外部公開、既存 Nuxt 画面の置き換え、React・Astro のアプリ向け実コンポーネントは未実施です。
+
+## Vueでの利用
+
+Vue 3.5以上とViteの `?raw` 読み込みに対応した環境（Nuxt/Vueなど）を対象にします。入口は `src/vue/index.ts`、パッケージの公開入口は `tokiwagi-ui/vue` です。npmへの公開・配布ビルドは未実施で、ローカルパッケージとして利用します。Vueは利用側のpeer dependencyです。
+
+同じワークスペースのNuxt/Vueプロジェクトなら `bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）で取り込めます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。別のVueをロードしないよう、Viteの `resolve.dedupe: ['vue']` を指定します。Nuxtでは `vite: { resolve: { dedupe: ['vue'] } }` です。
+
+```vue
+<script setup lang="ts">
+import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/vue';
+// アプリ全体で一度読み込む。色値の定義元はtokens/だけ。
+import 'tokiwagi-ui/tokens/colors.css';
+import 'tokiwagi-ui/tokens/semantic.css';
+
+const notificationIcon: IconName = 'bell';
+const fromApi: string = 'calendar';
+const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
+</script>
+
+<template>
+  <button type="button" aria-label="通知一覧を開く" class="notification-button">
+    <TIcon :name="notificationIcon" :size="24" class="notification-icon" />
+  </button>
+  <button type="button">
+    <TIcon name="plus" :size="20" /> タスクを追加
+  </button>
+  <span>
+    <TIcon :name="safeName" color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー
+  </span>
+</template>
+
+<style scoped>
+.notification-button {
+  color: var(--tkw-color-primary-blue-on);
+  background: var(--tkw-color-primary-blue);
+  min-width: 44px;
+  min-height: 44px;
+}
+.notification-button:hover { background: var(--tkw-color-primary-blue-hover); }
+.notification-button:active { background: var(--tkw-color-primary-blue-active); }
+.notification-button:focus-visible {
+  outline: 3px solid var(--tkw-color-primary-blue-on-subtle);
+  outline-offset: 3px;
+}
+</style>
+```
+
+| 指定 | 型・既定値 | 用途 |
+| --- | --- | --- |
+| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
+| `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ。Vueテンプレートでは `:size="20"` のように数値で渡す |
+| `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は `var(--tkw-color-…)` を使う |
+| `class` | Vueの `HTMLAttributes['class']` | 文字列・配列・オブジェクトをSVGに適用 |
+
+`TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。公開名の誤記と非対応サイズは型検査で検出します。JavaScriptや外部データが型を迂回した場合も日本語エラーを投げ、別の図柄へ暗黙に置き換えません。外部文字列は `isIconName()` で検証し、必要な代替名は利用側で選びます。
+
+`TIcon` は装飾用です。`aria-hidden="true"` と `focusable="false"` を固定し、SVG自体にクリックやフォーカスを設けません。公開props以外の属性・イベント・slotは転送しません。アイコンだけの操作には親のbutton/linkに操作内容の読み上げ名を付け、状態や情報には読み上げ可能な文言を併記します。クラスでviewBox・線幅・縦横比・サイズを上書きしないでください。小さい図柄が判別しにくければサイズを上げます。
+
+クリッピングIDはVueの `useId()` でインスタンスごとに分離し、SSRとハイドレーションで安定させます。同じHTML文書に複数のVueアプリを置く場合は、それぞれ `app.config.idPrefix` を別の値に設定し、SSR側・クライアント側では同じ値を使ってください（[Vue公式のuseId仕様](https://vuejs.org/api/composition-api-helpers.html#useid)）。通常の単一Nuxtアプリでは追加設定は不要です。
+
+Storybookの「アイコン/Vueコンポーネント」で全公開名の選択、16/20/24/32px、トークン色、moon/toolの複数表示、線・塗り、ラベル付き・アイコンだけのbutton、無効状態、キーボード操作を確認できます。
 
 ## GitHub での開発
 
@@ -67,5 +128,6 @@ Issue の記載項目は `.github/ISSUE_TEMPLATE/` 内の3種類のテンプレ�
 - `src/lib/icon-assets.ts` が表示時に黒い線と塗りを `currentColor` に変換します。`fill="none"` とクリッピング用の白い塗りを保持し、ID参照は表示ごとに一意にします。表示用SVGを別途編集しません。
 - 原本ダウンロードはStorybookの `staticDirs` で `icons/` を `/icon-assets` に配信します。README の `?raw` 読み込みと静的配信のURLを分けています。静的ビルドにも原本がそのままコピーされ、サブディレクトリへの配置でも相対URLで参照できます。
 - 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。ReactはStorybookのMDX資料用で、アプリ向けコンポーネントAPIではありません。
+- Vueの公開名と原本へのimportは `bun run generate:icons` で `src/vue/icon-sources.ts` に生成します。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
 - `bun test`、`bun run check`、`bun run build`、`bun run build:storybook` を実行します。一覧・個別ページで原本との一致、16/20/24/32pxの判読性、トークン色、同一図柄の複数表示、キーボード操作とモバイル表示を確認してください。
 - 小サイズで細部が判別しにくい図柄はサイズを上げるかラベルを併記します。全アイコンの16px利用を一律に推奨しません。詳しくはStorybookの「アイコン/共通表示ルール」を参照してください。

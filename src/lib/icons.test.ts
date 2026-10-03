@@ -43,19 +43,22 @@ test('各アイコンに指定された6セクションと識別情報がある'
   }
 });
 
-// 関連図柄・移行資料・一覧の内部リンク先を照合し、未収録図柄や存在しないIDへの導線を防ぐ。
+// 関連図柄・移行資料・Vue利用資料・一覧の内部リンク先を照合し、未収録図柄や存在しないIDへの導線を防ぐ。
 test('アイコン資料の内部リンクに存在しないページがない', () => {
   const ids = new Set([
     'アイコン-アイコン名および用途--docs',
     'アイコン-命名基準--docs',
     'icons-migration--docs',
     'icons-display--docs',
+    'icons-vue--docs',
     ...details.map(detail => `icons-${detail.name}--docs`),
   ]);
   const sources = [catalog, ...details.map(detail => detail.source), ...readmes.values(),
     readFileSync(new URL('icon-naming.mdx', stories), 'utf8'),
     readFileSync(new URL('icon-migration.mdx', stories), 'utf8'),
-    readFileSync(new URL('icon-display.mdx', stories), 'utf8')];
+    readFileSync(new URL('icon-display.mdx', stories), 'utf8'),
+    readFileSync(new URL('vue-icons.mdx', stories), 'utf8')];
+  expect(sources.at(-1)).toContain('id="icons-vue"');
   for (const source of sources) {
     for (const match of source.matchAll(/\]\(\?path=\/docs\/([^\s)]+)\)/g)) {
       expect(ids.has(match[1]!)).toBe(true);

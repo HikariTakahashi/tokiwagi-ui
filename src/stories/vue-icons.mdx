@@ -1,0 +1,53 @@
+import { Meta, Canvas } from '@storybook/addon-docs/blocks';
+import * as VueIcons from './vue-icons.stories';
+
+<Meta title="アイコン/Vueでの利用" id="icons-vue" />
+
+<div className="tkw-icon-doc">
+
+# Vueでの利用
+
+Vue 3.5以上とViteのraw読み込みを使用します。ローカルパッケージを `bun add ../tokiwagi-ui` または `npm install ../tokiwagi-ui` で取り込み、Viteの `resolve.dedupe: ['vue']`（Nuxtでは `vite.resolve.dedupe`）を指定します。npm公開は未実施です。
+
+```vue
+<script setup lang="ts">
+import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/tokens/colors.css';
+const name: IconName = 'bell';
+</script>
+
+<template>
+  <button type="button" aria-label="通知一覧を開く">
+    <TIcon :name="name" :size="24" class="notification-icon" />
+  </button>
+  <span>
+    <TIcon name="calendar" color="var(--tkw-color-primary-blue-on-subtle)" />
+    カレンダー
+  </span>
+</template>
+```
+
+| props | 型 | 既定値 |
+| --- | --- | --- |
+| name | IconName（全329公開名） | 必須 |
+| size | 16 / 20 / 24 / 32（数値） | 24 |
+| color | string（CSS色、トークン参照を使用） | currentColor |
+| class | Vueの文字列・配列・オブジェクト | なし |
+
+公開入口から `TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` も利用できます。存在しない名前・非対応サイズは型検査で拒否し、実行時も日本語エラーにします。外部文字列は `isIconName(value)` で検証し、代替図柄は利用側で明示します。
+
+## アクセシビリティと表示
+
+- SVGは装飾用で、`aria-hidden="true"`、`focusable="false"` を固定します。公開props以外の属性・イベント・slotは転送しません。
+- アイコンだけの操作は親のbutton/linkに読み上げ名を付けます。フォーカス表示・ホバー・押下・操作領域も親の責任です。
+- 状態にはテキストを併記します。クラスで座標・線幅・縦横比・表示サイズを上書きしません。
+- 32×32 viewBoxと原本の形を保持し、黒い線と塗りだけをcurrentColorにします。白いクリッピングは保持します。
+- クリッピングIDはVueのuseIdでインスタンスごとに分離します。同一文書に複数Vueアプリを置くときは `app.config.idPrefix` をアプリごとに分け、SSRとクライアントで同じ値にします。
+
+## 実際のVueコンポーネントで確認
+
+公開名を選び、4サイズ・7色・moon/toolの複数表示を確認できます。Tabでボタンへ移動し、Enter/Spaceで操作すると回数が更新されます。
+
+<Canvas of={VueIcons.Playground} />
+
+</div>

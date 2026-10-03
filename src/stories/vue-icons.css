@@ -1,0 +1,15 @@
+.tkw-vue-demo { max-width: 960px; padding: 32px; margin: auto; color: var(--tkw-color-neutral-800); font-family: sans-serif; }
+.tkw-vue-demo h1, .tkw-vue-demo h2 { color: var(--tkw-color-neutral-900); }
+.tkw-vue-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.tkw-vue-demo select { max-width: 100%; padding: 8px; font: inherit; }
+.tkw-vue-sizes, .tkw-vue-colors, .tkw-vue-actions { display: flex; flex-wrap: wrap; gap: 16px; margin: 24px 0; }
+.tkw-vue-sizes figure { display: grid; align-content: end; justify-items: center; gap: 12px; margin: 0; padding: 16px; background: var(--tkw-color-primary-blue-subtle); }
+.tkw-vue-colors > div { display: flex; align-items: center; gap: 8px; padding: 12px; border-radius: 8px; }
+.tkw-vue-repeated > div { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; padding: 12px; }
+.tkw-vue-repeated > div > span { min-width: 48px; }
+.tkw-vue-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 8px 12px; border: 0; border-radius: 8px; font: inherit; cursor: pointer; background: var(--tkw-color-primary-blue); color: var(--tkw-color-primary-blue-on); }
+.tkw-vue-actions button:hover { background: var(--tkw-color-primary-blue-hover); }
+.tkw-vue-actions button:active { background: var(--tkw-color-primary-blue-active); }
+.tkw-vue-actions button:disabled { background: var(--tkw-color-neutral-100); color: var(--tkw-color-neutral-600); cursor: default; }
+.tkw-vue-demo :is(button, select):focus-visible { outline: 3px solid var(--tkw-color-primary-blue-on-subtle); outline-offset: 3px; }
+@media (max-width: 480px) { .tkw-vue-demo { padding: 16px; } }
