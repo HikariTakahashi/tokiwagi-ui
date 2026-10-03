@@ -10,7 +10,7 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 
 ## 役割
 
-`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts` の `TIcon` から利用します。React・Astroのアプリ向け実コンポーネントは未作成です。Storybookは共通資料に加え、実際のVueコンポーネントをマウントする確認ページを含みます。
+`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts`、React向けは `src/react/index.ts` の `TIcon` から利用します。Astroのアプリ向け実コンポーネントは未作成です。Storybookの「コンポーネント/TIcon」にReact・Vueの利用説明と実コンポーネントの確認画面を集約します。フレームワーク切り替え時も選択した公開名・サイズ・色を保持し、Vueアプリはページ離脱時にアンマウントします。原本の共通表示ルールと一覧は「アイコン」に置きます。
 
 - カラーの値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` が唯一の定義元です。全93トークン（プライマリー42、セカンダリー18、セマンティック24、ニュートラル9）は確定しています。ユーザーから変更指示があるまで値、色数、用途を維持してください。
 - カラーの使用ルールと見本は Storybook の「カラー」に置きます。数値は CSS から読み込み、Storybook や LP に別の値を定義しません。
@@ -36,6 +36,7 @@ bun run dev              # Astro LP: http://localhost:4321
 bun run storybook        # 共通資料: http://localhost:6006
 bun run check
 bun test
+bun run check:react-compat # 一時環境のReact 18・19で公開型・SSR・ハイドレーションを検証
 bun run build            # Astro: dist/
 bun run build:storybook  # Storybook: storybook-static/
 ```
@@ -61,5 +62,6 @@ bun run build:storybook  # Storybook: storybook-static/
 - Storybook の原本ダウンロードは `icons/` を `/icon-assets` に静的配信します。README の `?raw` 読み込みと静的配信のURLを重ねないでください。
 - 表示変換は黒い線・塗りのcurrentColor化と表示サイズ、アクセシビリティ属性、クリッピングIDの一意化に限定します。`fill="none"`、白いクリッピング、線幅の差異は保持します。
 - SVG収録済みという状態と使用ルールの確定状況は別々に記載します。`bell` 以外の詳細ルールを一括で確定扱いにしません。
-- Vueの公開名・原本importは `bun run generate:icons` で生成します。追加・削除時に実行し、`src/vue/icon-sources.ts`を手編集しません。Vue 3.5以上の `useId()` でSSR対応のIDを作り、装飾SVGの読み上げ属性を固定します。複数Vueアプリを同じ文書に置く利用側は `app.config.idPrefix` を分けます。
+- Vue・React共通の公開名・原本importは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。追加・削除時に実行し、生成ファイルを手編集しません。Vueの既存ファイルは共通データを再exportします。Vue 3.5以上の `useId()` でSSR対応のIDを作り、装飾SVGの読み上げ属性を固定します。複数Vueアプリを同じ文書に置く利用側は `app.config.idPrefix` を分けます。
+- React 18・19向けの `TIcon` は `name`・`size`・`color`・`className` だけを公開します。追加属性・イベント・children・refは転送せず、読み上げ属性を固定します。Reactの `useId()` を符号化したReact専用接頭辞でIDを生成します。複数rootでは `identifierPrefix` を分け、SSRとクライアントで同じ値を使います。意味・操作名は併記テキストと親のbutton/linkが担います。React変更時は `bun run check:react-compat` も実行します。
 - UI変更時の必須検証に加え、全原本との一致、線と塗りの着色、moon/toolの同時表示、検索・分類・コピー・原本ダウンロードを確認します。色の検証には既存のトークンを使います。

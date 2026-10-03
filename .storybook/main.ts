@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm';
 const config: StorybookConfig = {
   framework: '@storybook/html-vite',
   staticDirs: [{ from: '../icons', to: '/icon-assets' }],
-  stories: ['../src/stories/**/*.mdx', '../src/icons/*.mdx', '../src/stories/**/*.stories.ts'],
+  stories: ['../src/stories/**/*.mdx', '../src/icons/*.mdx', '../src/stories/**/*.stories.@(ts|tsx)'],
   addons: [{
     name: '@storybook/addon-docs',
     options: {
@@ -16,6 +16,13 @@ const config: StorybookConfig = {
   }],
   async viteFinal(config) {
     config.plugins = [...(config.plugins ?? []), tailwindcss()];
+    // HTML版のDocsでVueを直接マウントするため、Vueプラグインが設定する既定フラグを明示する。
+    config.define = {
+      __VUE_OPTIONS_API__: 'true',
+      __VUE_PROD_DEVTOOLS__: 'false',
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
+      ...config.define,
+    };
     return config;
   },
 };
