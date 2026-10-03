@@ -4,6 +4,8 @@
 
 このリポジトリのコード・文書・設定を実装または修正する依頼では、作業開始時に [issue-to-pr skill](.agents/skills/issue-to-pr/SKILL.md) を必ず読み、その手順を適用します。調査・説明・レビューのみでファイルを変更しない依頼には、この実装フローを適用しません。
 
+アプリ向けの再利用可能なUIコンポーネントを新規作成する場合は、併せて [component-creator skill](.agents/skills/component-creator/SKILL.md) を読み、命名・公開API・利用例・検証の手順を適用します。
+
 ## 役割
 
 `tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts` の `TkwIcon` から利用します。React・Astroのアプリ向け実コンポーネントは未作成です。Storybookは共通資料に加え、実際のVueコンポーネントをマウントする確認ページを含みます。
