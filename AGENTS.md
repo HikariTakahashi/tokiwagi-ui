@@ -14,6 +14,13 @@
 - `tokiwagi-ui` の略称は `tkw` です。ライトモードを対象とし、7色のプライマリーを対等に扱います。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` の `@theme inline` です。既存トークンを参照し、HEX 値を複製しません。Preflight は読み込みません。
 
+## コンポーネントの命名規則
+
+- Tokiwagi UIがアプリ向けに公開するコンポーネント名は、アッパーキャメルケース（PascalCase）とし、接頭辞は `T` です。`T` に用途を表すPascalCase名を続けます。例：`TIcon`、`TButton`、`TTextField`。
+- Vue・React・Astroで同じ用途を持つコンポーネントには同じ公開名を使います。フレームワークの違いはディレクトリや公開入口で区別します。
+- コンポーネントを定義するファイルのベース名、exportするコンポーネント名、フレームワークで明示する登録名を揃えます。例：`TIcon.ts`、`TIcon.vue`、`TIcon.tsx`、`TIcon.astro`。コンポーネントに対応するprops型は `TIconProps` のように命名します。
+- この規則はコンポーネントの命名に適用します。SVG図柄の公開名（`bell` など）や `tkw` を使う既存CSSクラス・カラートークンの命名は、それぞれの管理元に従います。
+
 ## 起動・ビルド
 
 `tokiwagi-ui` ディレクトリで Bun 1.3.9 以上を使います。依存関係は `bun.lock` で固定します。
