@@ -6,7 +6,7 @@
 
 ## 役割
 
-`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue・React・Astro の実コンポーネントは未作成で、今回の Storybook はフレームワーク共通の基盤資料です。
+`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts` の `TkwIcon` から利用します。React・Astroのアプリ向け実コンポーネントは未作成です。Storybookは共通資料に加え、実際のVueコンポーネントをマウントする確認ページを含みます。
 
 - カラーの値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` が唯一の定義元です。全93トークン（プライマリー42、セカンダリー18、セマンティック24、ニュートラル9）は確定しています。ユーザーから変更指示があるまで値、色数、用途を維持してください。
 - カラーの使用ルールと見本は Storybook の「カラー」に置きます。数値は CSS から読み込み、Storybook や LP に別の値を定義しません。
@@ -50,4 +50,5 @@ bun run build:storybook  # Storybook: storybook-static/
 - Storybook の原本ダウンロードは `icons/` を `/icon-assets` に静的配信します。README の `?raw` 読み込みと静的配信のURLを重ねないでください。
 - 表示変換は黒い線・塗りのcurrentColor化と表示サイズ、アクセシビリティ属性、クリッピングIDの一意化に限定します。`fill="none"`、白いクリッピング、線幅の差異は保持します。
 - SVG収録済みという状態と使用ルールの確定状況は別々に記載します。`bell` 以外の詳細ルールを一括で確定扱いにしません。
+- Vueの公開名・原本importは `bun run generate:icons` で生成します。追加・削除時に実行し、`src/vue/icon-sources.ts`を手編集しません。Vue 3.5以上の `useId()` でSSR対応のIDを作り、装飾SVGの読み上げ属性を固定します。複数Vueアプリを同じ文書に置く利用側は `app.config.idPrefix` を分けます。
 - UI変更時の必須検証に加え、全原本との一致、線と塗りの着色、moon/toolの同時表示、検索・分類・コピー・原本ダウンロードを確認します。色の検証には既存のトークンを使います。
