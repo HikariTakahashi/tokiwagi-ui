@@ -47,7 +47,7 @@ bun run build
 bun run build:storybook
 ```
 
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue向けの `TkwIcon` と、その実コンポーネントをマウントするStorybook確認ページがあります。外部公開、既存 Nuxt 画面の置き換え、React・Astro のアプリ向け実コンポーネントは未実施です。
+Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue向けの `TIcon` と、その実コンポーネントをマウントするStorybook確認ページがあります。外部公開、既存 Nuxt 画面の置き換え、React・Astro のアプリ向け実コンポーネントは未実施です。
 
 ## Vueでの利用
 
@@ -57,7 +57,7 @@ Vue 3.5以上とViteの `?raw` 読み込みに対応した環境（Nuxt/Vueな�
 
 ```vue
 <script setup lang="ts">
-import { TkwIcon, isIconName, type IconName } from 'tokiwagi-ui/vue';
+import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/vue';
 // アプリ全体で一度読み込む。色値の定義元はtokens/だけ。
 import 'tokiwagi-ui/tokens/colors.css';
 import 'tokiwagi-ui/tokens/semantic.css';
@@ -69,13 +69,13 @@ const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
 
 <template>
   <button type="button" aria-label="通知一覧を開く" class="notification-button">
-    <TkwIcon :name="notificationIcon" :size="24" class="notification-icon" />
+    <TIcon :name="notificationIcon" :size="24" class="notification-icon" />
   </button>
   <button type="button">
-    <TkwIcon name="plus" :size="20" /> タスクを追加
+    <TIcon name="plus" :size="20" /> タスクを追加
   </button>
   <span>
-    <TkwIcon :name="safeName" color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー
+    <TIcon :name="safeName" color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー
   </span>
 </template>
 
@@ -102,9 +102,9 @@ const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
 | `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は `var(--tkw-color-…)` を使う |
 | `class` | Vueの `HTMLAttributes['class']` | 文字列・配列・オブジェクトをSVGに適用 |
 
-`TkwIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。公開名の誤記と非対応サイズは型検査で検出します。JavaScriptや外部データが型を迂回した場合も日本語エラーを投げ、別の図柄へ暗黙に置き換えません。外部文字列は `isIconName()` で検証し、必要な代替名は利用側で選びます。
+`TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。公開名の誤記と非対応サイズは型検査で検出します。JavaScriptや外部データが型を迂回した場合も日本語エラーを投げ、別の図柄へ暗黙に置き換えません。外部文字列は `isIconName()` で検証し、必要な代替名は利用側で選びます。
 
-`TkwIcon` は装飾用です。`aria-hidden="true"` と `focusable="false"` を固定し、SVG自体にクリックやフォーカスを設けません。公開props以外の属性・イベント・slotは転送しません。アイコンだけの操作には親のbutton/linkに操作内容の読み上げ名を付け、状態や情報には読み上げ可能な文言を併記します。クラスでviewBox・線幅・縦横比・サイズを上書きしないでください。小さい図柄が判別しにくければサイズを上げます。
+`TIcon` は装飾用です。`aria-hidden="true"` と `focusable="false"` を固定し、SVG自体にクリックやフォーカスを設けません。公開props以外の属性・イベント・slotは転送しません。アイコンだけの操作には親のbutton/linkに操作内容の読み上げ名を付け、状態や情報には読み上げ可能な文言を併記します。クラスでviewBox・線幅・縦横比・サイズを上書きしないでください。小さい図柄が判別しにくければサイズを上げます。
 
 クリッピングIDはVueの `useId()` でインスタンスごとに分離し、SSRとハイドレーションで安定させます。同じHTML文書に複数のVueアプリを置く場合は、それぞれ `app.config.idPrefix` を別の値に設定し、SSR側・クライアント側では同じ値を使ってください（[Vue公式のuseId仕様](https://vuejs.org/api/composition-api-helpers.html#useid)）。通常の単一Nuxtアプリでは追加設定は不要です。
 

@@ -8,7 +8,7 @@
 
 ## 役割
 
-`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts` の `TkwIcon` から利用します。React・Astroのアプリ向け実コンポーネントは未作成です。Storybookは共通資料に加え、実際のVueコンポーネントをマウントする確認ページを含みます。
+`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts` の `TIcon` から利用します。React・Astroのアプリ向け実コンポーネントは未作成です。Storybookは共通資料に加え、実際のVueコンポーネントをマウントする確認ページを含みます。
 
 - カラーの値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` が唯一の定義元です。全93トークン（プライマリー42、セカンダリー18、セマンティック24、ニュートラル9）は確定しています。ユーザーから変更指示があるまで値、色数、用途を維持してください。
 - カラーの使用ルールと見本は Storybook の「カラー」に置きます。数値は CSS から読み込み、Storybook や LP に別の値を定義しません。

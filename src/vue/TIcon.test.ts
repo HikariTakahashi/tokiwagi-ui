@@ -2,11 +2,11 @@ import { expect, test } from 'bun:test';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createSSRApp, h } from 'vue';
 import { renderToString } from '@vue/server-renderer';
-import { TkwIcon, iconNames, isIconName, type IconName, type IconSize } from './index';
+import { TIcon, iconNames, isIconName, type IconName, type IconSize } from './index';
 import { iconSources } from './icon-sources';
 import { iconSizes } from '../lib/icon-assets';
 
-const render = (name: IconName, size: IconSize = 24) => renderToString(createSSRApp({ render: () => h(TkwIcon, { name, size }) }));
+const render = (name: IconName, size: IconSize = 24) => renderToString(createSSRApp({ render: () => h(TIcon, { name, size }) }));
 const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule)="[^"]*"/g);
 
 // 原本の追加・削除・差し替え後も、生成された公開名とraw importが329個の原本に一致する。
@@ -33,7 +33,7 @@ test('Vueコンポーネントは全原本の形状を4サイズで維持する'
 // 同じ図柄を8回SSRし、各参照が自分のSVG内のIDを指し、再レンダーでも同じIDになる。
 test('moonとtoolの複数表示とSSRでIDの衝突や揺れが起きない', async () => {
   const page = () => {
-    const app = createSSRApp({ render: () => h('div', ['moon', 'tool'].flatMap(name => iconSizes.map(size => h(TkwIcon, { name: name as IconName, size })))) });
+    const app = createSSRApp({ render: () => h('div', ['moon', 'tool'].flatMap(name => iconSizes.map(size => h(TIcon, { name: name as IconName, size })))) });
     app.config.idPrefix = '画面:一';
     return renderToString(app);
   };
@@ -50,7 +50,7 @@ test('moonとtoolの複数表示とSSRでIDの衝突や揺れが起きない', a
 // 複数Vueアプリが同じ文書に存在するとき、利用側のidPrefixで参照IDを分離できる。
 test('複数のVueアプリでID接頭辞を分けられる', async () => {
   const html = await Promise.all(['first', 'second'].map(idPrefix => {
-    const app = createSSRApp({ render: () => h(TkwIcon, { name: 'moon' }) });
+    const app = createSSRApp({ render: () => h(TIcon, { name: 'moon' }) });
     app.config.idPrefix = idPrefix;
     return renderToString(app);
   }));
@@ -70,7 +70,7 @@ test('存在しない公開名と非対応サイズは日本語エラーにな�
 // 装飾SVGの属性を固定し、クラスとトークン色を受け取り、操作要素側の読み上げ名を保つ。
 test('色・クラスを指定でき、アクセシビリティ属性は操作要素と分担する', async () => {
   const html = await renderToString(createSSRApp({ render: () => h('button', { 'aria-label': '通知一覧を開く' }, [
-    h(TkwIcon, { name: 'bell', color: 'var(--tkw-color-primary-blue-on)', class: ['notification-icon', { selected: true }], 'aria-hidden': false, tabindex: 0, width: 99 }),
+    h(TIcon, { name: 'bell', color: 'var(--tkw-color-primary-blue-on)', class: ['notification-icon', { selected: true }], 'aria-hidden': false, tabindex: 0, width: 99 }),
   ]) }));
   expect(html).toContain('aria-label="通知一覧を開く"');
   expect(html).toContain('class="notification-icon selected"');
