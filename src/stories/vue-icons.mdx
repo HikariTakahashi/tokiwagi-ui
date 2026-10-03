@@ -11,17 +11,17 @@ Vue 3.5以上とViteのraw読み込みを使用します。ローカルパッケ
 
 ```vue
 <script setup lang="ts">
-import { TkwIcon, isIconName, type IconName } from 'tokiwagi-ui/vue';
+import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/vue';
 import 'tokiwagi-ui/tokens/colors.css';
 const name: IconName = 'bell';
 </script>
 
 <template>
   <button type="button" aria-label="通知一覧を開く">
-    <TkwIcon :name="name" :size="24" class="notification-icon" />
+    <TIcon :name="name" :size="24" class="notification-icon" />
   </button>
   <span>
-    <TkwIcon name="calendar" color="var(--tkw-color-primary-blue-on-subtle)" />
+    <TIcon name="calendar" color="var(--tkw-color-primary-blue-on-subtle)" />
     カレンダー
   </span>
 </template>
@@ -34,7 +34,7 @@ const name: IconName = 'bell';
 | color | string（CSS色、トークン参照を使用） | currentColor |
 | class | Vueの文字列・配列・オブジェクト | なし |
 
-公開入口から `TkwIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` も利用できます。存在しない名前・非対応サイズは型検査で拒否し、実行時も日本語エラーにします。外部文字列は `isIconName(value)` で検証し、代替図柄は利用側で明示します。
+公開入口から `TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` も利用できます。存在しない名前・非対応サイズは型検査で拒否し、実行時も日本語エラーにします。外部文字列は `isIconName(value)` で検証し、代替図柄は利用側で明示します。
 
 ## アクセシビリティと表示
 
