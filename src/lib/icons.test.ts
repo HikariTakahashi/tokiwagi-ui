@@ -1,16 +1,17 @@
 import { expect, test } from 'bun:test';
 import { readFileSync, readdirSync } from 'node:fs';
+import { isBrandAssetName } from './icon-assets';
 
 const stories = new URL('../stories/', import.meta.url);
 const detailDirectory = new URL('../icons/', stories);
-const files = readdirSync(detailDirectory).filter(name => name.endsWith('.mdx')).sort();
+const files = readdirSync(detailDirectory).filter(name => name.endsWith('.mdx') && !isBrandAssetName(name.slice(0, -4))).sort();
 const details = files.map(file => ({
   name: file.slice(0, -4),
   source: readFileSync(new URL(file, detailDirectory), 'utf8'),
 }));
 const catalog = readFileSync(new URL('icons.mdx', stories), 'utf8');
 const assets = new URL('../../icons/', import.meta.url);
-const names = readdirSync(assets, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
+const names = readdirSync(assets, { withFileTypes: true }).filter(entry => entry.isDirectory() && !isBrandAssetName(entry.name)).map(entry => entry.name).sort();
 const readmes = new Map(names.map(name => [name, readFileSync(new URL(`${name}/README.md`, assets), 'utf8')]));
 
 // 制作済み329図柄の原本と個別ページを突き合わせ、欠落・重複・孤立ページを検出する。
@@ -51,6 +52,7 @@ test('アイコン資料の内部リンクに存在しないページがない',
     'icons-migration--docs',
     'icons-display--docs',
     'components-ticon--docs',
+    'brand-logo--docs',
     ...details.map(detail => `icons-${detail.name}--docs`),
   ]);
   const sources = [catalog, ...details.map(detail => detail.source), ...readmes.values(),

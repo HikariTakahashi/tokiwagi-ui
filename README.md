@@ -1,6 +1,6 @@
 # Tokiwagi UI
 
-タスク管理アプリのためのデザインシステムです。Astro は紹介用のランディングページ、Storybook はカラーとアイコンのルール参照・実装時の確認に使います。
+タスク管理アプリのためのデザインシステムです。Astro は紹介用のランディングページ、Storybook はカラー・アイコン・ロゴのルール参照と実装時の確認に使います。
 
 ## VS Code の拡張機能
 
@@ -35,6 +35,7 @@ bun run storybook  # Storybook: http://localhost:6006
 
 - カラー値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` の全93トークンが定義元です。Storybook の見本・HEX・コントラスト表示はこれらを読み込みます。
 - カラーの使用ルールと操作例は Storybook の「カラー」にあります。CSS を編集して保存すると開発中の表示に反映されます。
+- ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
 - アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全329アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに329個収録済みです。一覧で検索・分類・サイズ・色を切り替え、個別ページで4サイズの見本、公開名コピー、原本SVGのダウンロードを利用できます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
 
@@ -51,6 +52,129 @@ bun run build:storybook
 Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon」でReact・Vue・Astroを切り替え、選択した公開名・サイズ・色を保持して確認できます。外部公開、既存 Nuxt 画面の置き換えは未実施です。
 
 `check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
+
+## TLogoの利用
+
+ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネント、サイズ、読み上げ状態、利用コードを確認できます。
+
+| props | 既定値 | 用途 |
+| --- | --- | --- |
+| `size` | `32` | 図形の幅。32・64・128pxから選択。 |
+| `decorative` | `false` | 名称併記・名前付きリンクではtrueにする。 |
+| `className` / `class` | なし | 外側のspanに付与する配置用クラス。Reactは文字列、Vueはclass形式、Astroは文字列。 |
+
+React：
+
+```tsx
+import { TLogo } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/tokens/neutrals.css';
+
+<TLogo size={64} />
+<a href="/" aria-label="Tokiwagi UI ホーム">
+  <TLogo decorative />
+  <span>Tokiwagi UI</span>
+</a>
+```
+
+Vue：
+
+```vue
+<script setup lang="ts">
+import { TLogo } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/tokens/neutrals.css';
+</script>
+
+<template>
+  <TLogo :size="64" />
+  <a href="/" aria-label="Tokiwagi UI ホーム">
+    <TLogo decorative />
+    <span>Tokiwagi UI</span>
+  </a>
+</template>
+```
+
+Astro：
+
+```astro
+---
+import { TLogo } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/tokens/neutrals.css';
+---
+<TLogo size={64} />
+<a href="/" aria-label="Tokiwagi UI ホーム">
+  <TLogo decorative />
+  <span>Tokiwagi UI</span>
+</a>
+```
+
+`size` は画像自体の幅です。四辺に幅の1/4の余白を含むため、占有領域は32px指定で48px、64px指定で96px、128px指定で192pxの正方形です。余白の背景は `--tkw-color-neutral-0` を参照します。親の文字色は画像へ継承しません。
+
+単体表示のaltは「Tokiwagi UI」、`decorative` 指定時は空です。操作は親のリンクに持たせてください。色・src・alt・style・追加属性・イベント・children／slotは公開せず、配置用classで内部のサイズや余白を上書きしないでください。不正なサイズと非booleanのdecorativeは描画時に日本語エラーで拒否します。
+
+原本SVGをdata URLとして埋め込むため、CSPを使う配信先は `img-src` に `data:` を許可してください。React・VueのSSRとハイドレーションで同じ画像srcを使い、Astroはクライアント処理なしで静的HTMLを出力します。内部SVGのIDは文書へ展開しません。アプリ画面への適用は未実施です。
+
+## TBrand（ロゴと名称）
+
+`TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は各方式の利用説明を参照してください。LP・既存アプリへの適用は未実施です。
+
+| 指定 | 型・既定値 | 用途 |
+| --- | --- | --- |
+| `size` | `LogoSize = 32 \| 64 \| 128`、既定32 | ロゴ図形の幅。名称のサイズは変わらない |
+| `className`（React） | `string` | 外側のspanに付与する配置用クラス |
+| `class`（Vue） | `HTMLAttributes['class']` | 外側のspanに付与する文字列・配列・オブジェクト |
+| `class`（Astro） | `string` | 外側のspanに付与する配置用クラス |
+
+名称・書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は既存見本と同じ `Inter, "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`、名称は16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxです。フォントは利用側で配信し、未読込時はフォールバックします。名称の色は親から継承します。ロゴの固定配色は変えません。
+
+```tsx
+import { TBrand } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/tokens/neutrals.css';
+
+<TBrand />;
+<a href="/" aria-label="Tokiwagi UI ホーム" className="brand-home">
+  <TBrand size={32} className="brand-position" />
+</a>;
+```
+
+```vue
+<script setup lang="ts">
+import { TBrand } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/tokens/neutrals.css';
+</script>
+
+<template>
+  <TBrand />
+  <a href="/" aria-label="Tokiwagi UI ホーム" class="brand-home">
+    <TBrand :size="32" class="brand-position" />
+  </a>
+</template>
+```
+
+```astro
+---
+import { TBrand } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/tokens/neutrals.css';
+---
+<TBrand />
+<a href="/" aria-label="Tokiwagi UI ホーム" class="brand-home">
+  <TBrand size={32} class="brand-position" />
+</a>
+```
+
+```css
+.brand-home { display: inline-flex; border-radius: 8px; color: var(--tkw-color-neutral-900); text-decoration: none; }
+.brand-home:hover { background: var(--tkw-color-neutral-50); text-decoration: underline; text-underline-offset: 4px; }
+.brand-home:active { background: var(--tkw-color-neutral-100); }
+.brand-home:focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 4px; }
+```
+
+内部の `TLogo` には `decorative` を指定し、画像のaltは空です。名称は通常のテキストとして一度だけ読み上げます。TBrand自体はフォーカスを持たず、リンク先・操作・操作名・ホバー・押下・フォーカスは親のa要素が担当します。ホームリンクには `aria-label="Tokiwagi UI ホーム"` を指定します。
+
+追加の属性（id・role・aria-*・tabIndex・style・href等）・イベント・children／slotは内部DOMへ転送しません。Reactのrefも受け取りません。Vueのrefはフレームワークのコンポーネント参照であり、DOM参照のAPIは提供しません。名称を別の文言へ差し替えるAPIはありません。配置用classは外側だけに付け、内部の余白・寸法・配色を上書きしないでください。非対応サイズはTLogoの検証で描画時にも日本語エラーとして拒否します。
+
+**占有領域**：TLogoが図形の四辺に幅の1/4の余白を確保するため、ロゴ領域は32px指定で48×48px、64px指定で96×96px、128px指定で192×192pxです。TBrandは外側のpaddingを追加しません。名称の行高は24pxで、全体の高さはロゴ領域と同じです。全幅は「ロゴ図形幅×1.5＋間隔8px＋名称の実測幅」で、フォントにより変わります。名称の右側の余白やリンクの操作領域は親で確保してください。ロゴと名称は縮小・折り返しません。利用先に収まるサイズを選んでください。
+
+`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の公開入口を使った3サイズ・静的表示・親ホームリンクを確認できます。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
 
 ## Astroでの利用
 

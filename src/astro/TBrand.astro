@@ -1,0 +1,13 @@
+---
+import { brandName, brandStyle, brandNameStyle } from '../lib/brand';
+import TLogo from './TLogo.astro';
+import type { TBrandProps } from './TBrandProps';
+
+interface Props extends TBrandProps {}
+
+const { size = 32, class: className } = Astro.props;
+---
+<span class={className} style={brandStyle}>
+  <TLogo size={size} decorative />
+  <span style={brandNameStyle}>{brandName}</span>
+</span>

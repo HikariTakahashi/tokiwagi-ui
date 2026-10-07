@@ -9,15 +9,21 @@ export type IconCategory = typeof iconCategories[number][0];
 export type IconAsset = { name: string; category: IconCategory; svg: string; href: string; searchLabels: readonly string[] };
 export const iconSizes = [16, 20, 24, 32] as const;
 
+/** 固定配色・最小32pxのロゴは、汎用アイコンと別の使用ルールで管理する。 */
+export function isBrandAssetName(name: string): boolean {
+  return name === 'logo';
+}
+
 export function createIconCatalog(sources: Record<string, string>, documents: Record<string, string>): IconAsset[] {
   const details = new Map<string, string>();
   for (const [path, source] of Object.entries(documents)) {
     const name = path.split('/').at(-2)!;
+    if (isBrandAssetName(name)) continue;
     if (details.has(name)) throw new Error(`個別READMEが重複しています: ${name}`);
     details.set(name, source);
   }
   const names = new Set<string>();
-  const catalog = Object.entries(sources).map(([path, svg]) => {
+  const catalog = Object.entries(sources).filter(([path]) => !isBrandAssetName(path.split('/').at(-2)!)).map(([path, svg]) => {
     const name = path.split('/').pop()!.replace(/\.svg$/, '');
     const directory = path.split('/').at(-2);
     if (!/^[a-z]+(?:-[a-z]+)*$/.test(name) || names.has(name)) {

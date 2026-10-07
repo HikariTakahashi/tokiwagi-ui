@@ -5,7 +5,7 @@ import { experimental_AstroContainer } from 'astro/container';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { iconSources, iconNames, type IconName } from '../lib/icon-sources';
-import { iconSizes } from '../lib/icon-assets';
+import { iconSizes, isBrandAssetName } from '../lib/icon-assets';
 import type { TIconProps } from './TIconProps';
 
 // Bunでも実際の.astroソースをAstroのコンパイラで変換し、公式Containerで描画する。
@@ -25,7 +25,7 @@ const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-
 // 共通公開名と原本を照合し、Astroでも全329図柄を選べることを確認する。
 test('Astroの公開名と読み込むSVGは全329原本に一致する', () => {
   const directory = new URL('../../icons/', import.meta.url);
-  expect<readonly string[]>(iconNames).toEqual(readdirSync(directory).sort());
+  expect<readonly string[]>(iconNames).toEqual(readdirSync(directory).filter(name => !isBrandAssetName(name)).sort());
   expect(iconNames).toHaveLength(329);
   for (const name of iconNames) expect(iconSources[name]).toBe(readFileSync(new URL(`${name}/${name}.svg`, directory), 'utf8'));
 });
@@ -60,7 +60,7 @@ test('moonとtoolの並行描画と複数表示でクリッピングIDが衝突�
 // 型を迂回した外部入力でも、未収録名・prototype名・非対応サイズ・name欠落を明示的に拒否する。
 test('存在しない公開名と非対応サイズは日本語エラーになる', async () => {
   expect(isIconName('bell')).toBe(true);
-  for (const name of ['missing', '__proto__', 'toString']) {
+  for (const name of ['missing', 'logo', '__proto__', 'toString']) {
     expect(isIconName(name)).toBe(false);
     const error = await render({ name: name as IconName }).catch(error => error);
     expect(error).toBeInstanceOf(Error);

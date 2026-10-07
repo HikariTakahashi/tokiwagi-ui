@@ -2,7 +2,7 @@ import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
 import { act } from 'react';
 import { renderToString } from 'react-dom/server';
-import { TIcon } from 'tokiwagi-ui/react';
+import { TIcon, TLogo } from 'tokiwagi-ui/react';
 import { iconSizes } from '../lib/icon-assets';
 
 let window: Window;
@@ -28,6 +28,40 @@ afterAll(async () => {
   for (const [key, descriptor] of globals) {
     if (descriptor) Object.defineProperty(globalThis, key, descriptor);
     else Reflect.deleteProperty(globalThis, key);
+  }
+});
+
+// ロゴのSSR出力を作り直さずhydrateし、サイズ・読み上げ状態の更新後も原本を保つ。
+test('TLogoのハイドレーションとprops更新で画像を維持し、警告や復旧エラーが起きない', async () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  container.innerHTML = renderToString(<div><TLogo /><TLogo size={128} decorative /></div>);
+  const images = [...container.querySelectorAll('img')];
+  const src = images[0]!.getAttribute('src');
+  const recovered: unknown[] = [];
+  const errors = spyOn(console, 'error').mockImplementation(() => {});
+  const warnings = spyOn(console, 'warn').mockImplementation(() => {});
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    await act(async () => { root = hydrateRoot(container, <div><TLogo /><TLogo size={128} decorative /></div>, {
+      onRecoverableError: error => recovered.push(error),
+    }); });
+    expect([...container.querySelectorAll('img')]).toEqual(images);
+    await act(async () => { root!.render(<div><TLogo size={64} decorative /><TLogo size={32} /></div>); });
+    expect([...container.querySelectorAll('img')]).toEqual(images);
+    expect(images[0]!.getAttribute('alt')).toBe('');
+    expect(images[0]!.getAttribute('width')).toBe('64');
+    expect(images[0]!.parentElement!.style.padding).toBe('16px');
+    expect(images[1]!.getAttribute('alt')).toBe('Tokiwagi UI');
+    expect(images[0]!.getAttribute('src')).toBe(src);
+    expect(recovered).toHaveLength(0);
+    expect(errors).not.toHaveBeenCalled();
+    expect(warnings).not.toHaveBeenCalled();
+  } finally {
+    if (root) await act(async () => { root!.unmount(); });
+    errors.mockRestore();
+    warnings.mockRestore();
+    container.remove();
   }
 });
 

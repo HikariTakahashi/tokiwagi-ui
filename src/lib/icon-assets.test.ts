@@ -1,12 +1,24 @@
 import { describe, expect, test } from 'bun:test';
 import { readFileSync, readdirSync } from 'node:fs';
-import { createIconCatalog, filterIcons, iconCategories, iconSizes, originalIconUrl, renderIconSvg } from './icon-assets';
+import { createIconCatalog, filterIcons, iconCategories, iconSizes, isBrandAssetName, originalIconUrl, renderIconSvg } from './icon-assets';
 
 const directory = new URL('../../icons/', import.meta.url);
-const names = readdirSync(directory).filter(name => readdirSync(new URL(`${name}/`, directory)).includes(`${name}.svg`));
+const names = readdirSync(directory).filter(name => !isBrandAssetName(name) && readdirSync(new URL(`${name}/`, directory)).includes(`${name}.svg`));
 const sources = Object.fromEntries(names.map(name => [`${name}/${name}.svg`, readFileSync(new URL(`${name}/${name}.svg`, directory), 'utf8')]));
 const documents = Object.fromEntries(names.map(name => [`${name}/README.md`, readFileSync(new URL(`${name}/README.md`, directory), 'utf8')]));
 const catalog = createIconCatalog(sources, documents);
+
+// 同じ原本ディレクトリにロゴがある場合も、汎用一覧とREADMEの照合対象を329種に保つ。
+test('ブランドロゴは汎用アイコンの検索と個別ページに含まれない', () => {
+  const mixed = createIconCatalog(
+    { ...sources, 'logo/logo.svg': readFileSync(new URL('logo/logo.svg', directory), 'utf8') },
+    { ...documents, 'logo/README.md': readFileSync(new URL('logo/README.md', directory), 'utf8') },
+  );
+  expect(mixed).toEqual(catalog);
+  expect(mixed.some(icon => icon.name === 'logo')).toBe(false);
+  expect(filterIcons(mixed, 'logo', 'all')).toEqual(filterIcons(catalog, 'logo', 'all'));
+  expect(filterIcons(mixed, 'ときわぎ', 'all')).toEqual([]);
+});
 
 // 既存6分類と全個別ページの分類を照合し、図柄の移動・欠落とリンクの不整合を検出する。
 test('原本329個が既存の分類と個別ページに対応する', () => {
