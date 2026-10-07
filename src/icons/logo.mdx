@@ -1,0 +1,14 @@
+import { Markdown, Meta } from '@storybook/addon-docs/blocks';
+import { LogoPreview } from '../stories/components/LogoPreview';
+import { logoReadmeForStorybook } from '../stories/logo-readme';
+import readme from '../../icons/logo/README.md?raw';
+
+<Meta title="ロゴ/使用ルール" id="brand-logo" />
+
+<div className="tkw-icon-doc">
+
+<LogoPreview />
+
+<Markdown options={{ overrides: { a: { props: { target: '_top' } } } }}>{logoReadmeForStorybook(readme)}</Markdown>
+
+</div>

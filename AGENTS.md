@@ -14,6 +14,7 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 
 - カラーの値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` が唯一の定義元です。全93トークン（プライマリー42、セカンダリー18、セマンティック24、ニュートラル9）は確定しています。ユーザーから変更指示があるまで値、色数、用途を維持してください。
 - カラーの使用ルールと見本は Storybook の「カラー」に置きます。数値は CSS から読み込み、Storybook や LP に別の値を定義しません。
+- ロゴは `icons/logo/logo.svg`、使用ルールは同じディレクトリの `README.md` が管理元です。Storybookの「ロゴ/使用ルール」（`src/icons/logo.mdx`）に原本を参照する32・64・128pxの見本とダウンロードを置きます。固定配色・最小32pxのブランド資産として扱い、汎用アイコン329種の一覧・個別ページ照合・TIcon公開名生成から分離します。`src/lib/icon-assets.ts` の `isBrandAssetName` で識別し、SVG原本の形状・配色は維持します。ロゴのルールは案で、アプリ画面への適用は未実施です。
 - アイコンの名前は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）、各アイコンの用途・使用ルールと検索用の別名は `icons/<公開名>/README.md`、既存参照 ID は「アイコン/既存フロントエンドとの対応」が管理元です。`bell` の詳細ルールは確定済み、ほかは詳細ルール案です。README には「概要」「使用場面」「状態の表し方」「使用しない場面」「表示とアクセシビリティ」「関連アイコンと使い分け」の6セクションを記載します。SVG 原本329個は各 README と同じ `icons/<公開名>/` に収録済みです。Storybook の個別ページは README を読み込んで表示し、一覧と全個別ページに共通の表示処理を使います。既存画面への置き換えは未実装です。
 - `tokiwagi-ui` の略称は `tkw` です。ライトモードを対象とし、7色のプライマリーを対等に扱います。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` の `@theme inline` です。既存トークンを参照し、HEX 値を複製しません。Preflight は読み込みません。

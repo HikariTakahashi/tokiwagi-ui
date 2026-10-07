@@ -4,7 +4,7 @@ import { createSSRApp, h } from 'vue';
 import { renderToString } from '@vue/server-renderer';
 import { TIcon, iconNames, isIconName, type IconName, type IconSize } from './index';
 import { iconSources } from './icon-sources';
-import { iconSizes } from '../lib/icon-assets';
+import { iconSizes, isBrandAssetName } from '../lib/icon-assets';
 
 const render = (name: IconName, size: IconSize = 24) => renderToString(createSSRApp({ render: () => h(TIcon, { name, size }) }));
 const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule)="[^"]*"/g);
@@ -12,7 +12,7 @@ const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-
 // 原本の追加・削除・差し替え後も、生成された公開名とraw importが329個の原本に一致する。
 test('Vueの公開名と読み込むSVGは全原本と一致する', () => {
   const directory = new URL('../../icons/', import.meta.url);
-  expect<readonly string[]>(iconNames).toEqual(readdirSync(directory).sort());
+  expect<readonly string[]>(iconNames).toEqual(readdirSync(directory).filter(name => !isBrandAssetName(name)).sort());
   expect(iconNames).toHaveLength(329);
   for (const name of iconNames) expect(iconSources[name]).toBe(readFileSync(new URL(`${name}/${name}.svg`, directory), 'utf8'));
 });
@@ -60,7 +60,7 @@ test('複数のVueアプリでID接頭辞を分けられる', async () => {
 // JSや外部入力で型を迂回した場合も、不正名・prototype名・非対応サイズを明示的に拒否する。
 test('存在しない公開名と非対応サイズは日本語エラーになる', async () => {
   expect(isIconName('bell')).toBe(true);
-  for (const name of ['missing', '__proto__', 'toString']) {
+  for (const name of ['missing', 'logo', '__proto__', 'toString']) {
     expect(isIconName(name)).toBe(false);
     expect(await render(name as IconName).catch((error: Error) => error.message)).toBe(`存在しないアイコン公開名: ${name}`);
   }
