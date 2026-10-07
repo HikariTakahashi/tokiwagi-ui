@@ -1,0 +1,28 @@
+.tkw-tbrand-doc { color: var(--tkw-color-neutral-900); line-height: 1.8; max-width: 1120px; margin: 0 auto; padding: 24px 16px; font-family: Inter, "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.tkw-tbrand-doc * { box-sizing: border-box; }
+.tkw-tbrand-doc h1 { margin: 0 0 12px; font-size: 32px; }
+.tkw-tbrand-doc h2 { margin: 32px 0 16px; font-size: 22px; }
+.tkw-tbrand-frameworks { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.tkw-tbrand-doc button, .tkw-tbrand-doc select { border: 1px solid var(--tkw-color-neutral-300); border-radius: 8px; background: var(--tkw-color-neutral-0); color: inherit; font: inherit; padding: 8px 16px; }
+.tkw-tbrand-doc button { cursor: pointer; }
+.tkw-tbrand-doc button[aria-pressed="true"] { background: var(--tkw-color-neutral-900); color: var(--tkw-color-neutral-0); }
+.tkw-tbrand-doc button:hover { box-shadow: inset 0 0 0 2px var(--tkw-color-neutral-600); }
+.tkw-tbrand-doc button:active { transform: translateY(1px); }
+.tkw-tbrand-doc :is(button, select, a):focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 4px; }
+.tkw-tbrand-control { display: inline-flex; align-items: center; gap: 12px; }
+.tkw-tbrand-stage { display: flex; align-items: center; min-height: 216px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 12px; background: var(--tkw-color-neutral-50); overflow-x: auto; }
+.tkw-tbrand-stage > * { margin-inline: auto; flex-shrink: 0; }
+.tkw-tbrand-sizes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tkw-tbrand-sizes figure { min-width: 0; margin: 0; }
+.tkw-tbrand-sizes figcaption { font-size: 13px; margin-top: 8px; }
+.tkw-tbrand-home { display: inline-flex; max-width: 100%; border-radius: 8px; background: var(--tkw-color-neutral-0); color: inherit; text-decoration: none; }
+.tkw-tbrand-home:hover { background: var(--tkw-color-neutral-50); text-decoration: underline; text-underline-offset: 4px; }
+.tkw-tbrand-home:active { background: var(--tkw-color-neutral-100); }
+.tkw-tbrand-doc pre { overflow-x: auto; padding: 20px; border-radius: 8px; background: var(--tkw-color-neutral-50); font-size: 13px; }
+.tkw-tbrand-table { overflow-x: auto; }
+.tkw-tbrand-doc table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tkw-tbrand-doc :is(th, td) { padding: 12px; text-align: left; border-bottom: 1px solid var(--tkw-color-neutral-200); }
+@media (max-width: 960px) { .tkw-tbrand-sizes { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .tkw-tbrand-doc { font-size: 14px; } }
+
+.tkw-tbrand-home-stage { overflow-x: auto; padding: 8px; }

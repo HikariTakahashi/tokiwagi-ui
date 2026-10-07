@@ -21,6 +21,8 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 
 ## コンポーネントの命名規則
 
+- ロゴと名称のセットはReact・Vue・Astroの `TBrand` として公開します。`TLogo` をdecorativeで再利用し、固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示します。size（32/64/128、既定32）は図形幅で、配置用class以外の属性・イベント・children／slotを転送しません。書体は既存のInter・Noto Sans JP・システムフォント、名称は16px・太さ600・行高1.5、間隔8pxで、外側のpaddingを追加しません。全幅は図形幅×1.5＋8px＋名称の実測幅、高さは図形幅×1.5です。操作と状態表示は親リンクが担い、ホームリンクに `aria-label="Tokiwagi UI ホーム"` を付けます。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを確認し、Astroは専用の描画スクリプトと仮想モジュールで収録します。LP・既存アプリへの適用は未実施です。
+
 - Tokiwagi UIがアプリ向けに公開するコンポーネント名は、アッパーキャメルケース（PascalCase）とし、接頭辞は `T` です。`T` に用途を表すPascalCase名を続けます。例：`TIcon`、`TButton`、`TTextField`。
 - Vue・React・Astroで同じ用途を持つコンポーネントには同じ公開名を使います。フレームワークの違いはディレクトリや公開入口で区別します。
 - コンポーネントを定義するファイルのベース名、exportするコンポーネント名、フレームワークで明示する登録名を揃えます。例：`TIcon.ts`、`TIcon.vue`、`TIcon.tsx`、`TIcon.astro`。コンポーネントに対応するprops型は `TIconProps` のように命名します。
