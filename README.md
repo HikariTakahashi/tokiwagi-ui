@@ -48,9 +48,48 @@ bun run build
 bun run build:storybook
 ```
 
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React向けの `TIcon` と、各実コンポーネントをマウントするStorybook確認ページがあります。外部公開、既存 Nuxt 画面の置き換え、Astro のアプリ向け実コンポーネントは未実施です。
+Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon」でReact・Vue・Astroを切り替え、選択した公開名・サイズ・色を保持して確認できます。外部公開、既存 Nuxt 画面の置き換えは未実施です。
 
 `check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
+
+## Astroでの利用
+
+Astroの入口は `src/astro/index.ts`、パッケージの公開入口は `tokiwagi-ui/astro` です。このリポジトリのAstro 7.3.4で検証しています。npm公開・配布ビルドは未実施で、`bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）でローカルパッケージとして取り込みます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。Astro/Viteの `.astro` と `?raw` 読み込みを使用し、React・Vueの導入は不要です。
+
+```astro
+---
+import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/tokens/colors.css';
+import 'tokiwagi-ui/tokens/semantic.css';
+const fromApi: string = 'calendar';
+const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
+---
+<button type="button" aria-label="通知一覧を開く" class="notification-button">
+  <TIcon name="bell" size={24} class="notification-icon" />
+</button>
+<a href="/tasks"><TIcon name="task" size={20} /> タスク一覧</a>
+<span><TIcon name={safeName} color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー</span>
+<span><TIcon name="check" size={20} /> 完了</span>
+```
+
+| 指定 | 型・既定値 | 用途 |
+| --- | --- | --- |
+| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
+| `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ |
+| `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は既存トークンを参照 |
+| `class` | `string` | SVGのクラス名 |
+
+`TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。名前の誤記と非対応サイズは型検査で検出し、型を迂回した場合も日本語エラーを投げます。外部文字列は `isIconName()` で検証し、代替名は利用側で選びます。
+
+React・Vue版と同じ装飾用APIです。SVGの `aria-hidden="true"`・`focusable="false"`・32×32のviewBox・width/heightを固定し、追加のSVG属性（id、role、aria-label、styleなど）・イベント・slotは転送しません。意味のある状態・情報は読み上げ可能なテキストを併記します。アイコンだけのリンクやボタンには親に目的が分かる名前を付けます。フォーカス、ホバー、押下、無効状態、操作領域は親が担い、クラスで形状・線幅・サイズを上書きしません。
+
+黒い線と塗りだけをcurrentColor化し、原本の座標・線幅・縦横比・透明な塗り・白いクリッピングを維持します。クリッピングIDはビルド／サーバー描画時に `crypto.randomUUID()` でインスタンスごとに生成し、出力HTMLに保存します。ハイドレーションやクライアントランタイムは不要で、ビルドごとにID文字列は変わります。アプリ向け入口はREADME全文、Storybook専用コード、React・Vueランタイムを読み込みません。
+
+Storybookの「コンポーネント/TIcon」でAstroを選ぶと、プレビュー・使用コード・API・静的出力の説明が切り替わります。React・Vueとの切り替え時も公開名・サイズ・色は維持します。
+
+StorybookのAstro見本は `.storybook/astro-previews.ts` がBunの別プロセスで公開入口の実コンポーネントを全329種×4サイズ描画し、仮想モジュールとして供給します。生成JSONは一時ファイルへの書き込み完了後に読み込み、成功・失敗にかかわらず一時ファイルを削除します。Astro選択時にHTMLデータを読み込み、複数表示ではIDだけをインスタンスごとに分離します。色は親から継承します。Astroランタイムや別のAstroサーバーは不要で、静的Storybookにも描画結果を収録します。開発中に原本・実コンポーネントを編集すると再生成し、色CSSの変更は既存のHMRで反映します。生成結果はコミットしません。
+
+`bun test` はAstroコンパイラと [公式Container API](https://docs.astro.build/en/reference/container-reference/) で実コンポーネントを描画し、全原本×4サイズ、並行描画のID、入力エラー、固定属性、公開入口への資料・他ランタイムの混入を検証します。
 
 ## Reactでの利用
 
@@ -208,7 +247,7 @@ Issue の記載項目は `.github/ISSUE_TEMPLATE/` 内の3種類のテンプレ�
 - 差し替えは同名の原本を更新します。用途・使用ルール・別名は同じディレクトリの `README.md` に記載します。新規追加時は命名基準に従い、SVG、6セクションを持つ README、README を読み込む `src/icons/<公開名>.mdx` の個別ページを一組で追加します。名前・分類・一覧は原本から、検索用の別名は README から自動的に読み込みます。件数の受け入れ条件と文書も更新してください。
 - `src/lib/icon-assets.ts` が表示時に黒い線と塗りを `currentColor` に変換します。`fill="none"` とクリッピング用の白い塗りを保持し、ID参照は表示ごとに一意にします。表示用SVGを別途編集しません。
 - 原本ダウンロードはStorybookの `staticDirs` で `icons/` を `/icon-assets` に配信します。README の `?raw` 読み込みと静的配信のURLを分けています。静的ビルドにも原本がそのままコピーされ、サブディレクトリへの配置でも相対URLで参照できます。
-- 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。このコンポーネントはStorybookのMDX資料用です。アプリ向けAPIには `tokiwagi-ui/react` または `tokiwagi-ui/vue` の `TIcon` を使います。
-- Vue・React共通の公開名と原本へのimportは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。Vueの既存ファイルは共通データを再exportします。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
+- 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。このコンポーネントはStorybookのMDX資料用です。アプリ向けAPIには `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` の `TIcon` を使います。
+- Vue・React・Astro共通の公開名と原本へのimportは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。Vueの既存ファイルは共通データを再exportします。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
 - `bun test`、`bun run check`、`bun run build`、`bun run build:storybook` を実行します。一覧・個別ページで原本との一致、16/20/24/32pxの判読性、トークン色、同一図柄の複数表示、キーボード操作とモバイル表示を確認してください。
 - 小サイズで細部が判別しにくい図柄はサイズを上げるかラベルを併記します。全アイコンの16px利用を一律に推奨しません。詳しくはStorybookの「アイコン/共通表示ルール」を参照してください。

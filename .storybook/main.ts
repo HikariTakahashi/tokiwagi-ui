@@ -1,6 +1,7 @@
 import type { StorybookConfig } from '@storybook/html-vite';
 import tailwindcss from '@tailwindcss/vite';
 import remarkGfm from 'remark-gfm';
+import { astroPreviewsPlugin } from './astro-previews.ts';
 
 const config: StorybookConfig = {
   framework: '@storybook/html-vite',
@@ -15,7 +16,7 @@ const config: StorybookConfig = {
     },
   }],
   async viteFinal(config) {
-    config.plugins = [...(config.plugins ?? []), tailwindcss()];
+    config.plugins = [...(config.plugins ?? []), tailwindcss(), astroPreviewsPlugin()];
     // HTML版のDocsでVueを直接マウントするため、Vueプラグインが設定する既定フラグを明示する。
     config.define = {
       __VUE_OPTIONS_API__: 'true',

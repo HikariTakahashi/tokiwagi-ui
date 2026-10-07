@@ -5,6 +5,7 @@
   "type": "module",
   "packageManager": "bun@1.3.9",
   "exports": {
+    "./astro": "./src/astro/index.ts",
     "./react": "./src/react/index.ts",
     "./vue": "./src/vue/index.ts",
     "./tokens/*.css": "./tokens/*.css"
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@astrojs/compiler-rs": "0.4.1",
     "@storybook/addon-docs": "10.6.0",
     "@storybook/html-vite": "10.6.0",
     "@types/bun": "^1.3.9",
