@@ -6,17 +6,10 @@
 .tkw-logo-preview-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
 .tkw-logo-lockup { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .tkw-logo-lockup strong { font-size: clamp(20px, 3vw, 28px); }
-.tkw-logo-clearspace {
-  display: inline-flex;
-  flex: 0 0 auto;
-  padding: calc(var(--tkw-logo-size) / 4);
-  background: var(--tkw-color-neutral-0);
-}
-.tkw-logo-clearspace img { display: block; width: var(--tkw-logo-size); height: var(--tkw-logo-size); max-width: none; }
 .tkw-logo-sizes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 24px 0; }
 .tkw-logo-sizes figure { margin: 0; min-width: 0; }
 .tkw-logo-swatch { display: flex; align-items: center; justify-content: center; min-height: 224px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 12px; background: var(--tkw-color-neutral-0); }
-.tkw-logo-swatch-subtle, .tkw-logo-swatch-subtle .tkw-logo-clearspace { background: var(--tkw-color-neutral-50); }
+.tkw-logo-swatch-subtle { background: var(--tkw-color-neutral-50); }
 .tkw-logo-sizes figcaption { margin-top: 10px; font-size: 12px; color: var(--tkw-color-neutral-600); line-height: 1.8; }
 .tkw-logo-preview .tkw-logo-download { display: inline-flex; align-items: center; padding: 12px 16px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 8px; background: var(--tkw-color-neutral-0); color: var(--tkw-color-neutral-900); text-decoration: none; font-size: 13px; }
 .tkw-logo-download:hover { background: var(--tkw-color-neutral-50); border-color: var(--tkw-color-neutral-600); }

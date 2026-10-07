@@ -1,0 +1,12 @@
+---
+import { logoPresentation } from '../lib/logo';
+import type { TLogoProps } from './TLogoProps';
+
+interface Props extends TLogoProps {}
+
+const { size = 32, decorative = false, class: className } = Astro.props;
+const logo = logoPresentation(size, decorative);
+---
+<span class={className} style={logo.frameStyle}>
+  <img src={logo.src} alt={logo.alt} width={size} height={size} style={logo.imageStyle} draggable="false" />
+</span>

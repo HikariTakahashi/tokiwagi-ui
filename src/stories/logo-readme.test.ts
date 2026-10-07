@@ -10,6 +10,7 @@ test('ロゴのREADMEはStorybookで使用ルールと関連資料を参照で�
     '概要', '使用場面', '状態の表し方', '使用しない場面', '表示とアクセシビリティ', '関連アイコンと使い分け',
   ]);
   expect(rendered).toContain('(./icon-assets/logo/logo.svg)');
+  expect(rendered).toContain('(./?path=/docs/components-tlogo--docs)');
   expect(rendered).toContain('(./?path=/docs/カラー-使用ルール--docs)');
   for (const name of ['calendar', 'task', 'bell']) expect(rendered).toContain(`(./?path=/docs/icons-${name}--docs)`);
   expect(rendered).not.toMatch(/\]\(\.\.\//);

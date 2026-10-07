@@ -21,6 +21,8 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 
 ## コンポーネントの命名規則
 
+- ロゴのアプリ向け公開名はReact・Vue・Astroともに `TLogo` です。`src/lib/logo.ts` が原本のdata URL・許可サイズ・余白・altを共通管理します。`size`（32/64/128、既定32）は図形の幅、`decorative`（既定false）は空altへの切り替えです。外側のspanに表示幅の1/4の余白とneutral-0背景を確保するため、占有領域は幅の1.5倍です。配置用class以外の属性・イベント・children／slotは転送しません。リンクと名称は親が担います。Storybook「コンポーネント/TLogo」で公開入口の実コンポーネントを確認し、Astroは専用のBun描画スクリプトと仮想モジュールで静的出力を収録します。SVG原本・配色・汎用アイコン329種は維持します。SSR・ハイドレーションとReact 18/19の公開型も検証します。data URL用のCSPとneutrals.cssの読み込みを利用例に記載します。
+
 - ロゴと名称のセットはReact・Vue・Astroの `TBrand` として公開します。`TLogo` をdecorativeで再利用し、固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示します。size（32/64/128、既定32）は図形幅で、配置用class以外の属性・イベント・children／slotを転送しません。書体は既存のInter・Noto Sans JP・システムフォント、名称は16px・太さ600・行高1.5、間隔8pxで、外側のpaddingを追加しません。全幅は図形幅×1.5＋8px＋名称の実測幅、高さは図形幅×1.5です。操作と状態表示は親リンクが担い、ホームリンクに `aria-label="Tokiwagi UI ホーム"` を付けます。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを確認し、Astroは専用の描画スクリプトと仮想モジュールで収録します。LP・既存アプリへの適用は未実施です。
 
 - Tokiwagi UIがアプリ向けに公開するコンポーネント名は、アッパーキャメルケース（PascalCase）とし、接頭辞は `T` です。`T` に用途を表すPascalCase名を続けます。例：`TIcon`、`TButton`、`TTextField`。

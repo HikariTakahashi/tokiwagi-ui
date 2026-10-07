@@ -30,7 +30,7 @@ for (const version of matrix) {
         target: 'ES2022', module: 'ESNext', moduleResolution: 'Bundler', jsx: 'react-jsx',
         strict: true, noEmit: true, types: ['bun', 'react', 'react-dom'],
       },
-      files: ['src/react/TIcon.typecheck.tsx', 'src/react/TBrand.typecheck.tsx', 'raw-svg.d.ts'],
+      files: ['src/react/TIcon.typecheck.tsx', 'src/react/TLogo.typecheck.tsx', 'src/react/TBrand.typecheck.tsx', 'raw-svg.d.ts'],
     }, null, 2));
     console.log(`\nReact ${version.react}: 公開型・全原本・SSR・ハイドレーションを検証`);
     for (const args of [

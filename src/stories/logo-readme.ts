@@ -2,6 +2,7 @@
 export function logoReadmeForStorybook(readme: string): string {
   return readme
     .replaceAll('(./logo.svg)', '(./icon-assets/logo/logo.svg)')
+    .replaceAll('(../../src/stories/tlogo.mdx)', '(./?path=/docs/components-tlogo--docs)')
     .replaceAll('(../../tokens/colors.css)', '(./?path=/docs/カラー-使用ルール--docs)')
     .replaceAll('(../../tokens/neutrals.css)', '(./?path=/docs/カラー-使用ルール--docs)')
     .replaceAll('(../calendar/README.md)', '(./?path=/docs/icons-calendar--docs)')

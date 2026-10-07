@@ -53,6 +53,66 @@ Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です�
 
 `check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
 
+## TLogoの利用
+
+ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネント、サイズ、読み上げ状態、利用コードを確認できます。
+
+| props | 既定値 | 用途 |
+| --- | --- | --- |
+| `size` | `32` | 図形の幅。32・64・128pxから選択。 |
+| `decorative` | `false` | 名称併記・名前付きリンクではtrueにする。 |
+| `className` / `class` | なし | 外側のspanに付与する配置用クラス。Reactは文字列、Vueはclass形式、Astroは文字列。 |
+
+React：
+
+```tsx
+import { TLogo } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/tokens/neutrals.css';
+
+<TLogo size={64} />
+<a href="/" aria-label="Tokiwagi UI ホーム">
+  <TLogo decorative />
+  <span>Tokiwagi UI</span>
+</a>
+```
+
+Vue：
+
+```vue
+<script setup lang="ts">
+import { TLogo } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/tokens/neutrals.css';
+</script>
+
+<template>
+  <TLogo :size="64" />
+  <a href="/" aria-label="Tokiwagi UI ホーム">
+    <TLogo decorative />
+    <span>Tokiwagi UI</span>
+  </a>
+</template>
+```
+
+Astro：
+
+```astro
+---
+import { TLogo } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/tokens/neutrals.css';
+---
+<TLogo size={64} />
+<a href="/" aria-label="Tokiwagi UI ホーム">
+  <TLogo decorative />
+  <span>Tokiwagi UI</span>
+</a>
+```
+
+`size` は画像自体の幅です。四辺に幅の1/4の余白を含むため、占有領域は32px指定で48px、64px指定で96px、128px指定で192pxの正方形です。余白の背景は `--tkw-color-neutral-0` を参照します。親の文字色は画像へ継承しません。
+
+単体表示のaltは「Tokiwagi UI」、`decorative` 指定時は空です。操作は親のリンクに持たせてください。色・src・alt・style・追加属性・イベント・children／slotは公開せず、配置用classで内部のサイズや余白を上書きしないでください。不正なサイズと非booleanのdecorativeは描画時に日本語エラーで拒否します。
+
+原本SVGをdata URLとして埋め込むため、CSPを使う配信先は `img-src` に `data:` を許可してください。React・VueのSSRとハイドレーションで同じ画像srcを使い、Astroはクライアント処理なしで静的HTMLを出力します。内部SVGのIDは文書へ展開しません。アプリ画面への適用は未実施です。
+
 ## TBrand（ロゴと名称）
 
 `TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は各方式の利用説明を参照してください。LP・既存アプリへの適用は未実施です。
