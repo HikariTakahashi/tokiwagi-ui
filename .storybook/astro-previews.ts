@@ -6,11 +6,10 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
+import { astroPreviewDataPlugin } from './astro-preview-data.ts';
 import type { AstroIconPreviews } from '../src/stories/components/astro-preview';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const virtualId = 'virtual:tkw-astro-icons';
-const resolvedId = `\0${virtualId}`;
 const execute = promisify(execFile);
 
 export async function generateAstroPreviews(): Promise<AstroIconPreviews> {
@@ -25,31 +24,12 @@ export async function generateAstroPreviews(): Promise<AstroIconPreviews> {
   }
 }
 
-/** AstroのHTMLを開発・静的ビルドで共通の仮想モジュールにする。ブラウザーへAstroランタイムを送らない。 */
+/** AstroのHTMLをJSONとして収録し、仮想モジュールでURLを渡す。ブラウザーへAstroランタイムを送らない。 */
 export function astroPreviewsPlugin(): Plugin {
-  let pending: Promise<AstroIconPreviews> | undefined;
   const dependencies = [
     'scripts/render-astro-previews.ts', 'src/astro/TIcon.astro', 'src/astro/TIconProps.ts', 'src/astro/index.ts',
     'src/lib/icon-assets.ts', 'src/lib/icon-sources.ts',
     ...readdirSync(`${root}icons`).map(name => `icons/${name}/${name}.svg`),
   ].map(path => `${root}${path}`);
-  return {
-    name: 'vite-plugin-tkw-astro-previews',
-    resolveId(id) { if (id === virtualId) return resolvedId; },
-    async load(id) {
-      if (id !== resolvedId) return;
-      for (const file of dependencies) this.addWatchFile(file);
-      pending ??= generateAstroPreviews().catch(error => { pending = undefined; throw error; });
-      return `export default ${JSON.stringify(await pending)};`;
-    },
-    handleHotUpdate(context) {
-      if (!dependencies.includes(context.file)) return;
-      pending = undefined;
-      const module = context.server.moduleGraph.getModuleById(resolvedId);
-      if (module) context.server.moduleGraph.invalidateModule(module);
-      // ブラウザー側の読み込み済みHTMLも破棄し、原本・実コンポーネントの変更を反映する。
-      context.server.ws.send({ type: 'full-reload' });
-      return [];
-    },
-  };
+  return astroPreviewDataPlugin('icons', generateAstroPreviews, dependencies);
 }
