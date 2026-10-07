@@ -5,9 +5,12 @@ import { TIcon as VueTIcon } from 'tokiwagi-ui/vue';
 import { iconSizes } from '../../lib/icon-assets';
 import { colors } from '../../lib/palette';
 import { astroPreviewSvg, type AstroIconPreviews } from './astro-preview';
+import { DocumentationPage, DocumentationSection, PreviewControls, ControlField, PreviewStage, CodeBlock, PropsTable, AstroPreviewStatus, useAstroPreviews, componentExample, type Framework } from './ComponentDocumentation';
+import astroPreviewsUrl from 'virtual:tkw-astro-icons';
+import { createAstroPreviewLoader } from './astro-preview-loader';
+
 import './ticon-documentation.css';
 
-type Framework = 'react' | 'vue' | 'astro';
 type SampleProps = { name: IconName; size?: IconSize; color?: string };
 
 // Vueの実コンポーネントをDocs内にマウントする。Reactの再描画時も同じVueアプリのpropsを更新する。
@@ -22,46 +25,23 @@ function VueSample({ name, size = 24, color = 'currentColor' }: SampleProps) {
     app.mount(host.current!);
     return () => app.unmount();
   }, [id, props]);
-  return <span ref={host} className="tkw-ticon-vue-host" />;
+  return <span ref={host} className="tkw-doc-sample-host" />;
 }
 
 const AstroPreviewsContext = createContext<AstroIconPreviews | null>(null);
-let astroPreviewsPromise: Promise<AstroIconPreviews> | undefined;
-function loadAstroPreviews() {
-  return astroPreviewsPromise ??= import('virtual:tkw-astro-icons').then(module => module.default).catch(error => {
-    astroPreviewsPromise = undefined;
-    throw error;
-  });
-}
+const loadAstroPreviews = createAstroPreviewLoader<AstroIconPreviews>(astroPreviewsUrl);
 
 function AstroSample({ name, size = 24, color = 'currentColor' }: SampleProps) {
   const previews = useContext(AstroPreviewsContext);
   const id = useId();
   const prefix = `tkw-astro-doc-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
-  return <span className="tkw-ticon-astro-host" style={{ color }} aria-hidden="true"
+  return <span className="tkw-doc-sample-host" style={{ color }} aria-hidden="true"
     dangerouslySetInnerHTML={{ __html: previews ? astroPreviewSvg(previews, name, size, prefix) : '' }} />;
 }
 
 function SampleIcon({ framework, ...props }: SampleProps & { framework: Framework }) {
   if (framework === 'astro') return <AstroSample {...props} />;
   return framework === 'react' ? <ReactTIcon {...props} /> : <VueSample {...props} />;
-}
-
-function CodeBlock({ code }: { code: string }) {
-  const [message, setMessage] = useState('');
-  useEffect(() => { setMessage(''); }, [code]);
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(code);
-      setMessage('コードをコピーしました。');
-    } catch {
-      setMessage('コピーできませんでした。コードを選択してコピーしてください。');
-    }
-  }
-  return <div className="tkw-ticon-code">
-    <div className="tkw-ticon-code-toolbar"><button type="button" onClick={copy}>コードをコピー</button><span role="status">{message}</span></div>
-    <pre tabIndex={0} aria-label="使用コード"><code>{code}</code></pre>
-  </div>;
 }
 
 const basicExamples = {
@@ -144,64 +124,34 @@ export function TIconDocumentation() {
   const [size, setSize] = useState<IconSize>(24);
   const [color, setColor] = useState('inherit');
   const [count, setCount] = useState(0);
-  const [astroPreviews, setAstroPreviews] = useState<AstroIconPreviews | null>(null);
-  const [astroError, setAstroError] = useState('');
-  const [retry, setRetry] = useState(0);
-  useEffect(() => {
-    if (framework !== 'astro' || astroPreviews) return;
-    let active = true;
-    setAstroError('');
-    loadAstroPreviews().then(previews => { if (active) setAstroPreviews(previews); }).catch(() => {
-      if (active) setAstroError('Astroのプレビューを読み込めませんでした。再試行してください。');
-    });
-    return () => { active = false; };
-  }, [framework, astroPreviews, retry]);
+  const { previews: astroPreviews, error, retry } = useAstroPreviews(framework, loadAstroPreviews);
   const foreground = color === 'inherit' ? 'currentColor' : `var(--tkw-color-primary-${color}-on-subtle)`;
   const background = color === 'inherit' ? 'var(--tkw-color-neutral-50)' : `var(--tkw-color-primary-${color}-subtle)`;
   const packageName = `tokiwagi-ui/${framework}`;
   const colorProp = color === 'inherit' ? '' : ` color="${foreground}"`;
-  const previewCode = `${framework === 'astro' ? '---\n' : ''}import { TIcon } from '${packageName}';\n${color === 'inherit' ? '' : "import 'tokiwagi-ui/tokens/colors.css';\n"}\n${framework === 'astro' ? '---\n' : ''}<TIcon name="${name}" ${framework === 'vue' ? `:size="${size}"` : `size={${size}}`}${colorProp} />`;
+  const previewCode = componentExample(framework, 'TIcon', `<TIcon name="${name}" ${framework === 'vue' ? `:size="${size}"` : `size={${size}}`}${colorProp} />`, color === 'inherit' ? [] : ['colors']);
 
-  return <AstroPreviewsContext.Provider value={astroPreviews}><article className="tkw-ticon-doc sb-unstyled" aria-labelledby="ticon-heading">
-    <header>
-      <p className="tkw-ticon-eyebrow">コンポーネント</p>
-      <h1 id="ticon-heading">TIcon</h1>
-      <p>全329個のアイコンを、サイズとトークン色を揃えて表示する装飾用コンポーネントです。意味は併記テキスト、操作名は親のbutton/linkで伝えます。</p>
-      <div className="tkw-ticon-framework" role="group" aria-label="フレームワーク">
-        <button type="button" aria-pressed={framework === 'react'} onClick={() => setFramework('react')}>React</button>
-        <button type="button" aria-pressed={framework === 'vue'} onClick={() => setFramework('vue')}>Vue</button>
-        <button type="button" aria-pressed={framework === 'astro'} onClick={() => setFramework('astro')}>Astro</button>
-      </div>
-      <p className="tkw-ticon-support">{framework === 'react' ? 'React 18・19' : framework === 'vue' ? 'Vue 3.5以上 / Nuxt' : 'Astro / 静的HTML'} · <code>{packageName}</code></p>
-    </header>
-
-    <nav aria-label="ページ内の目次" className="tkw-ticon-nav">
-      <a href="#ticon-preview" target="_self">プレビュー</a><a href="#ticon-basic" target="_self">使い方</a><a href="#ticon-api" target="_self">API</a>
-      <a href="#ticon-rules" target="_self">表示ルール</a><a href="#ticon-accessibility" target="_self">アクセシビリティ</a><a href="#ticon-advanced" target="_self">導入・応用</a>
-    </nav>
-
-    <section id="ticon-preview" aria-labelledby="ticon-preview-heading">
-      <h2 id="ticon-preview-heading">プレビュー</h2>
+  return <AstroPreviewsContext.Provider value={astroPreviews}><DocumentationPage name="TIcon" framework={framework} onFrameworkChange={setFramework}
+    description="全329個のアイコンを、サイズとトークン色を揃えて表示する装飾用コンポーネントです。意味は併記テキスト、操作名は親のbutton/linkで伝えます。">
+    <DocumentationSection name="preview">
       <p>フレームワークを切り替えると、実際のコンポーネントと使用コードが切り替わります。選択した公開名・サイズ・色は維持します。</p>
-      {framework === 'astro' && <p>Astro版は実コンポーネントが生成した静的HTMLを表示します。</p>}
-      {framework === 'astro' && !astroPreviews && (astroError
-        ? <p role="alert">{astroError} <button type="button" onClick={() => setRetry(value => value + 1)}>再試行</button></p>
-        : <p role="status">Astroのプレビューを読み込んでいます。</p>)}
-      <div className="tkw-ticon-controls">
-        <label>公開名<select value={name} onChange={event => setName(event.target.value as IconName)}>
+      <AstroPreviewStatus framework={framework} ready={astroPreviews !== null} error={error} retry={retry} />
+      <PreviewControls>
+        <ControlField label="公開名"><select value={name} onChange={event => setName(event.target.value as IconName)}>
           {iconNames.map(value => <option key={value} value={value}>{value}</option>)}
-        </select></label>
-        <label>サイズ<select value={size} onChange={event => setSize(Number(event.target.value) as IconSize)}>
+        </select></ControlField>
+        <ControlField label="サイズ"><select value={size} onChange={event => setSize(Number(event.target.value) as IconSize)}>
           {iconSizes.map(value => <option key={value} value={value}>{value}px</option>)}
-        </select></label>
-        <label>色<select value={color} onChange={event => setColor(event.target.value)}>
+        </select></ControlField>
+        <ControlField label="色"><select value={color} onChange={event => setColor(event.target.value)}>
           <option value="inherit">親の文字色を継承</option>
           {colors.map(([value, label]) => <option key={value} value={value}>{label} / 淡い背景</option>)}
-        </select></label>
-      </div>
-      <div className="tkw-ticon-preview-swatch" style={{ background }}><SampleIcon framework={framework} name={name} size={size} color={foreground} /><span>{name} · {size}px</span></div>
+        </select></ControlField>
+      </PreviewControls>
+      <PreviewStage label="選択したTIconの見本" style={{ background }}><SampleIcon framework={framework} name={name} size={size} color={foreground} /></PreviewStage>
+      <p className="tkw-doc-note">{name} · {size}×{size}px · {color === 'inherit' ? '親の文字色を継承' : `${color} / 淡い背景`}</p>
       <CodeBlock code={previewCode} />
-      <details className="tkw-ticon-comparisons">
+      <details className="tkw-doc-comparisons">
         <summary>サイズ・7色・複数表示を比較</summary>
         <h3>4サイズ</h3>
         <div className="tkw-ticon-sizes">{iconSizes.map(value => <figure key={value}>
@@ -218,28 +168,25 @@ export function TIconDocumentation() {
           <span>{value}</span>{iconSizes.map(iconSize => <SampleIcon framework={framework} key={iconSize} name={value} size={iconSize} color="var(--tkw-color-primary-violet-on-subtle)" />)}
         </div>)}</div>
       </details>
-    </section>
+    </DocumentationSection>
 
-    <section id="ticon-basic" aria-labelledby="ticon-basic-heading">
-      <h2 id="ticon-basic-heading">基本的な使い方</h2>
+    <DocumentationSection name="basic">
       <p>色トークンはアプリ全体で一度読み込みます。{framework === 'react' ? 'クラスはclassName、サイズは数値で指定します。' : framework === 'vue' ? 'クラスはclass、サイズは :size="20" のように数値で渡します。' : 'クラスは文字列のclass、サイズは size={20} のように数値で渡します。'}</p>
       <CodeBlock code={basicExamples[framework]} />
-    </section>
+    </DocumentationSection>
 
-    <section id="ticon-api" aria-labelledby="ticon-api-heading">
-      <h2 id="ticon-api-heading">Props・公開API</h2>
-      <table><thead><tr><th>Props</th><th>型・用途</th><th>既定値</th></tr></thead><tbody>
-        <tr><td><code>name</code></td><td><code>IconName</code> · 全329公開名</td><td>必須</td></tr>
-        <tr><td><code>size</code></td><td><code>16 | 20 | 24 | 32</code> · 正方形の表示サイズ</td><td>24</td></tr>
-        <tr><td><code>color</code></td><td><code>string</code> · 親の文字色または既存トークン</td><td><code>currentColor</code></td></tr>
-        <tr><td><code>{framework === 'react' ? 'className' : 'class'}</code></td><td>{framework === 'react' ? 'string · Reactのクラス名' : framework === 'vue' ? '文字列・配列・オブジェクト · Vueのクラス指定' : 'string · Astroのクラス名'}</td><td>なし</td></tr>
-      </tbody></table>
+    <DocumentationSection name="api">
+      <PropsTable rows={[
+        { name: 'name', description: <><code>IconName</code> · 全329公開名</>, defaultValue: '必須' },
+        { name: 'size', description: <><code>16 | 20 | 24 | 32</code> · 正方形の表示サイズ</>, defaultValue: '24' },
+        { name: 'color', description: <><code>string</code> · 親の文字色または既存トークン</>, defaultValue: <code>currentColor</code> },
+        { name: framework === 'react' ? 'className' : 'class', description: framework === 'vue' ? '文字列・配列・オブジェクト · Vueのクラス指定' : 'string · 配置用クラス', defaultValue: 'なし' },
+      ]} />
       <p><code>TIconProps</code>、<code>IconName</code>、<code>IconSize</code>、<code>iconNames</code>、<code>isIconName</code>も同じ公開入口から利用できます。ReactのclassNameは文字列、Vueのclassは文字列・配列・オブジェクト、Astroのclassは文字列に対応します。</p>
       <p>存在しない名前と非対応サイズは型検査と日本語の実行時エラーで検出します。代替図柄へ暗黙に置き換えません。追加属性・イベント・{framework === 'react' ? 'children・ref' : 'slot'}は転送しません。</p>
-    </section>
+    </DocumentationSection>
 
-    <section id="ticon-rules" aria-labelledby="ticon-rules-heading">
-      <h2 id="ticon-rules-heading">表示と利用のルール</h2>
+    <DocumentationSection name="rules">
       <ul>
         <li>32×32のviewBoxと原本の座標・線幅・縦横比を保持します。クラスでサイズや線幅を上書きしません。</li>
         <li>黒い線と塗りだけをcurrentColorに変換し、透明な塗りと白いクリッピングを保持します。</li>
@@ -247,10 +194,9 @@ export function TIconDocumentation() {
         <li>16pxで細部が判別しにくい場合は24px・32pxへ上げ、ラベルを併記します。全図柄の16px利用を一律に推奨しません。</li>
         <li><code>-off</code>は図柄が表す状態です。ボタンのdisabledや操作の可否とは区別します。</li>
       </ul>
-    </section>
+    </DocumentationSection>
 
-    <section id="ticon-accessibility" aria-labelledby="ticon-accessibility-heading">
-      <h2 id="ticon-accessibility-heading">アクセシビリティと使用例</h2>
+    <DocumentationSection name="accessibility">
       <p>SVGは<code>aria-hidden="true"</code>・<code>focusable="false"</code>で装飾として扱います。アイコンだけの操作には親のbutton/linkに目的が分かる読み上げ名を付け、状態はテキストでも伝えます。</p>
       <div className="tkw-ticon-actions">
         <button type="button" onClick={() => setCount(value => value + 1)}><SampleIcon framework={framework} name="plus" size={20} />タスクを追加</button>
@@ -260,9 +206,9 @@ export function TIconDocumentation() {
       <p role="status">操作回数: {count}</p>
       <p><SampleIcon framework={framework} name="check" size={20} color="var(--tkw-color-semantic-success-on-subtle)" /> 完了：状態は文言でも伝えます。</p>
       <p>操作領域・フォーカス・ホバー・押下・無効状態は親が担います。Tabで移動し、Enter／Spaceで操作できます。</p>
-    </section>
+    </DocumentationSection>
 
-    <section id="ticon-advanced" aria-label="導入・応用">
+    <DocumentationSection name="advanced">
       <details>
         <summary>導入・応用（インストール・外部データ・SSR）</summary>
         <h3>ローカルパッケージの導入</h3>
@@ -283,16 +229,16 @@ export function TIconDocumentation() {
         <CodeBlock code={ssrExamples[framework]} />
         <a href={framework === 'astro' ? 'https://docs.astro.build/en/basics/astro-components/' : framework === 'react' ? 'https://react.dev/reference/react/useId' : 'https://vuejs.org/api/composition-api-helpers.html#useid'}>{framework === 'astro' ? 'Astroコンポーネントの公式仕様' : 'useIdの公式仕様'}</a>
       </details>
-    </section>
+    </DocumentationSection>
 
-    <section aria-labelledby="ticon-related-heading">
-      <h2 id="ticon-related-heading">関連資料</h2>
+    <DocumentationSection name="related">
       <p>図柄の選び方や各アイコンの用途・使用ルールは、一覧と個別ページから確認できます。bellの詳細ルールは確定済み、ほかは詳細ルール案です。</p>
-      <div className="tkw-ticon-related">
+      <div className="tkw-doc-related">
         <a href="./?path=/docs/アイコン-アイコン名および用途--docs" target="_top">アイコン一覧・各図柄の用途</a>
         <a href="./?path=/docs/アイコン-命名基準--docs" target="_top">命名基準</a>
         <a href="./?path=/docs/icons-display--docs" target="_top">共通表示ルール</a>
+        <a href="./?path=/docs/components-documentation-rules--docs" target="_top">ドキュメントUIルール</a>
       </div>
-    </section>
-  </article></AstroPreviewsContext.Provider>;
+    </DocumentationSection>
+  </DocumentationPage></AstroPreviewsContext.Provider>;
 }

@@ -44,7 +44,7 @@ test('各アイコンに指定された6セクションと識別情報がある'
   }
 });
 
-// 関連図柄・移行資料・統合TIcon資料・一覧の内部リンク先を照合し、存在しないIDへの導線を防ぐ。
+// 関連図柄・移行資料・TIcon資料・共通UIルール・一覧のリンク先を照合し、存在しないIDへの導線を防ぐ。
 test('アイコン資料の内部リンクに存在しないページがない', () => {
   const ids = new Set([
     'アイコン-アイコン名および用途--docs',
@@ -52,6 +52,7 @@ test('アイコン資料の内部リンクに存在しないページがない',
     'icons-migration--docs',
     'icons-display--docs',
     'components-ticon--docs',
+    'components-documentation-rules--docs',
     'brand-logo--docs',
     ...details.map(detail => `icons-${detail.name}--docs`),
   ]);
@@ -62,6 +63,7 @@ test('アイコン資料の内部リンクに存在しないページがない',
     readFileSync(new URL('TIcon.mdx', stories), 'utf8'),
     readFileSync(new URL('components/TIconDocumentation.tsx', stories), 'utf8')];
   expect(sources.at(-2)).toContain('id="components-ticon"');
+  expect(readFileSync(new URL('component-documentation-rules.mdx', stories), 'utf8')).toContain('id="components-documentation-rules"');
   for (const source of sources) {
     for (const match of source.matchAll(/(?:\]\(|href="(?:\.\/)?)[?]path=\/docs\/([^\s)"]+)/g)) {
       expect(ids.has(match[1]!)).toBe(true);

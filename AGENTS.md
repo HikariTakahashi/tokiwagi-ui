@@ -10,7 +10,7 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 
 ## 役割
 
-`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts`、React向けは `src/react/index.ts` の `TIcon` から利用します。Astro向けは `src/astro/index.ts` の `TIcon` から利用します。Storybookの「コンポーネント/TIcon」にReact・Vue・Astroの利用説明と実コンポーネントの確認画面を集約します。Astro見本は公開入口の実コンポーネントをBunの別プロセスで描画したHTMLを使用し、静的Storybookにも収録します。見本の再利用時にはIDだけを表示インスタンスごとに分離し、色は親から継承します。原本・実コンポーネント変更時に開発中の見本も再生成します。フレームワーク切り替え時も選択した公開名・サイズ・色を保持し、Vueアプリはページ離脱時にアンマウントします。原本の共通表示ルールと一覧は「アイコン」に置きます。
+`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts`、React向けは `src/react/index.ts` の `TIcon` から利用します。Astro向けは `src/astro/index.ts` の `TIcon` から利用します。Storybookの「コンポーネント/TIcon」にReact・Vue・Astroの利用説明と実コンポーネントの確認画面を集約します。Astro見本は公開入口の実コンポーネントをBunの別プロセスで描画したHTMLをJSONとして取得し、静的Storybookにも収録します。仮想モジュールはJSONのURLを供給し、共通のfetchローダーで読み込み失敗後の再試行を可能にします。見本の再利用時にはIDだけを表示インスタンスごとに分離し、色は親から継承します。原本・実コンポーネント変更時に開発中の見本も再生成します。フレームワーク切り替え時も選択した公開名・サイズ・色を保持し、Vueアプリはページ離脱時にアンマウントします。原本の共通表示ルールと一覧は「アイコン」に置きます。
 
 - カラーの値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` が唯一の定義元です。全93トークン（プライマリー42、セカンダリー18、セマンティック24、ニュートラル9）は確定しています。ユーザーから変更指示があるまで値、色数、用途を維持してください。
 - カラーの使用ルールと見本は Storybook の「カラー」に置きます。数値は CSS から読み込み、Storybook や LP に別の値を定義しません。
@@ -20,6 +20,8 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` の `@theme inline` です。既存トークンを参照し、HEX 値を複製しません。Preflight は読み込みません。
 
 ## コンポーネントの命名規則
+
+- コンポーネントのStorybook説明ページは「コンポーネント/ドキュメントUIルール」（[管理元](src/stories/component-documentation-rules.mdx)）に従います。`src/stories/components/ComponentDocumentation.tsx` と `component-documentation.css` の共通部品・スタイルを再利用し、ページごとの見出し・操作UI・コード欄・API表の再定義を避けます。固有の比較・使用例は各ページで構成します。Storybook専用部品はアプリ向け公開入口からexportしません。
 
 - ロゴのアプリ向け公開名はReact・Vue・Astroともに `TLogo` です。`src/lib/logo.ts` が原本のdata URL・許可サイズ・余白・altを共通管理します。`size`（32/64/128、既定32）は図形の幅、`decorative`（既定false）は空altへの切り替えです。外側のspanに表示幅の1/4の余白とneutral-0背景を確保するため、占有領域は幅の1.5倍です。配置用class以外の属性・イベント・children／slotは転送しません。リンクと名称は親が担います。Storybook「コンポーネント/TLogo」で公開入口の実コンポーネントを確認し、Astroは専用のBun描画スクリプトと仮想モジュールで静的出力を収録します。SVG原本・配色・汎用アイコン329種は維持します。SSR・ハイドレーションとReact 18/19の公開型も検証します。data URL用のCSPとneutrals.cssの読み込みを利用例に記載します。
 
