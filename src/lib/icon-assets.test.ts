@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createIconCatalog, filterIcons, iconCategories, iconSizes, isBrandAssetName, originalIconUrl, renderIconSvg } from './icon-assets';
+import { iconStorySource } from '../../scripts/icon-story-generation';
 
 const directory = new URL('../../icons/', import.meta.url);
 const names = readdirSync(directory).filter(name => !isBrandAssetName(name) && readdirSync(new URL(`${name}/`, directory)).includes(`${name}.svg`));
@@ -29,6 +30,21 @@ test('原本329個が既存の分類と個別ページに対応する', () => {
     const label = iconCategories.find(([key]) => key === icon.category)![1];
     expect(detail).toContain(`title="アイコン/個別ルール/${label}/${icon.name}"`);
     expect(icon.href).toBe(`?path=/docs/icons-${icon.name}--docs`);
+  }
+});
+
+// 全原本について生成済みCSFと相互リンクを照合し、分離時の欠落と再生成漏れを検出する。
+test('329種類の使用例が個別ルールと対応しロゴを含まない', () => {
+  const stories = new URL('../stories/icon-examples/', import.meta.url);
+  expect(readdirSync(stories).filter(file => file.endsWith('.stories.ts')).sort()).toEqual(names.map(name => `${name}.stories.ts`).sort());
+  for (const icon of catalog) {
+    expect(readFileSync(new URL(`${icon.name}.stories.ts`, stories), 'utf8')).toBe(iconStorySource(icon));
+    const detail = readFileSync(new URL(`../icons/${icon.name}.mdx`, import.meta.url), 'utf8');
+    expect(detail).toContain(`[使用例を見る](?path=/story/icons-${icon.name}-examples--default)`);
+    expect(detail).not.toContain('IconPreview');
+    expect(detail).toContain(`../../icons/${icon.name}/README.md?raw`);
+    expect(detail).toContain('[アイコン一覧へ戻る]');
+    expect(detail).toContain('[共通表示ルール]');
   }
 });
 
