@@ -21,7 +21,7 @@ test('全329アイコンの原本と個別ページが一対一に対応する',
   expect(names).toEqual(details.map(detail => detail.name).sort());
   expect(catalog).toContain('<IconBrowser />');
   for (const { name, source } of details) {
-    expect(source).toContain(`<IconPreview name="${name}" />`);
+    expect(source).toContain(`[使用例を見る](?path=/story/icons-${name}-examples--default)`);
     expect(source).toContain(`import readme from '../../icons/${name}/README.md?raw';`);
     expect(source).toContain('<Markdown>{readme}</Markdown>');
     expect(readFileSync(new URL(`${name}/${name}.svg`, assets), 'utf8')).toContain('viewBox="0 0 32 32"');
@@ -55,6 +55,7 @@ test('アイコン資料の内部リンクに存在しないページがない',
     'components-documentation-rules--docs',
     'brand-logo--docs',
     ...details.map(detail => `icons-${detail.name}--docs`),
+    ...details.map(detail => `icons-${detail.name}-examples--default`),
   ]);
   const sources = [catalog, ...details.map(detail => detail.source), ...readmes.values(),
     readFileSync(new URL('icon-naming.mdx', stories), 'utf8'),
@@ -65,7 +66,7 @@ test('アイコン資料の内部リンクに存在しないページがない',
   expect(sources.at(-2)).toContain('id="components-ticon"');
   expect(readFileSync(new URL('component-documentation-rules.mdx', stories), 'utf8')).toContain('id="components-documentation-rules"');
   for (const source of sources) {
-    for (const match of source.matchAll(/(?:\]\(|href="(?:\.\/)?)[?]path=\/docs\/([^\s)"]+)/g)) {
+    for (const match of source.matchAll(/(?:\]\(|href="(?:\.\/)?)[?]path=\/(?:docs|story)\/([^\s)"]+)/g)) {
       expect(ids.has(match[1]!)).toBe(true);
     }
   }

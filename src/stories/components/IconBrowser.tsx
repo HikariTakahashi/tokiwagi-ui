@@ -1,22 +1,7 @@
-import { useId, useState, type CSSProperties } from 'react';
-import { iconCatalog, iconsByName } from '../../lib/icon-catalog';
-import { filterIcons, iconCategories, iconSizes, originalIconUrl, renderIconSvg, type IconAsset, type IconCategory } from '../../lib/icon-assets';
-import { colors, secondaryColors, semanticColors } from '../../lib/palette';
-
-const colorPairs = [
-  { label: 'ニュートラル', foreground: '--tkw-color-neutral-900', background: '--tkw-color-neutral-0' },
-  ...([
-    ['primary', colors], ['secondary', secondaryColors], ['semantic', semanticColors],
-  ] as const).flatMap(([family, rows]) => rows.flatMap(([key, label]) => [
-    { label: `${label} / 通常`, foreground: `--tkw-color-${family}-${key}-on`, background: `--tkw-color-${family}-${key}` },
-    { label: `${label} / 淡い背景`, foreground: `--tkw-color-${family}-${key}-on-subtle`, background: `--tkw-color-${family}-${key}-subtle` },
-  ])),
-];
-
-function pairStyle(index: number): CSSProperties {
-  const pair = colorPairs[index]!;
-  return { color: `var(${pair.foreground})`, backgroundColor: `var(${pair.background})` };
-}
+import { useId, useState } from 'react';
+import { iconCatalog } from '../../lib/icon-catalog';
+import { filterIcons, iconCategories, iconSizes, renderIconSvg, type IconAsset, type IconCategory } from '../../lib/icon-assets';
+import { colorPairs, pairStyle } from './icon-colors';
 
 function ColorSelect({ value, onChange }: { value: number; onChange: (value: number) => void }) {
   return <label>色と背景<select value={value} onChange={event => onChange(Number(event.target.value))}>
@@ -63,34 +48,5 @@ export function IconBrowser() {
           <code>{icon.name}</code>
         </a>
       </li>)}</ul>}
-  </div>;
-}
-
-export function IconPreview({ name }: { name: string }) {
-  const icon = iconsByName.get(name);
-  const [color, setColor] = useState(0);
-  const [message, setMessage] = useState('');
-  if (!icon) throw new Error(`アイコンが見つかりません: ${name}`);
-  async function copyName() {
-    try {
-      await navigator.clipboard.writeText(name);
-      setMessage(`「${name}」をコピーしました。`);
-    } catch {
-      setMessage(`コピーできませんでした。公開名「${name}」を選択してコピーしてください。`);
-    }
-  }
-  return <div className="tkw-icon-preview">
-    <div className="tkw-icon-controls"><ColorSelect value={color} onChange={setColor} /></div>
-    <div className="tkw-icon-sizes">{iconSizes.map(size => <figure key={size}>
-      <div className="tkw-icon-swatch" style={pairStyle(color)}><IconImage icon={icon} size={size} /></div>
-      <figcaption>{size}px</figcaption>
-    </figure>)}</div>
-    <ColorTokens value={color} />
-    <div className="tkw-icon-actions">
-      <button type="button" onClick={copyName}>公開名をコピー</button>
-      <a href={originalIconUrl(icon)} download={`${name}.svg`}>原本SVGをダウンロード</a>
-    </div>
-    <p role="status" aria-live="polite" className="tkw-icon-feedback">{message}</p>
-    <p className="tkw-icon-size-note">16〜32pxは比較用です。細部が見分けにくい場合は大きいサイズを選び、ラベルを併記してください。</p>
   </div>;
 }

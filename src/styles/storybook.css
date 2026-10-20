@@ -119,3 +119,10 @@
   .tkw-icon-preview { padding: 14px; }
   .tkw-icon-sizes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* 使用例は独立したCanvasに表示する。見本の操作UIは一覧と共有する。 */
+.tkw-icon-example-links { display: flex; flex-wrap: wrap; gap: 12px 20px; font-size: 14px; }
+.tkw-icon-example-links a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.tkw-icon-example .tkw-icon-token-note { margin: 16px 0; }
+.tkw-icon-example .tkw-icon-feedback { margin: 10px 0; }
+.tkw-icon-example .tkw-icon-size-note { margin-top: 16px; }

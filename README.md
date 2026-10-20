@@ -36,7 +36,7 @@ bun run storybook  # Storybook: http://localhost:6006
 - カラー値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` の全93トークンが定義元です。Storybook の見本・HEX・コントラスト表示はこれらを読み込みます。
 - カラーの使用ルールと操作例は Storybook の「カラー」にあります。CSS を編集して保存すると開発中の表示に反映されます。
 - ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
-- アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全329アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに329個収録済みです。一覧で検索・分類・サイズ・色を切り替え、個別ページで4サイズの見本、公開名コピー、原本SVGのダウンロードを利用できます。
+- アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全329アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに329個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の各ストーリーで4サイズの見本、公開名コピー、原本SVGのダウンロードを利用できます。「個別ルール」と使用例は相互リンクで行き来できます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
 
 ## 検証と静的ビルド
@@ -372,6 +372,6 @@ Issue の記載項目は `.github/ISSUE_TEMPLATE/` 内の3種類のテンプレ�
 - `src/lib/icon-assets.ts` が表示時に黒い線と塗りを `currentColor` に変換します。`fill="none"` とクリッピング用の白い塗りを保持し、ID参照は表示ごとに一意にします。表示用SVGを別途編集しません。
 - 原本ダウンロードはStorybookの `staticDirs` で `icons/` を `/icon-assets` に配信します。README の `?raw` 読み込みと静的配信のURLを分けています。静的ビルドにも原本がそのままコピーされ、サブディレクトリへの配置でも相対URLで参照できます。
 - 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。このコンポーネントはStorybookのMDX資料用です。アプリ向けAPIには `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` の `TIcon` を使います。
-- Vue・React・Astro共通の公開名と原本へのimportは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。Vueの既存ファイルは共通データを再exportします。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
-- `bun test`、`bun run check`、`bun run build`、`bun run build:storybook` を実行します。一覧・個別ページで原本との一致、16/20/24/32pxの判読性、トークン色、同一図柄の複数表示、キーボード操作とモバイル表示を確認してください。
+- Vue・React・Astro共通の公開名と原本へのimportは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。Vueの既存ファイルは共通データを再exportします。同じコマンドで `src/stories/icon-examples/*.stories.ts` の使用例も原本カタログから生成します。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
+- `bun test`、`bun run check`、`bun run build`、`bun run build:storybook` を実行します。一覧・使用例で原本との一致、16/20/24/32pxの判読性、トークン色、同一図柄の複数表示、キーボード操作とモバイル表示を確認してください。
 - 小サイズで細部が判別しにくい図柄はサイズを上げるかラベルを併記します。全アイコンの16px利用を一律に推奨しません。詳しくはStorybookの「アイコン/共通表示ルール」を参照してください。
