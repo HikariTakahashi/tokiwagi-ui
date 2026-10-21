@@ -1,6 +1,6 @@
 import { colors, secondaryColors, semanticColors } from '../../lib/palette';
 
-/** 一覧と使用例で同じトークンの組み合わせを使う。 */
+/** 一覧で使う前景・背景のトークンの組み合わせ。 */
 export const colorPairs = [
   { label: 'ニュートラル', foreground: '--tkw-color-neutral-900', background: '--tkw-color-neutral-0' },
   ...([
