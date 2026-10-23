@@ -4,7 +4,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 # コンポーネントプレビューのUIルール
 
-Storybookは実コンポーネントの表示と設定変更を確認する場所です。TIcon・TBrand・TLogoは「コンポーネント」に分類し、各コンポーネントのDefaultストーリーを置きます。詳細な説明はREADME・原本側の使用ルールで保持し、Astro側への説明ページ移設は別作業です。
+Storybookは実コンポーネントの表示と設定変更、利用ルールの参照に使います。TIcon・TBrand・TLogoのDefaultストーリーは「コンポーネント」直下に維持し、利用ルールを「コンポーネント/個別ルール」に分けて置きます。Astro側への説明ページ移設は別作業です。
 
 ## CanvasとControls
 
@@ -21,6 +21,14 @@ Storybookは実コンポーネントの表示と設定変更を確認する場�
 
 方式はReact・Vue・Astroの順とし、切り替えても他の設定を保持します。TIconの公開名は329種、サイズは16・20・24・32px、色は継承・ニュートラル・7色のプライマリーから選びます。色はbell-offと同じ既存トークンへのmappingで指定し、URLには選択肢のキーを保持します。TLogo・TBrandは32・64・128pxで、原本の固定配色と余白を維持します。
 
+## 個別ルール
+
+- 本文の管理元は`components/<コンポーネント名>/README.md`です。`src/stories/component-rules/<コンポーネント名>.mdx`は対応する原本を`?raw`で読み込み、Markdownで表示する薄いページとします。本文を複製しません。
+- 分類は「コンポーネント/個別ルール/TBrand・TIcon・TLogo」、Docs IDは`components-tbrand-rules`・`components-ticon-rules`・`components-tlogo-rules`です。既存DefaultストーリーのIDとURLは維持します。
+- 本文は「概要」「使用場面」「状態の表し方」「使用しない場面」「表示とアクセシビリティ」「関連コンポーネントと使い分け」の6セクションに揃えます。公開API・Props表・利用コード・SSR・CSPなどの導入説明はリポジトリのREADMEに保持します。
+- 個別READMEに「使用例を見る」と関連資料へのリンクを置きます。原本ではリポジトリ内の相対パスを使い、`component-readme.ts`でStorybookの閲覧先へ変換します。Canvasにはリンクや説明を追加しません。
+- 既存アイコンの個別ルールとロゴ原本の使用ルールは、それぞれの管理元を維持します。
+
 ## 共通の描画処理
 
 `components/component-story.ts`のrenderComponentStory・componentStoryParameters・frameworkControlを再利用します。`components/ComponentPreview.tsx`がReact・Vue・Astroの実コンポーネントを描画します。Storybook専用コードはアプリ向け公開入口からexportしません。
@@ -32,4 +40,4 @@ Storybookは実コンポーネントの表示と設定変更を確認する場�
 
 ## 検証
 
-390px・1440pxで中央の見本、Controlsの操作とキーボードフォーカス、方式切り替え時の設定保持、URL再読み込みを確認します。Astroの読み込み・失敗・再試行、Vueのアンマウント、moon/toolのクリッピング、静的Storybookでの3方式の表示も検証します。テスト・型検査・両ビルドはAGENTS.mdに従います。
+390px・1440pxで中央の見本、Controlsの操作とキーボードフォーカス、方式切り替え時の設定保持、URL再読み込みを確認します。Astroの読み込み・失敗・再試行、Vueのアンマウント、moon/toolのクリッピング、静的Storybookでの3方式の表示も検証します。個別ルールはREADMEとMDXの一対一の対応、6セクション、本文・表・リンクの表示と横はみ出し、キーボード操作、原本とStorybook双方でのリンク解決を確認します。テスト・型検査・両ビルドはAGENTS.mdに従います。
