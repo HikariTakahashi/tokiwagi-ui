@@ -19,7 +19,7 @@ const config: StorybookConfig = {
   }],
   async viteFinal(config) {
     config.plugins = [...(config.plugins ?? []), tailwindcss(), astroPreviewsPlugin(), astroLogoPreviewsPlugin(), astroBrandPreviewsPlugin()];
-    // HTML版のDocsでVueを直接マウントするため、Vueプラグインが設定する既定フラグを明示する。
+    // HTML版StorybookでVueを直接マウントするため、Vueプラグインが設定する既定フラグを明示する。
     config.define = {
       __VUE_OPTIONS_API__: 'true',
       __VUE_PROD_DEVTOOLS__: 'false',

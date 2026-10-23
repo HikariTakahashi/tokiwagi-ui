@@ -33,6 +33,7 @@ bun run storybook  # Storybook: http://localhost:6006
 
 ## 管理元
 
+- コンポーネントの利用ルールは [TBrand](components/TBrand/README.md)・[TIcon](components/TIcon/README.md)・[TLogo](components/TLogo/README.md) の個別READMEが管理元です。Storybookの「コンポーネント/個別ルール」はこれらを読み込む表示用ページで、最小プレビューとは分けて参照できます。公開API・利用コード・導入説明は本READMEに保持します。
 - カラー値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` の全93トークンが定義元です。Storybook の見本・HEX・コントラスト表示はこれらを読み込みます。
 - カラーの使用ルールと操作例は Storybook の「カラー」にあります。CSS を編集して保存すると開発中の表示に反映されます。
 - ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
@@ -49,13 +50,15 @@ bun run build
 bun run build:storybook
 ```
 
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon」でReact・Vue・Astroを切り替え、選択した公開名・サイズ・色を保持して確認できます。外部公開、既存 Nuxt 画面の置き換えは未実施です。
+Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon・TBrand・TLogo」はbell-offの使用例と同じストーリー形式です。Canvasには見本1つだけを中央表示し、設定は標準Controlsとargsで変更・URL保存します。TIconではReact・Vue・Astroを切り替えても公開名・サイズ・色を保持します。詳細説明のAstro側への移設は別作業です。外部公開、既存 Nuxt 画面の置き換えは未実施です。
 
 `check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
 
 ## TLogoの利用
 
-ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネント、サイズ、読み上げ状態、利用コードを確認できます。
+利用場面・固定配色・余白・名称併記と読み上げの詳細は、[TLogoの利用ルール](components/TLogo/README.md)を参照してください。
+
+ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズと読み上げ状態を切り替えられます。公開APIと利用例は本READMEで説明します。
 
 | props | 既定値 | 用途 |
 | --- | --- | --- |
@@ -114,6 +117,8 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 原本SVGをdata URLとして埋め込むため、CSPを使う配信先は `img-src` に `data:` を許可してください。React・VueのSSRとハイドレーションで同じ画像srcを使い、Astroはクライアント処理なしで静的HTMLを出力します。内部SVGのIDは文書へ展開しません。アプリ画面への適用は未実施です。
 
 ## TBrand（ロゴと名称）
+
+固定名称・書体・間隔・親リンクとの役割分担は、[TBrandの利用ルール](components/TBrand/README.md)を参照してください。
 
 `TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は各方式の利用説明を参照してください。LP・既存アプリへの適用は未実施です。
 
@@ -174,9 +179,11 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 
 **占有領域**：TLogoが図形の四辺に幅の1/4の余白を確保するため、ロゴ領域は32px指定で48×48px、64px指定で96×96px、128px指定で192×192pxです。TBrandは外側のpaddingを追加しません。名称の行高は24pxで、全体の高さはロゴ領域と同じです。全幅は「ロゴ図形幅×1.5＋間隔8px＋名称の実測幅」で、フォントにより変わります。名称の右側の余白やリンクの操作領域は親で確保してください。ロゴと名称は縮小・折り返しません。利用先に収まるサイズを選んでください。
 
-`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の公開入口を使った3サイズ・静的表示・親ホームリンクを確認できます。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
+`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズを切り替えられます。親ホームリンクの利用例は本READMEを参照してください。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
 
 ## Astroでの利用
+
+TIconの図柄・サイズ・色の選び方と、親要素が担う意味・操作のルールは、[TIconの利用ルール](components/TIcon/README.md)を参照してください。React・Vueでも同じルールに従います。
 
 Astroの入口は `src/astro/index.ts`、パッケージの公開入口は `tokiwagi-ui/astro` です。このリポジトリのAstro 7.3.4で検証しています。npm公開・配布ビルドは未実施で、`bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）でローカルパッケージとして取り込みます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。Astro/Viteの `.astro` と `?raw` 読み込みを使用し、React・Vueの導入は不要です。
 
@@ -209,7 +216,7 @@ React・Vue版と同じ装飾用APIです。SVGの `aria-hidden="true"`・`focus
 
 黒い線と塗りだけをcurrentColor化し、原本の座標・線幅・縦横比・透明な塗り・白いクリッピングを維持します。クリッピングIDはビルド／サーバー描画時に `crypto.randomUUID()` でインスタンスごとに生成し、出力HTMLに保存します。ハイドレーションやクライアントランタイムは不要で、ビルドごとにID文字列は変わります。アプリ向け入口はREADME全文、Storybook専用コード、React・Vueランタイムを読み込みません。
 
-Storybookの「コンポーネント/TIcon」でAstroを選ぶと、プレビュー・使用コード・API・静的出力の説明が切り替わります。React・Vueとの切り替え時も公開名・サイズ・色は維持します。
+Storybookの「コンポーネント/TIcon」でAstroを選ぶと、実コンポーネントが生成した静的HTMLを表示します。React・Vueとの切り替え時も公開名・サイズ・色は維持します。
 
 StorybookのAstro見本は `.storybook/astro-previews.ts` がBunの別プロセスで公開入口の実コンポーネントを全329種×4サイズ描画し、仮想モジュールとして供給します。生成JSONは一時ファイルへの書き込み完了後に読み込み、成功・失敗にかかわらず一時ファイルを削除します。Astro選択時にHTMLデータを読み込み、複数表示ではIDだけをインスタンスごとに分離します。色は親から継承します。Astroランタイムや別のAstroサーバーは不要で、静的Storybookにも描画結果を収録します。開発中に原本・実コンポーネントを編集すると再生成し、色CSSの変更は既存のHMRで反映します。生成結果はコミットしません。
 
@@ -352,7 +359,7 @@ const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
 
 クリッピングIDはVueの `useId()` でインスタンスごとに分離し、SSRとハイドレーションで安定させます。同じHTML文書に複数のVueアプリを置く場合は、それぞれ `app.config.idPrefix` を別の値に設定し、SSR側・クライアント側では同じ値を使ってください（[Vue公式のuseId仕様](https://vuejs.org/api/composition-api-helpers.html#useid)）。通常の単一Nuxtアプリでは追加設定は不要です。
 
-Storybookの「コンポーネント/TIcon」でVueを選ぶと、同じ確認画面と使用例をVueの実コンポーネントで確認できます。選択した名前・サイズ・色はReactとの切り替え時も保持します。
+Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コンポーネントの表示を確認できます。選択した名前・サイズ・色はReactとの切り替え時も保持します。
 
 ## GitHub での開発
 

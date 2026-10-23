@@ -10,18 +10,21 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 
 ## 役割
 
-`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts`、React向けは `src/react/index.ts` の `TIcon` から利用します。Astro向けは `src/astro/index.ts` の `TIcon` から利用します。Storybookの「コンポーネント/TIcon」にReact・Vue・Astroの利用説明と実コンポーネントの確認画面を集約します。Astro見本は公開入口の実コンポーネントをBunの別プロセスで描画したHTMLをJSONとして取得し、静的Storybookにも収録します。仮想モジュールはJSONのURLを供給し、共通のfetchローダーで読み込み失敗後の再試行を可能にします。見本の再利用時にはIDだけを表示インスタンスごとに分離し、色は親から継承します。原本・実コンポーネント変更時に開発中の見本も再生成します。フレームワーク切り替え時も選択した公開名・サイズ・色を保持し、Vueアプリはページ離脱時にアンマウントします。原本の共通表示ルールと一覧は「アイコン」に置きます。
+`tokiwagi-ui` はタスク管理アプリの独立したデザインシステムです。Astro は紹介用のランディングページ、Storybook は実装時の動作確認とルール参照に使用します。Vue向けアイコンは `src/vue/index.ts`、React向けは `src/react/index.ts` の `TIcon` から利用します。Astro向けは `src/astro/index.ts` の `TIcon` から利用します。Storybookの「コンポーネント/TIcon」はReact・Vue・Astroの実コンポーネント表示を確認するストーリーです。公開APIと利用例はREADMEで保持し、Astro側への説明ページ移設は別作業です。Astro見本は公開入口の実コンポーネントをBunの別プロセスで描画したHTMLをJSONとして取得し、静的Storybookにも収録します。仮想モジュールはJSONのURLを供給し、共通のfetchローダーで読み込み失敗後の再試行を可能にします。見本の再利用時にはIDだけを表示インスタンスごとに分離し、色は親から継承します。原本・実コンポーネント変更時に開発中の見本も再生成します。フレームワーク切り替え時も選択した公開名・サイズ・色を保持し、Vueアプリはページ離脱時にアンマウントします。原本の共通表示ルールと一覧は「アイコン」に置きます。
 
 - カラーの値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` が唯一の定義元です。全93トークン（プライマリー42、セカンダリー18、セマンティック24、ニュートラル9）は確定しています。ユーザーから変更指示があるまで値、色数、用途を維持してください。
 - カラーの使用ルールと見本は Storybook の「カラー」に置きます。数値は CSS から読み込み、Storybook や LP に別の値を定義しません。
 - ロゴは `icons/logo/logo.svg`、使用ルールは同じディレクトリの `README.md` が管理元です。Storybookの「ロゴ/使用ルール」（`src/icons/logo.mdx`）に原本を参照する32・64・128pxの見本とダウンロードを置きます。固定配色・最小32pxのブランド資産として扱い、汎用アイコン329種の一覧・個別ページ照合・TIcon公開名生成から分離します。`src/lib/icon-assets.ts` の `isBrandAssetName` で識別し、SVG原本の形状・配色は維持します。ロゴのルールは案で、アプリ画面への適用は未実施です。
 - アイコンの名前は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）、各アイコンの用途・使用ルールと検索用の別名は `icons/<公開名>/README.md`、既存参照 ID は「アイコン/既存フロントエンドとの対応」が管理元です。`bell` の詳細ルールは確定済み、ほかは詳細ルール案です。README には「概要」「使用場面」「状態の表し方」「使用しない場面」「表示とアクセシビリティ」「関連アイコンと使い分け」の6セクションを記載します。SVG 原本329個は各 README と同じ `icons/<公開名>/` に収録済みです。Storybook の個別ページは README を読み込んで表示し、各個別Docsから対応する使用例にリンクします。「アイコン/使用例」の全329ストーリーはReact版の公開TIconを1つ中央に表示し、公開名は各図柄に固定、初期値は24px・currentColorです。Controlsは16・20・24・32pxと、継承・ニュートラル・7色のプライマリーのみとし、既存トークンを参照して選択をURLに保持します。Actions・Interactionsは標準パネルとして残し、イベントや表示目的のplay関数を追加しません。独自の見出し・説明・サイズ同時比較・コピー・原本ダウンロードは使用例に置きません。一覧は従来の前景・背景の組み合わせを維持します。既存画面への置き換えは未実装です。
 - `tokiwagi-ui` の略称は `tkw` です。ライトモードを対象とし、7色のプライマリーを対等に扱います。
+- TBrand・TIcon・TLogoの利用ルールは `components/<コンポーネント名>/README.md` が管理元です。Storybookの「コンポーネント/個別ルール」は `src/stories/component-rules/<コンポーネント名>.mdx` から原本を`?raw`で読み込み、本文を複製しません。公開API・利用コード・SSR・CSPなどの導入説明はリポジトリのREADMEに保持します。アイコンやロゴ原本のルールとは役割を分けます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` の `@theme inline` です。既存トークンを参照し、HEX 値を複製しません。Preflight は読み込みません。
 
 ## コンポーネントの命名規則
 
-- コンポーネントのStorybook説明ページは「コンポーネント/ドキュメントUIルール」（[管理元](src/stories/component-documentation-rules.mdx)）に従います。`src/stories/components/ComponentDocumentation.tsx` と `component-documentation.css` の共通部品・スタイルを再利用し、ページごとの見出し・操作UI・コード欄・API表の再定義を避けます。固有の比較・使用例は各ページで構成します。Storybook専用部品はアプリ向け公開入口からexportしません。
+- 個別ルールのREADMEは「概要」「使用場面」「状態の表し方」「使用しない場面」「表示とアクセシビリティ」「関連コンポーネントと使い分け」の6セクションに揃えます。対応するMDXの分類は「コンポーネント/個別ルール/<コンポーネント名>」、Docs IDは`components-tbrand-rules`などとします。原本には対応する使用例と関連資料へのリポジトリ内リンクを置き、`src/stories/component-readme.ts`でStorybookの閲覧先に変換します。既存Defaultストーリーの分類・ID・Canvasは維持します。
+
+- コンポーネントのStorybookは「コンポーネント/ドキュメントUIルール」（[管理元](src/stories/component-documentation-rules.mdx)）に従います。TIcon・TBrand・TLogoは「コンポーネント」配下のDefaultストーリーとし、bell-offの使用例と同じcenteredのCanvasに見本を1つ表示します。方式・公開名・サイズ・色・decorativeなど必要な設定だけを標準Controlsとargsで管理し、URLに保持します。方式切り替えでも他の設定を保持します。Canvasに見出し・説明・独自設定欄・枠・Props表・コード・コピー・比較・折りたたみ・関連資料一覧を置きません。色選択はTIconもbell-offと同じ継承・ニュートラル・7色の既存トークンとし、標準パネルの設定を揃えます。共通の描画・設定には`src/stories/components/component-story.ts`と`ComponentPreview.tsx`を再利用します。Astroの読み込み中・失敗・再試行は必要な場合だけ表示します。Storybook専用コードはアプリ向け公開入口からexportしません。
 
 - ロゴのアプリ向け公開名はReact・Vue・Astroともに `TLogo` です。`src/lib/logo.ts` が原本のdata URL・許可サイズ・余白・altを共通管理します。`size`（32/64/128、既定32）は図形の幅、`decorative`（既定false）は空altへの切り替えです。外側のspanに表示幅の1/4の余白とneutral-0背景を確保するため、占有領域は幅の1.5倍です。配置用class以外の属性・イベント・children／slotは転送しません。リンクと名称は親が担います。Storybook「コンポーネント/TLogo」で公開入口の実コンポーネントを確認し、Astroは専用のBun描画スクリプトと仮想モジュールで静的出力を収録します。SVG原本・配色・汎用アイコン329種は維持します。SSR・ハイドレーションとReact 18/19の公開型も検証します。data URL用のCSPとneutrals.cssの読み込みを利用例に記載します。
 

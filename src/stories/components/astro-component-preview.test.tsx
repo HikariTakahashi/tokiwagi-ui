@@ -1,7 +1,7 @@
-import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
+import { afterAll, beforeAll, expect, test } from 'bun:test';
 import { Window } from 'happy-dom';
 import { act, type ReactNode } from 'react';
-import { CodeBlock, AstroPreviewStatus, useAstroPreviews, componentExample, type Framework } from './ComponentDocumentation';
+import { AstroPreviewStatus, useAstroPreviews, type Framework } from './astro-component-preview';
 
 let window: Window;
 let createRoot: typeof import('react-dom/client')['createRoot'];
@@ -34,47 +34,6 @@ async function mount(element: ReactNode) {
     close: async () => { await act(async () => root.unmount()); host.remove(); },
   };
 }
-
-// 現在のコードをコピーし成功を通知する。設定変更後は古い通知を消して更新後のコードをコピーする。
-test('コードのコピー成功とコード変更後の通知リセットを確認できる', async () => {
-  const write = spyOn(navigator.clipboard, 'writeText').mockResolvedValue(undefined);
-  const view = await mount(<CodeBlock code="初期コード" />);
-  try {
-    await act(async () => view.host.querySelector('button')!.click());
-    expect(write).toHaveBeenLastCalledWith('初期コード');
-    expect(view.host.querySelector('[role=status]')!.textContent).toBe('コードをコピーしました。');
-    await view.render(<CodeBlock code="更新コード" />);
-    expect(view.host.querySelector('[role=status]')!.textContent).toBe('');
-    expect(view.host.querySelector('code')!.textContent).toBe('更新コード');
-    await act(async () => view.host.querySelector('button')!.click());
-    expect(write).toHaveBeenLastCalledWith('更新コード');
-  } finally { await view.close(); write.mockRestore(); }
-});
-
-// クリップボード拒否時もコードを読める状態を保ち、選択コピーへ誘導する。
-test('コピー失敗時は手動コピーを案内してコードを維持する', async () => {
-  const write = spyOn(navigator.clipboard, 'writeText').mockRejectedValue(new Error('拒否'));
-  const view = await mount(<CodeBlock code="手動コピー用コード" />);
-  try {
-    await act(async () => view.host.querySelector('button')!.click());
-    expect(view.host.querySelector('[role=status]')!.textContent).toBe('コピーできませんでした。コードを選択してコピーしてください。');
-    expect(view.host.querySelector('pre')!.tabIndex).toBe(0);
-    expect(view.host.querySelector('code')!.textContent).toBe('手動コピー用コード');
-  } finally { await view.close(); write.mockRestore(); }
-});
-
-// コピー完了前に設定を変更した場合、遅れて完了した旧コードの成功通知を現在のコードに表示しない。
-test('コード変更後に古いコピー処理が完了しても通知を表示しない', async () => {
-  let finish!: () => void;
-  const write = spyOn(navigator.clipboard, 'writeText').mockImplementation(() => new Promise<void>(resolve => { finish = resolve; }));
-  const view = await mount(<CodeBlock code="旧コード" />);
-  try {
-    await act(async () => view.host.querySelector('button')!.click());
-    await view.render(<CodeBlock code="新コード" />);
-    await act(async () => finish());
-    expect(view.host.querySelector('[role=status]')!.textContent).toBe('');
-  } finally { await view.close(); write.mockRestore(); }
-});
 
 function AstroHarness({ framework, load }: { framework: Framework; load: () => Promise<string> }) {
   const { previews, error, retry } = useAstroPreviews(framework, load);
@@ -124,21 +83,4 @@ test('方式の切り替え後に古いAstroリクエストが失敗しても画
     await view.render(<AstroHarness framework="astro" load={load} />);
     expect(view.host.querySelector('output')!.textContent).toBe('再選択した見本');
   } finally { await view.close(); }
-});
-
-// 各方式で必要なファイル構文を出力し、トークンimportと指定した見本のpropsをそのまま保つ。
-test('使用コードはReact・Vue・Astroのファイル構文と選択設定を含む', () => {
-  const body = '<TLogo size={64} decorative />';
-  const react = componentExample('react', 'TLogo', body, ['neutrals']);
-  expect(react).toContain("from 'tokiwagi-ui/react'");
-  expect(react).toContain('export function Example()');
-  expect(react).toContain(body);
-  const vue = componentExample('vue', 'TLogo', '<TLogo :size="64" decorative />', ['neutrals']);
-  expect(vue).toContain('<script setup lang="ts">');
-  expect(vue).toContain('<template>');
-  expect(vue).toContain(':size="64" decorative');
-  const astro = componentExample('astro', 'TLogo', body, ['neutrals']);
-  expect(astro.startsWith('---\n')).toBe(true);
-  expect(astro).toContain(`\n---\n${body}`);
-  for (const code of [react, vue, astro]) expect(code).toContain("import 'tokiwagi-ui/tokens/neutrals.css';");
 });

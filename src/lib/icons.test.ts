@@ -51,7 +51,7 @@ test('アイコン資料の内部リンクに存在しないページがない',
     'アイコン-命名基準--docs',
     'icons-migration--docs',
     'icons-display--docs',
-    'components-ticon--docs',
+    'components-ticon--default',
     'components-documentation-rules--docs',
     'brand-logo--docs',
     ...details.map(detail => `icons-${detail.name}--docs`),
@@ -61,9 +61,9 @@ test('アイコン資料の内部リンクに存在しないページがない',
     readFileSync(new URL('icon-naming.mdx', stories), 'utf8'),
     readFileSync(new URL('icon-migration.mdx', stories), 'utf8'),
     readFileSync(new URL('icon-display.mdx', stories), 'utf8'),
-    readFileSync(new URL('TIcon.mdx', stories), 'utf8'),
-    readFileSync(new URL('components/TIconDocumentation.tsx', stories), 'utf8')];
-  expect(sources.at(-2)).toContain('id="components-ticon"');
+    readFileSync(new URL('TIcon.stories.ts', stories), 'utf8'),
+    readFileSync(new URL('components/ComponentPreview.tsx', stories), 'utf8')];
+  expect(sources.at(-2)).toContain("id: 'components-ticon'");
   expect(readFileSync(new URL('component-documentation-rules.mdx', stories), 'utf8')).toContain('id="components-documentation-rules"');
   for (const source of sources) {
     for (const match of source.matchAll(/(?:\]\(|href="(?:\.\/)?)[?]path=\/(?:docs|story)\/([^\s)"]+)/g)) {

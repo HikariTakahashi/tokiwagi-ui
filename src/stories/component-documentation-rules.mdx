@@ -1,75 +1,43 @@
 import { Meta } from '@storybook/addon-docs/blocks';
-import './components/component-documentation.css';
 
 <Meta title="コンポーネント/ドキュメントUIルール" id="components-documentation-rules" />
 
-<article className="tkw-component-doc sb-unstyled">
+# コンポーネントプレビューのUIルール
 
-# ドキュメントUIルール
+Storybookは実コンポーネントの表示と設定変更、利用ルールの参照に使います。TIcon・TBrand・TLogoのDefaultストーリーは「コンポーネント」直下に維持し、利用ルールを「コンポーネント/個別ルール」に分けて置きます。Astro側への説明ページ移設は別作業です。
 
-コンポーネントの使い方と動作確認を、同じ順序・同じ操作で読めるようにします。TIcon・TLogo・TBrandと、今後追加するコンポーネントのStorybook説明ページに適用します。実コンポーネントの表示仕様は各コンポーネントのルールに従います。
+## CanvasとControls
 
-## ページ構成
+- 「アイコン/使用例/基本アイコン/bell-off」と同じCSF形式とし、`layout: centered`で公開入口の実コンポーネントを1つ中央に表示します。`!autodocs`を指定します。
+- Canvasに見出し、説明、独自の設定欄や枠、Props表、使用コード・コピー、比較表示、折りたたみ、関連資料一覧を置きません。
+- 設定はStorybook標準のControlsとargsで管理します。変更は見本に反映され、URLから復元できます。UIからのストーリー保存は無効にします。
+- Controlsと標準パネルの設定はbell-offと揃えます。表示目的のイベントやplay関数は追加しません。
 
-概要（「コンポーネント」の分類、公開名、説明）、フレームワーク選択、対応情報、ページ内目次に続けて、次の順序で説明します。
+| コンポーネント | Controls | 初期値 |
+| --- | --- | --- |
+| TIcon | framework・name・size・color | React・bell・24px・currentColor |
+| TBrand | framework・size | React・32px |
+| TLogo | framework・size・decorative | React・32px・false |
 
-1. **プレビュー**：設定欄、実コンポーネントの見本、寸法・状態の説明、コピー可能な使用コード、折りたたんだ比較見本。
-2. **基本的な使い方**：公開入口からのインポート、必要なトークンCSS、親要素との組み合わせ。
-3. **Props・公開API**：Props／型・用途／既定値の順の表と、属性・イベントなどの転送範囲。
-4. **表示と利用のルール**：寸法、色、余白、コンポーネントと親の責任。
-5. **アクセシビリティと使用例**：読み上げ、操作名、状態の伝え方、実際に確認できる使用例。
-6. **導入・応用**：SSR、CSPなどの補足を折りたたんで掲載。
-7. **関連資料**：原本、用途の説明、関連コンポーネント、本ルールへのリンク。
+方式はReact・Vue・Astroの順とし、切り替えても他の設定を保持します。TIconの公開名は329種、サイズは16・20・24・32px、色は継承・ニュートラル・7色のプライマリーから選びます。色はbell-offと同じ既存トークンへのmappingで指定し、URLには選択肢のキーを保持します。TLogo・TBrandは32・64・128pxで、原本の固定配色と余白を維持します。
 
-## 寸法と文字
+## 個別ルール
 
-| 項目 | 共通ルール |
-| --- | --- |
-| ページ | box-sizing: border-box、最大幅960px、中央配置、内側余白は上下24px・左右16px |
-| 本文 | 16px、行高1.8、Inter・Noto Sans JP・システムフォント |
-| 大見出し | 40px、行高1.3。560px以下で32px |
-| セクション見出し | 24px、行高1.5。560px以下で21px |
-| セクション間隔 | 40px |
-| ボタン・セレクト | 最低高さ44px、角丸6px、内側余白8px・12px |
-| 設定欄 | 上ラベル、項目間隔12px。560px以下では縦並び |
-| プレビュー枠 | 最低高さ240px、内側余白24px、角丸8px、見本を中央配置 |
-| コード欄 | 角丸8px、コード13px・行高1.65、内側余白16px |
+- 本文の管理元は`components/<コンポーネント名>/README.md`です。`src/stories/component-rules/<コンポーネント名>.mdx`は対応する原本を`?raw`で読み込み、Markdownで表示する薄いページとします。本文を複製しません。
+- 分類は「コンポーネント/個別ルール/TBrand・TIcon・TLogo」、Docs IDは`components-tbrand-rules`・`components-ticon-rules`・`components-tlogo-rules`です。既存DefaultストーリーのIDとURLは維持します。
+- 本文は「概要」「使用場面」「状態の表し方」「使用しない場面」「表示とアクセシビリティ」「関連コンポーネントと使い分け」の6セクションに揃えます。公開API・Props表・利用コード・SSR・CSPなどの導入説明はリポジトリのREADMEに保持します。
+- 個別READMEに「使用例を見る」と関連資料へのリンクを置きます。原本ではリポジトリ内の相対パスを使い、`component-readme.ts`でStorybookの閲覧先へ変換します。Canvasにはリンクや説明を追加しません。
+- 既存アイコンの個別ルールとロゴ原本の使用ルールは、それぞれの管理元を維持します。
 
-チェックボックスは上に項目名を置き、チェックボックスと説明ラベルを合わせた操作領域の高さを最低44pxにします。ラベルのクリックでも切り替えられるようにします。
+## 共通の描画処理
 
-## 色と操作状態
+`components/component-story.ts`のrenderComponentStory・componentStoryParameters・frameworkControlを再利用します。`components/ComponentPreview.tsx`がReact・Vue・Astroの実コンポーネントを描画します。Storybook専用コードはアプリ向け公開入口からexportしません。
 
-既存トークンを参照し、HEX値を複製しません。共通の選択操作はblueのトークンを使用します。見本内では各コンポーネントの配色ルールに従い、7色のプライマリーを比較できます。
+- args更新には同じReactのrootとVueアプリを使います。方式切り替え時は旧方式の表示を解放し、離脱時にReactのrootと内部Vueアプリを解放します。
+- Astroは既存の生成済みHTMLとcreateAstroPreviewLoaderを利用します。SVGのID分離と親からの色継承を維持します。
+- 読み込み中はrole=status、失敗時はrole=alertと「再試行」を表示します。正常時は見本だけに戻します。離脱後の古い応答は画面へ反映しません。
+- 小さい画面でも実コンポーネントを縮小しません。既存トークンと公開APIに従います。
 
-| 項目 | トークン・表示 |
-| --- | --- |
-| 本文／補足 | neutral-900／neutral-600 |
-| 通常の操作要素 | neutral-0背景、neutral-200枠線 |
-| ホバー | neutral-50背景、neutral-600枠線 |
-| 押下 | neutral-100背景 |
-| 選択中のフレームワーク | primary-blue-subtle背景、primary-blue-on-subtle文字・枠線、太字 |
-| フォーカス | primary-blue-on-subtleの3px輪郭、外側へ3px |
-| プレビュー・コード・表見出し | neutral-50背景。プレビューの色比較時は対応する背景トークン |
-| プレビュー・コード・表の枠線 | neutral-200 |
+## 検証
 
-フレームワークの選択はReact・Vue・Astroの順に置き、対応する方式だけ表示します。buttonとaria-pressedで選択状態を伝えます。Tabで移動し、Enter／Spaceで選択できます。
-
-## プレビューとコード
-
-- 初期フレームワークは対応する方式のうちReact・Vue・Astroの順で先頭の方式、設定値は実コンポーネントの既定値を使用します。必須propsには用途を説明できる代表値を選びます。
-- フレームワーク切り替えで設定値を保持し、見本と使用コードを同時に更新します。コピー用コードは各方式のファイルへ貼り付けられる構文にします。
-- 公開入口の実コンポーネントを使います。Vueは離脱・切り替え時にアンマウントします。Astroは実コンポーネントが描画した静的HTMLをJSONとして取得し、必要なID分離を維持します。読み込み失敗のキャッシュが再試行を妨げないよう、共通のcreateAstroPreviewLoaderを使います。
-- Astroの読み込み中はrole=status、失敗はrole=alertと「再試行」を表示します。表示文言と配置は共通部品に従います。
-- コードには「コードをコピー」、結果の通知、選択コピーできるコード欄を用意します。コピー失敗時は手動コピーを案内し、コード変更時に通知をリセットします。
-- 比較見本はdetailsで初期状態を閉じ、サイズ・色・複数表示など、そのコンポーネントに必要な比較だけを配置します。
-- 原本や実コンポーネントを小さい画面に合わせて縮小しません。見本、コード、表はそれぞれの枠内で必要に応じて横スクロールさせ、ページ全体の横はみ出しを防ぎます。スクロール領域には読み上げ名とキーボードフォーカスを設けます。
-
-## 実装の管理元と拡張
-
-`src/stories/components/ComponentDocumentation.tsx`のDocumentationPage、DocumentationSection、FrameworkSelector、PreviewControls、ControlField、CheckboxField、PreviewStage、CodeBlock、PropsTable、AstroPreviewStatusを再利用します。Astroの読み込み状態にはuseAstroPreviews、使用コードの生成にはcomponentExampleを使えます。共通スタイルは同じディレクトリの`component-documentation.css`で管理します。
-
-各ページは説明、props、設定値、実コンポーネントの見本、比較・使用例の内容を渡します。固有CSSは比較見本や操作見本など内容固有の配置・状態に限定します。幅、見出し、フレームワーク選択、設定欄、コード、API表をページごとに再定義しません。Storybook専用部品はアプリ向け公開入口からexportしません。
-
-新規作成時はcomponent-creatorを使用し、390px・1440pxでの表示、設定保持、見本とコードの一致、コピー、折りたたみ、読み込みと再試行、キーボード、フォーカス、ホバー・押下を確認します。必要なテスト・型検査・ビルドはAGENTS.mdに従います。
-
-</article>
+390px・1440pxで中央の見本、Controlsの操作とキーボードフォーカス、方式切り替え時の設定保持、URL再読み込みを確認します。Astroの読み込み・失敗・再試行、Vueのアンマウント、moon/toolのクリッピング、静的Storybookでの3方式の表示も検証します。個別ルールはREADMEとMDXの一対一の対応、6セクション、本文・表・リンクの表示と横はみ出し、キーボード操作、原本とStorybook双方でのリンク解決を確認します。テスト・型検査・両ビルドはAGENTS.mdに従います。

@@ -1,0 +1,9 @@
+import { Markdown, Meta } from '@storybook/addon-docs/blocks';
+import { componentReadmeForStorybook } from '../component-readme';
+import readme from '../../../components/TIcon/README.md?raw';
+
+<Meta title="コンポーネント/個別ルール/TIcon" id="components-ticon-rules" />
+
+<div className="tkw-icon-doc">
+  <Markdown options={{ overrides: { a: { props: { target: '_top' } } } }}>{componentReadmeForStorybook(readme)}</Markdown>
+</div>
