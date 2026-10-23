@@ -49,13 +49,13 @@ bun run build
 bun run build:storybook
 ```
 
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon・TBrand」はbell-offの使用例と同じストーリー形式です。Canvasには見本1つだけを中央表示し、設定は標準Controlsとargsで変更・URL保存します。TIconではReact・Vue・Astroを切り替えても公開名・サイズ・色を保持します。詳細説明のAstro側への移設は別作業です。外部公開、既存 Nuxt 画面の置き換えは未実施です。
+Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon・TBrand・TLogo」はbell-offの使用例と同じストーリー形式です。Canvasには見本1つだけを中央表示し、設定は標準Controlsとargsで変更・URL保存します。TIconではReact・Vue・Astroを切り替えても公開名・サイズ・色を保持します。詳細説明のAstro側への移設は別作業です。外部公開、既存 Nuxt 画面の置き換えは未実施です。
 
 `check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
 
 ## TLogoの利用
 
-ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネント、サイズ、読み上げ状態、利用コードを確認できます。
+ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズと読み上げ状態を切り替えられます。公開APIと利用例は本READMEで説明します。
 
 | props | 既定値 | 用途 |
 | --- | --- | --- |
