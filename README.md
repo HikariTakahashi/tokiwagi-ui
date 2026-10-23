@@ -49,7 +49,7 @@ bun run build
 bun run build:storybook
 ```
 
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon」でReact・Vue・Astroを切り替え、選択した公開名・サイズ・色を保持して確認できます。外部公開、既存 Nuxt 画面の置き換えは未実施です。
+Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon・TBrand」はbell-offの使用例と同じストーリー形式です。Canvasには見本1つだけを中央表示し、設定は標準Controlsとargsで変更・URL保存します。TIconではReact・Vue・Astroを切り替えても公開名・サイズ・色を保持します。詳細説明のAstro側への移設は別作業です。外部公開、既存 Nuxt 画面の置き換えは未実施です。
 
 `check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
 
@@ -209,7 +209,7 @@ React・Vue版と同じ装飾用APIです。SVGの `aria-hidden="true"`・`focus
 
 黒い線と塗りだけをcurrentColor化し、原本の座標・線幅・縦横比・透明な塗り・白いクリッピングを維持します。クリッピングIDはビルド／サーバー描画時に `crypto.randomUUID()` でインスタンスごとに生成し、出力HTMLに保存します。ハイドレーションやクライアントランタイムは不要で、ビルドごとにID文字列は変わります。アプリ向け入口はREADME全文、Storybook専用コード、React・Vueランタイムを読み込みません。
 
-Storybookの「コンポーネント/TIcon」でAstroを選ぶと、プレビュー・使用コード・API・静的出力の説明が切り替わります。React・Vueとの切り替え時も公開名・サイズ・色は維持します。
+Storybookの「コンポーネント/TIcon」でAstroを選ぶと、実コンポーネントが生成した静的HTMLを表示します。React・Vueとの切り替え時も公開名・サイズ・色は維持します。
 
 StorybookのAstro見本は `.storybook/astro-previews.ts` がBunの別プロセスで公開入口の実コンポーネントを全329種×4サイズ描画し、仮想モジュールとして供給します。生成JSONは一時ファイルへの書き込み完了後に読み込み、成功・失敗にかかわらず一時ファイルを削除します。Astro選択時にHTMLデータを読み込み、複数表示ではIDだけをインスタンスごとに分離します。色は親から継承します。Astroランタイムや別のAstroサーバーは不要で、静的Storybookにも描画結果を収録します。開発中に原本・実コンポーネントを編集すると再生成し、色CSSの変更は既存のHMRで反映します。生成結果はコミットしません。
 
@@ -352,7 +352,7 @@ const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
 
 クリッピングIDはVueの `useId()` でインスタンスごとに分離し、SSRとハイドレーションで安定させます。同じHTML文書に複数のVueアプリを置く場合は、それぞれ `app.config.idPrefix` を別の値に設定し、SSR側・クライアント側では同じ値を使ってください（[Vue公式のuseId仕様](https://vuejs.org/api/composition-api-helpers.html#useid)）。通常の単一Nuxtアプリでは追加設定は不要です。
 
-Storybookの「コンポーネント/TIcon」でVueを選ぶと、同じ確認画面と使用例をVueの実コンポーネントで確認できます。選択した名前・サイズ・色はReactとの切り替え時も保持します。
+Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コンポーネントの表示を確認できます。選択した名前・サイズ・色はReactとの切り替え時も保持します。
 
 ## GitHub での開発
 
