@@ -33,6 +33,7 @@ bun run storybook  # Storybook: http://localhost:6006
 
 ## 管理元
 
+- コンポーネントの利用ルールは [TBrand](components/TBrand/README.md)・[TIcon](components/TIcon/README.md)・[TLogo](components/TLogo/README.md) の個別READMEが管理元です。Storybookの「コンポーネント/個別ルール」はこれらを読み込む表示用ページで、最小プレビューとは分けて参照できます。公開API・利用コード・導入説明は本READMEに保持します。
 - カラー値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` の全93トークンが定義元です。Storybook の見本・HEX・コントラスト表示はこれらを読み込みます。
 - カラーの使用ルールと操作例は Storybook の「カラー」にあります。CSS を編集して保存すると開発中の表示に反映されます。
 - ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
@@ -54,6 +55,8 @@ Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です�
 `check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
 
 ## TLogoの利用
+
+利用場面・固定配色・余白・名称併記と読み上げの詳細は、[TLogoの利用ルール](components/TLogo/README.md)を参照してください。
 
 ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズと読み上げ状態を切り替えられます。公開APIと利用例は本READMEで説明します。
 
@@ -114,6 +117,8 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 原本SVGをdata URLとして埋め込むため、CSPを使う配信先は `img-src` に `data:` を許可してください。React・VueのSSRとハイドレーションで同じ画像srcを使い、Astroはクライアント処理なしで静的HTMLを出力します。内部SVGのIDは文書へ展開しません。アプリ画面への適用は未実施です。
 
 ## TBrand（ロゴと名称）
+
+固定名称・書体・間隔・親リンクとの役割分担は、[TBrandの利用ルール](components/TBrand/README.md)を参照してください。
 
 `TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は各方式の利用説明を参照してください。LP・既存アプリへの適用は未実施です。
 
@@ -177,6 +182,8 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 `neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズを切り替えられます。親ホームリンクの利用例は本READMEを参照してください。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
 
 ## Astroでの利用
+
+TIconの図柄・サイズ・色の選び方と、親要素が担う意味・操作のルールは、[TIconの利用ルール](components/TIcon/README.md)を参照してください。React・Vueでも同じルールに従います。
 
 Astroの入口は `src/astro/index.ts`、パッケージの公開入口は `tokiwagi-ui/astro` です。このリポジトリのAstro 7.3.4で検証しています。npm公開・配布ビルドは未実施で、`bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）でローカルパッケージとして取り込みます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。Astro/Viteの `.astro` と `?raw` 読み込みを使用し、React・Vueの導入は不要です。
 
