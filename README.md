@@ -174,7 +174,7 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 
 **占有領域**：TLogoが図形の四辺に幅の1/4の余白を確保するため、ロゴ領域は32px指定で48×48px、64px指定で96×96px、128px指定で192×192pxです。TBrandは外側のpaddingを追加しません。名称の行高は24pxで、全体の高さはロゴ領域と同じです。全幅は「ロゴ図形幅×1.5＋間隔8px＋名称の実測幅」で、フォントにより変わります。名称の右側の余白やリンクの操作領域は親で確保してください。ロゴと名称は縮小・折り返しません。利用先に収まるサイズを選んでください。
 
-`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の公開入口を使った3サイズ・静的表示・親ホームリンクを確認できます。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
+`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズを切り替えられます。親ホームリンクの利用例は本READMEを参照してください。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
 
 ## Astroでの利用
 

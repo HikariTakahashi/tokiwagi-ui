@@ -102,7 +102,7 @@ export function TLogoDocumentation() {
     <DocumentationSection name="related">
       <div className="tkw-doc-related">
         <a href="./?path=/docs/brand-logo--docs" target="_top">ロゴの使用ルール・原本ダウンロード</a>
-        <a href="./?path=/docs/components-tbrand--docs" target="_top">TBrand：ロゴと名称のセット</a>
+        <a href="./?path=/story/components-tbrand--default" target="_top">TBrand：ロゴと名称のセット</a>
         <a href="./?path=/docs/components-documentation-rules--docs" target="_top">ドキュメントUIルール</a>
       </div>
     </DocumentationSection>
