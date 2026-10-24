@@ -1,0 +1,6 @@
+- [Home](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Home)
+- [Setup](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Setup)
+- [Usage](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Usage)
+- [Testing](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Testing)
+- [Contributing](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Contributing)
+- [License](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/License)

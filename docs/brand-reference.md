@@ -2,7 +2,7 @@
 
 ロゴ・TLogo・TBrandは公開リポジトリに掲載を続けますが、[MITの適用範囲](../LICENSE-SCOPE.md)から除外しています。本資料と以下の既存コード例は参照用に保存したもので、ブランド資産・専用コードの利用許諾ではありません。利用を希望する場合は権利者Hikari Takahashiへ別途確認してください。連絡は[GitHubプロフィール](https://github.com/HikariTakahashi)を参照してください。
 
-以下は従来READMEの説明を移設したものです。[MIT対象の導入方法](../README.md)とは区別してください。
+以下は従来READMEの説明を移設したものです。[MIT対象の導入方法](wiki/Usage.md)とは区別してください。
 
 ## TLogoの利用
 
@@ -71,7 +71,7 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 
 固定名称・書体・間隔・親リンクとの役割分担は、[TBrandの利用ルール](../components/TBrand/README.md)を参照してください。
 
-`TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は[各方式の利用説明](../README.md)を参照してください。LP・既存アプリへの適用は未実施です。
+`TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は[各方式の利用説明](wiki/Usage.md)を参照してください。LP・既存アプリへの適用は未実施です。
 
 | 指定 | 型・既定値 | 用途 |
 | --- | --- | --- |
