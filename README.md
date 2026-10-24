@@ -1,384 +1,46 @@
 # Tokiwagi UI
 
-タスク管理アプリのためのデザインシステムです。Astro は紹介用のランディングページ、Storybook はカラー・アイコン・ロゴのルール参照と実装時の確認に使います。
+タスク管理アプリのためのデザインシステムです。UI部品・カラートークンと利用ルールをそろえ、React・Vue・Astroで一貫した画面を開発するために使います。
 
-## VS Code の拡張機能
+## 主な機能
 
-VS Code で `tokiwagi-ui` フォルダーを開き、拡張機能ビューで `@recommended` と検索すると、[`.vscode/extensions.json`](.vscode/extensions.json) に登録した拡張機能が表示されます。必要なものを選んでインストールしてください。開発・ビルドに必須の拡張機能はありません。
+- React・Vue・Astro向けの装飾用コンポーネント `TIcon` と329種の汎用SVG。
+- ライトモード向けの93カラートークンとTailwind CSS v4の共有テーマ。
+- Storybookによるカラー・アイコン・コンポーネントの見本と利用ルール。
+- Astroによる紹介ページ。ブランド部品 `TLogo`・`TBrand` も実装済みですが、MIT対象外です。
 
-| 拡張機能 | 用途 |
+npm公開・配布用ビルドは未実施です。現状はソースを含むローカルパッケージとして利用します。既存Nuxtアプリへの置き換えは未実施です。
+
+## 技術スタック
+
+| 分類 | 技術 |
 | --- | --- |
-| Astro (`astro-build.astro-vscode`) | `.astro` ファイルの補完・診断 |
-| Tailwind CSS IntelliSense (`bradlc.vscode-tailwindcss`) | Tailwind CSS v4 のクラス補完・検査 |
-| MDX (`unifiedjs.vscode-mdx`) | Storybook の `.mdx` 資料の編集 |
-| Bun for Visual Studio Code (`oven.bun-vscode`) | Bun のテスト表示・デバッグ |
-| CSS Variables (LSP) (`miclmn451.css-variables-vscode`) | カラートークンの補完・定義への移動 |
-| GitHub Pull Requests (`GitHub.vscode-pull-request-github`) | Issue・PR の確認とレビュー |
+| 言語 | TypeScript 5.9.3、CSS、MDX、SVG |
+| 紹介ページ | Astro 7.3.4 |
+| コンポーネント | React 18・19、Vue 3.5以上（4未満）、Astro |
+| スタイル | Tailwind CSS 4.3.3、CSSカスタムプロパティ |
+| ドキュメント | Storybook 10.6.0、GitHub Wiki |
+| 開発・テスト | Bun 1.3.9、Bun Test、Happy DOM、Astro Check |
 
-Astro と Tailwind CSS IntelliSense は特に推奨します。CSS Variables (LSP) と GitHub Pull Requests は作業内容に応じて選べます。
+## 環境構築・使い方・テスト
 
-## 起動
+詳細はWikiで管理します。**GitHub Wikiは未反映です。公開までは下記のローカル原稿を参照してください。**
 
-Bun 1.3.9 以上を使用します。
-
-```sh
-cd tokiwagi-ui
-bun install --frozen-lockfile
-bun run dev:all    # Astro LP: http://localhost:4321 / Storybook: http://localhost:6006
-bun run dev        # Astro LP: http://localhost:4321
-bun run storybook  # Storybook: http://localhost:6006
-```
-
-`bun run dev:all` で2つのサーバーを同時に起動できます。個別に起動する場合は `dev` または `storybook` を使います。LP の Storybook リンクは Storybook サーバーを起動すると開けます。
-
-## 管理元
-
-- コンポーネントの利用ルールは [TBrand](components/TBrand/README.md)・[TIcon](components/TIcon/README.md)・[TLogo](components/TLogo/README.md) の個別READMEが管理元です。Storybookの「コンポーネント/個別ルール」はこれらを読み込む表示用ページで、最小プレビューとは分けて参照できます。公開API・利用コード・導入説明は本READMEに保持します。
-- カラー値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` の全93トークンが定義元です。Storybook の見本・HEX・コントラスト表示はこれらを読み込みます。
-- カラーの使用ルールと操作例は Storybook の「カラー」にあります。CSS を編集して保存すると開発中の表示に反映されます。
-- ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
-- アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全329アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに329個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の全329ストーリーではReact版の公開TIconを1つ中央に表示します。公開名は固定し、初期値は24px・currentColorです。Controlsで16・20・24・32pxと、継承・ニュートラル・7色のプライマリーを切り替え、選択をURLに保持します。Actions・Interactionsは標準パネルとして表示します。各個別ルールから対応する使用例に移動できます。
-- Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
-
-## 検証と静的ビルド
-
-```sh
-bun test
-bun run check
-bun run check:react-compat
-bun run build
-bun run build:storybook
-```
-
-Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon・TBrand・TLogo」はbell-offの使用例と同じストーリー形式です。Canvasには見本1つだけを中央表示し、設定は標準Controlsとargsで変更・URL保存します。TIconではReact・Vue・Astroを切り替えても公開名・サイズ・色を保持します。詳細説明のAstro側への移設は別作業です。外部公開、既存 Nuxt 画面の置き換えは未実施です。
-
-`check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
-
-## TLogoの利用
-
-利用場面・固定配色・余白・名称併記と読み上げの詳細は、[TLogoの利用ルール](components/TLogo/README.md)を参照してください。
-
-ブランドロゴは `TLogo` としてReact・Vue・Astroの各公開入口から利用できます。固定配色の原本を画像として表示し、TIconの公開名には含めません。Storybookの「コンポーネント/TLogo」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズと読み上げ状態を切り替えられます。公開APIと利用例は本READMEで説明します。
-
-| props | 既定値 | 用途 |
+| 内容 | Wiki | ローカル原稿 |
 | --- | --- | --- |
-| `size` | `32` | 図形の幅。32・64・128pxから選択。 |
-| `decorative` | `false` | 名称併記・名前付きリンクではtrueにする。 |
-| `className` / `class` | なし | 外側のspanに付与する配置用クラス。Reactは文字列、Vueはclass形式、Astroは文字列。 |
+| 目次 | [Home](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Home) | [Home](docs/wiki/Home.md) |
+| 環境構築・開発環境 | [Setup](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Setup) | [Setup](docs/wiki/Setup.md) |
+| コンポーネントの使い方 | [Usage](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Usage) | [Usage](docs/wiki/Usage.md) |
+| テスト方法 | [Testing](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Testing) | [Testing](docs/wiki/Testing.md) |
 
-React：
+[Wikiの反映状況と更新手順](docs/WIKI-PUBLISHING.md)も参照してください。
 
-```tsx
-import { TLogo } from 'tokiwagi-ui/react';
-import 'tokiwagi-ui/tokens/neutrals.css';
+## 開発参加
 
-<TLogo size={64} />
-<a href="/" aria-label="Tokiwagi UI ホーム">
-  <TLogo decorative />
-  <span>Tokiwagi UI</span>
-</a>
-```
+開発担当者、Issue・ブランチ・Pull Requestの運用は [Contributing](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Contributing)（[ローカル原稿](docs/wiki/Contributing.md)）を参照してください。
 
-Vue：
+## ライセンス
 
-```vue
-<script setup lang="ts">
-import { TLogo } from 'tokiwagi-ui/vue';
-import 'tokiwagi-ui/tokens/neutrals.css';
-</script>
+[適用範囲](LICENSE-SCOPE.md)に定める自作コード・汎用SVG・トークン・文書は **MIT License** です。商用利用・改変・再配布が可能です。正式な全文は [LICENSE](LICENSE)、説明は [WikiのLicense](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/License)（[ローカル原稿](docs/wiki/License.md)）を参照してください。
 
-<template>
-  <TLogo :size="64" />
-  <a href="/" aria-label="Tokiwagi UI ホーム">
-    <TLogo decorative />
-    <span>Tokiwagi UI</span>
-  </a>
-</template>
-```
-
-Astro：
-
-```astro
----
-import { TLogo } from 'tokiwagi-ui/astro';
-import 'tokiwagi-ui/tokens/neutrals.css';
----
-<TLogo size={64} />
-<a href="/" aria-label="Tokiwagi UI ホーム">
-  <TLogo decorative />
-  <span>Tokiwagi UI</span>
-</a>
-```
-
-`size` は画像自体の幅です。四辺に幅の1/4の余白を含むため、占有領域は32px指定で48px、64px指定で96px、128px指定で192pxの正方形です。余白の背景は `--tkw-color-neutral-0` を参照します。親の文字色は画像へ継承しません。
-
-単体表示のaltは「Tokiwagi UI」、`decorative` 指定時は空です。操作は親のリンクに持たせてください。色・src・alt・style・追加属性・イベント・children／slotは公開せず、配置用classで内部のサイズや余白を上書きしないでください。不正なサイズと非booleanのdecorativeは描画時に日本語エラーで拒否します。
-
-原本SVGをdata URLとして埋め込むため、CSPを使う配信先は `img-src` に `data:` を許可してください。React・VueのSSRとハイドレーションで同じ画像srcを使い、Astroはクライアント処理なしで静的HTMLを出力します。内部SVGのIDは文書へ展開しません。アプリ画面への適用は未実施です。
-
-## TBrand（ロゴと名称）
-
-固定名称・書体・間隔・親リンクとの役割分担は、[TBrandの利用ルール](components/TBrand/README.md)を参照してください。
-
-`TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は各方式の利用説明を参照してください。LP・既存アプリへの適用は未実施です。
-
-| 指定 | 型・既定値 | 用途 |
-| --- | --- | --- |
-| `size` | `LogoSize = 32 \| 64 \| 128`、既定32 | ロゴ図形の幅。名称のサイズは変わらない |
-| `className`（React） | `string` | 外側のspanに付与する配置用クラス |
-| `class`（Vue） | `HTMLAttributes['class']` | 外側のspanに付与する文字列・配列・オブジェクト |
-| `class`（Astro） | `string` | 外側のspanに付与する配置用クラス |
-
-名称・書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は既存見本と同じ `Inter, "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`、名称は16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxです。フォントは利用側で配信し、未読込時はフォールバックします。名称の色は親から継承します。ロゴの固定配色は変えません。
-
-```tsx
-import { TBrand } from 'tokiwagi-ui/react';
-import 'tokiwagi-ui/tokens/neutrals.css';
-
-<TBrand />;
-<a href="/" aria-label="Tokiwagi UI ホーム" className="brand-home">
-  <TBrand size={32} className="brand-position" />
-</a>;
-```
-
-```vue
-<script setup lang="ts">
-import { TBrand } from 'tokiwagi-ui/vue';
-import 'tokiwagi-ui/tokens/neutrals.css';
-</script>
-
-<template>
-  <TBrand />
-  <a href="/" aria-label="Tokiwagi UI ホーム" class="brand-home">
-    <TBrand :size="32" class="brand-position" />
-  </a>
-</template>
-```
-
-```astro
----
-import { TBrand } from 'tokiwagi-ui/astro';
-import 'tokiwagi-ui/tokens/neutrals.css';
----
-<TBrand />
-<a href="/" aria-label="Tokiwagi UI ホーム" class="brand-home">
-  <TBrand size={32} class="brand-position" />
-</a>
-```
-
-```css
-.brand-home { display: inline-flex; border-radius: 8px; color: var(--tkw-color-neutral-900); text-decoration: none; }
-.brand-home:hover { background: var(--tkw-color-neutral-50); text-decoration: underline; text-underline-offset: 4px; }
-.brand-home:active { background: var(--tkw-color-neutral-100); }
-.brand-home:focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 4px; }
-```
-
-内部の `TLogo` には `decorative` を指定し、画像のaltは空です。名称は通常のテキストとして一度だけ読み上げます。TBrand自体はフォーカスを持たず、リンク先・操作・操作名・ホバー・押下・フォーカスは親のa要素が担当します。ホームリンクには `aria-label="Tokiwagi UI ホーム"` を指定します。
-
-追加の属性（id・role・aria-*・tabIndex・style・href等）・イベント・children／slotは内部DOMへ転送しません。Reactのrefも受け取りません。Vueのrefはフレームワークのコンポーネント参照であり、DOM参照のAPIは提供しません。名称を別の文言へ差し替えるAPIはありません。配置用classは外側だけに付け、内部の余白・寸法・配色を上書きしないでください。非対応サイズはTLogoの検証で描画時にも日本語エラーとして拒否します。
-
-**占有領域**：TLogoが図形の四辺に幅の1/4の余白を確保するため、ロゴ領域は32px指定で48×48px、64px指定で96×96px、128px指定で192×192pxです。TBrandは外側のpaddingを追加しません。名称の行高は24pxで、全体の高さはロゴ領域と同じです。全幅は「ロゴ図形幅×1.5＋間隔8px＋名称の実測幅」で、フォントにより変わります。名称の右側の余白やリンクの操作領域は親で確保してください。ロゴと名称は縮小・折り返しません。利用先に収まるサイズを選んでください。
-
-`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズを切り替えられます。親ホームリンクの利用例は本READMEを参照してください。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
-
-## Astroでの利用
-
-TIconの図柄・サイズ・色の選び方と、親要素が担う意味・操作のルールは、[TIconの利用ルール](components/TIcon/README.md)を参照してください。React・Vueでも同じルールに従います。
-
-Astroの入口は `src/astro/index.ts`、パッケージの公開入口は `tokiwagi-ui/astro` です。このリポジトリのAstro 7.3.4で検証しています。npm公開・配布ビルドは未実施で、`bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）でローカルパッケージとして取り込みます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。Astro/Viteの `.astro` と `?raw` 読み込みを使用し、React・Vueの導入は不要です。
-
-```astro
----
-import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/astro';
-import 'tokiwagi-ui/tokens/colors.css';
-import 'tokiwagi-ui/tokens/semantic.css';
-const fromApi: string = 'calendar';
-const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
----
-<button type="button" aria-label="通知一覧を開く" class="notification-button">
-  <TIcon name="bell" size={24} class="notification-icon" />
-</button>
-<a href="/tasks"><TIcon name="task" size={20} /> タスク一覧</a>
-<span><TIcon name={safeName} color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー</span>
-<span><TIcon name="check" size={20} /> 完了</span>
-```
-
-| 指定 | 型・既定値 | 用途 |
-| --- | --- | --- |
-| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
-| `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ |
-| `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は既存トークンを参照 |
-| `class` | `string` | SVGのクラス名 |
-
-`TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。名前の誤記と非対応サイズは型検査で検出し、型を迂回した場合も日本語エラーを投げます。外部文字列は `isIconName()` で検証し、代替名は利用側で選びます。
-
-React・Vue版と同じ装飾用APIです。SVGの `aria-hidden="true"`・`focusable="false"`・32×32のviewBox・width/heightを固定し、追加のSVG属性（id、role、aria-label、styleなど）・イベント・slotは転送しません。意味のある状態・情報は読み上げ可能なテキストを併記します。アイコンだけのリンクやボタンには親に目的が分かる名前を付けます。フォーカス、ホバー、押下、無効状態、操作領域は親が担い、クラスで形状・線幅・サイズを上書きしません。
-
-黒い線と塗りだけをcurrentColor化し、原本の座標・線幅・縦横比・透明な塗り・白いクリッピングを維持します。クリッピングIDはビルド／サーバー描画時に `crypto.randomUUID()` でインスタンスごとに生成し、出力HTMLに保存します。ハイドレーションやクライアントランタイムは不要で、ビルドごとにID文字列は変わります。アプリ向け入口はREADME全文、Storybook専用コード、React・Vueランタイムを読み込みません。
-
-Storybookの「コンポーネント/TIcon」でAstroを選ぶと、実コンポーネントが生成した静的HTMLを表示します。React・Vueとの切り替え時も公開名・サイズ・色は維持します。
-
-StorybookのAstro見本は `.storybook/astro-previews.ts` がBunの別プロセスで公開入口の実コンポーネントを全329種×4サイズ描画し、仮想モジュールとして供給します。生成JSONは一時ファイルへの書き込み完了後に読み込み、成功・失敗にかかわらず一時ファイルを削除します。Astro選択時にHTMLデータを読み込み、複数表示ではIDだけをインスタンスごとに分離します。色は親から継承します。Astroランタイムや別のAstroサーバーは不要で、静的Storybookにも描画結果を収録します。開発中に原本・実コンポーネントを編集すると再生成し、色CSSの変更は既存のHMRで反映します。生成結果はコミットしません。
-
-`bun test` はAstroコンパイラと [公式Container API](https://docs.astro.build/en/reference/container-reference/) で実コンポーネントを描画し、全原本×4サイズ、並行描画のID、入力エラー、固定属性、公開入口への資料・他ランタイムの混入を検証します。
-
-## Reactでの利用
-
-React 18・19とViteの `?raw` 読み込みに対応する環境を対象にします。入口は `src/react/index.ts`、パッケージの公開入口は `tokiwagi-ui/react` です。npm公開・配布ビルドは未実施で、ローカルパッケージとして利用します。Reactは利用側のpeer dependencyです。React・Vueのpeerはoptionalで、選んだ入口のフレームワークを利用側に導入してください。
-
-同じワークスペースのReactプロジェクトなら `bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）で取り込めます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。Reactの重複ロードを避けるため、Viteに `resolve: { dedupe: ['react', 'react-dom'] }` を設定します。アプリのReactとReact DOMは対応する同じバージョンを使います。
-
-```tsx
-import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/react';
-// アプリ全体で一度読み込む。色値の定義元はtokens/だけ。
-import 'tokiwagi-ui/tokens/colors.css';
-import 'tokiwagi-ui/tokens/semantic.css';
-
-const fromApi: string = 'calendar';
-const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
-
-export function Actions() {
-  return <>
-    <button type="button" aria-label="通知一覧を開く" className="notification-button">
-      <TIcon name="bell" size={24} className="notification-icon" />
-    </button>
-    <button type="button"><TIcon name="plus" size={20} /> タスクを追加</button>
-    <span>
-      <TIcon name={safeName} color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー
-    </span>
-  </>;
-}
-```
-
-```css
-.notification-button {
-  color: var(--tkw-color-primary-blue-on);
-  background: var(--tkw-color-primary-blue);
-  min-width: 44px;
-  min-height: 44px;
-}
-.notification-button:hover { background: var(--tkw-color-primary-blue-hover); }
-.notification-button:active { background: var(--tkw-color-primary-blue-active); }
-.notification-button:focus-visible {
-  outline: 3px solid var(--tkw-color-primary-blue-on-subtle);
-  outline-offset: 3px;
-}
-```
-
-| 指定 | 型・既定値 | 用途 |
-| --- | --- | --- |
-| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
-| `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ |
-| `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は既存トークンを参照 |
-| `className` | `string` | React形式のクラス名をSVGに適用 |
-
-`TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。公開名の誤記と非対応サイズは型検査で検出し、型を迂回した場合も日本語エラーを投げます。外部文字列は `isIconName()` で検証し、代替名は利用側で選びます。アプリ向け入口はREADME本文、Storybook専用コード、Vueランタイムを読み込みません。
-
-`TIcon` はVue版と同じ装飾用APIです。SVGの `aria-hidden="true"`、`focusable="false"`、viewBox、サイズを固定し、追加属性・イベント・children・refは転送しません。アイコンだけの操作には親のbutton/linkに操作名を付け、状態・情報には読み上げ可能なテキストを併記します。フォーカス、ホバー、押下、無効状態、操作領域は親が担います。クラスでviewBox・線幅・縦横比・サイズを上書きしないでください。
-
-黒い線と塗りだけを `currentColor` に変換し、原本の形状・透明な塗り・白いクリッピングを維持します。クリッピングIDはReactの `useId()` でインスタンスごとに分離します。SSRとクライアントでは同じコンポーネントツリーを描画してください。
-
-同じ文書に複数React rootを置く場合は、それぞれ異なる `identifierPrefix` を指定し、SSR側とクライアント側で同じ値を使います。単一rootでは追加設定は不要です（[React公式のuseId仕様](https://react.dev/reference/react/useId)）。
-
-```tsx
-// サーバー側：htmlをsidebar-root要素の内側に出力する。
-import { renderToString } from 'react-dom/server';
-import { TIcon } from 'tokiwagi-ui/react';
-const html = renderToString(<TIcon name="moon" />, { identifierPrefix: 'sidebar-' });
-```
-
-```tsx
-// クライアント側：サーバーと同じツリー・接頭辞を使用する。
-import { hydrateRoot } from 'react-dom/client';
-import { TIcon } from 'tokiwagi-ui/react';
-hydrateRoot(document.getElementById('sidebar-root')!, <TIcon name="moon" />, {
-  identifierPrefix: 'sidebar-',
-});
-```
-
-クライアント描画だけの場合は `createRoot(element, { identifierPrefix: 'sidebar-' })` を使います。別rootには別の接頭辞を指定します。
-
-Storybookの「コンポーネント/TIcon」でReactを選ぶと、全公開名・4サイズ・トークン色の実コンポーネントを確認できます。Vueとの切り替え、複数表示、アクセシビリティ例、公開API、導入・SSRの説明も同じページにまとめています。
-
-## Vueでの利用
-
-Vue 3.5以上とViteの `?raw` 読み込みに対応した環境（Nuxt/Vueなど）を対象にします。入口は `src/vue/index.ts`、パッケージの公開入口は `tokiwagi-ui/vue` です。npmへの公開・配布ビルドは未実施で、ローカルパッケージとして利用します。Vueは利用側のpeer dependencyです。
-
-同じワークスペースのNuxt/Vueプロジェクトなら `bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）で取り込めます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。別のVueをロードしないよう、Viteの `resolve.dedupe: ['vue']` を指定します。Nuxtでは `vite: { resolve: { dedupe: ['vue'] } }` です。
-
-```vue
-<script setup lang="ts">
-import { TIcon, isIconName, type IconName } from 'tokiwagi-ui/vue';
-// アプリ全体で一度読み込む。色値の定義元はtokens/だけ。
-import 'tokiwagi-ui/tokens/colors.css';
-import 'tokiwagi-ui/tokens/semantic.css';
-
-const notificationIcon: IconName = 'bell';
-const fromApi: string = 'calendar';
-const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
-</script>
-
-<template>
-  <button type="button" aria-label="通知一覧を開く" class="notification-button">
-    <TIcon :name="notificationIcon" :size="24" class="notification-icon" />
-  </button>
-  <button type="button">
-    <TIcon name="plus" :size="20" /> タスクを追加
-  </button>
-  <span>
-    <TIcon :name="safeName" color="var(--tkw-color-primary-blue-on-subtle)" /> カレンダー
-  </span>
-</template>
-
-<style scoped>
-.notification-button {
-  color: var(--tkw-color-primary-blue-on);
-  background: var(--tkw-color-primary-blue);
-  min-width: 44px;
-  min-height: 44px;
-}
-.notification-button:hover { background: var(--tkw-color-primary-blue-hover); }
-.notification-button:active { background: var(--tkw-color-primary-blue-active); }
-.notification-button:focus-visible {
-  outline: 3px solid var(--tkw-color-primary-blue-on-subtle);
-  outline-offset: 3px;
-}
-</style>
-```
-
-| 指定 | 型・既定値 | 用途 |
-| --- | --- | --- |
-| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
-| `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ。Vueテンプレートでは `:size="20"` のように数値で渡す |
-| `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は `var(--tkw-color-…)` を使う |
-| `class` | Vueの `HTMLAttributes['class']` | 文字列・配列・オブジェクトをSVGに適用 |
-
-`TIconProps`、`IconName`、`IconSize`、`iconNames`、`isIconName` を同じ入口からexportします。公開名の誤記と非対応サイズは型検査で検出します。JavaScriptや外部データが型を迂回した場合も日本語エラーを投げ、別の図柄へ暗黙に置き換えません。外部文字列は `isIconName()` で検証し、必要な代替名は利用側で選びます。
-
-`TIcon` は装飾用です。`aria-hidden="true"` と `focusable="false"` を固定し、SVG自体にクリックやフォーカスを設けません。公開props以外の属性・イベント・slotは転送しません。アイコンだけの操作には親のbutton/linkに操作内容の読み上げ名を付け、状態や情報には読み上げ可能な文言を併記します。クラスでviewBox・線幅・縦横比・サイズを上書きしないでください。小さい図柄が判別しにくければサイズを上げます。
-
-クリッピングIDはVueの `useId()` でインスタンスごとに分離し、SSRとハイドレーションで安定させます。同じHTML文書に複数のVueアプリを置く場合は、それぞれ `app.config.idPrefix` を別の値に設定し、SSR側・クライアント側では同じ値を使ってください（[Vue公式のuseId仕様](https://vuejs.org/api/composition-api-helpers.html#useid)）。通常の単一Nuxtアプリでは追加設定は不要です。
-
-Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コンポーネントの表示を確認できます。選択した名前・サイズ・色はReactとの切り替え時も保持します。
-
-## GitHub での開発
-
-このディレクトリは [HikariTakahashi/tokiwagi-ui](https://github.com/HikariTakahashi/tokiwagi-ui) で独立して管理します。Git と GitHub CLI (`gh`) を用意し、`gh auth login -h github.com` で認証してください。Git コマンドはこのディレクトリで実行します。
-
-1. 作業前に [Issue](https://github.com/HikariTakahashi/tokiwagi-ui/issues) を検索します。未登録の作業は「新規実装」「不具合修正」「残タスク」から種類を選び、各テンプレートの項目に沿って Issue にします。残タスクは範囲が確定したものを追跡し、未着手の構想は必要になった時点で登録します。
-2. `main` から作業ブランチを作り、関連 Issue の範囲で実装します。例: `git switch main && git pull --ff-only && git switch -c feat/123-icon-svg`。
-3. 変更を確認し、該当する検証を実行してからコミット・push します。PR には関連 Issue、変更内容、検証結果、レビューで見てほしい点を記載します。Issue の完了条件をすべて満たす場合だけ `Closes #123` を使います。
-4. PR 上のコメントで人間の確認内容と修正結果を記録します。確認後にマージし、Issue の状態を更新します。`main` への変更は PR 経由とし、承認必須の設定は設けません。
-
-Issue の記載項目は `.github/ISSUE_TEMPLATE/` 内の3種類のテンプレート、PR の記載項目は `.github/PULL_REQUEST_TEMPLATE.md` にあります。Codex からは、一連の作業に `$issue-to-pr`、Issue 登録に `$github-issue`、コミット作成に `$conventional-commit`、PR 作成に `$github-pr` を指定できます。これらのリポジトリ用 skill は `.agents/skills/` にあります。
-
-## アイコン原本の追加・差し替え
-
-- 図形の唯一の編集元は `icons/<公開名>/<公開名>.svg` です。Downloads フォルダーには依存しません。原本は32×32の `viewBox` と制作時の座標・線幅・縦横比を保持します。
-- 差し替えは同名の原本を更新します。用途・使用ルール・別名は同じディレクトリの `README.md` に記載します。新規追加時は命名基準に従い、SVG、6セクションを持つ README、README を読み込む `src/icons/<公開名>.mdx` の個別ページを一組で追加します。名前・分類・一覧は原本から、検索用の別名は README から自動的に読み込みます。件数の受け入れ条件と文書も更新してください。
-- `src/lib/icon-assets.ts` が表示時に黒い線と塗りを `currentColor` に変換します。`fill="none"` とクリッピング用の白い塗りを保持し、ID参照は表示ごとに一意にします。表示用SVGを別途編集しません。
-- 原本ダウンロードはStorybookの `staticDirs` で `icons/` を `/icon-assets` に配信します。README の `?raw` 読み込みと静的配信のURLを分けています。静的ビルドにも原本がそのままコピーされ、サブディレクトリへの配置でも相対URLで参照できます。
-- 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。このコンポーネントはStorybookのMDX資料用です。アプリ向けAPIには `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` の `TIcon` を使います。
-- Vue・React・Astro共通の公開名と原本へのimportは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。Vueの既存ファイルは共通データを再exportします。同じコマンドで `src/stories/icon-examples/*.stories.ts` の使用例も原本カタログから生成します。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
-- `bun test`、`bun run check`、`bun run build`、`bun run build:storybook` を実行します。一覧・使用例で原本との一致、16/20/24/32pxの判読性、トークン色、同一図柄の複数表示、キーボード操作とモバイル表示を確認してください。
-- 小サイズで細部が判別しにくい図柄はサイズを上げるかラベルを併記します。全アイコンの16px利用を一律に推奨しません。詳しくはStorybookの「アイコン/共通表示ルール」を参照してください。
+**ロゴ・TLogo・TBrandとその専用ファイルはMIT対象外です。** 掲載やexportは利用許諾を意味しません。[ブランド参照資料](docs/brand-reference.md)と[第三者ライセンス](docs/THIRD-PARTY-LICENSES.md)を確認してください。
