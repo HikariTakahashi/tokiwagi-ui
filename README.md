@@ -28,7 +28,7 @@ npm公開・配布用ビルドは未実施です。現状はソースを含む�
 
 ## 環境構築・使い方・テスト
 
-詳細はWikiで管理します。**GitHub Wikiは未反映です。公開までは下記のローカル原稿を参照してください。**
+詳細は公開済みの[GitHub Wiki](https://github.com/HikariTakahashi/tokiwagi-ui/wiki)で管理します。下記の各ページから環境構築・使い方・テスト方法を確認できます。Wiki原稿は `docs/wiki/` に保持します。
 
 | 内容 | Wiki | ローカル原稿 |
 | --- | --- | --- |
