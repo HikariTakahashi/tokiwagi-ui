@@ -26,7 +26,7 @@ description: Tokiwagi UIのアプリ向け再利用可能なUIコンポーネン
 
 - Storybookの確認画面を作る場合は、[コンポーネントプレビューのUIルール](../../../src/stories/component-documentation-rules.mdx)を読み、[共通描画](../../../src/stories/components/component-story.ts)を再利用する。「コンポーネント」配下のCSFストーリーにし、centeredのCanvasには公開入口の実コンポーネントを1つだけ表示する。設定は標準Controlsとargsで管理する。
 - 初期設定を実コンポーネントの既定値に合わせ、必須propsには代表値を選ぶ。方式は対応するものだけをReact・Vue・Astroの順に並べ、方式切り替え時も他の設定を保持する。選択をURLに保持し、再読み込みで復元する。色は既存トークンを参照する。
-- Canvasに説明・独自設定欄・枠・Props表・コード・コピー・比較・折りたたみ・関連資料一覧を置かない。公開API・インポート方法・利用コード・SSR・CSPなどの導入説明はリポジトリのREADMEに文書化する。Astroへの移設は依頼範囲に含まれる場合だけ実施する。
+- Canvasに説明・独自設定欄・枠・Props表・コード・コピー・比較・折りたたみ・関連資料一覧を置かない。MIT対象の公開API・インポート方法・利用コード・SSRの導入説明は `docs/wiki/Usage.md` に文書化する。MIT対象外のTLogo・TBrandとCSPなどの説明は `docs/brand-reference.md` に保持し、`LICENSE-SCOPE.md` の境界を維持する。Astroへの移設は依頼範囲に含まれる場合だけ実施する。
 - 利用ルールは`components/<コンポーネント名>/README.md`を原本とし、「概要」「使用場面」「状態の表し方」「使用しない場面」「表示とアクセシビリティ」「関連コンポーネントと使い分け」の6セクションに整理する。`src/stories/component-rules/<コンポーネント名>.mdx`で対応する原本を`?raw`で読み込み、「コンポーネント/個別ルール/<コンポーネント名>」に表示する。本文をMDXへ複製しない。
 - 個別ルールには「使用例を見る」と関連資料へのリポジトリ内リンクを置き、[リンク変換](../../../src/stories/component-readme.ts)でStorybookの閲覧先へ対応付ける。Docs IDは`components-ticon-rules`の形式とし、既存プレビューの分類・ID・URLを維持する。アイコンやロゴ原本のルールは各管理元を参照する。
 - Storybookでは390px・1440pxの表示、Controlsのキーボード操作、設定保持とURL復元を確認する。非同期読み込みは読み込み中・失敗・再試行を検証する。方式切り替え・離脱時のReactとVueの解放、AstroのID分離と色継承を維持し、Storybook専用コードをアプリ向け公開入口へ含めない。
