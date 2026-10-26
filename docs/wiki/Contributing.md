@@ -29,7 +29,7 @@ Issue の記載項目は `.github/ISSUE_TEMPLATE/` 内の3種類のテンプレ�
 
 ## 資料の編集
 
-READMEは概要と導線、Wikiは導入・利用・テスト・開発運用を扱います。Wiki原稿の編集場所は `docs/wiki/`、反映手順は[Wiki更新手順](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/WIKI-PUBLISHING.md)です。通常リポジトリに原稿を追加してもWikiへ自動反映されません。
+READMEは概要と導線、Wikiは導入・利用・テスト・開発運用を扱います。Wikiの管理ページは `docs/wiki/` だけで編集し、原稿のPRの `main` マージを公開判断とします。GitHub Actionsの **Sync Wiki** が追加・更新・管理対象ページの削除を自動反映するため、通常更新でWiki側の承認を取り直す必要はありません。Wiki独自のページや画像は保持しますが、管理ページの直接編集は次回同期で上書きされます。ページ追加・削除・名前変更時はHome・Sidebarなどのリンクも合わせて更新してください。失敗の確認と手動再実行は[Wiki更新手順](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/WIKI-PUBLISHING.md)を参照してください。
 
 コンポーネント・アイコンの個別ルール原本、Storybookとの役割分担、ブランドの権利範囲を維持してください。
 

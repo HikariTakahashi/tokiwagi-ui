@@ -62,7 +62,7 @@ LPのStorybookリンクは現在 `http://localhost:6006/` を指します。静�
 | `src/stories/`・`src/icons/`・`.storybook/` | Storybook見本・資料・設定 |
 | `scripts/` | アイコン生成・互換性検証・Astro見本描画 |
 | `.github/`・`.agents/` | チーム開発テンプレート・エージェント用スキル |
-| `docs/wiki/` | GitHub Wiki用Markdown原稿（自動公開されません） |
+| `docs/wiki/` | GitHub Wiki用Markdown原稿（PRのmainマージ後にActionsで自動同期） |
 
 ## VS Code の拡張機能
 

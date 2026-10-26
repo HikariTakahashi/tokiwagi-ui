@@ -19,4 +19,4 @@ Tokiwagi UIの環境構築、MIT対象コンポーネントの使い方、検証
 | [Contributing](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/Contributing) | 開発担当者・Issue・ブランチ・PR |
 | [License](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/License) | MITの条件・適用範囲・第三者ライセンス |
 
-Wiki原稿は[通常リポジトリのdocs/wiki/](https://github.com/HikariTakahashi/tokiwagi-ui/tree/main/docs/wiki)に置きます。原稿の保存とWikiへの公開は別作業です。[反映状況と更新手順](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/WIKI-PUBLISHING.md)を参照してください。
+Wiki原稿は[通常リポジトリのdocs/wiki/](https://github.com/HikariTakahashi/tokiwagi-ui/tree/main/docs/wiki)を唯一の編集元とします。原稿のPRを `main` にマージすると、GitHub Actionsが追加・更新・管理対象ページの削除をWikiへ同期します。ローカル保存だけでは公開されません。管理ページをWiki画面で直接編集した内容は次回同期で上書きされます。[反映状況と更新手順](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/WIKI-PUBLISHING.md)を参照してください。

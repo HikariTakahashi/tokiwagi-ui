@@ -63,7 +63,7 @@ bun run build:storybook  # Storybook: storybook-static/
 
 ## ドキュメントとライセンス
 
-READMEは概要とWikiへの導線を扱います。Wiki原稿は `docs/wiki/`、更新・公開状況は `docs/WIKI-PUBLISHING.md`、ライセンスの境界は `LICENSE-SCOPE.md` を参照します。原稿を通常リポジトリに保存するだけではWikiへの公開は完了しません。ロゴ・TLogo・TBrandは掲載・exportを維持しますが、MIT対象外です。
+READMEは概要とWikiへの導線を扱います。Wiki管理ページの唯一の編集元は `docs/wiki/` です。原稿PRの `main` マージを公開判断とし、Actionsの `Sync Wiki` が追加・更新・管理対象ページの削除を自動反映します。通常更新ごとにWiki側のコミット承認を取り直しません。本体側のCodexコミット承認ルールは維持します。管理ページのWiki直接編集は次回同期で上書きされ、管理一覧にないページや画像は保持します。ページの追加・削除・改名ではHome・Sidebarなどのリンクを更新してください。ローカル保存だけでは公開完了にならず、Actions成功と公開確認までは未検証として報告します。運用・障害対応と導入状況は `docs/WIKI-PUBLISHING.md`、ライセンスの境界は `LICENSE-SCOPE.md` を参照します。ロゴ・TLogo・TBrandは掲載・exportを維持しますが、MIT対象外です。
 
 ## エージェント向け文書
 
