@@ -2,13 +2,14 @@
 
 ## 現在の状態
 
-確認日：2026年10月24日。
+確認日：2026年10月26日。
 
 - 本体：[https://github.com/HikariTakahashi/tokiwagi-ui](https://github.com/HikariTakahashi/tokiwagi-ui)（Public、既定ブランチ `main`）。公開設定は変更していません。
 - GitHub APIの `has_wiki` は `true` です。
 - **GitHub Wikiは公開済みです。** Wikiリポジトリの取得に成功し、既定ブランチが `master` であることを確認しました。
-- ユーザーが作成した `Home` を保持し、残りの5ページと `_Sidebar.md` をコミット `93bf0ce`（`docs(wiki): 残りの案内ページとサイドバーを公開する`）で公開しました。
-- 通常リポジトリの `docs/wiki/` にある7原稿とWiki側の本文を照合済みです。ブラウザで各ページの表示とHome・Sidebarのリンク先を確認しました。
+- 初回公開は、ユーザーが作成した `Home` を保持し、残りの5ページと `_Sidebar.md` をコミット `93bf0ce`（`docs(wiki): 残りの案内ページとサイドバーを公開する`）で反映しました。
+- **GitHub Actionsによる自動同期の初回公開を確認済みです。** [PR #54](https://github.com/HikariTakahashi/tokiwagi-ui/pull/54)のマージ後、`main` の `d6d8546` をWikiの `59850ed` へ自動反映しました。
+- 通常リポジトリの `docs/wiki/` にある7原稿とWiki側の本文・管理一覧が一致することを照合済みです。ブラウザで全6ページの表示、Home・Sidebarのリンク、READMEとの往復とLICENSEの参照先を確認しました。
 
 | ページ | ローカル原稿 | GitHub Wiki |
 | --- | --- | --- |
@@ -38,7 +39,15 @@ GitHub Wikiは本体と別のGitリポジトリです。[GitHub公式の更新�
 
 ## 自動同期の導入状況
 
-2026年10月26日、[Issue #53](https://github.com/HikariTakahashi/tokiwagi-ui/issues/53)に対応する自動同期ワークフローと検証を追加しました。上の公開状況は手動反映時点の記録です。自動同期の本番動作は、変更の `main` マージ後に初回Actionsが成功するまで未検証です。ローカルで原稿を保存しただけでは公開されません。
+2026年10月26日、[Issue #53](https://github.com/HikariTakahashi/tokiwagi-ui/issues/53)に対応する自動同期ワークフローを[PR #54](https://github.com/HikariTakahashi/tokiwagi-ui/pull/54)で `main` へマージし、初回の本番公開を確認しました。ローカルで原稿を保存しただけでは公開されません。
+
+- [初回Actions実行](https://github.com/HikariTakahashi/tokiwagi-ui/actions/runs/40249606434)：日本時間2026年10月26日9:29、全ステップ成功。同期テスト20件も成功しました。
+- 同期元：`d6d854641774e00cb16daa088f42d18fc77c0421`。Wikiコミット：`59850ed`（`docs(wiki): sync from d6d854641774e00cb16daa088f42d18fc77c0421`）。標準の `GITHUB_TOKEN` で `master` へのpushに成功しました。
+- 反映差分：Contributing・Home・Setup・Testingの4原稿更新と `.wiki-sync-manifest` の追加。既存コミット `93bf0ce` の履歴を保持し、削除はありません。
+- Wikiを新たに取得し、全7原稿をバイト単位で照合しました。管理一覧の7件も一致しています。
+- ブラウザでHome・Setup・Usage・Testing・Contributing・Licenseの本文・見出し・表・コードブロック、HomeとSidebarのリンク先、READMEからWikiへの遷移とWikiからREADME・LICENSEへの参照を確認しました。管理一覧はページ一覧に表示されず、本文6ページが表示されています。
+
+管理対象ページの削除・改名・差分なし・不正入力と独自資産の保持はローカルGitリポジトリのテストで確認済みです。本番Wikiを変更するためだけの削除試験や、認証失敗・push競合の故意の発生は行っていません。
 
 ## main反映後の自動公開
 
