@@ -25,7 +25,7 @@ jobs:
       matrix:
         include:
           - check: tkw-typecheck
-            command: bun run check
+            command: bun run check && exit 1
           - check: tkw-tests
             command: bun test
           - check: tkw-react-compat
