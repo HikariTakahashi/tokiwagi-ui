@@ -66,14 +66,90 @@ GitHub側の既存ルールセット「main via pull request」に、上記5チ�
 
 ビルド成功は見た目やキーボード操作の正しさまで保証しません。UI変更時のブラウザ確認は、引き続き以下の作業ルールに従います。
 
+## アイコンの画像比較（Visual Tests）
+
+[Issue #32](https://github.com/HikariTakahashi/tokiwagi-ui/issues/32)の画像比較基盤として、Playwright 1.64.1で既存のStorybook「コンポーネント/TIcon」の公開React／Vueコンポーネントを撮影します。線の `bell`、塗りの `grip-vertical`、クリッピングの `moon`・`tool` を、16・20・24・32px、Firefox・WebKitで検証します。計64条件で、空の画面でないこととサイズを確認してから、図柄と周囲16pxの余白を基準画像と比較します。背景・前景は既存のニュートラルトークンを使用します。
+
+`e2e/icons.visual.ts` と `playwright.config.ts` が実行元です。ファイル名を `.visual.ts` として既存のBun Testから分離します。基準画像は `e2e/icons.visual.ts-snapshots/` のPNGとしてGitで管理し、図柄・方式・サイズ・ブラウザ・OSごとに分けます。画面は800×600px、倍率1、ライトモードに固定し、アニメーションを停止します。ピクセルの差を許容せず、基準画像がない場合も通常実行を失敗させます。基準画像の新規作成・変更を通常のCIで自動承認しません。
+
+### コマンド
+
+```sh
+bun run test:visual        # 保存済み画像との比較。基準画像を更新しない
+bun run test:visual:update # 基準画像の新規作成・更新
+bun run test:visual:report # ローカルのHTMLレポートを開く
+```
+
+各テスト実行はStorybookの静的ビルドと、127.0.0.1:6006での配信を自動で開始・終了します。同ポートの既存サーバーは再利用しません。既存のStorybookが起動中の場合は停止するか、専用コンテナーで実行します。
+
+ローカルOSで動作を調査する場合は、先に `bunx --no-install playwright install firefox webkit` を実行します。Macの描画結果はLinuxの基準画像と区別されるため、Macでの実行成功をCI用画像の検証結果として扱いません。
+
+### CIと同じ環境で生成・比較する
+
+基準画像の生成・比較にはLinux amd64の公式Playwrightコンテナーを使います。イメージのタグ・ダイジェストは `.github/workflows/visual.yml` と一致させ、`@playwright/test` も同じ1.64.1に固定します。ブラウザはイメージに収録されたものを使い、別バージョンを追加インストールしません。Node.js 22.16.0・Bun 1.3.9を使用します。
+
+Dockerが使える場合、`tokiwagi-ui` ディレクトリで次のコマンドを実行すると、基準画像を更新してから比較できます。依存関係はコンテナー専用の一時ボリュームに導入し、ホストの `node_modules` を変更しません。Apple SiliconでもCIと同じ `linux/amd64` を指定します。
+
+```sh
+docker run --rm --platform linux/amd64 --ipc=host \
+  -v "$PWD":/work -v /work/node_modules -w /work -e CI=true \
+  mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea \
+  bash -lc 'npm install --prefix /tmp/tkw-visual-tools --no-package-lock node@22.16.0 bun@1.3.9 &&
+    export PATH="/tmp/tkw-visual-tools/node_modules/.bin:$PATH" &&
+    bun install --frozen-lockfile &&
+    bun run test:visual:update &&
+    bun run test:visual'
+```
+
+比較だけを行う場合は、このコマンドの `bun run test:visual:update &&` の行を削除します。更新後はPNGの見た目とGit差分を確認し、意図した変更だけをコミット対象にします。意図しない崩れを基準画像の更新で解消しません。
+
+### GitHub Actionsでの実行・差分確認
+
+`.github/workflows/visual.yml` の `Visual Tests` は、main向けPRの作成・更新・再オープン、mainへのpush、手動実行で `tkw-visual` を実行します。通常は `bun run test:visual` だけを実行します。既存の5ジョブとは別のワークフローで、実行権限は `contents: read`、制限時間は30分です。ActionとコンテナーはSHA・ダイジェストで固定します。
+
+- 通常成功時は成果物をアップロードしません。
+- 失敗時は `visual-report-<run_id>-<run_attempt>` にHTMLレポート・基準画像との差分・トレースを保存します。テスト開始前の失敗でレポートがない場合はログを確認します。
+- 手動で基準画像を生成した場合だけ、`visual-baselines-<run_id>-<run_attempt>` にPNGを保存します。
+- **成果物の保存期間はいずれも7日間**です。Gitで管理する基準画像には、この削除期間は適用されません。
+
+失敗時はPRのChecks → `tkw-visual` → 実行結果のArtifactsからレポートをダウンロード・展開し、プロジェクトの環境で `bunx --no-install playwright show-report <展開先>/playwright-report` を実行します。Expected（基準画像）・Actual（今回の画像）・Diff（差分）を見て、意図しない変化ならコードを修正します。HTMLを直接開くと添付データを読み込めない場合があるため、レポート用サーバーを使います。
+
+### Actionsから基準画像を更新する
+
+1. ワークフローが既定ブランチに導入済みであることを確認します。導入前の初回画像は上記Dockerコマンドで生成します。
+2. Actions → **Visual Tests → Run workflow** で更新対象ブランチを選び、`update_baselines` をオンにします。
+3. 成功した実行のArtifactsから `visual-baselines-…` をダウンロードして展開します。`e2e/icons.visual.ts-snapshots/` のディレクトリ構成を保持しているので、同じ場所へ配置します。
+4. 全画像とGit差分を確認し、意図した変更のみをPRに含めます。ワークフロー自身はcommit・pushしません。
+5. PRを更新し、画像更新フラグなしの `tkw-visual` が成功することを確認します。Playwright更新時も同じ手順で画像を再確認します。
+
+### 導入状況と検証範囲
+
+ソースと基準画像を追加するだけでは、GitHub上での実行やマージ必須条件の設定は完了しません。導入PRで `tkw-visual` の成功・差分レポートの保存・手動生成画像のダウンロードを確認後、既存ルールセット「main via pull request」に同チェックを追加します。既存5チェックとPR必須の設定は維持します。
+
+本テストは単体アイコンの描画回帰を対象とします。複数アイコンの同時表示、親button／linkのキーボード操作、実Safari・VoiceOverの読み上げは、この画像比較だけで完了扱いにしません。Issue #32にはこれらの実機確認とOS・ブラウザ・支援技術のバージョン・期待結果・実結果の記録が残ります。PlaywrightのWebKit検証は実Safari・VoiceOverの確認と区別します。
+
+2026年10月30日、上記と同じ固定コンテナー（Ubuntu 24.04・linux/amd64、Apple Silicon上で実行）、Node.js 22.16.0・Bun 1.3.9・Playwright 1.64.1で以下を確認しました。起動したブラウザのバージョンはFirefox 157.0・WebKit 27.2です。
+
+| 検証 | 結果 |
+| --- | --- |
+| 基準画像の生成 | 64条件成功。全64枚の表示を一覧で確認 |
+| 通常の画像比較 | 64条件成功。実行前後で全基準画像のSHA-256が一致 |
+| 表示崩れの検出 | Reactのmoon・16pxを試験中だけ非表示にし、50ピクセルの差で失敗。Actual・Diff・トレース・HTMLレポートを生成。試験用変更は復元済み |
+| 既存の単体テスト | `bun test`：117件成功 |
+| 型検査・ビルド | `bun run check`：エラー・警告なし、既存の非推奨ヒント1件。Astro・Storybookのビルド成功 |
+| React互換性 | 18.0.0・18.3.1・19.0.0・19.3.0の各18件成功 |
+| ワークフロー | actionlint 1.7.12とYAML解析成功。両アップロード設定が7日保存であることを確認 |
+| GitHub上の実行・成果物アップロード・ルールセット | 未実施。変更の公開後に確認が必要 |
+
 ## テスト環境と対象
 
-テストランナーはBun Test（`bun:test`）です。DOMとハイドレーションの検証にはHappy DOM、React・VueのSSRには各フレームワークのサーバー描画機能、AstroにはコンパイラとContainer APIを使用します。新しいテスト基盤は導入しません。
+単体テストのランナーはBun Test（`bun:test`）です。DOMとハイドレーションの検証にはHappy DOM、React・VueのSSRには各フレームワークのサーバー描画機能、AstroにはコンパイラとContainer APIを使用します。ブラウザの画像比較だけはPlaywright Testで別に実行します。
 
 - `src/lib/*.test.ts`：トークンの読み込み、色の組み合わせ、アイコン原本・公開名・変換。
 - `src/react/`・`src/vue/`・`src/astro/` のテスト：公開Props、サイズ・不正入力、全原本の描画、ID分離、SSR・ハイドレーション（対応方式）。
 - `src/stories/`・`src/stories/components/` のテスト：原本資料の参照、見本の切り替え・非同期読込、URL保存など。
 - `scripts/sync-wiki.test.ts`：一時的なGitリポジトリでWiki原稿の初回登録・追加・更新・削除・改名・差分なし、対象外ページと画像の保持、不正入力での停止を検証します。単独実行は `bun test scripts/sync-wiki.test.ts` で、BunとGit以外の依存やネットワーク接続は不要です。実際のGitHub Actions認証・Wikiへのpushは、mainマージ後の公開確認で別途検証します。
+- `e2e/*.visual.ts`：PlaywrightによるFirefox・WebKitの画像比較。`bun test` の対象には含めません。
 - `bun run check`：Astro Checkによる型・テンプレートの診断。型検査用ファイルも確認します。
 - `bun run build`・`bun run build:storybook`：紹介ページと静的資料のビルド確認。
 
