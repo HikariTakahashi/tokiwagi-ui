@@ -52,6 +52,9 @@ jobs:
       - name: 依存関係をインストール
         run: bun install --frozen-lockfile
 
+      - name: Firefox用ホームの所有者を実行ユーザーに合わせる
+        run: chown "$(id -u):$(id -g)" "$HOME"
+
       - name: 基準画像と比較
         if: ${{ !inputs.update_baselines }}
         run: bun run test:visual
