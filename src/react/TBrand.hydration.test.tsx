@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
-import { act } from 'react';
+import { act } from './test-act';
 import { renderToString } from 'react-dom/server';
 import { TBrand, type TBrandProps, type LogoSize } from 'tokiwagi-ui/react';
 
@@ -50,9 +50,9 @@ test('TBrandは警告なくhydrateと更新を行い、クリックは親リン�
   let root: ReturnType<typeof hydrateRoot> | undefined;
   try {
     await act(async () => { root = hydrateRoot(container, page(32), { onRecoverableError: error => recovered.push(error) }); });
-    expect([...container.querySelectorAll('img')]).toEqual(images);
+    images.forEach((image, index) => { expect(container.querySelectorAll('img')[index]).toBe(image); });
     await act(async () => { root!.render(page(64)); });
-    expect([...container.querySelectorAll('img')]).toEqual(images);
+    images.forEach((image, index) => { expect(container.querySelectorAll('img')[index]).toBe(image); });
     expect(images[0]!.parentElement!.nextElementSibling).toBe(name);
     expect(images[0]!.getAttribute('width')).toBe('64');
     expect(images[0]!.parentElement!.style.padding).toBe('16px');

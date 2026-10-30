@@ -21,7 +21,7 @@ npm公開・配布用ビルドは未実施です。現状はソースを含む�
 | --- | --- |
 | 言語 | TypeScript 5.9.3、CSS、MDX、SVG |
 | 紹介ページ | Astro 7.3.4 |
-| コンポーネント | React 18・19、Vue 3.5以上（4未満）、Astro |
+| コンポーネント | React `^18.0.0 \|\| ^19.0.0`、Vue 3.5以上（4未満）、Astro |
 | スタイル | Tailwind CSS 4.3.3、CSSカスタムプロパティ |
 | ドキュメント | Storybook 10.6.0、GitHub Wiki |
 | 開発・テスト | Bun 1.3.9、Bun Test、Happy DOM、Astro Check |

@@ -69,7 +69,7 @@ StorybookのAstro見本は `.storybook/astro-previews.ts` がBunの別プロセ�
 
 ## Reactでの利用
 
-React 18・19とViteの `?raw` 読み込みに対応する環境を対象にします。入口は `src/react/index.ts`、パッケージの公開入口は `tokiwagi-ui/react` です。npm公開・配布ビルドは未実施で、ローカルパッケージとして利用します。Reactは利用側のpeer dependencyです。React・Vueのpeerはoptionalで、選んだ入口のフレームワークを利用側に導入してください。
+React `^18.0.0 || ^19.0.0` とViteの `?raw` 読み込みに対応する環境を対象にします。各系列の下限はReact・React DOM 18.0.0と19.0.0です。対応する型定義と、公開型・SSR・DOMハイドレーション・props更新の検証結果は[テスト方法](Testing#react互換性の検証結果)を参照してください。入口は `src/react/index.ts`、パッケージの公開入口は `tokiwagi-ui/react` です。npm公開・配布ビルドは未実施で、ローカルパッケージとして利用します。Reactは利用側のpeer dependencyです。React・Vueのpeerはoptionalで、選んだ入口のフレームワークを利用側に導入してください。
 
 同じワークスペースのReactプロジェクトなら `bun add ../tokiwagi-ui`（npmの場合 `npm install ../tokiwagi-ui`）で取り込めます。`icons/`・`src/`・`tokens/`を含むリポジトリ全体を参照してください。Reactの重複ロードを避けるため、Viteに `resolve: { dedupe: ['react', 'react-dom'] }` を設定します。アプリのReactとReact DOMは対応する同じバージョンを使います。
 

@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
-import { act } from 'react';
+import { act } from './test-act';
 import { renderToString } from 'react-dom/server';
-import { TIcon, TLogo } from 'tokiwagi-ui/react';
+import { TIcon, TLogo, type TIconProps } from 'tokiwagi-ui/react';
 import { iconSizes } from '../lib/icon-assets';
 
 let window: Window;
@@ -46,9 +46,9 @@ test('TLogoのハイドレーションとprops更新で画像を維持し、警�
     await act(async () => { root = hydrateRoot(container, <div><TLogo /><TLogo size={128} decorative /></div>, {
       onRecoverableError: error => recovered.push(error),
     }); });
-    expect([...container.querySelectorAll('img')]).toEqual(images);
+    images.forEach((image, index) => { expect(container.querySelectorAll('img')[index]).toBe(image); });
     await act(async () => { root!.render(<div><TLogo size={64} decorative /><TLogo size={32} /></div>); });
-    expect([...container.querySelectorAll('img')]).toEqual(images);
+    images.forEach((image, index) => { expect(container.querySelectorAll('img')[index]).toBe(image); });
     expect(images[0]!.getAttribute('alt')).toBe('');
     expect(images[0]!.getAttribute('width')).toBe('64');
     expect(images[0]!.parentElement!.style.padding).toBe('16px');
@@ -62,6 +62,46 @@ test('TLogoのハイドレーションとprops更新で画像を維持し、警�
     errors.mockRestore();
     warnings.mockRestore();
     container.remove();
+  }
+});
+
+// 同じTIconの公開propsを更新し、図柄・サイズ・クラスが反映されてもSVG本体とID・参照が保たれる。
+test('TIconの図柄・サイズ・クラス更新でDOMとクリッピング参照を維持する', async () => {
+  const container = document.createElement('div');
+  document.body.append(container);
+  const initial: TIconProps = { name: 'moon', size: 16, className: 'before' };
+  const updated: TIconProps = { name: 'tool', size: 32, className: 'after', color: 'var(--tkw-color-primary-blue-on-subtle)' };
+  container.innerHTML = renderToString(<TIcon {...initial} />);
+  const svg = container.querySelector('svg')!;
+  const id = svg.querySelector('[id]')!.id;
+  const path = svg.querySelector('path')!.getAttribute('d');
+  const recovered: unknown[] = [];
+  const errors = spyOn(console, 'error').mockImplementation(() => {});
+  const warnings = spyOn(console, 'warn').mockImplementation(() => {});
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    await act(async () => { root = hydrateRoot(container, <TIcon {...initial} />, {
+      onRecoverableError: error => recovered.push(error),
+    }); });
+    expect(container.querySelector('svg')).toBe(svg);
+    for (const props of [updated, initial]) {
+      await act(async () => { root!.render(<TIcon {...props} />); });
+      expect(container.querySelector('svg')).toBe(svg);
+      expect(svg.querySelector('[id]')!.id).toBe(id);
+      expect(svg.innerHTML).toContain(`url(#${id})`);
+      expect(svg.getAttribute('width')).toBe(String(props.size));
+      expect(svg.getAttribute('height')).toBe(String(props.size));
+      expect(svg.getAttribute('class')).toBe(props.className!);
+      expect(svg.style.color).toBe(props.color ?? 'currentcolor');
+      if (props === updated) expect(svg.querySelector('path')!.getAttribute('d')).not.toBe(path);
+      else expect(svg.querySelector('path')!.getAttribute('d')).toBe(path);
+    }
+    expect(recovered).toHaveLength(0);
+    expect(errors).not.toHaveBeenCalled();
+    expect(warnings).not.toHaveBeenCalled();
+  } finally {
+    if (root) await act(async () => { root!.unmount(); });
+    errors.mockRestore(); warnings.mockRestore(); container.remove();
   }
 });
 

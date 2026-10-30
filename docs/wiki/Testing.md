@@ -13,7 +13,26 @@ bun run build:storybook
 
 Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon・TBrand・TLogo」はbell-offの使用例と同じストーリー形式です。Canvasには見本1つだけを中央表示し、設定は標準Controlsとargsで変更・URL保存します。TIconではReact・Vue・Astroを切り替えても公開名・サイズ・色を保持します。詳細説明のAstro側への移設は別作業です。npm配布・外部ホスティングと既存Nuxt画面の置き換えは未実施です。GitHubリポジトリ自体はPublicです。
 
-`check:react-compat` は一時ディレクトリにReact 18.3.1と開発環境のReact 19系をそれぞれ導入し、対応する型定義で公開型・全329原本×4サイズ・SSR・ハイドレーションを検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` とロックファイルは変更せず、一時ディレクトリは終了時に削除します。
+`check:react-compat` は一時ディレクトリにReact・React DOMの18.0.0、18.3.1、19.0.0、開発依存の19系をそれぞれ導入します。各環境で公開型、テスト用APIの型、全329原本×4サイズのSSR、Happy DOM上の実コンポーネントのハイドレーション、props更新を検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` と `bun.lock` は変更せず、一時ディレクトリは成功・失敗にかかわらず削除します。各バージョンは既存のCIジョブ `tkw-react-compat` でも同じコマンドで継続検証します。
+
+### React互換性の検証結果
+
+2026年10月30日、[Issue #29](https://github.com/HikariTakahashi/tokiwagi-ui/issues/29)で確認しました。コンポーネントの対応範囲はpeer dependencyの `^18.0.0 || ^19.0.0` を維持します。ReactとReact DOMは表の同一バージョンを組み合わせています。開発依存の行は `package.json` に追従し、他の3行は固定します。
+
+| React / React DOM | `@types/react` | `@types/react-dom` | 公開型 | テスト用APIの型 | SSR・DOMハイドレーション・props更新 |
+| --- | --- | --- | --- | --- | --- |
+| 18.0.0（18系の下限） | 18.3.18 | 18.3.5 | 成功 | 成功 | 18件成功 |
+| 18.3.1（既存対象） | 18.3.18 | 18.3.5 | 成功 | 成功 | 18件成功 |
+| 19.0.0（19系の下限） | 19.0.0 | 19.0.0 | 成功 | 成功 | 18件成功 |
+| 19.3.0（現在の開発依存） | 19.3.0 | 19.3.0 | 成功 | 成功 | 18件成功 |
+
+互換性チェック実行前後で、通常の `node_modules` 内のファイルと `bun.lock` のSHA-256が一致することも確認しました。
+
+公開入口からTIcon・TLogo・TBrandの許可propsと拒否すべき値を型検査します。SSR出力を `hydrateRoot` に渡し、SVG・画像・名称のDOMを再利用し、復旧エラーやconsole警告が出ないことを確認します。TIconではIDとクリッピング参照、複数rootの `identifierPrefix` による分離、図柄・サイズ・色・クラスの更新と復元を検証します。TLogo・TBrandではサイズや装飾状態の更新、原本画像の保持、親リンクの操作も検証します。これはHappy DOMによるDOM検証で、実ブラウザの見た目の確認とは別です。
+
+React本体の下限とテスト用API・型定義の提供範囲は区別します。React 18.0.0は `React.act` をexportしないため、テスト専用の `src/react/test-act.ts` で `react-dom/test-utils` の `act` に切り替えます。新しいバージョンでは `React.act` を使い、非推奨警告を抑制しません（[React公式の案内](https://react.dev/warnings/react-dom-test-utils)）。アプリ向け公開入口はこのヘルパーを読み込みません。
+
+初期調査では `@types/react`・`@types/react-dom` とも18.0.0でも公開型の検査は成功しました（旧React型の依存先 `@types/scheduler` は0.16.8に固定）。一方、`@types/react-dom` 18.0.0・18.0.11には `renderToString` の第2引数の型宣言がなく、`identifierPrefix` を使うテストの型検査は失敗しました。継続検証ではこのSSR用APIを表現できる18.3.18・18.3.5の型定義を使います。テスト用の型定義を揃えるための選択であり、コンポーネントの実行時下限を18.3へ変更するものではありません。すべての過去の型定義の組み合わせへの対応は保証しません。
 
 
 ## GitHub ActionsでのCI
@@ -26,7 +45,7 @@ Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です�
 | --- | --- | --- |
 | `tkw-typecheck` | `bun run check` | 型・Astroテンプレート・公開型の検査 |
 | `tkw-tests` | `bun test` | 色・アイコン・各方式の部品・見本・Wiki同期のテスト |
-| `tkw-react-compat` | `bun run check:react-compat` | React 18・19での公開型・描画・SSR・ハイドレーション |
+| `tkw-react-compat` | `bun run check:react-compat` | React 18.0.0・18.3.1・19.0.0・開発依存19系の公開型・テスト用APIの型・SSR・ハイドレーション・更新 |
 | `tkw-build` | `bun run build` | Astro紹介ページの静的ビルド |
 | `tkw-storybook` | `bun run build:storybook` | Astro見本生成を含むStorybookの静的ビルド |
 
