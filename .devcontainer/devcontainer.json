@@ -1,0 +1,42 @@
+{
+  "name": "tokiwagi-ui",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "22.16.0",
+      "pnpmVersion": "none"
+    }
+  },
+  "remoteUser": "vscode",
+  "init": true,
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/tokiwagi-ui,type=bind",
+  "workspaceFolder": "/workspaces/tokiwagi-ui",
+  "mounts": [
+    "source=tkw-node-modules-${devcontainerId},target=/workspaces/tokiwagi-ui/node_modules,type=volume"
+  ],
+  "forwardPorts": [4321, 6006],
+  "portsAttributes": {
+    "4321": {
+      "label": "Astro",
+      "requireLocalPort": true
+    },
+    "6006": {
+      "label": "Storybook",
+      "requireLocalPort": true
+    }
+  },
+  "postCreateCommand": "sudo chown -R vscode:vscode node_modules && bun install --frozen-lockfile",
+  "waitFor": "postCreateCommand",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astro-build.astro-vscode",
+        "bradlc.vscode-tailwindcss",
+        "unifiedjs.vscode-mdx",
+        "oven.bun-vscode"
+      ]
+    }
+  }
+}
