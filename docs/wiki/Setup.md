@@ -14,6 +14,53 @@ git clone https://github.com/HikariTakahashi/tokiwagi-ui.git
 cd tokiwagi-ui
 ```
 
+## Dev Containerで環境を構築する
+
+VS CodeのDev Containersを使うと、Node.js・Bun・依存関係・開発用拡張をコンテナ内に自動で用意できます。既存CIと同じUbuntu 24.04・Node.js 22.16.0・Bun 1.3.9を使います。ホスト側へのNode.js・Bunのインストールは不要です。
+
+### 初回の起動
+
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop/)をインストールして起動します。LinuxではDocker Engineも利用できます。
+2. [VS Code](https://code.visualstudio.com/)と[Dev Containers拡張](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)をインストールします。
+3. 取得した`tokiwagi-ui`フォルダー自体をVS Codeで開きます。`tokiwa-calendar`などの親フォルダーを開いている場合は、先に`tokiwagi-ui`を開き直してください。
+4. コマンドパレットから`Dev Containers: Reopen in Container`を実行します。初回はイメージとツールの取得にネットワーク接続と時間が必要です。
+5. コンテナの作成と`bun install --frozen-lockfile`が完了したら、VS Codeのターミナルで確認・起動します。
+
+```sh
+node --version   # v22.16.0
+bun --version    # 1.3.9
+bun run dev:all
+```
+
+ブラウザで[Astro LP](http://localhost:4321/)と[Storybook](http://localhost:6006/)を開きます。VS Codeが2つのポートを転送するため、開発サーバーの`localhost`待ち受け設定はそのまま使います。LPのStorybookリンクに合わせてローカル側も6006番を使います。4321番・6006番を別のプロセスが使用している場合は、先にそのプロセスを停止してください。
+
+Astro・Tailwind CSS・MDX・Bunの拡張をコンテナ側に自動導入します。開発サーバーは自動起動しないため、作業開始時に`bun run dev:all`を実行し、終了時に`Ctrl+C`で停止します。バックエンド・DB・アプリ用環境変数の準備は不要です。
+
+### 検証
+
+コンテナ内のターミナルで既存CIと同じコマンドを実行できます。
+
+```sh
+bun run check
+bun test
+bun run check:react-compat
+bun run build
+bun run build:storybook
+```
+
+React互換性チェックでは一時環境へ依存関係を取得するため、ネットワーク接続が必要です。各チェックの対象は[Testing](Testing)を参照してください。
+
+### 更新・再構築
+
+- ソースはホスト側のフォルダーを共有します。コンテナ内の編集も通常どおりホスト側へ保存されます。
+- `node_modules`はコンテナ専用の名前付きボリュームに保存します。ホスト側の依存関係とは共有せず、コンテナの再構築後も保持します。コンテナ環境の削除時にこのボリュームも削除した場合は、次回の作成時に再導入されます。
+- 依存関係を更新した場合や、別ブランチへの切り替えで`bun.lock`が変わった場合は、コンテナ内で`bun install --frozen-lockfile`を実行してください。作成時の自動導入は、単なる再接続やブランチ切り替えでは実行されません。
+- `.devcontainer/Dockerfile`・`devcontainer.json`を変更したら、コマンドパレットから`Dev Containers: Rebuild Container`を実行します。ツールの手動インストールは再構築で失われるため、継続して使うものは設定ファイルへ追加してください。
+- Node.js・Bunを更新するときは、Dev Container設定・`package.json`の`packageManager`・CI設定・本ページの対応するバージョンを一緒に確認して更新します。
+- Node.jsの導入に使うDev Container Featureは、`devcontainer-lock.json`で取得元を固定しています。Featureを更新する場合は、このロックファイルも更新して再構築してください。
+
+設定は[devcontainer.json](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/.devcontainer/devcontainer.json)と[Dockerfile](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/.devcontainer/Dockerfile)、Featureの固定情報は[devcontainer-lock.json](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/.devcontainer/devcontainer-lock.json)に置きます。Dev Containersの詳細は[公式ガイド](https://code.visualstudio.com/docs/devcontainers/containers)を参照してください。
+
 ## 依存関係
 
 ```sh
@@ -53,6 +100,7 @@ LPのStorybookリンクは現在 `http://localhost:6006/` を指します。静�
 
 | パス | 内容 |
 | --- | --- |
+| `.devcontainer/` | VS Code Dev Containerの開発環境設定 |
 | `src/react/`・`src/vue/`・`src/astro/` | フレームワーク別の実装・入口・テスト |
 | `src/lib/` | SVG変換・カタログ・トークン解析などの共通処理 |
 | `icons/<公開名>/` | 汎用SVG原本・使用ルール。`icons/logo/` はMIT対象外 |
