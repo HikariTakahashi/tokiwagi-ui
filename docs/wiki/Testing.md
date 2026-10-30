@@ -88,6 +88,8 @@ bun run test:visual:report # ローカルのHTMLレポートを開く
 
 基準画像の生成・比較にはLinux amd64の公式Playwrightコンテナーを使います。イメージのタグ・ダイジェストは `.github/workflows/visual.yml` と一致させ、`@playwright/test` も同じ1.64.1に固定します。ブラウザはイメージに収録されたものを使い、別バージョンを追加インストールしません。Node.js 22.16.0・Bun 1.3.9を使用します。
 
+CIでは `oven-sh/setup-bun` がBunのZIPを展開するため、同イメージに含まれない `unzip` を事前に `apt-get` で導入します。下記Dockerコマンドはnpm経由でBunを導入するため、Action自体のインストール手順の検証とは分けて扱います。
+
 Dockerが使える場合、`tokiwagi-ui` ディレクトリで次のコマンドを実行すると、基準画像を更新してから比較できます。依存関係はコンテナー専用の一時ボリュームに導入し、ホストの `node_modules` を変更しません。Apple SiliconでもCIと同じ `linux/amd64` を指定します。
 
 ```sh
@@ -139,7 +141,9 @@ docker run --rm --platform linux/amd64 --ipc=host \
 | 型検査・ビルド | `bun run check`：エラー・警告なし、既存の非推奨ヒント1件。Astro・Storybookのビルド成功 |
 | React互換性 | 18.0.0・18.3.1・19.0.0・19.3.0の各18件成功 |
 | ワークフロー | actionlint 1.7.12とYAML解析成功。両アップロード設定が7日保存であることを確認 |
-| GitHub上の実行・成果物アップロード・ルールセット | 未実施。変更の公開後に確認が必要 |
+| GitHub上の初回実行 | [実行41025770148](https://github.com/HikariTakahashi/tokiwagi-ui/actions/runs/41025770148)は `setup-bun` が `unzip` を見つけられず停止。画像比較は未実行。Actionより前に `unzip` を導入するよう修正し、修正後のCI成功は反映後に確認する |
+| CIのBun導入経路の再現 | 同じ固定イメージと固定SHAの `setup-bun` をキャッシュ無効で実行し、修正前に同じ `unzip` 不足を再現。導入後はActionによるBun 1.3.9の展開・起動、固定依存のインストール、画像比較テスト64条件の検出が成功 |
+| 成果物アップロード・ルールセット | 未実施。変更の公開後に確認が必要 |
 
 ## テスト環境と対象
 

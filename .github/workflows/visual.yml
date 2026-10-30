@@ -39,6 +39,11 @@ jobs:
           node-version: '22.16.0'
           package-manager-cache: false
 
+      - name: Bunの展開に必要なunzipを準備
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends unzip
+
       - name: Bunを準備
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
