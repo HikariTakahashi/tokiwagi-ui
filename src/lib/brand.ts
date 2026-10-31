@@ -5,7 +5,7 @@ export const brandStyle = {
   verticalAlign: 'middle', whiteSpace: 'nowrap' as const,
 };
 export const brandNameStyle = {
-  fontFamily: 'Inter, "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  fontFamily: 'var(--tkw-font-family-sans)',
   fontSize: '16px', fontWeight: 600, lineHeight: 1.5, letterSpacing: 'normal',
   color: 'inherit', flexShrink: 0,
 };

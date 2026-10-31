@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/html-vite';
+import { readFileSync } from 'node:fs';
 import tailwindcss from '@tailwindcss/vite';
 import remarkGfm from 'remark-gfm';
 import { astroPreviewsPlugin } from './astro-previews.ts';
@@ -8,6 +9,8 @@ import { iconSearchIndexPlugin } from './icon-search-index.ts';
 
 const config: StorybookConfig = {
   framework: '@storybook/html-vite',
+  // The manager runs outside the preview iframe; inject the same token source there.
+  managerHead: head => `${head}<style>${readFileSync(new URL('../tokens/typography.css', import.meta.url), 'utf8')}</style>`,
   staticDirs: [{ from: '../icons', to: '/icon-assets' }],
   stories: ['../src/stories/**/*.mdx', '../src/icons/*.mdx', '../src/stories/**/*.stories.@(ts|tsx)'],
   addons: [{

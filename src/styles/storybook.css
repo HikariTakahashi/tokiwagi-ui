@@ -4,14 +4,14 @@
   padding: clamp(24px, 4vw, 64px);
   background: var(--tkw-color-neutral-50);
   color: var(--tkw-color-neutral-900);
-  font-family: Inter, "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--tkw-font-family-sans);
   color-scheme: light;
 }
 
 .tkw-story *, .tkw-story *::before, .tkw-story *::after { box-sizing: border-box; }
 .tkw-story h1, .tkw-story h2, .tkw-story p { margin: 0; }
 .tkw-story button { font: inherit; }
-.tkw-story code { font-family: "SFMono-Regular", Consolas, monospace; overflow-wrap: anywhere; }
+.tkw-story code { font-family: var(--tkw-font-family-mono); overflow-wrap: anywhere; }
 .tkw-story button:focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 4px; }
 .tkw-story-header { max-width: 900px; margin-bottom: 32px; }
 .tkw-eyebrow { margin-bottom: 16px !important; color: var(--tkw-color-neutral-600); font-size: 11px; font-weight: 700; letter-spacing: .15em; }
