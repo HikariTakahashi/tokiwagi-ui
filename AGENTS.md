@@ -49,6 +49,7 @@ bun test
 bun run check:react-compat # 一時環境のReact 18・19で公開型・SSR・ハイドレーションを検証
 bun run build            # Astro: dist/
 bun run build:storybook  # Storybook: storybook-static/
+bun run test:visual      # PlaywrightのFirefox・WebKitで基準画像と比較
 ```
 
 `dev:all` で Astro と Storybook の別々のローカルサーバーを同時に起動できます。個別起動には `dev` または `storybook` を使います。作業前に停止していた場合は、一時的な検証後に起動したプロセスを停止してください。外部公開と既存 Nuxt アプリへの適用は、明示的な依頼があるまで対象外です。
@@ -59,6 +60,7 @@ bun run build:storybook  # Storybook: storybook-static/
 - 欠落・不正な6桁HEX・重複は対象トークン名を含む日本語エラーで検出します。CSS コメントは除外し、コントラスト不足だけでは閲覧を止めません。
 - 各色の通常・ホバー・押下と `-on`、淡い背景と `-on-subtle` の56組について、4.5:1以上を検証します。任意の色の組み合わせへの保証ではありません。
 - テストの `describe` と `test` は日本語で書き、各テストの直前に目的・条件・期待結果を記す日本語コメントを置きます。テストを変更したら `bun test` を実行します。
+- 画像比較は `e2e/*.visual.ts` のPlaywrightテストとして分離します。基準画像はLinux amd64の固定Playwrightコンテナーで生成し、専用の公開リポジトリ `HikariTakahashi/tokiwagi-ui-visual-results` のRelease `visual-test-baselines` に継続保存します。PNGをGitに含めません。通常の `test:visual` は外部の承認済みZIPをSHA-256と64条件で検証して `.visual-baselines/` へ一時復元し、基準画像を更新しません。`Visual Tests` はFirefox・WebKitでReact／Vueの代表4図柄×4サイズを検証し、成功・失敗とも画像一覧・差分レポートを7日保存します。`Transfer Visual Reports` はmainのコードと保管先に限定したSecret `VISUAL_STORAGE_TOKEN` でレポートZIPを専用リポジトリのReleaseへ転送します。同リポジトリの `Publish Visual Reports` がPages公開と毎時の期限切れRelease・公開ファイル削除を行います。 同一リポジトリのPRでは転送ワークフローが公開を確認して、完了・短いコミットSHA・成功／失敗件数・日本時間の削除予定日時・クリック可能な確認画像をConversationへコメントします。結果画像をPR本文へ追加しません。転送ジョブだけに `pull-requests: write` を付与し、同じ実行の再送はbot自身のコメントを更新します。通常のPRテストへ転送用Secretを渡しません。候補生成と `Approve Visual Baselines` による外部基準の切り替えは別の手動操作です。更新・差分確認は `docs/wiki/Testing.md` に従います。実Safari・VoiceOverでの確認とは区別します。
 - UI変更時は `bun run check`、`bun run build`、`bun run build:storybook` を実行し、ブラウザでモバイル・デスクトップ表示、キーボードフォーカス、ボタンのホバー・押下を確認します。
 
 ## ドキュメントとライセンス
