@@ -4,9 +4,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { logoSizes } from '../lib/logo';
 import { assertBrandHtml } from '../lib/brand-test-helpers';
-import type { AstroBrandPreviews } from './astro-brand-previews';
+import { astroBrandPreviewHtml, type AstroBrandPreviews } from './astro-brand-previews';
+import { Window } from 'happy-dom';
 
-// 別プロセスの公開入口から実HTMLを生成し、静的Storybookにも全サイズを収録する。
+// 実Astro出力を全サイズで収録し、Controlsの任意テキストもHTMLとして解釈せず反映する。
 test('Storybook用Astroブランド見本は3サイズの実コンポーネントを収録する', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'tkw-brand-test-'));
   try {
@@ -19,6 +20,20 @@ test('Storybook用Astroブランド見本は3サイズの実コンポーネン�
     const previews = JSON.parse(await readFile(output, 'utf8')) as AstroBrandPreviews;
     expect(Object.keys(previews)).toEqual(logoSizes.map(String));
     for (const size of logoSizes) assertBrandHtml(previews[size], size);
+    const window = new Window();
+    const previous = Object.getOwnPropertyDescriptor(globalThis, 'document');
+    Object.defineProperty(globalThis, 'document', { configurable: true, value: window.document });
+    try {
+      for (const size of logoSizes) {
+        for (const text of ['TokiWa Calendar', 'ときわカレンダー', '<img src=x onerror="alert(1)"> & $&']) {
+          assertBrandHtml(astroBrandPreviewHtml(previews, size, text), size, undefined, text);
+        }
+      }
+    } finally {
+      if (previous) Object.defineProperty(globalThis, 'document', previous);
+      else Reflect.deleteProperty(globalThis, 'document');
+      window.close();
+    }
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

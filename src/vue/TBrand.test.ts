@@ -28,3 +28,19 @@ test('VueのTBrandは外側のclassだけを転送し、追加属性とslotを�
   assertBrandHtml(html, 32, 'brand selected');
   expect(html).not.toMatch(/別名称|上書き|追加|挿入|tabindex|href=|role=/);
 });
+
+// 任意の製品名やHTML風の文字列を各サイズで描画し、装飾ロゴとテキストだけになることを確認する。
+test('VueのTBrandは指定テキストをHTMLとして解釈せず一度だけ表示する', async () => {
+  for (const text of ['TokiWa Calendar', 'ときわカレンダー', '<img src=x onerror="alert(1)"> & $&']) {
+    for (const size of logoSizes) {
+      assertBrandHtml(await render({ text, size }), size, undefined, text);
+    }
+  }
+});
+
+// 名称が消えると空altのロゴだけになるため、空文字・空白だけの指定を拒否する。
+test('VueのTBrandは空のテキストを拒否する', async () => {
+  for (const text of ['', '  ', '\n\t']) {
+    expect(await render({ text }).catch((error: Error) => error.message)).toContain('空白だけではない文字列');
+  }
+});

@@ -1,13 +1,14 @@
 ---
-import { brandName, brandStyle, brandNameStyle } from '../lib/brand';
+import { resolveBrandText, brandStyle, brandNameStyle } from '../lib/brand';
 import TLogo from './TLogo.astro';
 import type { TBrandProps } from './TBrandProps';
 
 interface Props extends TBrandProps {}
 
-const { size = 32, class: className } = Astro.props;
+const { text, size = 32, class: className } = Astro.props;
+const brandText = resolveBrandText(text);
 ---
 <span class={className} style={brandStyle}>
   <TLogo size={size} decorative />
-  <span style={brandNameStyle}>{brandName}</span>
+  <span style={brandNameStyle}>{brandText}</span>
 </span>

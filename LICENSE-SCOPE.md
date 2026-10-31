@@ -47,6 +47,7 @@
 - `src/stories/astro-brand-previews.ts`
 - `src/stories/astro-logo-previews.test.ts`
 - `src/stories/astro-logo-previews.ts`
+- `src/stories/brand-text-args.ts`
 - `src/stories/component-rules/TBrand.mdx`
 - `src/stories/component-rules/TLogo.mdx`
 - `src/stories/components/LogoPreview.tsx`
