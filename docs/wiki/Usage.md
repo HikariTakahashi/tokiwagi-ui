@@ -1,6 +1,6 @@
 # コンポーネントの使い方
 
-本ページの利用例はMIT対象のTIconです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
+本ページの利用例はMIT対象のTIcon・THeader・THeaderSection・THeaderButton・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
 
 ## 導入方法と対象環境
 
@@ -222,3 +222,93 @@ Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コ�
 - ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
 - アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全329アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに329個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の全329ストーリーではReact版の公開TIconを1つ中央に表示します。公開名は固定し、初期値は24px・currentColorです。Controlsで16・20・24・32pxと、継承・ニュートラル・7色のプライマリーを切り替え、選択をURLに保持します。Actions・Interactionsは標準パネルとして表示します。各個別ルールから対応する使用例に移動できます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
+
+## ヘッダー共通部品
+
+React・Vue・Astroの公開入口からTHeader・THeaderSection・THeaderButton・THeaderButtonGroupと、それぞれのProps型、HeaderTone・headerTones・HeaderSectionPositionを利用できます。利用側で `import 'tokiwagi-ui/header.css'` を一度追加してください。このCSSは必要なカラー・ニュートラル・書体トークンを読み込みます。Tailwind、Preflight、アプリのグローバルな要素リセットは不要です。
+
+| 部品 | API・既定値 |
+| --- | --- |
+| THeader | Reactはchildren、Vue/Astroは既定slotにTHeaderSectionを配置。scrollLabelは既定「ヘッダー操作」 |
+| THeaderSection | positionはleft / center / rightの必須指定。children／既定slotに内容を配置 |
+| THeaderButton | toneはneutral / green / teal / blue / violet / rose / coral / amber、既定neutral。iconOnly・disabledは既定false。selectedは既定未指定。typeは既定button |
+| THeaderButtonGroup | children／既定slotにTHeaderButtonを直接配置。aria-labelまたはaria-labelledbyでグループ名を指定 |
+
+ネイティブ属性、aria-*、data-*、className（React）／class（Vue・Astro）を対応する外側の要素へ渡します。React・Vueはネイティブイベントを接続できます。tone・iconOnly・selectedはDOMへそのまま転送せず表示状態に変換し、selectedを明示したときだけaria-pressedを設定します。selectedとaria-pressedの両方を渡した場合はselectedが優先します。グループのroleはgroupに固定します。不正なtone・type・boolean型・positionは描画時に日本語エラーで拒否します。positionはDOM属性に直接転送せず、配置を示すdata-positionに変換します。
+
+THeaderの直下にTHeaderSectionをleft→center→rightの順で配置します。各位置は1つまでで、省略できます。左右は内容幅を取り、中央は残り幅の中央へ内容を揃えます。中央がなくても右側は右端へ、中央だけなら全幅の中央へ配置します。CSSでDOM順やフォーカス順を変更しません。従来のstart／end propsと名前付きslotは廃止し、この構成へ統一しました。
+
+ヘッダーは高さ36pxの1行表示です。幅が不足した場合は内部だけを横スクロールさせます。スクロール領域はキーボードでも操作できます。長いタイトルの省略、リンク、メニューの表示、日付計算、保存、固定配置は利用側の責任です。THeaderButtonは通常のbutton操作を使い、グループ内に独自の矢印キー制御を追加しません。
+
+React:
+
+```tsx
+import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/header.css';
+
+<THeader>
+  <THeaderSection position="left">
+    <THeaderButton iconOnly aria-label="メニューを開く" aria-expanded={open} onClick={() => setOpen(!open)}><TIcon name="menu" /></THeaderButton>
+    <a href="/">アプリ名</a>
+  </THeaderSection>
+  <THeaderSection position="center">カレンダー名</THeaderSection>
+  <THeaderSection position="right">
+    <THeaderButtonGroup aria-label="表示形式">
+      <THeaderButton selected={view === 'month'} onClick={() => setView('month')}>月</THeaderButton>
+      <THeaderButton selected={view === 'week'} onClick={() => setView('week')}>週</THeaderButton>
+    </THeaderButtonGroup>
+  </THeaderSection>
+</THeader>
+```
+
+Vue:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/header.css';
+const view = ref('month');
+const open = ref(false);
+</script>
+<template>
+  <THeader>
+    <THeaderSection position="left">
+      <THeaderButton icon-only aria-label="メニューを開く" :aria-expanded="open" @click="open = !open"><TIcon name="menu" /></THeaderButton>
+      <a href="/">アプリ名</a>
+    </THeaderSection>
+    <THeaderSection position="center">カレンダー名</THeaderSection>
+    <THeaderSection position="right">
+      <THeaderButtonGroup aria-label="表示形式">
+        <THeaderButton :selected="view === 'month'" @click="view = 'month'">月</THeaderButton>
+        <THeaderButton :selected="view === 'week'" @click="view = 'week'">週</THeaderButton>
+      </THeaderButtonGroup>
+    </THeaderSection>
+  </THeader>
+</template>
+```
+
+Astro:
+
+```astro
+---
+import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/header.css';
+---
+<THeader>
+  <THeaderSection position="left">
+    <THeaderButton iconOnly aria-label="メニューを開く" data-action="menu"><TIcon name="menu" /></THeaderButton>
+    <a href="/">アプリ名</a>
+  </THeaderSection>
+  <THeaderSection position="center">カレンダー名</THeaderSection>
+  <THeaderSection position="right">
+    <THeaderButtonGroup aria-label="表示期間の移動">
+      <THeaderButton data-action="previous">前へ</THeaderButton>
+      <THeaderButton data-action="today">今日</THeaderButton>
+      <THeaderButton data-action="next">次へ</THeaderButton>
+    </THeaderButtonGroup>
+  </THeaderSection>
+</THeader>
+```
+
+Astroは静的HTMLを出力します。操作は利用側のscriptでdata-actionなどにイベントを接続してください。React/VueのコールバックをAstroのHTML属性に渡す方式ではありません。React・VueはSSRとハイドレーションを利用でき、ヘッダー自体はIDを自動生成しません。aria-controlsなどで使うIDは利用側で一意に指定してください。

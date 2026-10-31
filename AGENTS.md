@@ -84,3 +84,12 @@ READMEは概要とWikiへの導線を扱います。Wiki管理ページの唯一
 - React 18・19向けの `TIcon` は `name`・`size`・`color`・`className` だけを公開します。追加属性・イベント・children・refは転送せず、読み上げ属性を固定します。Reactの `useId()` を符号化したReact専用接頭辞でIDを生成します。複数rootでは `identifierPrefix` を分け、SSRとクライアントで同じ値を使います。意味・操作名は併記テキストと親のbutton/linkが担います。React変更時は `bun run check:react-compat` も実行します。
 - Astro向けの `TIcon` は `name`・`size`・`color`・文字列の `class` を公開します。追加のSVG属性・イベント・slotは転送せず、装飾SVGの読み上げ属性・viewBox・サイズを固定します。意味は併記テキスト、操作名は親のbutton/linkが担います。IDは描画時に `crypto.randomUUID()` で生成し、静的HTMLに保存します。ハイドレーションは不要です。Astro変更時は全329種×4サイズの実コンポーネント描画を検証します。
 - UI変更時の必須検証に加え、全原本との一致、線と塗りの着色、moon/toolの同時表示、一覧の検索・分類、使用例のControlsによるサイズ・色変更とURLの再読み込み、個別Docsからの遷移を確認します。色の検証には既存のトークンを使います。
+
+## ヘッダー部品
+
+- `THeader`・`THeaderSection`・`THeaderButton`・`THeaderButtonGroup`をReact・Vue・Astroの同名APIで公開します。利用側で`tokiwagi-ui/header.css`を一度読み込み、既存トークンを参照する高さ36pxの1行ヘッダーを表示します。幅不足時は内部を横スクロールし、操作の省略・メニューへの集約はアプリ側で決めます。
+- `THeader`は全体の背景・横スクロール、`THeaderSection`は必須position（left/center/right）による配置、`THeaderButton`はtone（neutralと7色）、iconOnly・selected・disabled、`THeaderButtonGroup`は境界線とrole=groupを担います。クリックによる選択変更や日付計算は内包しません。ブランド表示は利用側から渡し、既存TBrand・TLogoは変更しません。
+- 4部品はネイティブ属性とslot／children、React・Vueのネイティブイベントを転送します。Astroは利用側scriptで操作を接続します。スクロール領域とボタンのフォーカスは36pxの領域内で見えるようにし、アイコンのみの操作名とグループの読み上げ名は利用側で指定します。
+- StorybookのDefaultは標準Controlsから方式・色・状態を変更します。THeaderはFigmaに基づく合成例を1つ表示し、Astroも公開部品の実描画をJSONとして収録します。THeaderButtonのControlsはcontent（文字のみ／アイコンのみ／文字＋アイコン）・text・全329種のiconを指定でき、アイコンのみではtextを読み上げ名に使います。Astroは実ボタンの状態別テンプレートと実TIcon出力を組み合わせ、文言はtextContentとして扱います。日本語などの文言もtextcodeでURLへ保存・復元します。利用ルールは各README、導入説明は`docs/wiki/Usage.md`を原本とします。
+
+- THeader直下はTHeaderSectionをleft→center→rightの順に各1つまで配置し、不要な領域は省略できます。start/end props・名前付きslotは廃止しました。左右は内容幅、中央は残り幅の中央へ揃えます。中央なしでもrightは右端へ、中央のみなら全幅の中央へ配置します。DOMやフォーカスの順序をCSSで並べ替えません。THeaderSectionのDefaultは親THeader内に1つ表示し、方式・positionをControlsで変更してURLに保持します。
