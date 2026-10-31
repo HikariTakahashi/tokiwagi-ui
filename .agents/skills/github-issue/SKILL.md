@@ -29,7 +29,8 @@ description: Tokiwagi UI の新規実装、不具合修正、残タスクを分�
 
 ## 作成・更新の手順
 
-1. リポジトリと `gh auth status` を確認する。関連するソースや文書を調べ、`gh issue list --state all --search` で未完了・完了済みの Issue に重複がないか検索する。`gh label list --repo HikariTakahashi/tokiwagi-ui` で必要なラベルを確認し、存在しない場合は `gh label create` で日本語の説明を付けて作成する。
-2. 既存の Issue が対象の作業を扱っている場合は URL を報告し、依頼された範囲で必要なときだけ更新する。その際、種別と重要度のラベルがそれぞれ1つになるよう `gh issue edit --add-label ... --remove-label ...` で調整する。該当する Issue がなければ、選んだテンプレートの項目に沿って、対象を絞ったタイトルと本文を書く。タイトルには表の分類表記を付け、確認できた事実と提案を分けて記す。
-3. `gh issue create --repo HikariTakahashi/tokiwagi-ui --title ... --body-file ... --label "種別: ..." --label "重要度: ..."` で Issue を作成する。Markdown と日本語の書式を保つため、本文には一時的な UTF-8 ファイルを使う。依頼範囲外の作業は追加しない。
-4. Issue の URL、付けた種別・重要度ラベル、完了条件の要点を報告する。
+1. リポジトリと `gh auth status` を確認する。関連するソースや文書を調べ、`gh issue list --state all --search` で未完了・完了済みの Issue を検索する。候補の本文・状態・完了条件を確認し、背景と既存の対応を把握する。同じ機能・ファイルを扱うだけでは重複と判断せず、今回の目的・変更範囲・完了条件が既存 Issue の未完了作業に含まれるかで判断する。
+2. 該当する Open Issue があれば、今回の作業を管理する Issue として URL と採用理由を報告し、依頼された範囲で必要なときだけ更新する。クローズ済み Issue の完了後に追加された改善・不具合修正は、原則として新規 Issue にする。元の完了条件が未達だったなど、同じ作業を継続する場合は再オープンを検討し、理由を記録する。再オープンも依頼・承認の範囲で行う。過去 Issue は背景・参考として参照し、今回の作業を管理する Issue と区別する。
+3. 新規 Issue が必要なら、選んだテンプレートの項目に沿って、対象を絞ったタイトルと本文を書く。タイトルには表の分類表記を付け、確認できた事実と提案を分けて記す。投稿先・タイトル・本文を提示し、[issue-to-pr の手順2](../issue-to-pr/SKILL.md)に従って投稿の承認範囲を確認する。既存の承認は再確認しない。
+4. 作成・更新前に `gh label list --repo HikariTakahashi/tokiwagi-ui` で必要なラベルを確認し、存在しない場合は依頼・承認の範囲で日本語の説明を付けて作成する。更新時は `gh issue edit --add-label ... --remove-label ...` で種別・重要度をそれぞれ1つに調整する。新規作成は `gh issue create --repo HikariTakahashi/tokiwagi-ui --title ... --body-file ... --label "種別: ..." --label "重要度: ..."` を使う。Markdown と日本語の書式を保つため、本文には一時的な UTF-8 ファイルを使う。依頼範囲外の作業は追加しない。
+5. Issue の URL、状態、付けた種別・重要度ラベル、完了条件の要点を報告する。投稿拒否や権限不足で未作成の場合は、その状態と理由を報告し、過去 Issue への参照で代用しない。今回の作業を管理する Open Issue が確定するまで PR を作成しない。
