@@ -42,5 +42,5 @@ READMEは概要と導線、Wikiは導入・利用・テスト・開発運用を�
 - 共通の資料用UIは `src/stories/components/IconBrowser.tsx` にあります。このコンポーネントはStorybookのMDX資料用です。アプリ向けAPIには `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` の `TIcon` を使います。
 - Vue・React・Astro共通の公開名と原本へのimportは `bun run generate:icons` で `src/lib/icon-sources.ts` に生成します。Vueの既存ファイルは共通データを再exportします。同じコマンドで `src/stories/icon-examples/*.stories.ts` の使用例も原本カタログから生成します。新規追加・削除時に実行してください。SVG本体を複製せず、同名原本の差し替えは自動反映します。原本と生成ファイルの不一致はテストで検出します。
 - `bun test`、`bun run check`、`bun run build`、`bun run build:storybook` を実行します。一覧・使用例で原本との一致、16/20/24/32pxの判読性、トークン色、同一図柄の複数表示、キーボード操作とモバイル表示を確認してください。
-- 代表図柄や描画処理を変更した場合は、[テスト方法](Testing)の画像比較手順に従い、固定Linux環境で `bun run test:visual` も実行します。基準画像の変更は見た目を確認してからPRに含めます。
+- 代表図柄や描画処理を変更した場合は、[テスト方法](Testing)の画像比較手順に従い、固定Linux環境で `bun run test:visual` も実行します。画像はGitに含めません。変更が意図した見た目であることを候補レポートで確認し、手動の `Approve Visual Baselines` で外部基準を切り替えます。
 - 小サイズで細部が判別しにくい図柄はサイズを上げるかラベルを併記します。全アイコンの16px利用を一律に推奨しません。詳しくはStorybookの「アイコン/共通表示ルール」を参照してください。
