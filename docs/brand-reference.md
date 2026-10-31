@@ -69,18 +69,19 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 
 ## TBrand（ロゴと名称）
 
-固定名称・書体・間隔・親リンクとの役割分担は、[TBrandの利用ルール](../components/TBrand/README.md)を参照してください。
+名称指定・書体・間隔・親リンクとの役割分担は、[TBrandの利用ルール](../components/TBrand/README.md)を参照してください。
 
-`TBrand` は既存 `TLogo` と固定名称「Tokiwagi UI」を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は[各方式の利用説明](wiki/Usage.md)を参照してください。LP・既存アプリへの適用は未実施です。
+`TBrand` は既存 `TLogo` と指定テキスト（既定「Tokiwagi UI」）を横並び・縦中央揃えで表示する静的な部品です。LPのヘッダー・フッターやドキュメントで同じブランド表示を再利用できます。各方式の公開入口から `TBrand` と `TBrandProps` をインポートします。ローカルパッケージの導入条件は[各方式の利用説明](wiki/Usage.md)を参照してください。LP・既存アプリへの適用は未実施です。
 
 | 指定 | 型・既定値 | 用途 |
 | --- | --- | --- |
+| `text` | `string`、既定`"Tokiwagi UI"` | 表示する製品名など。空文字・空白だけは不可 |
 | `size` | `LogoSize = 32 \| 64 \| 128`、既定32 | ロゴ図形の幅。名称のサイズは変わらない |
 | `className`（React） | `string` | 外側のspanに付与する配置用クラス |
 | `class`（Vue） | `HTMLAttributes['class']` | 外側のspanに付与する文字列・配列・オブジェクト |
 | `class`（Astro） | `string` | 外側のspanに付与する配置用クラス |
 
-名称・書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は共通トークン `--tkw-font-family-sans` を参照し、San Franciscoを基準とするシステム書体を使います。名称は16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxです。利用側で `typography.css` を読み込みます。日本語や他OSはシステム書体へフォールバックし、フォント本体の配信は不要です。名称の色は親から継承します。ロゴの固定配色は変えません。
+名称は`text`で変更できます。書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は共通トークン `--tkw-font-family-sans` を参照し、San Franciscoを基準とするシステム書体を使います。名称は16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxです。利用側で `typography.css` を読み込みます。日本語や他OSはシステム書体へフォールバックし、フォント本体の配信は不要です。名称の色は親から継承します。ロゴの固定配色は変えません。
 
 ```tsx
 import { TBrand } from 'tokiwagi-ui/react';
@@ -88,8 +89,8 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 import 'tokiwagi-ui/tokens/typography.css';
 
 <TBrand />;
-<a href="/" aria-label="Tokiwagi UI ホーム" className="brand-home">
-  <TBrand size={32} className="brand-position" />
+<a href="/" aria-label="TokiWa Calendar ホーム" className="brand-home">
+  <TBrand text="TokiWa Calendar" size={32} className="brand-position" />
 </a>;
 ```
 
@@ -102,8 +103,8 @@ import 'tokiwagi-ui/tokens/typography.css';
 
 <template>
   <TBrand />
-  <a href="/" aria-label="Tokiwagi UI ホーム" class="brand-home">
-    <TBrand :size="32" class="brand-position" />
+  <a href="/" aria-label="TokiWa Calendar ホーム" class="brand-home">
+    <TBrand text="TokiWa Calendar" :size="32" class="brand-position" />
   </a>
 </template>
 ```
@@ -115,8 +116,8 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 import 'tokiwagi-ui/tokens/typography.css';
 ---
 <TBrand />
-<a href="/" aria-label="Tokiwagi UI ホーム" class="brand-home">
-  <TBrand size={32} class="brand-position" />
+<a href="/" aria-label="TokiWa Calendar ホーム" class="brand-home">
+  <TBrand text="TokiWa Calendar" size={32} class="brand-position" />
 </a>
 ```
 
@@ -127,10 +128,10 @@ import 'tokiwagi-ui/tokens/typography.css';
 .brand-home:focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 4px; }
 ```
 
-内部の `TLogo` には `decorative` を指定し、画像のaltは空です。名称は通常のテキストとして一度だけ読み上げます。TBrand自体はフォーカスを持たず、リンク先・操作・操作名・ホバー・押下・フォーカスは親のa要素が担当します。ホームリンクには `aria-label="Tokiwagi UI ホーム"` を指定します。
+内部の `TLogo` には `decorative` を指定し、画像のaltは空です。名称は通常のテキストとして一度だけ読み上げます。TBrand自体はフォーカスを持たず、リンク先・操作・操作名・ホバー・押下・フォーカスは親のa要素が担当します。ホームリンクには表示名に合わせた操作名（例：`aria-label="TokiWa Calendar ホーム"`）を指定します。
 
-追加の属性（id・role・aria-*・tabIndex・style・href等）・イベント・children／slotは内部DOMへ転送しません。Reactのrefも受け取りません。Vueのrefはフレームワークのコンポーネント参照であり、DOM参照のAPIは提供しません。名称を別の文言へ差し替えるAPIはありません。配置用classは外側だけに付け、内部の余白・寸法・配色を上書きしないでください。非対応サイズはTLogoの検証で描画時にも日本語エラーとして拒否します。
+追加の属性（id・role・aria-*・tabIndex・style・href等）・イベント・children／slotは内部DOMへ転送しません。Reactのrefも受け取りません。Vueのrefはフレームワークのコンポーネント参照であり、DOM参照のAPIは提供しません。`text`は通常のテキストとして表示し、HTMLとして解釈しません。空文字・空白だけ・文字列以外の指定は描画時に日本語エラーで拒否します。配置用classは外側だけに付け、内部の余白・寸法・配色を上書きしないでください。非対応サイズはTLogoの検証で描画時にも日本語エラーとして拒否します。
 
 **占有領域**：TLogoが図形の四辺に幅の1/4の余白を確保するため、ロゴ領域は32px指定で48×48px、64px指定で96×96px、128px指定で192×192pxです。TBrandは外側のpaddingを追加しません。名称の行高は24pxで、全体の高さはロゴ領域と同じです。全幅は「ロゴ図形幅×1.5＋間隔8px＋名称の実測幅」で、フォントにより変わります。名称の右側の余白やリンクの操作領域は親で確保してください。ロゴと名称は縮小・折り返しません。利用先に収まるサイズを選んでください。
 
-`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを中央に1つ表示し、Controlsでサイズを切り替えられます。親ホームリンクの利用例は本資料を参照してください。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。
+`neutrals.css` を読み込むとTLogoの余白の白背景を確保できます。SVGのdata URLを使うのでCSPの `img-src` に `data:` を許可します。React・VueはSSRとハイドレーションに対応し、Astroは静的HTMLを出力します。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを中央に1つ表示し、Controlsで名称とサイズを変更でき、方式を切り替えても設定を保持します。日本語・記号を含む名称もURLから復元できます。親ホームリンクの利用例は本資料を参照してください。Astro見本は別プロセスで実コンポーネントを描画し、静的Storybookに収録します。Storybookでの名称変更は、実出力の名称要素に`textContent`で反映します。

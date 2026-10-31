@@ -4,17 +4,17 @@ import { readFileSync } from 'node:fs';
 import type { LogoSize } from './logo';
 
 /** 各方式の実HTMLから、名称の単一読み上げ・元画像・余白・操作要素の分離を検査する。 */
-export function assertBrandHtml(html: string, size: LogoSize, className?: string) {
+export function assertBrandHtml(html: string, size: LogoSize, className?: string, text = 'Tokiwagi UI') {
   const window = new Window();
   try {
     window.document.body.innerHTML = html;
     const brand = window.document.body.firstElementChild as HappyHTMLElement;
     expect(brand.tagName).toBe('SPAN');
-    expect(brand.textContent!.trim()).toBe('Tokiwagi UI');
+    expect(brand.textContent!.trim()).toBe(text);
     expect(brand.children.length).toBe(2);
     const logo = brand.children[0] as HappyHTMLElement;
     const name = brand.children[1] as HappyHTMLElement;
-    expect(name.textContent).toBe('Tokiwagi UI');
+    expect(name.textContent).toBe(text);
     expect(brand.querySelectorAll('img')).toHaveLength(1);
     const image = brand.querySelector('img')!;
     expect(image.alt).toBe('');

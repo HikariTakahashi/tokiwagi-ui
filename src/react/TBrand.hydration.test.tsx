@@ -30,15 +30,15 @@ afterAll(async () => {
   }
 });
 
-// SSR出力をhydrateし、サイズ更新後も名称・画像DOMを維持する。余分なイベントは転送せず親リンクだけが動作する。
+// SSR出力をhydrateし、名称・サイズ更新後も名称・画像DOMを維持する。余分なイベントは転送せず親リンクだけが動作する。
 test('TBrandは警告なくhydrateと更新を行い、クリックは親リンクが担当する', async () => {
   const container = document.createElement('div');
   document.body.append(container);
   let parentClicks = 0;
   let brandClicks = 0;
   const extra = { onClick: () => { brandClicks++; }, tabIndex: 0, 'aria-label': '上書き', children: '別名称' };
-  const page = (size: LogoSize) => <a href="/" aria-label="Tokiwagi UI ホーム" onClick={event => { event.preventDefault(); parentClicks++; }}>
-    <TBrand {...extra as TBrandProps} size={size} /><TBrand size={128} />
+  const page = (size: LogoSize, text = 'TokiWa Calendar') => <a href="/" aria-label="Tokiwagi UI ホーム" onClick={event => { event.preventDefault(); parentClicks++; }}>
+    <TBrand {...extra as TBrandProps} size={size} text={text} /><TBrand size={128} />
   </a>;
   container.innerHTML = renderToString(page(32));
   const images = [...container.querySelectorAll('img')];
@@ -51,14 +51,14 @@ test('TBrandは警告なくhydrateと更新を行い、クリックは親リン�
   try {
     await act(async () => { root = hydrateRoot(container, page(32), { onRecoverableError: error => recovered.push(error) }); });
     images.forEach((image, index) => { expect(container.querySelectorAll('img')[index]).toBe(image); });
-    await act(async () => { root!.render(page(64)); });
+    await act(async () => { root!.render(page(64, 'ときわカレンダー')); });
     images.forEach((image, index) => { expect(container.querySelectorAll('img')[index]).toBe(image); });
     expect(images[0]!.parentElement!.nextElementSibling).toBe(name);
     expect(images[0]!.getAttribute('width')).toBe('64');
     expect(images[0]!.parentElement!.style.padding).toBe('16px');
     expect(images[0]!.getAttribute('src')).toBe(src);
     expect(images.every(image => image.getAttribute('alt') === '')).toBe(true);
-    expect(container.textContent).toBe('Tokiwagi UITokiwagi UI');
+    expect(container.textContent).toBe('ときわカレンダーTokiwagi UI');
     expect(container.querySelectorAll('a')).toHaveLength(1);
     expect(container.querySelector('[tabindex]')).toBeNull();
     await act(async () => { images[0]!.click(); });

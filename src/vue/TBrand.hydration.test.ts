@@ -24,13 +24,14 @@ afterAll(async () => {
   }
 });
 
-// VueのSSR出力をhydrateし、サイズ更新後も同じ画像・名称DOMを維持し、追加イベントを転送しない。
+// VueのSSR出力をhydrateし、名称・サイズ更新後も同じ画像・名称DOMを維持し、追加イベントを転送しない。
 test('VueのTBrandは警告なくhydrateと更新を行い、クリックは親リンクが担当する', async () => {
   const size = ref<LogoSize>(32);
+  const text = ref('TokiWa Calendar');
   let parentClicks = 0;
   let brandClicks = 0;
   const page = { render: () => h('a', { href: '/', 'aria-label': 'Tokiwagi UI ホーム', onClick: (event: Event) => { event.preventDefault(); parentClicks++; } }, [
-    h(TBrand, { size: size.value, onClick: () => { brandClicks++; }, tabindex: 0, 'aria-label': '上書き' }, { default: () => '別名称' }),
+    h(TBrand, { size: size.value, text: text.value, onClick: () => { brandClicks++; }, tabindex: 0, 'aria-label': '上書き' }, { default: () => '別名称' }),
     h(TBrand, { size: 128 }),
   ]) };
   const container = document.createElement('div');
@@ -46,6 +47,7 @@ test('VueのTBrandは警告なくhydrateと更新を行い、クリックは親�
     app.mount(container);
     expect([...container.querySelectorAll('img')]).toEqual(images);
     size.value = 64;
+    text.value = 'ときわカレンダー';
     await nextTick();
     expect([...container.querySelectorAll('img')]).toEqual(images);
     expect(images[0]!.parentElement!.nextElementSibling).toBe(name);
@@ -53,7 +55,7 @@ test('VueのTBrandは警告なくhydrateと更新を行い、クリックは親�
     expect(images[0]!.getAttribute('alt')).toBe('');
     expect(images[0]!.parentElement!.style.padding).toBe('16px');
     expect(images[0]!.getAttribute('src')).toBe(src);
-    expect(container.textContent).toBe('Tokiwagi UITokiwagi UI');
+    expect(container.textContent).toBe('ときわカレンダーTokiwagi UI');
     expect(container.querySelector('[tabindex]')).toBeNull();
     images[0]!.click();
     expect(parentClicks).toBe(1);

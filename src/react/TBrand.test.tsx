@@ -33,3 +33,19 @@ test('ReactのTBrandを包む親ホームリンクがリンク先と操作名を
   expect(html).toContain('alt=""');
   expect(html).not.toContain('tabindex');
 });
+
+// 任意の製品名やHTML風の文字列を各サイズで描画し、装飾ロゴとテキストだけになることを確認する。
+test('ReactのTBrandは指定テキストをHTMLとして解釈せず一度だけ表示する', () => {
+  for (const text of ['TokiWa Calendar', 'ときわカレンダー', '<img src=x onerror="alert(1)"> & $&']) {
+    for (const size of logoSizes) {
+      assertBrandHtml(renderToString(<TBrand text={text} size={size} />), size, undefined, text);
+    }
+  }
+});
+
+// 名称が消えると空altのロゴだけになるため、空文字・空白だけの指定を拒否する。
+test('ReactのTBrandは空のテキストを拒否する', () => {
+  for (const text of ['', '  ', '\n\t']) {
+    expect(() => renderToString(<TBrand text={text} />)).toThrow('空白だけではない文字列');
+  }
+});

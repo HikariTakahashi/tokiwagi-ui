@@ -2,12 +2,14 @@ import type { ComponentProps } from 'react';
 import { TBrand, type TBrandProps } from 'tokiwagi-ui/react';
 
 // 公開入口の型とJSXが同じ静的ブランドAPIを持つことを検査する。
-const props: TBrandProps = { size: 64, className: 'brand' };
+const props: TBrandProps = { text: 'TokiWa Calendar', size: 64, className: 'brand' };
 const componentProps: ComponentProps<typeof TBrand> = props;
 const defaults = <TBrand />;
+// @ts-expect-error テキストは文字列だけを受け取る。
+const invalidText = <TBrand text={123} />;
 // @ts-expect-error 許可サイズ以外は受け取らない。
 const invalidSize = <TBrand size={24} />;
-// @ts-expect-error 名称は固定。
+// @ts-expect-error 名称の指定はtextを使う。
 const invalidName = <TBrand name="別名称" />;
 // @ts-expect-error 内部ロゴは常に装飾。
 const invalidDecorative = <TBrand decorative={false} />;
@@ -23,4 +25,4 @@ const invalidTabIndex = <TBrand tabIndex={0} />;
 const invalidStyle = <TBrand style={{ padding: 0 }} />;
 // @ts-expect-error DOM参照を公開しない。
 const invalidRef = <TBrand ref={() => {}} />;
-void [componentProps, defaults, invalidSize, invalidName, invalidDecorative, invalidChildren, invalidClick, invalidHref, invalidTabIndex, invalidStyle, invalidRef];
+void [componentProps, defaults, invalidText, invalidSize, invalidName, invalidDecorative, invalidChildren, invalidClick, invalidHref, invalidTabIndex, invalidStyle, invalidRef];

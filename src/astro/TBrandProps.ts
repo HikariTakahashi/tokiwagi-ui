@@ -1,3 +1,3 @@
 import type { LogoSize } from '../lib/logo';
 
-export type TBrandProps = { size?: LogoSize; class?: string };
+export type TBrandProps = { text?: string; size?: LogoSize; class?: string };

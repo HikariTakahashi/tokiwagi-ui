@@ -6,7 +6,7 @@ import { AstroComponentPreview, type Framework } from './astro-component-preview
 import { astroPreviewSvg, type AstroIconPreviews } from './astro-preview';
 import { createAstroPreviewLoader } from './astro-preview-loader';
 import type { AstroLogoPreviews } from '../astro-logo-previews';
-import type { AstroBrandPreviews } from '../astro-brand-previews';
+import { astroBrandPreviewHtml, type AstroBrandPreviews } from '../astro-brand-previews';
 import iconsUrl from 'virtual:tkw-astro-icons';
 import logosUrl from 'virtual:tkw-astro-logos';
 import brandsUrl from 'virtual:tkw-astro-brands';
@@ -14,7 +14,7 @@ import brandsUrl from 'virtual:tkw-astro-brands';
 export type ComponentPreviewProps = { framework: Framework } & (
   | { component: 'TIcon' } & Required<Pick<TIconProps, 'name' | 'size' | 'color'>>
   | { component: 'TLogo' } & Required<Pick<TLogoProps, 'size' | 'decorative'>>
-  | { component: 'TBrand' } & Required<Pick<TBrandProps, 'size'>>
+  | { component: 'TBrand' } & Required<Pick<TBrandProps, 'size'>> & Pick<TBrandProps, 'text'>
 );
 
 const loadIcons = createAstroPreviewLoader<AstroIconPreviews>(iconsUrl);
@@ -31,7 +31,7 @@ function VuePreview(args: ComponentPreviewProps) {
       const value = props.value;
       if (value.component === 'TIcon') return h(VueTIcon, { name: value.name, size: value.size, color: value.color });
       if (value.component === 'TLogo') return h(VueTLogo, { size: value.size, decorative: value.decorative });
-      return h(VueTBrand, { size: value.size });
+      return h(VueTBrand, { text: value.text, size: value.size });
     } });
     app.config.idPrefix = `tkw-preview-vue-${id}`;
     app.mount(host.current!);
@@ -48,7 +48,7 @@ export function ComponentPreview(args: ComponentPreviewProps) {
   if (args.framework === 'react') {
     if (args.component === 'TIcon') return <ReactTIcon name={args.name} size={args.size} color={args.color} />;
     if (args.component === 'TLogo') return <ReactTLogo size={args.size} decorative={args.decorative} />;
-    return <ReactTBrand size={args.size} />;
+    return <ReactTBrand text={args.text} size={args.size} />;
   }
   if (args.component === 'TIcon') return <AstroComponentPreview load={loadIcons}>{previews =>
     <span style={{ display: 'inline-flex', color: args.color }} dangerouslySetInnerHTML={{ __html: astroPreviewSvg(previews, args.name, args.size, prefix) }} />
@@ -57,6 +57,6 @@ export function ComponentPreview(args: ComponentPreviewProps) {
     <span style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: previews[args.size][args.decorative ? 'decorative' : 'standalone'] }} />
   }</AstroComponentPreview>;
   return <AstroComponentPreview load={loadBrands}>{previews =>
-    <span style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: previews[args.size] }} />
+    <span style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: astroBrandPreviewHtml(previews, args.size, args.text) }} />
   }</AstroComponentPreview>;
 }
