@@ -86,6 +86,7 @@ test('画像ダウンロードの転送先にはGitHubトークンを渡さな�
   const fetchMock = spyOn(globalThis, 'fetch').mockImplementation(Object.assign(async (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
     if (String(input).startsWith('https://api.github.com/')) {
       expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer test-token');
+      expect(new Headers(init?.headers).get('Accept')).toBe('application/octet-stream');
       return new Response('', { status: 302, headers: { location: 'https://example.test/download' } });
     }
     expect(String(input)).toBe('https://example.test/download');
@@ -98,4 +99,18 @@ test('画像ダウンロードの転送先にはGitHubトークンを渡さな�
     if (token === undefined) delete process.env.GH_TOKEN;
     else process.env.GH_TOKEN = token;
   }
+});
+
+// ActionsのZIP取得にRelease assets用の形式を指定すると実APIが415を返すため、形式を使い分ける。
+test('Actions成果物のZIPはJSONメディアタイプで取得する', async () => {
+  const fetchMock = spyOn(globalThis, 'fetch').mockImplementation(Object.assign(async (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
+    if (String(input).startsWith('https://api.github.com/')) {
+      if (new Headers(init?.headers).get('Accept') !== 'application/vnd.github+json') return new Response('', { status: 415 });
+      return new Response('', { status: 302, headers: { location: 'https://example.test/artifact.zip' } });
+    }
+    expect(new Headers(init?.headers).has('Authorization')).toBe(false);
+    return new Response(new Uint8Array([1, 2, 3]));
+  }, { preconnect: fetch.preconnect }));
+  try { expect(await downloadGithub('/repos/owner/repo/actions/artifacts/123/zip')).toEqual(new Uint8Array([1, 2, 3])); }
+  finally { fetchMock.mockRestore(); }
 });

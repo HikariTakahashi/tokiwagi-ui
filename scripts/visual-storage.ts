@@ -80,7 +80,9 @@ export async function github(path: string, init: RequestInit = {}, token = proce
 
 // 署名付きダウンロードURLにはGitHubトークンを渡さない。
 export async function downloadGithub(path: string, limit = 100 * 1024 * 1024) {
-  let response = await github(path, { headers: { Accept: 'application/octet-stream' } });
+  // ActionsのダウンロードAPIはoctet-streamを受け付けず415を返す。Release assetsだけに指定する。
+  const accept = /\/actions\/artifacts\/\d+\/zip$/.test(path) ? 'application/vnd.github+json' : 'application/octet-stream';
+  let response = await github(path, { headers: { Accept: accept } });
   if (response.status === 302) {
     const url = new URL(response.headers.get('location')!);
     if (url.protocol !== 'https:') throw new Error('ダウンロード先はHTTPSである必要があります');
