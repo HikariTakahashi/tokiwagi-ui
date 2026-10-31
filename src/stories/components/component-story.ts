@@ -20,7 +20,7 @@ export function componentStoryParameters(controls: string[]) {
 // args更新では同じrootを使い、離脱時にReactと内部Vueをまとめて解放する。
 export function renderComponentStory(props: ComponentPreviewProps) {
   const preview = useMemo(() => {
-    const host = document.createElement('span');
+    const host = document.createElement(props.component.startsWith('THeader') ? 'div' : 'span');
     host.style.display = 'inline-flex';
     return { host, root: createRoot(host) };
   }, []);

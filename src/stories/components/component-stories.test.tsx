@@ -7,9 +7,14 @@ import { encodeBrandText, decodeBrandText, savedBrandText } from '../brand-text-
 mock.module('virtual:tkw-astro-icons', () => ({ default: '/astro-icons.json' }));
 mock.module('virtual:tkw-astro-logos', () => ({ default: '/astro-logos.json' }));
 mock.module('virtual:tkw-astro-brands', () => ({ default: '/astro-brands.json' }));
+mock.module('virtual:tkw-astro-headers', () => ({ default: '/astro-headers.json' }));
 const icon = await import('../TIcon.stories');
 const logo = await import('../TLogo.stories');
 const brand = await import('../TBrand.stories');
+const header = await import('../THeader.stories');
+const headerSection = await import('../THeaderSection.stories');
+const headerButton = await import('../THeaderButton.stories');
+const headerGroup = await import('../THeaderButtonGroup.stories');
 const bellOff = await import('../icon-examples/bell-off.stories');
 const { ComponentPreview } = await import('./ComponentPreview');
 
@@ -29,12 +34,16 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
   expect(savedBrandText('?path=/story/components-tbrand--default')).toBeUndefined();
 });
 
-// 3ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
+// 各ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
     ['TLogo', logo, ['framework', 'size', 'decorative']],
     ['TBrand', brand, ['framework', 'text', 'size']],
+    ['THeader', header, ['framework', 'tone', 'disabled', 'view']],
+    ['THeaderSection', headerSection, ['framework', 'position']],
+    ['THeaderButton', headerButton, ['framework', 'tone', 'content', 'text', 'icon', 'selected', 'disabled']],
+    ['THeaderButtonGroup', headerGroup, ['framework', 'tone', 'disabled', 'view']],
   ] as const) {
     const meta = story.default;
     expect(meta.title).toBe(`コンポーネント/${name}`);
@@ -50,6 +59,7 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
   expect(icon.default.args).toEqual({ framework: 'react', name: 'bell', size: 24, color: 'currentColor' });
   expect(logo.default.args).toEqual({ framework: 'react', size: 32, decorative: false });
   expect(brand.default.args).toEqual({ framework: 'react', text: 'Tokiwagi UI', size: 32, textcode: '' });
+  expect(headerButton.default.argTypes.icon.options).toEqual(iconNames);
   expect(icon.default.argTypes.name.options).toEqual(iconNames);
   expect(icon.default.argTypes.size).toEqual(bellOff.default.argTypes.size);
   expect(icon.default.argTypes.color).toEqual(bellOff.default.argTypes.color);
@@ -89,6 +99,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     mock.module('virtual:tkw-astro-icons',()=>({default:'/icons.json'}));
     mock.module('virtual:tkw-astro-logos',()=>({default:'/logos.json'}));
     mock.module('virtual:tkw-astro-brands',()=>({default:'/brands.json'}));
+    mock.module('virtual:tkw-astro-headers',()=>({default:'/headers.json'}));
     let memo, cleanup;
     mock.module('storybook/preview-api',()=>({
       useArgs:()=>[{},()=>{}],
