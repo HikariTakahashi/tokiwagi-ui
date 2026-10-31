@@ -10,6 +10,7 @@ React・Vue・Astro向けのコンポーネント、共有カラートークン�
 
 - React・Vue・Astro向けの装飾用コンポーネント `TIcon` と329種の汎用SVG。
 - ライトモード向けの93カラートークンとTailwind CSS v4の共有テーマ。
+- San Franciscoを基準とする[共通フォントルール](docs/typography.md)とフォントトークン。
 - Storybookによるカラー・アイコン・コンポーネントの見本と利用ルール。
 - Astroによる紹介ページ。ブランド部品 `TLogo`・`TBrand` も実装済みですが、MIT対象外です。
 

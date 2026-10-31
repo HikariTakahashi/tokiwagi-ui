@@ -4,6 +4,12 @@
 
 ## 導入方法と対象環境
 
+### 共通フォント
+
+標準フォントはSan Franciscoです。`tokiwagi-ui/tokens/typography.css`を読み込み、ルートに`font-family: var(--tkw-font-family-sans)`、入力欄・ボタンに`font-family: inherit`を指定します。コードには`var(--tkw-font-family-mono)`を使います。Tailwind CSS v4の共有テーマにも含まれ、`font-sans`・`font-mono`で利用できます。日本語・Apple以外のOSはシステム書体へフォールバックし、フォント本体の同梱・配信は行いません。詳細は[フォントの使用ルール](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/typography.md)とStorybookの「フォント/使用ルール」を参照してください。
+
+### ローカル導入
+
 npmレジストリへの公開・配布ビルドは未実施です。下記はGitから取得した `tokiwagi-ui` を、隣接するアプリへローカル導入する方法です。`private: true` を維持しています。
 
 ```text
