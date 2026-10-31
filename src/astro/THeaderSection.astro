@@ -1,0 +1,8 @@
+---
+import type { THeaderSectionProps } from './THeaderSectionProps';
+import { resolveHeaderSectionPosition } from '../lib/header';
+interface Props extends THeaderSectionProps {}
+const { position, class: className, ...attributes } = Astro.props;
+const resolvedPosition = resolveHeaderSectionPosition(position);
+---
+<div {...attributes} class:list={['tkw-header-section', className]} data-position={resolvedPosition}><slot /></div>

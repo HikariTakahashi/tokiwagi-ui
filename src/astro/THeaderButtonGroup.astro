@@ -1,0 +1,6 @@
+---
+import type { THeaderButtonGroupProps } from './THeaderButtonGroupProps';
+interface Props extends THeaderButtonGroupProps {}
+const { class: className, ...attributes } = Astro.props;
+---
+<div {...attributes} class:list={['tkw-header-button-group', className]} role="group"><slot /></div>

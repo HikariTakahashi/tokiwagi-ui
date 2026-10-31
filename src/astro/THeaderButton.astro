@@ -1,0 +1,10 @@
+---
+import type { THeaderButtonProps } from './THeaderButtonProps';
+import { headerButtonState } from '../lib/header';
+interface Props extends THeaderButtonProps {}
+const { tone, iconOnly, selected, disabled, type, class: className, ...attributes } = Astro.props;
+const state = headerButtonState({ tone, iconOnly, selected, disabled, type });
+---
+<button {...attributes} class:list={['tkw-header-button', className]} type={state.type} disabled={state.disabled}
+  data-tone={state.tone} data-icon-only={state.iconOnly || undefined} data-selected={state.selected || undefined}
+  aria-pressed={state.selected ?? attributes['aria-pressed']}><slot /></button>
