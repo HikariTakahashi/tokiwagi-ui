@@ -58,7 +58,7 @@ React本体の下限とテスト用API・型定義の提供範囲は区別しま
 | チェック | 実行する変更 |
 | --- | --- |
 | `tkw-typecheck` | src・scripts・Storybook設定内のTypeScript／TSX／Astro／Vueと型定義、Playwright設定・画像比較テスト |
-| `tkw-tests` | 共通処理、各方式の部品、Storybook関連コード・MDX、原本SVG・個別README、部品README、トークン、通常テスト、検証・生成・同期・転送スクリプト |
+| `tkw-tests` | 共通処理、各方式の部品、Storybook関連コード・MDX、原本SVG・個別README、部品README、トークン、通常テスト、検証・生成・同期・転送スクリプト、Wiki同期・レポート転送・基準画像承認の補助ワークフロー |
 | `tkw-react-compat` | React配下、Reactが参照する共通処理（icon-assets・icon-sources・icon-search-labels・logo・brand）とテストヘルパー、SVG、React互換性検証スクリプト |
 | `tkw-build` | 紹介ページ、共通CSS、トークン、原本SVG・個別README、パレット・アイコンカタログ・SVG変換・検索別名処理 |
 | `tkw-storybook` | Storybook設定・ストーリー・MDX・表示用CSS、各方式の実部品と共通処理、原本SVG・個別README、部品README、トークン、Astro見本生成処理 |
@@ -66,7 +66,28 @@ React本体の下限とテスト用API・型定義の提供範囲は区別しま
 
 通常のテスト専用ファイルは型検査と通常テストだけに含めます。React配下のテストとReact用共通ヘルパーはReact互換性にも含めます。型検査専用ファイルは型検査だけ、React用はReact互換性にも含めます。これらの専用ファイルをビルド・撮影の変更として扱いません。
 
-スキル配下のMarkdown、ルートのREADME・AGENTS・CLAUDE、docs配下のMarkdownだけの変更では全6チェックを省略します。`icons/*/README.md` と `components/*/README.md` は表示・テストに使うため除外しません。スキル配下の実行スクリプトも一括除外しません。依存関係・共通設定・ワークフロー・判定処理自身・未分類ファイルの変更は全チェックを実行します。
+スキル配下のMarkdown、ルートのREADME・AGENTS・CLAUDE、docs配下のMarkdownに加え、次のファイルだけの変更では全6チェックを省略します。
+
+- `.agents/skills/*/agents/openai.yaml`
+- `.github/ISSUE_TEMPLATE/*.md`、`.github/PULL_REQUEST_TEMPLATE.md`
+- `.vscode/extensions.json`、`.vscode/settings.json`
+- `.devcontainer/Dockerfile`、`.devcontainer/devcontainer.json`、`.devcontainer/devcontainer-lock.json`
+- ルートの `LICENSE`、`LICENSE-SCOPE.md`
+- `package-lock.json`（現在の依存導入は `bun.lock` を使用。npmでの検証を導入する場合は判定を見直す）
+
+次の補助ワークフローだけの変更では `tkw-tests` だけを実行します。全単体テストを維持し、個別テストへの絞り込みは行いません。
+
+| 対象 | 単体テストで確認する内容 |
+| --- | --- |
+| `.github/workflows/sync-wiki.yml` | 起動イベント・対象パス・main限定条件・権限・取得先・同期前のテスト・原稿と公開先の引き渡し、および同期処理 |
+| `.github/workflows/visual-transfer.yml` | 対象ワークフロー・mainからのコード取得・権限・実行IDとSecretの受け渡し・画像比較省略時の停止・失敗時の通知条件、および転送・通知処理 |
+| `.github/workflows/visual-approve.yml` | 手動起動・必須の実行ID・main限定条件・権限・生成元検証付きの承認コマンド・環境変数、および基準画像の検証と切り替え処理 |
+
+補助ワークフローの設定は `scripts/ci-workflows.test.ts`、実処理は既存の同期・転送・通知・基準画像テストで検証します。これらのテストはGitHubへの公開・転送・承認を実行しません。
+
+上記以外の変更が混在する場合は、その変更に必要なチェックを実行します。`icons/*/README.md` と `components/*/README.md` は表示・テストに使うため除外しません。スキル配下の実行スクリプトや、VS Code・Dev Container配下の未指定ファイルも一括除外しません。`package.json`・`bun.lock`・共通設定・上記3件以外のワークフロー・判定処理自身・未分類ファイルの変更は全チェックを実行します。
+
+`.gitignore` は変更内容をファイル名だけでは区別できないため、全6チェックを維持します。`scripts/gitignore.test.ts` は一時Gitリポジトリで `git check-ignore` を実行し、生成物・環境ファイルが除外され、ソース・テスト・設定・`.env.example` が誤って除外されないことを確認します。
 
 Actions画面のCIまたはVisual Testsで「Run workflow」を選ぶと、差分条件によらず全対象チェックを実行できます。Visual Testsの基準画像候補生成オプションは従来どおりです。各実行のSummaryと「変更ファイルを判定」ジョブに、チェックごとの実行／省略理由を表示します。不要なチェックはジョブ自体をSkippedにするため、依存導入・ビルド・ブラウザ起動を行いません。
 

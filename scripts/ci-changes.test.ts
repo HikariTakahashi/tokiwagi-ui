@@ -6,10 +6,64 @@ import { dirname, join } from 'node:path';
 import { changedPaths, checkIds, classifyPaths, planSummary, type CheckId } from './ci-changes';
 
 const selected = (paths: string[]) => checkIds.filter(id => classifyPaths(paths)[id].run);
+const metadataPaths = [
+  '.agents/skills/conventional-commit/agents/openai.yaml',
+  '.agents/skills/issue-to-pr/agents/openai.yaml',
+  '.github/ISSUE_TEMPLATE/bug-fix.md',
+  '.github/ISSUE_TEMPLATE/new-implementation.md',
+  '.github/ISSUE_TEMPLATE/remaining-task.md',
+  '.github/PULL_REQUEST_TEMPLATE.md',
+  '.vscode/extensions.json',
+  '.vscode/settings.json',
+  '.devcontainer/Dockerfile',
+  '.devcontainer/devcontainer.json',
+  '.devcontainer/devcontainer-lock.json',
+  'LICENSE',
+  'LICENSE-SCOPE.md',
+];
 
 // スキル・一般文書は実行元から参照されないため、本文だけなら6チェックとも不要になる。
 test('スキル本文と一般文書だけの変更では全チェックを省略する', () => {
   expect(selected(['.agents/skills/issue-to-pr/SKILL.md', 'README.md', 'AGENTS.md', 'CLAUDE.md', 'docs/wiki/Testing.md'])).toEqual([]);
+});
+
+// 指定された表示設定・テンプレート・開発環境設定・ライセンスだけなら、単独でも混在でも6チェックを起動しない。
+test('指定されたメタデータだけの変更では全チェックを省略する', () => {
+  for (const path of metadataPaths) expect(selected([path])).toEqual([]);
+  expect(selected(metadataPaths)).toEqual([]);
+  expect(selected(['.agents/skills/conventional-commit/SKILL.md', metadataPaths[0]!])).toEqual([]);
+});
+
+// 除外をディレクトリ全体へ広げず、同じ場所の実行コード・未指定設定と依存管理の検証を維持する。
+test('除外対象に似た未指定ファイルでは全チェックを維持する', () => {
+  for (const path of ['.agents/skills/example/agents/run.ts', '.agents/skills/example/agents/custom.yaml',
+    '.agents/skills/example/nested/agents/openai.yaml', '.github/ISSUE_TEMPLATE/config.yml',
+    '.github/ISSUE_TEMPLATE/nested/template.md', '.vscode/tasks.json', '.devcontainer/setup.sh',
+    '.devcontainer/nested/Dockerfile', 'other/LICENSE', '.gitignore']) {
+    expect(selected([path])).toEqual([...checkIds]);
+  }
+});
+
+// 使用しないnpmロックだけなら省略し、実際の依存管理や部品変更との混在では必要な検証を維持する。
+test('npmロック単独では省略し実行対象との混在では検証を合算する', () => {
+  expect(selected(['package-lock.json'])).toEqual([]);
+  for (const path of ['package.json', 'bun.lock', 'scripts/ci-changes.ts']) {
+    expect(selected(['package-lock.json', path])).toEqual([...checkIds]);
+  }
+  expect(selected(['package-lock.json', 'src/vue/TIcon.ts'])).toEqual(['typecheck', 'tests', 'storybook', 'visual']);
+});
+
+// 補助ワークフロー単独では全単体テストで設定と処理を検証し、コードやCI本体が混在すれば範囲を拡張する。
+test('Wiki同期・転送・承認ワークフローでは単体テストだけを実行する', () => {
+  for (const path of ['.github/workflows/sync-wiki.yml', '.github/workflows/visual-transfer.yml', '.github/workflows/visual-approve.yml']) {
+    expect(selected([path])).toEqual(['tests']);
+    expect(selected([path, 'package-lock.json', 'LICENSE'])).toEqual(['tests']);
+    expect(selected([path, 'src/pages/index.astro'])).toEqual(['typecheck', 'tests', 'build']);
+    for (const fullCheckPath of ['.github/workflows/ci.yml', '.github/workflows/visual.yml',
+      '.github/workflows/new.yml', 'bun.lock', 'scripts/ci-changes.ts', '.gitignore']) {
+      expect(selected([path, fullCheckPath])).toEqual([...checkIds]);
+    }
+  }
 });
 
 // 代表的な変更ごとに依存する検証だけを選び、無関係のビルドやReact互換性を起動しない。
@@ -44,14 +98,15 @@ test('表示用READMEと原本SVGは関連するビルド・テストへ含め�
 
 // 除外対象との混在ではコードの検証を維持し、重複するパスを理由欄へ二重に載せない。
 test('複数変更の検証を合算して判定理由を保持する', () => {
-  const paths = ['.agents/skills/issue-to-pr/SKILL.md', 'src/vue/TIcon.ts', 'src/pages/index.astro', 'src/vue/TIcon.ts'];
+  const paths = [...metadataPaths, '.agents/skills/issue-to-pr/SKILL.md', 'src/vue/TIcon.ts', 'src/pages/index.astro', 'src/vue/TIcon.ts'];
   expect(selected(paths)).toEqual(['typecheck', 'tests', 'build', 'storybook', 'visual']);
   expect(classifyPaths(paths).tests.reasons).toEqual(['src/vue/TIcon.ts']);
 });
 
 // 未分類・依存・共通設定・判定自身は安全側に倒し、スキル配下の実行コードも一括除外しない。
 test('未分類のファイルやCI基盤の変更は全チェックを実行する', () => {
-  for (const path of ['package.json', 'bun.lock', 'tsconfig.json', 'astro.config.mjs', '.github/workflows/ci.yml',
+  for (const path of ['package.json', 'bun.lock', 'tsconfig.json', 'astro.config.mjs', '.gitignore',
+    '.github/workflows/ci.yml', '.github/workflows/visual.yml', '.github/workflows/new.yml',
     'scripts/ci-changes.ts', 'scripts/ci-changes.test.ts', 'scripts/visual-run-status.ts',
     '.agents/skills/example/run.ts', 'src/new-feature.ts', 'new unknown file.txt']) {
     expect(selected([path])).toEqual([...checkIds]);
