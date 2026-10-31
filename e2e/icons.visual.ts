@@ -5,7 +5,7 @@ for (const framework of ['react', 'vue']) {
   for (const name of ['bell', 'grip-vertical', 'moon', 'tool']) {
     for (const size of [16, 20, 24, 32]) {
       // 各方式・図柄・サイズを読み込み、空の画面でないことを確認して基準画像と比較する。
-      test(`${framework}の${name}を${size}pxで表示する`, async ({ page }) => {
+      test(`${framework}の${name}を${size}pxで表示する`, async ({ page }, testInfo) => {
         const query = new URLSearchParams({
           id: 'components-ticon--default',
           viewMode: 'story',
@@ -32,6 +32,9 @@ for (const framework of ['react', 'vue']) {
           }
         ` });
         await page.evaluate(() => document.fonts.ready);
+        const current = testInfo.outputPath('current.png');
+        await root.screenshot({ path: current, animations: 'disabled' });
+        await testInfo.attach('current', { path: current, contentType: 'image/png' });
         await expect(root).toHaveScreenshot(`${framework}-${name}-${size}.png`);
       });
     }

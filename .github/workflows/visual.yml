@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       update_baselines:
-        description: 基準画像を生成・更新してダウンロードする（Gitへの書き込みなし）
+        description: 基準画像の候補を生成する（外部基準の切り替えは別の手動承認）
         type: boolean
         default: false
 
@@ -27,6 +27,8 @@ jobs:
     timeout-minutes: 30
     container:
       image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: 検証対象のコードを取得
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -63,28 +65,22 @@ jobs:
         if: ${{ inputs.update_baselines }}
         run: bun run test:visual:update
 
-      - name: 失敗時のレポートと差分を保存
-        if: ${{ failure() && !cancelled() }}
+      - name: 画像一覧とレポートを7日間保存
+        id: report
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: visual-report-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            playwright-report/
-            test-results/
+          path: playwright-report/
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: 基準画像を元のディレクトリ構成でまとめる
-        if: ${{ success() && inputs.update_baselines }}
-        run: |
-          mkdir -p "${{ runner.temp }}/visual-baselines/e2e"
-          cp -R e2e/*-snapshots "${{ runner.temp }}/visual-baselines/e2e/"
-
-      - name: 手動生成した基準画像を保存
+      - name: 承認前の基準画像候補を7日間保存
         if: ${{ success() && inputs.update_baselines }}
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: visual-baselines-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/visual-baselines/
+          path: .visual-candidates/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 7

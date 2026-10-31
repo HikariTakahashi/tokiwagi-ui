@@ -4,10 +4,11 @@ export default defineConfig({
   testDir: './e2e',
   // Bun Testの*.test.ts・*.spec.tsと分けて、既存テストへの混入を防ぐ。
   testMatch: '**/*.visual.ts',
+  snapshotDir: './.visual-baselines',
   forbidOnly: !!process.env.CI,
   workers: 1,
   retries: 0,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [['list'], ['html', { open: 'never' }], ['json', { outputFile: 'test-results/report.json' }]],
   outputDir: 'test-results',
   expect: {
     toHaveScreenshot: {
