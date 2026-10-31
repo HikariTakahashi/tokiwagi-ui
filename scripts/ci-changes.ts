@@ -9,10 +9,21 @@ const component: CheckId[] = ['typecheck', 'tests', ...story];
 const reactLibraries = new Set(['icon-assets', 'icon-sources', 'icon-search-labels', 'logo', 'brand']);
 const pageLibraries = new Set(['palette', 'icon-catalog', 'icon-assets', 'icon-search-labels']);
 const reactHelpers = new Set(['brand-test-helpers', 'logo-test-helpers']);
+const metadataFiles = new Set([
+  '.github/PULL_REQUEST_TEMPLATE.md',
+  '.vscode/extensions.json',
+  '.vscode/settings.json',
+  '.devcontainer/Dockerfile',
+  '.devcontainer/devcontainer.json',
+  '.devcontainer/devcontainer-lock.json',
+  'LICENSE',
+  'LICENSE-SCOPE.md',
+]);
 
-// 未分類は全検証へ倒す。Markdownの除外は表示・テスト用原稿と分けて限定する。
+// 未分類は全検証へ倒す。文書・メタデータの除外は表示用原稿や実行コードと分けて限定する。
 function checksFor(path: string): CheckId[] {
   if (path.startsWith('.github/workflows/') || /^scripts\/(ci-changes|visual-run-status)(\.|\/)/.test(path)) return [...checkIds];
+  if (metadataFiles.has(path) || /^\.agents\/skills\/[^/]+\/agents\/openai\.yaml$/.test(path) || /^\.github\/ISSUE_TEMPLATE\/[^/]+\.md$/.test(path)) return [];
   if (/^(README|AGENTS|CLAUDE)\.md$/.test(path) || /^docs\/.+\.md$/.test(path) || /^\.agents\/skills\/.+\.md$/.test(path)) return [];
   if (/\.(test|spec)\.[cm]?[jt]sx?$/.test(path) && /^(src|scripts|\.storybook)\//.test(path)) {
     return path.startsWith('src/react/') ? ['typecheck', 'tests', 'react_compat'] : ['typecheck', 'tests'];

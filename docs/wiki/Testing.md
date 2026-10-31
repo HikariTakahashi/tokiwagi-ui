@@ -66,7 +66,15 @@ React本体の下限とテスト用API・型定義の提供範囲は区別しま
 
 通常のテスト専用ファイルは型検査と通常テストだけに含めます。React配下のテストとReact用共通ヘルパーはReact互換性にも含めます。型検査専用ファイルは型検査だけ、React用はReact互換性にも含めます。これらの専用ファイルをビルド・撮影の変更として扱いません。
 
-スキル配下のMarkdown、ルートのREADME・AGENTS・CLAUDE、docs配下のMarkdownだけの変更では全6チェックを省略します。`icons/*/README.md` と `components/*/README.md` は表示・テストに使うため除外しません。スキル配下の実行スクリプトも一括除外しません。依存関係・共通設定・ワークフロー・判定処理自身・未分類ファイルの変更は全チェックを実行します。
+スキル配下のMarkdown、ルートのREADME・AGENTS・CLAUDE、docs配下のMarkdownに加え、次のファイルだけの変更では全6チェックを省略します。
+
+- `.agents/skills/*/agents/openai.yaml`
+- `.github/ISSUE_TEMPLATE/*.md`、`.github/PULL_REQUEST_TEMPLATE.md`
+- `.vscode/extensions.json`、`.vscode/settings.json`
+- `.devcontainer/Dockerfile`、`.devcontainer/devcontainer.json`、`.devcontainer/devcontainer-lock.json`
+- ルートの `LICENSE`、`LICENSE-SCOPE.md`
+
+上記以外の変更が混在する場合は、その変更に必要なチェックを実行します。`icons/*/README.md` と `components/*/README.md` は表示・テストに使うため除外しません。スキル配下の実行スクリプトや、VS Code・Dev Container配下の未指定ファイルも一括除外しません。依存関係・共通設定・ワークフロー・判定処理自身・未分類ファイルの変更は全チェックを実行します。
 
 Actions画面のCIまたはVisual Testsで「Run workflow」を選ぶと、差分条件によらず全対象チェックを実行できます。Visual Testsの基準画像候補生成オプションは従来どおりです。各実行のSummaryと「変更ファイルを判定」ジョブに、チェックごとの実行／省略理由を表示します。不要なチェックはジョブ自体をSkippedにするため、依存導入・ビルド・ブラウザ起動を行いません。
 
