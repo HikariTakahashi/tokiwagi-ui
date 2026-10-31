@@ -1,0 +1,10 @@
+---
+import type { THeaderProps } from './THeaderProps';
+interface Props extends THeaderProps {}
+const { scrollLabel = 'ヘッダー操作', class: className, ...attributes } = Astro.props;
+---
+<header {...attributes} class:list={['tkw-header', className]}>
+  <div class="tkw-header__scroll" role="region" aria-label={scrollLabel} tabindex="0">
+    <div class="tkw-header__content"><slot /></div>
+  </div>
+</header>

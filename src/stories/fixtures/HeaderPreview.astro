@@ -1,0 +1,52 @@
+---
+import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/astro';
+import { headerButtonContent, headerButtonText, type HeaderPreviewOptions } from '../header-preview';
+type Props = HeaderPreviewOptions;
+const { component, tone, disabled, selected, view = 'month', icon = 'share', position = 'left' } = Astro.props;
+const content = headerButtonContent(Astro.props);
+const text = headerButtonText(Astro.props);
+const common = { tone, disabled };
+---
+{component === 'THeaderSection' ? (
+  <THeader class="tkw-header-sample"><THeaderSection position={position}>セクション</THeaderSection></THeader>
+) : component === 'THeaderButton' ? (
+  <THeaderButton {...common} iconOnly={content === 'icon'} selected={selected} aria-label={content === 'icon' ? text : undefined}>
+    {content !== 'text' && <TIcon name={icon} />}{content !== 'icon' && text}
+  </THeaderButton>
+) : component === 'THeaderButtonGroup' ? (
+  <THeaderButtonGroup aria-label="カレンダーの表示形式">
+    <THeaderButton {...common} selected={view === 'year'}>年</THeaderButton>
+    <THeaderButton {...common} selected={view === 'month'}>月</THeaderButton>
+    <THeaderButton {...common} selected={view === 'week'}>週</THeaderButton>
+  </THeaderButtonGroup>
+) : (
+  <THeader class="tkw-header-sample">
+    <THeaderSection position="left">
+      <THeaderButton {...common} iconOnly aria-label="メニューを開く" aria-expanded="false"><TIcon name="menu" /></THeaderButton>
+      <a href="#home" class="tkw-header-sample__brand" aria-label="TokiWa Calendar ホーム"><span class="tkw-header-sample__toki">Toki</span><span class="tkw-header-sample__wa">Wa</span> Calendar</a>
+      <THeaderButton {...common} aria-expanded="false" aria-label="モードを選択、現在は予定調整モード"><TIcon name="dashboard" />予定調整モード<TIcon name="chevron-bottom" size={16} /></THeaderButton>
+    </THeaderSection>
+    <THeaderSection position="center">
+      <span class="tkw-header-sample__dot" aria-hidden="true"></span>
+      <span class="tkw-header-sample__title">カレンダー名</span>
+      <THeaderButton {...common} iconOnly aria-label="カレンダー名を編集"><TIcon name="edit" size={16} /></THeaderButton>
+    </THeaderSection>
+    <THeaderSection position="right">
+      <THeaderButtonGroup aria-label="日程調整">
+        <THeaderButton {...common}>候補を見る<TIcon name="calendar-check" /></THeaderButton>
+        <THeaderButton {...common}>共有設定<TIcon name="share" /></THeaderButton>
+      </THeaderButtonGroup>
+      <THeaderButton {...common} aria-expanded="false" aria-label="表示日付を選択、2026年1月1日">2026年1月1日<TIcon name="chevron-bottom" /></THeaderButton>
+      <THeaderButtonGroup aria-label="カレンダーの表示形式">
+        <THeaderButton {...common} selected={view === 'year'}>年</THeaderButton>
+        <THeaderButton {...common} selected={view === 'month'}>月</THeaderButton>
+        <THeaderButton {...common} selected={view === 'week'}>週</THeaderButton>
+      </THeaderButtonGroup>
+      <THeaderButtonGroup aria-label="表示期間の移動">
+        <THeaderButton {...common} iconOnly aria-label="前の期間へ"><TIcon name="chevron-left" size={16} /></THeaderButton>
+        <THeaderButton {...common}>今日</THeaderButton>
+        <THeaderButton {...common} iconOnly aria-label="次の期間へ"><TIcon name="chevron-right" size={16} /></THeaderButton>
+      </THeaderButtonGroup>
+    </THeaderSection>
+  </THeader>
+)}

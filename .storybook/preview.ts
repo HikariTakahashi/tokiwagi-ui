@@ -1,5 +1,7 @@
 import type { Preview } from '@storybook/html-vite';
 import '../src/styles/global.css';
+import 'tokiwagi-ui/header.css';
+import '../src/stories/components/header-preview.css';
 import '../src/styles/storybook.css';
 import { theme } from './theme';
 

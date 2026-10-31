@@ -18,6 +18,12 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 | TIcon | framework・name・size・color | React・bell・24px・currentColor |
 | TBrand | framework・text・size | React・Tokiwagi UI・32px |
 | TLogo | framework・size・decorative | React・32px・false |
+| THeader | framework・tone・disabled・view | React・neutral・false・month（合成例） |
+| THeaderSection | framework・position | React・left（親THeader内の見本） |
+| THeaderButton | framework・tone・content・text・icon・selected・disabled | React・neutral・文字＋アイコン・操作・share・unset・false |
+| THeaderButtonGroup | framework・tone・disabled・view | React・neutral・false・month（合成例） |
+
+ヘッダー4部品は「コンポーネント/ヘッダー」配下にまとめ、既存のストーリーID・URLを維持します。個別ルールは引き続き「コンポーネント/個別ルール」に配置します。同じ共通描画と標準Controlsを使います。THeaderは幅1440pxを上限にビューポートへ収まる合成例を1つ表示し、狭い画面では部品内部を横スクロールします。selectedのunsetは未指定、offはfalse、onはtrueとして渡します。Astroは公開部品の状態別テンプレートを実描画して収録します。THeaderButtonの文字のみ／アイコンのみ／文字＋アイコンはcontentで切り替え、textと全329種のiconを変更できます。アイコンのみではtextを読み上げ名に使い、空白だけの文言は「操作」に置き換えます。日本語・記号・空文字の入力も文字コードをURLに保持して復元します。Astroは実ボタンのテンプレートと実TIconの生成済みHTMLを組み合わせ、入力テキストをHTMLとして解釈しません。THeaderは子のTHeaderSectionでleft・center・rightを指定する構成です。THeaderSectionの見本は親THeaderの中に1つ表示し、positionで左右・中央の配置を変更します。見本にアプリ固有のメニューや日付移動処理は追加しません。
 
 方式はReact・Vue・Astroの順とし、切り替えても他の設定を保持します。TIconの公開名は329種、サイズは16・20・24・32px、色は継承・ニュートラル・7色のプライマリーから選びます。色はbell-offと同じ既存トークンへのmappingで指定し、URLには選択肢のキーを保持します。TLogo・TBrandは32・64・128pxで、原本の固定配色と余白を維持します。
 

@@ -10,8 +10,13 @@ import { astroBrandPreviewHtml, type AstroBrandPreviews } from '../astro-brand-p
 import iconsUrl from 'virtual:tkw-astro-icons';
 import logosUrl from 'virtual:tkw-astro-logos';
 import brandsUrl from 'virtual:tkw-astro-brands';
+import headersUrl from 'virtual:tkw-astro-headers';
+import { headerPreviewKey, type HeaderPreviewOptions, type AstroHeaderPreviews } from '../header-preview';
+import { ReactHeaderPreview, vueHeaderPreview } from './HeaderPreview';
+import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
 export type ComponentPreviewProps = { framework: Framework } & (
+  | HeaderPreviewOptions
   | { component: 'TIcon' } & Required<Pick<TIconProps, 'name' | 'size' | 'color'>>
   | { component: 'TLogo' } & Required<Pick<TLogoProps, 'size' | 'decorative'>>
   | { component: 'TBrand' } & Required<Pick<TBrandProps, 'size'>> & Pick<TBrandProps, 'text'>
@@ -19,16 +24,22 @@ export type ComponentPreviewProps = { framework: Framework } & (
 
 const loadIcons = createAstroPreviewLoader<AstroIconPreviews>(iconsUrl);
 const loadLogos = createAstroPreviewLoader<AstroLogoPreviews>(logosUrl);
+const loadHeaders = createAstroPreviewLoader<AstroHeaderPreviews>(headersUrl);
+const loadHeaderButtons = async () => {
+  const [headers, icons] = await Promise.all([loadHeaders(), loadIcons()]);
+  return { headers, icons };
+};
 const loadBrands = createAstroPreviewLoader<AstroBrandPreviews>(brandsUrl);
 
 function VuePreview(args: ComponentPreviewProps) {
-  const host = useRef<HTMLSpanElement>(null);
+  const host = useRef<HTMLSpanElement & HTMLDivElement>(null);
   const id = useId();
   const [props] = useState(() => shallowRef(args));
   useEffect(() => { props.value = args; }, [args, props]);
   useEffect(() => {
     const app = createApp({ render: () => {
       const value = props.value;
+      if (value.component === 'THeader' || value.component === 'THeaderButton' || value.component === 'THeaderButtonGroup' || value.component === 'THeaderSection') return vueHeaderPreview(value);
       if (value.component === 'TIcon') return h(VueTIcon, { name: value.name, size: value.size, color: value.color });
       if (value.component === 'TLogo') return h(VueTLogo, { size: value.size, decorative: value.decorative });
       return h(VueTBrand, { text: value.text, size: value.size });
@@ -37,13 +48,27 @@ function VuePreview(args: ComponentPreviewProps) {
     app.mount(host.current!);
     return () => app.unmount();
   }, [id, props]);
-  return <span ref={host} style={{ display: 'inline-flex' }} />;
+  return args.component.startsWith('THeader')
+    ? <div ref={host} style={{ display: 'inline-flex' }} />
+    : <span ref={host} style={{ display: 'inline-flex' }} />;
 }
 
 // Storybook専用。装飾や説明を追加せず、各公開入口の実コンポーネントだけを表示する。
 export function ComponentPreview(args: ComponentPreviewProps) {
   const id = useId();
   const prefix = `tkw-preview-astro-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
+  if (args.component === 'THeader' || args.component === 'THeaderButton' || args.component === 'THeaderButtonGroup' || args.component === 'THeaderSection') {
+    if (args.framework === 'vue') return <VuePreview {...args} />;
+    if (args.framework === 'react') return <ReactHeaderPreview {...args} />;
+    if (args.component === 'THeaderButton') return <AstroComponentPreview load={loadHeaderButtons}>{({ headers, icons }) =>
+      <div style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: astroHeaderButtonPreviewHtml(headers, icons, args, prefix) }} />
+    }</AstroComponentPreview>;
+    return <AstroComponentPreview load={loadHeaders}>{previews => {
+      const html = previews[headerPreviewKey(args)];
+      if (!html) throw new Error('Astroヘッダー見本がありません');
+      return <div style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: html.replace(/\bid="([^"]+)"/g, (_, id: string) => `id="${prefix}-${id}"`).replace(/url\(#([^)]+)\)/g, (_, id: string) => `url(#${prefix}-${id})`) }} />;
+    }}</AstroComponentPreview>;
+  }
   if (args.framework === 'vue') return <VuePreview {...args} />;
   if (args.framework === 'react') {
     if (args.component === 'TIcon') return <ReactTIcon name={args.name} size={args.size} color={args.color} />;

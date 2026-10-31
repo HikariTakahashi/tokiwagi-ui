@@ -1,0 +1,168 @@
+/* Import once: tokiwagi-ui/header.css. No reset or framework runtime. */
+@import '../../tokens/neutrals.css';
+@import '../../tokens/colors.css';
+@import '../../tokens/typography.css';
+
+.tkw-header {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  color: var(--tkw-color-neutral-900);
+  background: var(--tkw-color-neutral-0);
+  box-shadow: 0 1px 0 var(--tkw-color-neutral-200);
+  font-family: var(--tkw-font-family-sans);
+}
+.tkw-header__scroll {
+  height: 36px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Reserve all 36px for controls; retain native scrolling and keyboard access. */
+  scrollbar-width: none;
+}
+.tkw-header__scroll::-webkit-scrollbar { display: none; }
+.tkw-header__scroll:focus-visible {
+  outline: 2px solid var(--tkw-color-neutral-900);
+  outline-offset: -2px;
+}
+.tkw-header__content {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  min-width: 100%;
+  height: 36px;
+}
+.tkw-header-section {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.tkw-header-section[data-position="left"] { justify-content: flex-start; }
+.tkw-header-section[data-position="center"] { flex-grow: 1; min-width: 0; justify-content: center; }
+.tkw-header-section[data-position="right"] { margin-inline-start: auto; justify-content: flex-end; }
+.tkw-header-button {
+  --tkw-header-foreground: var(--tkw-color-neutral-900);
+  --tkw-header-hover: var(--tkw-color-neutral-100);
+  --tkw-header-active: var(--tkw-color-neutral-200);
+  --tkw-header-selected: var(--tkw-color-neutral-100);
+  --tkw-header-indicator: var(--tkw-color-neutral-900);
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  position: relative;
+  height: 36px;
+  min-width: 36px;
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: var(--tkw-color-neutral-0);
+  color: var(--tkw-header-foreground);
+  font-family: var(--tkw-font-family-sans);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tkw-header-button[data-icon-only] { width: 36px; padding: 0; }
+.tkw-header-button[data-selected] { background: var(--tkw-header-selected); }
+.tkw-header-button[data-selected]::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: var(--tkw-header-indicator);
+}
+.tkw-header-button:hover:not(:disabled) { background: var(--tkw-header-hover); }
+.tkw-header-button:active:not(:disabled) { background: var(--tkw-header-active); }
+.tkw-header-button:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--tkw-header-foreground);
+  outline-offset: -3px;
+}
+.tkw-header-button:disabled {
+  color: var(--tkw-color-neutral-600);
+  background: var(--tkw-color-neutral-50);
+  cursor: not-allowed;
+}
+.tkw-header-button:disabled::after { background: var(--tkw-color-neutral-600); }
+.tkw-header-button-group {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 36px;
+  border-inline: 1px solid var(--tkw-color-neutral-200);
+}
+.tkw-header-button-group > .tkw-header-button + .tkw-header-button {
+  border-inline-start: 1px solid var(--tkw-color-neutral-200);
+}
+.tkw-header-button-group + .tkw-header-button-group { border-inline-start: 0; }
+@media (forced-colors: active) {
+  .tkw-header-button[data-selected]::after { background: Highlight; }
+  .tkw-header-button:disabled { color: GrayText; }
+}
+
+.tkw-header-button[data-tone="green"] {
+  --tkw-header-foreground: var(--tkw-color-primary-green-on-subtle);
+  --tkw-header-hover: var(--tkw-color-primary-green-subtle);
+  --tkw-header-active: var(--tkw-color-primary-green);
+  --tkw-header-selected: var(--tkw-color-primary-green-subtle);
+  --tkw-header-indicator: var(--tkw-color-primary-green-on-subtle);
+}
+
+.tkw-header-button[data-tone="teal"] {
+  --tkw-header-foreground: var(--tkw-color-primary-teal-on-subtle);
+  --tkw-header-hover: var(--tkw-color-primary-teal-subtle);
+  --tkw-header-active: var(--tkw-color-primary-teal);
+  --tkw-header-selected: var(--tkw-color-primary-teal-subtle);
+  --tkw-header-indicator: var(--tkw-color-primary-teal-on-subtle);
+}
+
+.tkw-header-button[data-tone="blue"] {
+  --tkw-header-foreground: var(--tkw-color-primary-blue-on-subtle);
+  --tkw-header-hover: var(--tkw-color-primary-blue-subtle);
+  --tkw-header-active: var(--tkw-color-primary-blue);
+  --tkw-header-selected: var(--tkw-color-primary-blue-subtle);
+  --tkw-header-indicator: var(--tkw-color-primary-blue-on-subtle);
+}
+
+.tkw-header-button[data-tone="violet"] {
+  --tkw-header-foreground: var(--tkw-color-primary-violet-on-subtle);
+  --tkw-header-hover: var(--tkw-color-primary-violet-subtle);
+  --tkw-header-active: var(--tkw-color-primary-violet);
+  --tkw-header-selected: var(--tkw-color-primary-violet-subtle);
+  --tkw-header-indicator: var(--tkw-color-primary-violet-on-subtle);
+}
+
+.tkw-header-button[data-tone="rose"] {
+  --tkw-header-foreground: var(--tkw-color-primary-rose-on-subtle);
+  --tkw-header-hover: var(--tkw-color-primary-rose-subtle);
+  --tkw-header-active: var(--tkw-color-primary-rose);
+  --tkw-header-selected: var(--tkw-color-primary-rose-subtle);
+  --tkw-header-indicator: var(--tkw-color-primary-rose-on-subtle);
+}
+
+.tkw-header-button[data-tone="coral"] {
+  --tkw-header-foreground: var(--tkw-color-primary-coral-on-subtle);
+  --tkw-header-hover: var(--tkw-color-primary-coral-subtle);
+  --tkw-header-active: var(--tkw-color-primary-coral);
+  --tkw-header-selected: var(--tkw-color-primary-coral-subtle);
+  --tkw-header-indicator: var(--tkw-color-primary-coral-on-subtle);
+}
+
+.tkw-header-button[data-tone="amber"] {
+  --tkw-header-foreground: var(--tkw-color-primary-amber-on-subtle);
+  --tkw-header-hover: var(--tkw-color-primary-amber-subtle);
+  --tkw-header-active: var(--tkw-color-primary-amber);
+  --tkw-header-selected: var(--tkw-color-primary-amber-subtle);
+  --tkw-header-indicator: var(--tkw-color-primary-amber-on-subtle);
+}

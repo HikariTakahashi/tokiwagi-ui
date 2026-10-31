@@ -18,10 +18,10 @@ const matrix = [
 for (const version of matrix) {
   const directory = mkdtempSync(join(tmpdir(), 'tkw-react-compat-'));
   try {
-    for (const path of ['icons', 'src/react', 'src/lib']) cpSync(join(repository, path), join(directory, path), { recursive: true });
+    for (const path of ['icons', 'src/react', 'src/lib', 'src/styles', 'tokens']) cpSync(join(repository, path), join(directory, path), { recursive: true });
     await Bun.write(join(directory, 'package.json'), JSON.stringify({
       name: 'tokiwagi-ui', private: true, type: 'module',
-      exports: { './react': './src/react/index.ts' },
+      exports: { './react': './src/react/index.ts', './header.css': './src/styles/header.css' },
       devDependencies: {
         react: version.react, 'react-dom': version.react,
         '@types/react': version.reactTypes, '@types/react-dom': version.domTypes,
@@ -35,7 +35,7 @@ for (const version of matrix) {
         target: 'ES2022', module: 'ESNext', moduleResolution: 'Bundler', jsx: 'react-jsx',
         strict: true, noEmit: true, types: ['bun', 'react', 'react-dom'],
       },
-      files: ['src/react/TIcon.typecheck.tsx', 'src/react/TLogo.typecheck.tsx', 'src/react/TBrand.typecheck.tsx', 'raw-svg.d.ts'],
+      files: ['src/react/TIcon.typecheck.tsx', 'src/react/TLogo.typecheck.tsx', 'src/react/TBrand.typecheck.tsx', 'src/react/THeader.typecheck.tsx', 'raw-svg.d.ts'],
     }, null, 2));
     // 公開型の検証と、テスト用API（act等）の型検証を分けて診断する。
     await Bun.write(join(directory, 'tsconfig.tests.json'), JSON.stringify({

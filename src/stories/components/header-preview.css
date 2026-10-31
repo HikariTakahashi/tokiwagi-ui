@@ -1,0 +1,10 @@
+.tkw-header-sample { width: min(1440px, calc(100vw - 32px)); }
+.tkw-header-sample__brand {
+  color: var(--tkw-color-neutral-900); font-size: 21px; font-weight: 700;
+  white-space: pre; text-decoration: none; padding: 0 8px 0 4px;
+}
+.tkw-header-sample__brand:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+.tkw-header-sample__toki { color: var(--tkw-color-primary-blue-on-subtle); }
+.tkw-header-sample__wa { color: var(--tkw-color-primary-green-on-subtle); }
+.tkw-header-sample__dot { width: 12px; height: 12px; border-radius: 50%; background: var(--tkw-color-primary-violet); margin-left: 8px; flex-shrink: 0; }
+.tkw-header-sample__title { font-size: 21px; font-weight: 700; margin-left: 4px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
