@@ -34,6 +34,7 @@
     "test:visual:report": "playwright show-report",
     "visual:restore": "bun scripts/visual-storage.ts restore",
     "visual:promote": "bun scripts/visual-storage.ts promote",
+    "visual:transfer": "bun scripts/visual-transfer.ts",
     "generate:icons": "bun scripts/generate-icons.ts",
     "check:react-compat": "bun scripts/check-react-compat.ts",
     "storybook": "storybook dev --port 6006 --host localhost --no-open",

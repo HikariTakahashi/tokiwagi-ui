@@ -84,3 +84,10 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+
+      - name: 閲覧URLを実行結果へ表示
+        if: ${{ !cancelled() && steps.report.outputs.artifact-id && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+        env:
+          REPORT_ID: ${{ steps.report.outputs.artifact-id }}
+        run: |
+          echo "画像一覧（公開処理の完了後）: https://hikaritakahashi.github.io/tokiwagi-ui-visual-results/runs/${GITHUB_RUN_ID}-${REPORT_ID}/gallery.html" >> "$GITHUB_STEP_SUMMARY"
