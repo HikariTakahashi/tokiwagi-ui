@@ -94,8 +94,9 @@
 .tkw-icon-browser button:active { background: var(--tkw-color-neutral-100); }
 .tkw-icon-browser :is(input, select, button, a):focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 3px; }
 .tkw-icon-doc .tkw-icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); list-style: none; padding: 0; gap: 12px; margin: 20px 0; }
-.tkw-icon-doc .tkw-icon-grid > li { padding: 0; margin: 0; min-width: 0; }
-.tkw-icon-doc .tkw-icon-card { display: flex; flex-direction: column; height: 100%; gap: 10px; padding: 10px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 10px; color: var(--tkw-color-neutral-900); background: var(--tkw-color-neutral-0); text-decoration: none; }
+.tkw-icon-doc .tkw-icon-grid > li { display: flex; flex-direction: column; padding: 0; margin: 0; min-width: 0; }
+.tkw-icon-doc .tkw-icon-card { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 10px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 10px; color: var(--tkw-color-neutral-900); background: var(--tkw-color-neutral-0); text-decoration: none; }
+.tkw-icon-load-error { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; font-size: 12px; overflow-wrap: anywhere; }
 .tkw-icon-card:hover { border-color: var(--tkw-color-neutral-600); box-shadow: 0 2px 8px var(--tkw-color-neutral-100); }
 .tkw-icon-card:active { background: var(--tkw-color-neutral-50); }
 .tkw-icon-doc .tkw-icon-card code { white-space: normal; overflow-wrap: anywhere; min-width: 0; border: 0; padding: 0; background: transparent; font-size: 12px; line-height: 1.5; text-align: center; }
