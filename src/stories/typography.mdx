@@ -1,0 +1,24 @@
+import { Markdown, Meta } from '@storybook/addon-docs/blocks';
+import readme from '../../docs/typography.md?raw';
+
+<Meta title="フォント/使用ルール" id="typography-rules" />
+
+<div className="tkw-icon-doc">
+  <Markdown>{readme}</Markdown>
+</div>
+
+## 表示見本
+
+<section className="tkw-font-specimens" aria-label="共通フォントの表示見本">
+  <p>The quick brown fox jumps over the lazy dog.</p>
+  <p>今日の予定を確認する — TokiWa Calendar</p>
+  <p>2026/10/31 09:00–18:30 · 0123456789</p>
+  <div className="tkw-font-weights">
+    <p style={{ fontWeight: 400 }}>400 通常 — 今日の予定 Calendar</p>
+    <p style={{ fontWeight: 500 }}>500 中 — 今日の予定 Calendar</p>
+    <p style={{ fontWeight: 600 }}>600 強調 — 今日の予定 Calendar</p>
+    <p style={{ fontWeight: 700 }}>700 太字 — 今日の予定 Calendar</p>
+  </div>
+  <label className="tkw-font-input">入力欄の継承<input type="text" defaultValue="今日の予定 — Calendar 09:00" /></label>
+  <p><code>const calendar = 'TokiWa';</code></p>
+</section>

@@ -1,0 +1,5 @@
+/* Font families are defined here once. Use the OS-provided fonts without downloads. */
+:root {
+  --tkw-font-family-sans: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+  --tkw-font-family-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}

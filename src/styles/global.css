@@ -4,3 +4,14 @@
 @import "../../tokens/tailwind.css";
 
 /* The showcase retains its existing element defaults instead of enabling Preflight. */
+:root {
+  font-family: var(--tkw-font-family-sans);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+code, pre, kbd, samp {
+  font-family: var(--tkw-font-family-mono);
+}

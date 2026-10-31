@@ -25,3 +25,14 @@ test('共通テーマの全色をTailwindユーティリティとして利用で
     expect(css).toContain(`var(${token})`);
   }
 });
+
+// フォントユーティリティがTailwind既定の書体ではなく、利用側でも解決できる共通トークンを参照することを確認する。
+test('通常の文字とコードのフォントを共有テーマで切り替えられる', async () => {
+  const theme = readFileSync(new URL('../../tokens/tailwind.css', import.meta.url), 'utf8');
+  const compiler = await compile(theme.replace(/@import[^;]+;/g, '') + '\n@tailwind utilities;');
+  const css = compiler.build(['font-sans', 'font-mono']);
+  expect(css).toContain('.font-sans');
+  expect(css).toContain('font-family: var(--tkw-font-family-sans)');
+  expect(css).toContain('.font-mono');
+  expect(css).toContain('font-family: var(--tkw-font-family-mono)');
+});
