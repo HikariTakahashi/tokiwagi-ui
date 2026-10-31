@@ -36,16 +36,25 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: '1.3.9'
-      - run: bun install --frozen-lockfile
+      - name: 最新試行の画像比較が省略されたか確認
+        id: status
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.run_id }}
+        run: bun scripts/visual-run-status.ts "$SOURCE_RUN"
+      - name: 転送用の依存関係をインストール
+        if: ${{ steps.status.outputs.skipped == 'false' }}
+        run: bun install --frozen-lockfile
       - name: 画像保管用リポジトリへZIPを転送して公開更新を通知
         id: transfer
+        if: ${{ steps.status.outputs.skipped == 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
           VISUAL_STORAGE_TOKEN: ${{ secrets.VISUAL_STORAGE_TOKEN }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.run_id }}
         run: bun run visual:transfer "$SOURCE_RUN"
       - name: 公開を確認してPRコメントに結果と画像を表示
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.status.outputs.skipped == 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.run_id }}
