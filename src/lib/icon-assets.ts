@@ -6,7 +6,8 @@ export const iconCategories = [
   ['circle', '円枠'], ['square', '四角枠'], ['triangle', '三角枠'],
 ] as const;
 export type IconCategory = typeof iconCategories[number][0];
-export type IconAsset = { name: string; category: IconCategory; svg: string; href: string; searchLabels: readonly string[] };
+export type IconSearchEntry = { name: string; category: IconCategory; href: string; searchLabels: readonly string[] };
+export type IconAsset = IconSearchEntry & { svg: string };
 export const iconSizes = [16, 20, 24, 32] as const;
 
 /** 固定配色・最小32pxのロゴは、汎用アイコンと別の使用ルールで管理する。 */
@@ -44,7 +45,7 @@ export function createIconCatalog(sources: Record<string, string>, documents: Re
   return catalog;
 }
 
-export function filterIcons(icons: IconAsset[], query: string, category: IconCategory | 'all') {
+export function filterIcons<T extends IconSearchEntry>(icons: readonly T[], query: string, category: IconCategory | 'all') {
   const search = query.trim().toLowerCase();
   return icons.filter(icon => (category === 'all' || icon.category === category)
     && (icon.name.includes(search) || icon.searchLabels.some(label => label.toLowerCase().includes(search))));
@@ -68,6 +69,6 @@ export function renderIconSvg(svg: string, prefix: string, size: number = 32): s
       .replace('<svg', '<svg aria-hidden="true" focusable="false"'));
 }
 
-export function originalIconUrl(icon: IconAsset): string {
+export function originalIconUrl(icon: Pick<IconSearchEntry, 'name'>): string {
   return `./icon-assets/${icon.name}/${icon.name}.svg`;
 }
