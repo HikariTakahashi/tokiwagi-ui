@@ -39,8 +39,30 @@ test('除外対象に似た未指定ファイルでは全チェックを維持�
   for (const path of ['.agents/skills/example/agents/run.ts', '.agents/skills/example/agents/custom.yaml',
     '.agents/skills/example/nested/agents/openai.yaml', '.github/ISSUE_TEMPLATE/config.yml',
     '.github/ISSUE_TEMPLATE/nested/template.md', '.vscode/tasks.json', '.devcontainer/setup.sh',
-    '.devcontainer/nested/Dockerfile', 'other/LICENSE', 'package-lock.json', '.gitignore']) {
+    '.devcontainer/nested/Dockerfile', 'other/LICENSE', '.gitignore']) {
     expect(selected([path])).toEqual([...checkIds]);
+  }
+});
+
+// 使用しないnpmロックだけなら省略し、実際の依存管理や部品変更との混在では必要な検証を維持する。
+test('npmロック単独では省略し実行対象との混在では検証を合算する', () => {
+  expect(selected(['package-lock.json'])).toEqual([]);
+  for (const path of ['package.json', 'bun.lock', 'scripts/ci-changes.ts']) {
+    expect(selected(['package-lock.json', path])).toEqual([...checkIds]);
+  }
+  expect(selected(['package-lock.json', 'src/vue/TIcon.ts'])).toEqual(['typecheck', 'tests', 'storybook', 'visual']);
+});
+
+// 補助ワークフロー単独では全単体テストで設定と処理を検証し、コードやCI本体が混在すれば範囲を拡張する。
+test('Wiki同期・転送・承認ワークフローでは単体テストだけを実行する', () => {
+  for (const path of ['.github/workflows/sync-wiki.yml', '.github/workflows/visual-transfer.yml', '.github/workflows/visual-approve.yml']) {
+    expect(selected([path])).toEqual(['tests']);
+    expect(selected([path, 'package-lock.json', 'LICENSE'])).toEqual(['tests']);
+    expect(selected([path, 'src/pages/index.astro'])).toEqual(['typecheck', 'tests', 'build']);
+    for (const fullCheckPath of ['.github/workflows/ci.yml', '.github/workflows/visual.yml',
+      '.github/workflows/new.yml', 'bun.lock', 'scripts/ci-changes.ts', '.gitignore']) {
+      expect(selected([path, fullCheckPath])).toEqual([...checkIds]);
+    }
   }
 });
 
@@ -83,7 +105,8 @@ test('複数変更の検証を合算して判定理由を保持する', () => {
 
 // 未分類・依存・共通設定・判定自身は安全側に倒し、スキル配下の実行コードも一括除外しない。
 test('未分類のファイルやCI基盤の変更は全チェックを実行する', () => {
-  for (const path of ['package.json', 'bun.lock', 'tsconfig.json', 'astro.config.mjs', '.github/workflows/ci.yml',
+  for (const path of ['package.json', 'bun.lock', 'tsconfig.json', 'astro.config.mjs', '.gitignore',
+    '.github/workflows/ci.yml', '.github/workflows/visual.yml', '.github/workflows/new.yml',
     'scripts/ci-changes.ts', 'scripts/ci-changes.test.ts', 'scripts/visual-run-status.ts',
     '.agents/skills/example/run.ts', 'src/new-feature.ts', 'new unknown file.txt']) {
     expect(selected([path])).toEqual([...checkIds]);

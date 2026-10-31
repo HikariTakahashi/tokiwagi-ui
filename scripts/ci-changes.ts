@@ -9,6 +9,11 @@ const component: CheckId[] = ['typecheck', 'tests', ...story];
 const reactLibraries = new Set(['icon-assets', 'icon-sources', 'icon-search-labels', 'logo', 'brand']);
 const pageLibraries = new Set(['palette', 'icon-catalog', 'icon-assets', 'icon-search-labels']);
 const reactHelpers = new Set(['brand-test-helpers', 'logo-test-helpers']);
+const testOnlyWorkflows = new Set([
+  '.github/workflows/sync-wiki.yml',
+  '.github/workflows/visual-transfer.yml',
+  '.github/workflows/visual-approve.yml',
+]);
 const metadataFiles = new Set([
   '.github/PULL_REQUEST_TEMPLATE.md',
   '.vscode/extensions.json',
@@ -18,10 +23,13 @@ const metadataFiles = new Set([
   '.devcontainer/devcontainer-lock.json',
   'LICENSE',
   'LICENSE-SCOPE.md',
+  // 依存導入にはbun.lockを使い、既存のnpmロックは参照しない。
+  'package-lock.json',
 ]);
 
 // 未分類は全検証へ倒す。文書・メタデータの除外は表示用原稿や実行コードと分けて限定する。
 function checksFor(path: string): CheckId[] {
+  if (testOnlyWorkflows.has(path)) return ['tests'];
   if (path.startsWith('.github/workflows/') || /^scripts\/(ci-changes|visual-run-status)(\.|\/)/.test(path)) return [...checkIds];
   if (metadataFiles.has(path) || /^\.agents\/skills\/[^/]+\/agents\/openai\.yaml$/.test(path) || /^\.github\/ISSUE_TEMPLATE\/[^/]+\.md$/.test(path)) return [];
   if (/^(README|AGENTS|CLAUDE)\.md$/.test(path) || /^docs\/.+\.md$/.test(path) || /^\.agents\/skills\/.+\.md$/.test(path)) return [];
