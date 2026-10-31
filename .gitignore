@@ -3,6 +3,10 @@ dist/
 storybook-static/
 playwright-report/
 test-results/
+.visual-baselines/
+.visual-candidates/
+.visual-site/
+/e2e/*-snapshots/
 debug-storybook.log
 .astro/
 .DS_Store
