@@ -16,7 +16,7 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 | コンポーネント | Controls | 初期値 |
 | --- | --- | --- |
 | TIcon | framework・name・size・color | React・bell・24px・currentColor |
-| TBrand | framework・size | React・32px |
+| TBrand | framework・text・size | React・Tokiwagi UI・32px |
 | TLogo | framework・size・decorative | React・32px・false |
 
 方式はReact・Vue・Astroの順とし、切り替えても他の設定を保持します。TIconの公開名は329種、サイズは16・20・24・32px、色は継承・ニュートラル・7色のプライマリーから選びます。色はbell-offと同じ既存トークンへのmappingで指定し、URLには選択肢のキーを保持します。TLogo・TBrandは32・64・128pxで、原本の固定配色と余白を維持します。
