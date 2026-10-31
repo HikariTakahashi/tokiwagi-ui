@@ -1,10 +1,13 @@
-/* Tailwind CSS v4 theme. Color values are maintained in the imported tokens. */
+/* Tailwind CSS v4 theme. Values are maintained in the imported tokens. */
 @import "./colors.css";
 @import "./secondary.css";
 @import "./semantic.css";
 @import "./neutrals.css";
+@import "./typography.css";
 
 @theme inline {
+  --font-sans: var(--tkw-font-family-sans);
+  --font-mono: var(--tkw-font-family-mono);
   --color-tkw-secondary-lime: var(--tkw-color-secondary-lime);
   --color-tkw-secondary-lime-hover: var(--tkw-color-secondary-lime-hover);
   --color-tkw-secondary-lime-active: var(--tkw-color-secondary-lime-active);

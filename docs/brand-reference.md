@@ -81,11 +81,12 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 | `class`（Vue） | `HTMLAttributes['class']` | 外側のspanに付与する文字列・配列・オブジェクト |
 | `class`（Astro） | `string` | 外側のspanに付与する配置用クラス |
 
-名称は`text`で変更できます。書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は既存見本と同じ `Inter, "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`、名称は16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxです。フォントは利用側で配信し、未読込時はフォールバックします。名称の色は親から継承します。ロゴの固定配色は変えません。
+名称は`text`で変更できます。書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は共通トークン `--tkw-font-family-sans` を参照し、San Franciscoを基準とするシステム書体を使います。名称は16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxです。利用側で `typography.css` を読み込みます。日本語や他OSはシステム書体へフォールバックし、フォント本体の配信は不要です。名称の色は親から継承します。ロゴの固定配色は変えません。
 
 ```tsx
 import { TBrand } from 'tokiwagi-ui/react';
 import 'tokiwagi-ui/tokens/neutrals.css';
+import 'tokiwagi-ui/tokens/typography.css';
 
 <TBrand />;
 <a href="/" aria-label="TokiWa Calendar ホーム" className="brand-home">
@@ -97,6 +98,7 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 <script setup lang="ts">
 import { TBrand } from 'tokiwagi-ui/vue';
 import 'tokiwagi-ui/tokens/neutrals.css';
+import 'tokiwagi-ui/tokens/typography.css';
 </script>
 
 <template>
@@ -111,6 +113,7 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 ---
 import { TBrand } from 'tokiwagi-ui/astro';
 import 'tokiwagi-ui/tokens/neutrals.css';
+import 'tokiwagi-ui/tokens/typography.css';
 ---
 <TBrand />
 <a href="/" aria-label="TokiWa Calendar ホーム" class="brand-home">
