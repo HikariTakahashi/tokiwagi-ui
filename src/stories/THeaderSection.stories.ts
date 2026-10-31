@@ -5,7 +5,7 @@ import { componentStoryParameters, frameworkControl, renderComponentStory } from
 
 type Args = { framework: Framework; position: HeaderSectionPosition };
 const meta = {
-  title: 'コンポーネント/THeaderSection', id: 'components-theadersection', tags: ['!autodocs'],
+  title: 'コンポーネント/ヘッダー/THeaderSection', id: 'components-theadersection', tags: ['!autodocs'],
   parameters: componentStoryParameters(['framework', 'position']),
   args: { framework: 'react', position: 'left' },
   argTypes: { framework: frameworkControl, position: { control: 'select', options: headerSectionPositions } },

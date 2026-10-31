@@ -11,7 +11,7 @@ type Args = Omit<HeaderPreviewOptions, 'component' | 'selected' | 'text' | 'cont
   text: string; textcode?: string; content: HeaderButtonContent;
 };
 const meta = {
-  title: 'コンポーネント/THeaderButton', id: 'components-theaderbutton', tags: ['!autodocs'],
+  title: 'コンポーネント/ヘッダー/THeaderButton', id: 'components-theaderbutton', tags: ['!autodocs'],
   parameters: componentStoryParameters(['framework', 'tone', 'content', 'text', 'icon', 'selected', 'disabled']),
   args: { framework: 'react', tone: 'neutral', content: 'icon-text', text: '操作', icon: 'share', selected: 'unset', disabled: false, textcode: '' },
   argTypes: {

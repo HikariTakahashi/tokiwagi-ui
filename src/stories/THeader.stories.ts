@@ -6,7 +6,7 @@ import { componentStoryParameters, frameworkControl, renderComponentStory } from
 
 type Args = Omit<HeaderPreviewOptions, 'component'> & { framework: Framework };
 const meta = {
-  title: 'コンポーネント/THeader', id: 'components-theader', tags: ['!autodocs'],
+  title: 'コンポーネント/ヘッダー/THeader', id: 'components-theader', tags: ['!autodocs'],
   parameters: componentStoryParameters(['framework', 'tone', 'disabled', 'view']),
   args: { framework: 'react', tone: 'neutral', disabled: false, view: 'month' },
   argTypes: { framework: frameworkControl,

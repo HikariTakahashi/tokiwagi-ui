@@ -46,7 +46,7 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
     ['THeaderButtonGroup', headerGroup, ['framework', 'tone', 'disabled', 'view']],
   ] as const) {
     const meta = story.default;
-    expect(meta.title).toBe(`コンポーネント/${name}`);
+    expect(meta.title).toBe(`コンポーネント/${name.startsWith('THeader') ? 'ヘッダー/' : ''}${name}`);
     expect(meta.id).toBe(`components-${name.toLowerCase()}`);
     expect(meta.tags).toEqual(['!autodocs']);
     expect(meta.parameters.layout).toBe(bellOff.default.parameters.layout);
