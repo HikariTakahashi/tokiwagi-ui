@@ -17,3 +17,10 @@ const invalidSectionPosition: THeaderSectionProps = { position: 'start' };
 // @ts-expect-error start/end APIはTHeaderSectionによる構成へ置き換えた。
 const oldHeader: THeaderProps = { start: '左', end: '右' };
 void [section, missingSectionPosition, invalidSectionPosition, oldHeader];
+
+import { headerBackgroundColors, type HeaderBackgroundColor } from 'tokiwagi-ui/astro';
+const backgroundColor: HeaderBackgroundColor = '--tkw-color-secondary-navy';
+const coloredHeader: THeaderProps = { backgroundColor };
+// @ts-expect-error 任意の色や未定義トークンは指定できない。
+const invalidBackground: THeaderProps = { backgroundColor: '#FFFFFF' };
+void [headerBackgroundColors, coloredHeader, invalidBackground];

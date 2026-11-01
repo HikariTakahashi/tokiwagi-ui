@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Window } from 'happy-dom';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { headerBackgroundColors } from '../lib/header-background';
+import { astroHeaderPreviewHtml } from './astro-header-preview';
 import { headerTones } from '../lib/header';
 import { headerPreviewKey, type AstroHeaderPreviews } from './header-preview';
 import { ReactHeaderPreview } from './components/HeaderPreview';
@@ -13,7 +15,7 @@ import type { AstroIconPreviews } from './components/astro-preview';
 import { encodeStoryText, decodeStoryText, savedStoryText } from './story-text-args';
 
 // 実Astro部品の生成結果とReact合成例の操作順・名前を照合し、Controlsの全条件を静的Storybookへ収録する。
-test('Astroのヘッダー見本は全195条件を収録し、Reactと同じ操作部品を表示する', async () => {
+test('Astroのヘッダー見本は状態195条件と背景93条件を収録し、Reactと同じ操作部品を表示する', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'tkw-header-test-'));
   const window = new Window();
   try {
@@ -24,7 +26,22 @@ test('Astroのヘッダー見本は全195条件を収録し、Reactと同じ操�
     const error = await new Response(process.stderr).text();
     expect(await process.exited, error).toBe(0);
     const previews = JSON.parse(await readFile(output, 'utf8')) as AstroHeaderPreviews;
-    expect(Object.keys(previews)).toHaveLength(195);
+    expect(Object.keys(previews)).toHaveLength(288);
+    const previous = Object.getOwnPropertyDescriptor(globalThis, 'document');
+    Object.defineProperty(globalThis, 'document', { configurable: true, value: window.document });
+    try {
+      for (const backgroundColor of headerBackgroundColors) for (const tone of headerTones) {
+        const options = { component: 'THeader' as const, backgroundColor, tone, disabled: false, view: 'week' as const };
+        const astro = window.document.createElement('div'); astro.innerHTML = astroHeaderPreviewHtml(previews, options);
+        const react = window.document.createElement('div'); react.innerHTML = renderToStaticMarkup(ReactHeaderPreview(options));
+        expect(astro.querySelector('header')?.getAttribute('data-background')).toBe(backgroundColor);
+        expect(astro.querySelector('header')?.getAttribute('style')?.replaceAll(' ', '')).toBe(react.querySelector('header')?.getAttribute('style')?.replaceAll(' ', ''));
+        expect(astro.textContent?.replace(/\s/g, '')).toBe(react.textContent?.replace(/\s/g, ''));
+        expect(astro.querySelectorAll('button').length).toBe(react.querySelectorAll('button').length);
+      }
+    } finally {
+      if (previous) Object.defineProperty(globalThis, 'document', previous); else Reflect.deleteProperty(globalThis, 'document');
+    }
     for (const position of ['left', 'center', 'right'] as const) {
       const options = { component: 'THeaderSection' as const, tone: 'neutral' as const, disabled: false, position };
       const host = window.document.createElement('div'); host.innerHTML = previews[headerPreviewKey(options)]!;

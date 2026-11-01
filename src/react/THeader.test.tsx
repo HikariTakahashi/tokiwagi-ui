@@ -62,7 +62,7 @@ test('Reactヘッダーボタンは全toneと選択状態に対応し、不正�
 // SSRの同一DOMをhydrateし、クリック通知と外部からの状態変更、無効時の抑止を検証する。
 test('Reactヘッダーはhydrate後にクリックを通知し、選択は外部更新だけで変わる', async () => {
   let clicks = 0;
-  const page = (selected = false, disabled = false) => <THeader>
+  const page = (selected = false, disabled = false, backgroundColor: HeaderBackgroundColor = '--tkw-color-neutral-0') => <THeader backgroundColor={backgroundColor}>
     <THeaderSection position="left">ブランド</THeaderSection>
     <THeaderSection position="center"><THeaderButton onClick={() => { clicks++; }} selected={selected} disabled={disabled}>月</THeaderButton></THeaderSection>
     <THeaderSection position="right">右側</THeaderSection>
@@ -79,9 +79,10 @@ test('Reactヘッダーはhydrate後にクリックを通知し、選択は外�
     await act(async () => { root!.render(page(true)); });
     expect(host.querySelector('button')).toBe(button);
     expect(button.getAttribute('aria-pressed')).toBe('true');
-    await act(async () => { root!.render(page(true, true)); });
+    await act(async () => { root!.render(page(true, true, '--tkw-color-secondary-navy'));});
     await act(async () => { button.click(); });
     expect(clicks).toBe(1);
+    expect(host.querySelector('header')?.getAttribute('data-background')).toBe('--tkw-color-secondary-navy');
     expect(button.disabled).toBe(true);
     expect(recovered).toEqual([]); expect(errors).not.toHaveBeenCalled();
   } finally { if (root) await act(async () => { root!.unmount(); }); errors.mockRestore(); host.remove(); }
@@ -125,4 +126,22 @@ test('ReactのTHeaderSectionはhydrate後に配置を更新できる', async () 
     await act(async () => { button.click(); });
     expect(clicks).toBe(1); expect(recovered).toEqual([]);
   } finally { if (root) await act(async () => { root!.unmount(); }); host.remove(); }
+});
+
+import { headerBackgroundColors, type HeaderBackgroundColor } from 'tokiwagi-ui/react';
+// 全背景色のSSR出力で、設定と利用側styleを保持し、独自propsをHTMLへ漏らさない。
+test('reactヘッダーは全93色とネイティブstyleに対応する', async () => {
+  const local = new Window();
+  try {
+    for (const backgroundColor of [undefined, ...headerBackgroundColors]) {
+      const html = renderToStaticMarkup(<THeader backgroundColor={backgroundColor} style={{ marginTop: 2 }} />);
+      local.document.body.innerHTML = html;
+      const header = local.document.querySelector('header')!;
+      expect(header.getAttribute('data-background')).toBe(backgroundColor ?? '--tkw-color-neutral-0');
+      expect(header.style.getPropertyValue('--tkw-header-background')).toBe(`var(${backgroundColor ?? '--tkw-color-neutral-0'})`);
+      expect(header.style.marginTop).toBe('2px');
+      expect(header.hasAttribute('backgroundcolor')).toBe(false);
+    }
+  } finally { await local.happyDOM.close(); }
+  expect(() => renderToStaticMarkup(<THeader backgroundColor={'red' as HeaderBackgroundColor} />)).toThrow('93カラートークン');
 });

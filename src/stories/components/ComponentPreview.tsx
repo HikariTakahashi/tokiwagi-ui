@@ -11,7 +11,8 @@ import iconsUrl from 'virtual:tkw-astro-icons';
 import logosUrl from 'virtual:tkw-astro-logos';
 import brandsUrl from 'virtual:tkw-astro-brands';
 import headersUrl from 'virtual:tkw-astro-headers';
-import { headerPreviewKey, type HeaderPreviewOptions, type AstroHeaderPreviews } from '../header-preview';
+import { astroHeaderPreviewHtml } from '../astro-header-preview';
+import type { HeaderPreviewOptions, AstroHeaderPreviews } from '../header-preview';
 import { ReactHeaderPreview, vueHeaderPreview } from './HeaderPreview';
 import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
@@ -64,8 +65,7 @@ export function ComponentPreview(args: ComponentPreviewProps) {
       <div style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: astroHeaderButtonPreviewHtml(headers, icons, args, prefix) }} />
     }</AstroComponentPreview>;
     return <AstroComponentPreview load={loadHeaders}>{previews => {
-      const html = previews[headerPreviewKey(args)];
-      if (!html) throw new Error('Astroヘッダー見本がありません');
+      const html = astroHeaderPreviewHtml(previews, args);
       return <div style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: html.replace(/\bid="([^"]+)"/g, (_, id: string) => `id="${prefix}-${id}"`).replace(/url\(#([^)]+)\)/g, (_, id: string) => `url(#${prefix}-${id})`) }} />;
     }}</AstroComponentPreview>;
   }

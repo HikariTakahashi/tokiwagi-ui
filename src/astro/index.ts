@@ -14,3 +14,5 @@ export type { THeaderButtonGroupProps } from './THeaderButtonGroupProps';
 export { headerTones, type HeaderTone, type HeaderSectionPosition } from '../lib/header';
 export { default as THeaderSection } from './THeaderSection.astro';
 export type { THeaderSectionProps } from './THeaderSectionProps';
+
+export { headerBackgroundColors, type HeaderBackgroundColor } from '../lib/header-background';

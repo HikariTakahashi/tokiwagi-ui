@@ -45,8 +45,9 @@ test('Vueヘッダーは3セクションと操作属性を保持する', async (
 // SSR出力をhydrateしてクリックを通知し、更新後も同じDOMを保ち無効時に操作を抑止する。
 test('Vueヘッダーはhydrateと外部状態更新に対応し、無効ボタンから通知しない', async () => {
   let clicks = 0;
+  const backgroundColor = ref<HeaderBackgroundColor>('--tkw-color-neutral-0');
   const selected = ref(false); const disabled = ref(false); const position = ref<HeaderSectionPosition>('center');
-  const page = { render: () => h(THeader, {}, { default: () => h(THeaderSection, { position: position.value }, () => h(THeaderButton, {
+  const page = { render: () => h(THeader, { backgroundColor: backgroundColor.value }, { default: () => h(THeaderSection, { position: position.value }, () => h(THeaderButton, {
     selected: selected.value, disabled: disabled.value, onClick: () => { clicks++; },
   }, () => '月')) }) };
   const host = document.createElement('div'); host.innerHTML = await renderToString(createSSRApp(page)); document.body.append(host);
@@ -62,7 +63,8 @@ test('Vueヘッダーはhydrateと外部状態更新に対応し、無効ボタ�
     expect(host.querySelector('.tkw-header-section')).toBe(section);
     expect(section?.getAttribute('data-position')).toBe('right');
     expect(host.querySelector('button')).toBe(button); expect(button.getAttribute('aria-pressed')).toBe('true');
-    disabled.value = true; await nextTick(); button.click();
+    disabled.value = true; backgroundColor.value = '--tkw-color-secondary-navy'; await nextTick(); button.click();
+    expect(host.querySelector('header')?.getAttribute('data-background')).toBe('--tkw-color-secondary-navy');
     expect(button.disabled).toBe(true); expect(clicks).toBe(1);
     expect(warnings).not.toHaveBeenCalled(); expect(errors).not.toHaveBeenCalled();
   } finally { app.unmount(); warnings.mockRestore(); errors.mockRestore(); host.remove(); }
@@ -86,5 +88,27 @@ test('VueのTHeaderSectionは全配置・領域の省略に対応し、不正な
       const error = await renderToString(createSSRApp({ render: () => h(THeaderSection, { position: position as HeaderSectionPosition }) })).catch((error: Error) => error.message);
       expect(error).toContain('left/center/right');
     }
+  } finally { warnings.mockRestore(); }
+});
+
+import { headerBackgroundColors, type HeaderBackgroundColor } from 'tokiwagi-ui/vue';
+// 全背景色のSSR出力で、設定と利用側styleを保持し、独自propsをHTMLへ漏らさない。
+test('vueヘッダーは全93色とネイティブstyleに対応する', async () => {
+  const local = new Window();
+  try {
+    for (const backgroundColor of [undefined, ...headerBackgroundColors]) {
+      const html = await renderToString(createSSRApp({ render: () => h(THeader, { backgroundColor, style: [{ marginTop: '2px' }] }) }));
+      local.document.body.innerHTML = html;
+      const header = local.document.querySelector('header')!;
+      expect(header.getAttribute('data-background')).toBe(backgroundColor ?? '--tkw-color-neutral-0');
+      expect(header.style.getPropertyValue('--tkw-header-background')).toBe(`var(${backgroundColor ?? '--tkw-color-neutral-0'})`);
+      expect(header.style.marginTop).toBe('2px');
+      expect(header.hasAttribute('backgroundcolor')).toBe(false);
+    }
+  } finally { await local.happyDOM.close(); }
+  const warnings = spyOn(console, 'warn').mockImplementation(() => {});
+  try {
+    const error = await renderToString(createSSRApp({ render: () => h(THeader, { backgroundColor: 'red' as HeaderBackgroundColor }) })).catch((error: Error) => error.message);
+    expect(error).toContain('93カラートークン');
   } finally { warnings.mockRestore(); }
 });

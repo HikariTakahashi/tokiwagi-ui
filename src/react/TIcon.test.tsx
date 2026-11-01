@@ -86,8 +86,8 @@ test('Reactの公開入口に資料用コードやVueランタイムは含まれ
     external: ['react', 'react/jsx-runtime'],
     plugins: [{ name: 'import-audit', setup(build) {
       // BunのバンドラではViteの?rawを明示的にテキストloaderへ対応付ける。
-      build.onResolve({ filter: /\.svg\?raw$/ }, args => ({ path: resolve(args.resolveDir, args.path.slice(0, -4)), namespace: 'raw-svg' }));
-      build.onLoad({ filter: /.*/, namespace: 'raw-svg' }, args => {
+      build.onResolve({ filter: /\.(svg|css)\?raw$/ }, args => ({ path: resolve(args.resolveDir, args.path.slice(0, -4)), namespace: 'raw-asset' }));
+      build.onLoad({ filter: /.*/, namespace: 'raw-asset' }, args => {
         loaded.push(args.path);
         return { contents: readFileSync(args.path, 'utf8'), loader: 'text' };
       });

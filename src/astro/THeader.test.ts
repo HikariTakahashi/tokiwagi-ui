@@ -77,3 +77,22 @@ test('AstroのTHeaderSectionは領域の省略・属性転送とpositionの検�
     }
   } finally { await window.happyDOM.close(); }
 });
+
+import { headerBackgroundColors, type HeaderBackgroundColor } from '../lib/header-background';
+// 全背景色のSSR出力で、設定と利用側styleを保持し、独自propsをHTMLへ漏らさない。
+test('astroヘッダーは全93色とネイティブstyleに対応する', async () => {
+  const local = new Window();
+  try {
+    for (const backgroundColor of [undefined, ...headerBackgroundColors]) {
+      const html = await container.renderToString(THeader, { props: { backgroundColor, style: 'margin-top:2px' } });
+      local.document.body.innerHTML = html;
+      const header = local.document.querySelector('header')!;
+      expect(header.getAttribute('data-background')).toBe(backgroundColor ?? '--tkw-color-neutral-0');
+      expect(header.style.getPropertyValue('--tkw-header-background')).toBe(`var(${backgroundColor ?? '--tkw-color-neutral-0'})`);
+      expect(header.style.marginTop).toBe('2px');
+      expect(header.hasAttribute('backgroundcolor')).toBe(false);
+    }
+  } finally { await local.happyDOM.close(); }
+  const error = await container.renderToString(THeader, { props: { backgroundColor: 'red' as HeaderBackgroundColor } }).catch((error: Error) => error.message);
+  expect(error).toContain('93カラートークン');
+});

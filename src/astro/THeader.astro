@@ -1,9 +1,14 @@
 ---
 import type { THeaderProps } from './THeaderProps';
+import { headerBackgroundState } from '../lib/header-background';
 interface Props extends THeaderProps {}
-const { scrollLabel = 'ヘッダー操作', class: className, ...attributes } = Astro.props;
+const { scrollLabel = 'ヘッダー操作', class: className, backgroundColor, style, ...attributes } = Astro.props;
+const background = headerBackgroundState(backgroundColor);
+const backgroundStyle = typeof style === 'string'
+  ? Object.entries(background.style).map(([key, value]) => `${key}:${value}`).join(';') + ';' + style
+  : { ...background.style, ...style };
 ---
-<header {...attributes} class:list={['tkw-header', className]}>
+<header {...attributes} data-background={background.backgroundColor} style={backgroundStyle} class:list={['tkw-header', className]}>
   <div class="tkw-header__scroll" role="region" aria-label={scrollLabel} tabindex="0">
     <div class="tkw-header__content"><slot /></div>
   </div>

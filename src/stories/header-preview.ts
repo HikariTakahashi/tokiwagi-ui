@@ -1,11 +1,12 @@
 import type { HeaderTone, HeaderSectionPosition } from '../lib/header';
+import type { HeaderBackgroundColor } from '../lib/header-background';
 import type { IconName } from '../lib/icon-sources';
 
 export type HeaderButtonContent = 'text' | 'icon' | 'icon-text';
 
 export type HeaderComponent = 'THeader' | 'THeaderButton' | 'THeaderButtonGroup' | 'THeaderSection';
 export type HeaderPreviewOptions = {
-  tone: HeaderTone; disabled: boolean;
+  tone: HeaderTone; disabled: boolean; backgroundColor?: HeaderBackgroundColor;
   iconOnly?: boolean; selected?: boolean; view?: 'year' | 'month' | 'week';
   position?: HeaderSectionPosition; content?: HeaderButtonContent; text?: string; icon?: IconName;
 } & ({ component: 'THeader' } | { component: 'THeaderButton' } | { component: 'THeaderButtonGroup' } | { component: 'THeaderSection' });
@@ -67,5 +68,5 @@ export function renderHeaderExample<Node>(options: HeaderPreviewOptions, create:
     create('span', { className: 'tkw-header-sample__title' }, ['カレンダー名']),
     button([icon('edit', 16)], { iconOnly: true, 'aria-label': 'カレンダー名を編集' }),
   ]);
-  return create('THeader', { className: 'tkw-header-sample' }, [left, center, right]);
+  return create('THeader', { className: 'tkw-header-sample', backgroundColor: options.backgroundColor }, [left, center, right]);
 }
