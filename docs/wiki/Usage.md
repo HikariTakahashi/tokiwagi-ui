@@ -225,16 +225,20 @@ Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コ�
 
 ## ヘッダー共通部品
 
-React・Vue・Astroの公開入口からTHeader・THeaderSection・THeaderButton・THeaderButtonGroupと、それぞれのProps型、HeaderTone・headerTones・HeaderSectionPositionを利用できます。利用側で `import 'tokiwagi-ui/header.css'` を一度追加してください。このCSSは必要なカラー・ニュートラル・書体トークンを読み込みます。Tailwind、Preflight、アプリのグローバルな要素リセットは不要です。
+React・Vue・Astroの公開入口からTHeader・THeaderSection・THeaderButton・THeaderButtonGroupと、それぞれのProps型、HeaderTone・headerTones・HeaderSectionPosition・HeaderBackgroundColor・headerBackgroundColorsを利用できます。利用側で `import 'tokiwagi-ui/header.css'` を一度追加してください。このCSSは必要なカラー・ニュートラル・書体トークンを読み込みます。Tailwind、Preflight、アプリのグローバルな要素リセットは不要です。
 
 | 部品 | API・既定値 |
 | --- | --- |
-| THeader | Reactはchildren、Vue/Astroは既定slotにTHeaderSectionを配置。scrollLabelは既定「ヘッダー操作」 |
+| THeader | Reactはchildren、Vue/Astroは既定slotにTHeaderSectionを配置。scrollLabelは既定「ヘッダー操作」。backgroundColorは全93トークン名、既定`--tkw-color-neutral-0` |
 | THeaderSection | positionはleft / center / rightの必須指定。children／既定slotに内容を配置 |
 | THeaderButton | toneはneutral / green / teal / blue / violet / rose / coral / amber、既定neutral。iconOnly・disabledは既定false。selectedは既定未指定。typeは既定button |
 | THeaderButtonGroup | children／既定slotにTHeaderButtonを直接配置。aria-labelまたはaria-labelledbyでグループ名を指定 |
 
 ネイティブ属性、aria-*、data-*、className（React）／class（Vue・Astro）を対応する外側の要素へ渡します。React・Vueはネイティブイベントを接続できます。tone・iconOnly・selectedはDOMへそのまま転送せず表示状態に変換し、selectedを明示したときだけaria-pressedを設定します。selectedとaria-pressedの両方を渡した場合はselectedが優先します。グループのroleはgroupに固定します。不正なtone・type・boolean型・positionは描画時に日本語エラーで拒否します。positionはDOM属性に直接転送せず、配置を示すdata-positionに変換します。
+
+backgroundColorは`--tkw-color-primary-blue-subtle`や`--tkw-color-secondary-navy`のように既存トークン名を指定します。任意のHEX値や`var(...)`は受け付けません。不正な値は描画時に日本語エラーで拒否し、DOMへはdata-backgroundとして出力します。選択肢はheaderBackgroundColors、型はHeaderBackgroundColorから参照できます。
+
+継承文字色はneutral-900、neutral-0、neutral-1000の順に背景とのコントラスト比4.5:1以上の色を使います。THeader内のボタンの通常背景は透明です。toneの前景色が4.5:1未満なら読みやすい色へ調整し、ホバー・押下・選択・無効状態では既存の背景・前景の組を使います。通常のclass・styleも引き続き利用できますが、子要素に独自CSSで固定した色や、利用側で上書きしたトークン値のコントラストは利用側で確認してください。リンクにも継承色を使う場合は`color: inherit`を設定します。
 
 THeaderの直下にTHeaderSectionをleft→center→rightの順で配置します。各位置は1つまでで、省略できます。左右は内容幅を取り、中央は残り幅の中央へ内容を揃えます。中央がなくても右側は右端へ、中央だけなら全幅の中央へ配置します。CSSでDOM順やフォーカス順を変更しません。従来のstart／end propsと名前付きslotは廃止し、この構成へ統一しました。
 
@@ -246,10 +250,10 @@ React:
 import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/react';
 import 'tokiwagi-ui/header.css';
 
-<THeader>
+<THeader backgroundColor="--tkw-color-primary-blue-subtle">
   <THeaderSection position="left">
     <THeaderButton iconOnly aria-label="メニューを開く" aria-expanded={open} onClick={() => setOpen(!open)}><TIcon name="menu" /></THeaderButton>
-    <a href="/">アプリ名</a>
+    <a href="/" style={{ color: 'inherit' }}>アプリ名</a>
   </THeaderSection>
   <THeaderSection position="center">カレンダー名</THeaderSection>
   <THeaderSection position="right">
@@ -272,10 +276,10 @@ const view = ref('month');
 const open = ref(false);
 </script>
 <template>
-  <THeader>
+  <THeader background-color="--tkw-color-primary-blue-subtle">
     <THeaderSection position="left">
       <THeaderButton icon-only aria-label="メニューを開く" :aria-expanded="open" @click="open = !open"><TIcon name="menu" /></THeaderButton>
-      <a href="/">アプリ名</a>
+      <a href="/" style="color: inherit">アプリ名</a>
     </THeaderSection>
     <THeaderSection position="center">カレンダー名</THeaderSection>
     <THeaderSection position="right">
@@ -295,10 +299,10 @@ Astro:
 import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/astro';
 import 'tokiwagi-ui/header.css';
 ---
-<THeader>
+<THeader backgroundColor="--tkw-color-secondary-navy">
   <THeaderSection position="left">
     <THeaderButton iconOnly aria-label="メニューを開く" data-action="menu"><TIcon name="menu" /></THeaderButton>
-    <a href="/">アプリ名</a>
+    <a href="/" style="color: inherit">アプリ名</a>
   </THeaderSection>
   <THeaderSection position="center">カレンダー名</THeaderSection>
   <THeaderSection position="right">
