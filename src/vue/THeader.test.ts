@@ -7,6 +7,42 @@ import { THeader, THeaderSection, THeaderButton, THeaderLink, TIcon, THeaderButt
 let window: Window;
 const globals = new Map<string, PropertyDescriptor | undefined>();
 
+// activeのSSRとhydrate後の切替でも同じDOMを保ち、選択や現在地のARIAは独立したままにする。
+test('Vueヘッダーのactiveはボタンとリンクの選択状態から独立して更新できる', async () => {
+  const active = ref<boolean | undefined>(undefined);
+  const page = { render: () => h('div', [
+    h(THeaderButton, { active: active.value }, () => '操作'),
+    h(THeaderLink, { href: '#settings', active: active.value }, () => '設定'),
+    h(THeaderButton, { active: active.value, selected: true }, () => '選択中'),
+    h(THeaderLink, { href: '#calendar', active: active.value, 'aria-current': 'page' }, () => '現在地'),
+  ]) };
+  const host = document.createElement('div'); host.innerHTML = await renderToString(createSSRApp(page)); document.body.append(host);
+  const nodes = [...host.firstElementChild!.children];
+  const warnings = spyOn(console, 'warn').mockImplementation(() => {});
+  const errors = spyOn(console, 'error').mockImplementation(() => {});
+  const app = createSSRApp(page);
+  try {
+    app.mount(host);
+    for (const value of [true, false, undefined]) {
+      active.value = value; await nextTick();
+      expect([...host.firstElementChild!.children]).toEqual(nodes);
+      for (const node of nodes) {
+        expect(node.hasAttribute('data-active')).toBe(value === true);
+        expect(node.hasAttribute('active')).toBe(false);
+      }
+      expect(nodes[0]!.hasAttribute('aria-pressed')).toBe(false);
+      expect(nodes[1]!.hasAttribute('aria-current')).toBe(false);
+      expect(nodes[2]!.getAttribute('aria-pressed')).toBe('true');
+      expect(nodes[3]!.getAttribute('aria-current')).toBe('page');
+      expect(nodes[2]!.hasAttribute('data-selected')).toBe(true);
+      expect(nodes[3]!.hasAttribute('data-selected')).toBe(true);
+      (nodes[0] as HTMLButtonElement).click(); await nextTick();
+      expect(nodes[0]!.hasAttribute('data-active')).toBe(value === true);
+    }
+    expect(warnings).not.toHaveBeenCalled(); expect(errors).not.toHaveBeenCalled();
+  } finally { app.unmount(); warnings.mockRestore(); errors.mockRestore(); host.remove(); }
+});
+
 // 公開リンクをSSRし、全tone・現在地とリンク属性、既定slot、混在グループを検証する。
 test('Vueヘッダーリンクはリンク属性と現在地を保持する', async () => {
   for (const tone of headerTones) for (const current of [undefined, false, 'false', true, 'page', 'location'] as const) {

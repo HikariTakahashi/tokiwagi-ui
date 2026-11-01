@@ -1,6 +1,6 @@
 import type { THeaderSectionProps, HeaderSectionPosition, THeaderProps, THeaderButtonProps, THeaderButtonGroupProps } from 'tokiwagi-ui/astro';
 const header: THeaderProps = { class: 'header', scrollLabel: '操作', id: 'header' };
-const button: THeaderButtonProps = { tone: 'amber', iconOnly: true, selected: false, disabled: true, 'aria-label': '共有' };
+const button: THeaderButtonProps = { active: true, tone: 'amber', iconOnly: true, selected: false, disabled: true, 'aria-label': '共有' };
 const group: THeaderButtonGroupProps = { 'aria-label': '期間' };
 // @ts-expect-error toneは定義済みの8種類。
 const invalidTone: THeaderButtonProps = { tone: 'red' };
@@ -24,3 +24,7 @@ const coloredHeader: THeaderProps = { backgroundColor };
 // @ts-expect-error 任意の色や未定義トークンは指定できない。
 const invalidBackground: THeaderProps = { backgroundColor: '#FFFFFF' };
 void [headerBackgroundColors, coloredHeader, invalidBackground];
+
+// @ts-expect-error activeはbooleanだけを受け付ける。
+const invalidActive: THeaderButtonProps = { active: 'true' };
+void invalidActive;

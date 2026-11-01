@@ -3,7 +3,7 @@ import 'tokiwagi-ui/header.css';
 import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, type THeaderSectionProps, type HeaderSectionPosition, type THeaderProps, type THeaderButtonProps, type THeaderButtonGroupProps, type HeaderTone } from 'tokiwagi-ui/react';
 const tone: HeaderTone = 'violet';
 const header: THeaderProps = { scrollLabel: '操作', id: 'header', className: 'header' };
-const button: THeaderButtonProps = { tone, disabled: false, selected: true, 'aria-expanded': false, onClick: event => event.currentTarget.focus() };
+const button: THeaderButtonProps = { active: true, tone, disabled: false, selected: true, 'aria-expanded': false, onClick: event => event.currentTarget.focus() };
 const group: THeaderButtonGroupProps = { 'aria-label': '表示形式' };
 const inferred: ComponentProps<typeof THeaderButton> = button;
 const example = <THeader {...header}><THeaderSection position="right"><THeaderButtonGroup {...group}><THeaderButton {...button}>月</THeaderButton></THeaderButtonGroup></THeaderSection></THeader>;
@@ -33,3 +33,7 @@ const coloredHeader: THeaderProps = { backgroundColor };
 // @ts-expect-error 任意の色や未定義トークンは指定できない。
 const invalidBackground: THeaderProps = { backgroundColor: '#FFFFFF' };
 void [headerBackgroundColors, coloredHeader, invalidBackground];
+
+// @ts-expect-error activeはbooleanだけを受け付ける。
+const invalidActive: THeaderButtonProps = { active: 'true' };
+void invalidActive;

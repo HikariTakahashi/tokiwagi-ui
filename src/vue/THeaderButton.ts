@@ -8,6 +8,7 @@ export const THeaderButton = defineComponent({
   props: {
     tone: { type: String as PropType<HeaderTone>, default: 'neutral' },
     iconOnly: { type: Boolean, default: false },
+    active: { type: Boolean, default: false },
     selected: { type: Boolean, default: undefined },
     disabled: { type: Boolean, default: false },
     type: { type: String as PropType<'button' | 'submit' | 'reset'>, default: 'button' },
@@ -17,7 +18,7 @@ export const THeaderButton = defineComponent({
       const state = headerButtonState(props);
       return h('button', { ...attrs, class: ['tkw-header-button', attrs.class], type: state.type,
         disabled: state.disabled, 'data-tone': state.tone, 'data-icon-only': state.iconOnly || undefined,
-        'data-selected': state.selected || undefined, 'aria-pressed': state.selected ?? attrs['aria-pressed'],
+        'data-active': state.active || undefined, 'data-selected': state.selected || undefined, 'aria-pressed': state.selected ?? attrs['aria-pressed'],
       }, slots.default?.());
     };
   },
