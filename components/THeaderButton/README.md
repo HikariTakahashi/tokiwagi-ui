@@ -16,7 +16,7 @@ THeader内では通常時の背景を透明にしてヘッダーの背景にな�
 
 ## 使用しない場面
 
-画面遷移にはa要素を使ってください。メニュー、ダイアログ、日付選択、日付計算や保存処理は内包しません。
+画面遷移にはTHeaderLinkを使ってください。メニュー、ダイアログ、日付選択、日付計算や保存処理は内包しません。
 
 ## 表示とアクセシビリティ
 
@@ -26,6 +26,6 @@ THeader内では通常時の背景を透明にしてヘッダーの背景にな�
 
 [使用例を見る](../../src/stories/THeaderButton.stories.ts)
 
-[THeader](../THeader/README.md) / [THeaderSection](../THeaderSection/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md) / [TIcon](../TIcon/README.md)
+[THeader](../THeader/README.md) / [THeaderSection](../THeaderSection/README.md) / [THeaderLink](../THeaderLink/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md) / [TIcon](../TIcon/README.md)
 
 [カラーの使用ルール](../../src/stories/colors.mdx)

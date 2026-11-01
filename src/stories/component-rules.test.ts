@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { componentReadmeForStorybook } from './component-readme';
 
-const names = ['TBrand', 'THeader', 'THeaderButton', 'THeaderButtonGroup', 'THeaderSection', 'TIcon', 'TLogo'];
+const names = ['TBrand', 'THeader', 'THeaderButton', 'THeaderButtonGroup', 'THeaderLink', 'THeaderSection', 'TIcon', 'TLogo'];
 const sourceRoot = new URL('../../components/', import.meta.url);
 const pagesRoot = new URL('./component-rules/', import.meta.url);
 const sections = ['概要', '使用場面', '状態の表し方', '使用しない場面', '表示とアクセシビリティ', '関連コンポーネントと使い分け'];

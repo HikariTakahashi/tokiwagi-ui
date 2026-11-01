@@ -28,6 +28,6 @@ header要素と名前付きのスクロール領域を出力します。スク�
 
 [使用例を見る](../../src/stories/THeader.stories.ts)
 
-[THeaderSection](../THeaderSection/README.md) / [THeaderButton](../THeaderButton/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md) / [TIcon](../TIcon/README.md)
+[THeaderSection](../THeaderSection/README.md) / [THeaderButton](../THeaderButton/README.md) / [THeaderLink](../THeaderLink/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md) / [TIcon](../TIcon/README.md)
 
 [カラーの使用ルール](../../src/stories/colors.mdx)

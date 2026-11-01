@@ -87,11 +87,13 @@ READMEは概要とWikiへの導線を扱います。Wiki管理ページの唯一
 
 ## ヘッダー部品
 
-- `THeader`・`THeaderSection`・`THeaderButton`・`THeaderButtonGroup`をReact・Vue・Astroの同名APIで公開します。利用側で`tokiwagi-ui/header.css`を一度読み込み、既存トークンを参照する高さ36pxの1行ヘッダーを表示します。幅不足時は内部を横スクロールし、操作の省略・メニューへの集約はアプリ側で決めます。
+- `THeader`・`THeaderSection`・`THeaderButton`・`THeaderLink`・`THeaderButtonGroup`をReact・Vue・Astroの同名APIで公開します。利用側で`tokiwagi-ui/header.css`を一度読み込み、既存トークンを参照する高さ36pxの1行ヘッダーを表示します。幅不足時は内部を横スクロールし、操作の省略・メニューへの集約はアプリ側で決めます。
 - `THeader`は全体の背景・横スクロール、`THeaderSection`は必須position（left/center/right）による配置、`THeaderButton`はtone（neutralと7色）、iconOnly・selected・disabled、`THeaderButtonGroup`は境界線とrole=groupを担います。クリックによる選択変更や日付計算は内包しません。ブランド表示は利用側から渡し、既存TBrand・TLogoは変更しません。
-- 4部品はネイティブ属性とslot／children、React・Vueのネイティブイベントを転送します。Astroは利用側scriptで操作を接続します。スクロール領域とボタンのフォーカスは36pxの領域内で見えるようにし、アイコンのみの操作名とグループの読み上げ名は利用側で指定します。
-- ヘッダー4部品のDefaultはStorybookの「コンポーネント/ヘッダー」配下にまとめ、既存のストーリーID・URLを維持します。個別ルールは「コンポーネント/個別ルール」に保持します。Defaultは標準Controlsから方式・色・状態を変更します。THeaderはFigmaに基づく合成例を1つ表示し、Astroも公開部品の実描画をJSONとして収録します。THeaderButtonのControlsはcontent（文字のみ／アイコンのみ／文字＋アイコン）・text・全329種のiconを指定でき、アイコンのみではtextを読み上げ名に使います。Astroは実ボタンの状態別テンプレートと実TIcon出力を組み合わせ、文言はtextContentとして扱います。日本語などの文言もtextcodeでURLへ保存・復元します。利用ルールは各README、導入説明は`docs/wiki/Usage.md`を原本とします。
+- 5部品はネイティブ属性とslot／children、React・Vueのネイティブイベントを転送します。Astroは利用側scriptで操作を接続します。スクロール領域とボタンのフォーカスは36pxの領域内で見えるようにし、アイコンのみの操作名とグループの読み上げ名は利用側で指定します。
+- ヘッダー5部品のDefaultはStorybookの「コンポーネント/ヘッダー」配下にまとめ、既存のストーリーID・URLを維持します。個別ルールは「コンポーネント/個別ルール」に保持します。Defaultは標準Controlsから方式・色・状態を変更します。THeaderはFigmaに基づく合成例を1つ表示し、Astroも公開部品の実描画をJSONとして収録します。THeaderButtonのControlsはcontent（文字のみ／アイコンのみ／文字＋アイコン）・text・全329種のiconを指定でき、アイコンのみではtextを読み上げ名に使います。Astroは実ボタンの状態別テンプレートと実TIcon出力を組み合わせ、文言はtextContentとして扱います。日本語などの文言もtextcodeでURLへ保存・復元します。利用ルールは各README、導入説明は`docs/wiki/Usage.md`を原本とします。
 
 - THeader直下はTHeaderSectionをleft→center→rightの順に各1つまで配置し、不要な領域は省略できます。start/end props・名前付きslotは廃止しました。左右は内容幅、中央は残り幅の中央へ揃えます。中央なしでもrightは右端へ、中央のみなら全幅の中央へ配置します。DOMやフォーカスの順序をCSSで並べ替えません。THeaderSectionのDefaultは親THeader内に1つ表示し、方式・positionをControlsで変更してURLに保持します。
 
 - THeaderのbackgroundColorは既存の全93カラートークン名（既定`--tkw-color-neutral-0`）を受け取り、HeaderBackgroundColor型とheaderBackgroundColors一覧を3方式から公開します。4つの原本CSSと共通コントラスト計算から継承文字色・通常ボタンの前景を4.5:1以上に調整します。THeader内の通常ボタン背景は透明、状態表示は既存の背景・前景の組を維持します。StorybookはbackgroundColorをControlsとURLに保持し、Astroの背景外枠93件と既存の状態見本を合成して表示します。独自CSSで固定した子要素の色や利用側のトークン上書きは利用側で確認します。
+
+- `THeaderLink`はhref必須のa要素で、THeaderButtonと同じCSS・tone・iconOnlyを共有します。空のhrefは日本語エラー、現在地はaria-currentで指定し下線を表示します。selected・disabledは提供しません。target=_blankではrelのopenerを除きnoopenerを補完し、他のrelは保持します。THeaderButtonGroupはボタンとリンクの混在に対応します。Storybookは「コンポーネント/ヘッダー/THeaderLink」で標準Controlsによる方式・tone・content・text・icon・href・target・aria-currentを扱い、textとhrefの日本語・記号もURLへ保持します。Astroの実リンクテンプレートにDOM APIで文言と属性を反映します。ルーター連携・現在URLの判定は利用側の責任です。

@@ -24,6 +24,6 @@ left→center→rightの順に記述してください。CSSでDOM順を並べ�
 
 [使用例を見る](../../src/stories/THeaderSection.stories.ts)
 
-[THeader](../THeader/README.md) / [THeaderButton](../THeaderButton/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md)
+[THeader](../THeader/README.md) / [THeaderButton](../THeaderButton/README.md) / [THeaderLink](../THeaderLink/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md)
 
 [カラーの使用ルール](../../src/stories/colors.mdx)
