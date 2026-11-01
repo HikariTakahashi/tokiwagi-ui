@@ -15,7 +15,7 @@ import type { AstroIconPreviews } from './components/astro-preview';
 import { encodeStoryText, decodeStoryText, savedStoryText } from './story-text-args';
 
 // 実Astro部品の生成結果とReact合成例を照合し、リンクを含むControlsの全条件を静的Storybookへ収録する。
-test('Astroのヘッダー見本はリンク128条件・既存195条件と背景93条件を収録する', async () => {
+test('Astroのヘッダー見本はリンク256条件・既存291条件と背景93条件を収録する', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'tkw-header-test-'));
   const window = new Window();
   try {
@@ -26,7 +26,7 @@ test('Astroのヘッダー見本はリンク128条件・既存195条件と背景
     const error = await new Response(process.stderr).text();
     expect(await process.exited, error).toBe(0);
     const previews = JSON.parse(await readFile(output, 'utf8')) as AstroHeaderPreviews;
-    expect(Object.keys(previews)).toHaveLength(416);
+    expect(Object.keys(previews)).toHaveLength(640);
     const previous = Object.getOwnPropertyDescriptor(globalThis, 'document');
     Object.defineProperty(globalThis, 'document', { configurable: true, value: window.document });
     try {
@@ -49,14 +49,14 @@ test('Astroのヘッダー見本はリンク128条件・既存195条件と背景
       expect(host.querySelector('.tkw-header-section')?.getAttribute('data-position')).toBe(position);
       expect(host.textContent?.trim()).toBe('セクション');
     }
-    for (const tone of headerTones) for (const iconOnly of [false, true]) {
+    for (const tone of headerTones) for (const active of [false, true]) for (const iconOnly of [false, true]) {
       for (const current of [undefined, false, true, 'false', 'true', 'page', 'location', 'step', 'date', 'time'] as const) {
-        const options = { component: 'THeaderLink' as const, tone, disabled: false, iconOnly, current };
+        const options = { component: 'THeaderLink' as const, tone, disabled: false, active, iconOnly, current };
         const signature = (html: string) => {
           const host = window.document.createElement('div'); host.innerHTML = html;
           const link = host.querySelector('a')!;
           return { href: link.getAttribute('href'), current: link.getAttribute('aria-current'),
-            selected: link.hasAttribute('data-selected'), iconOnly: link.hasAttribute('data-icon-only'),
+            active: link.hasAttribute('data-active'), selected: link.hasAttribute('data-selected'), iconOnly: link.hasAttribute('data-icon-only'),
             tone: link.getAttribute('data-tone'), text: link.textContent?.trim(), label: link.getAttribute('aria-label'),
             icons: link.querySelectorAll('svg').length };
         };
@@ -67,7 +67,7 @@ test('Astroのヘッダー見本はリンク128条件・既存195条件と背景
       const host = window.document.createElement('div'); host.innerHTML = html;
       return [...host.querySelectorAll('button')].map(button => ({
         text: button.textContent?.trim(), label: button.getAttribute('aria-label'),
-        pressed: button.getAttribute('aria-pressed'), disabled: button.disabled,
+        active: button.hasAttribute('data-active'), pressed: button.getAttribute('aria-pressed'), disabled: button.disabled,
         tone: button.getAttribute('data-tone'), icons: [...button.querySelectorAll('svg')].map(icon => icon.getAttribute('width')),
       }));
     };
@@ -77,13 +77,13 @@ test('Astroのヘッダー見本はリンク128条件・既存195条件と背景
         const astro = previews[headerPreviewKey(options)]!;
         expect(signatures(astro)).toEqual(signatures(renderToStaticMarkup(ReactHeaderPreview(options))));
       }
-      for (const iconOnly of [false, true]) for (const selected of [undefined, false, true]) {
-        const options = { component: 'THeaderButton' as const, tone, disabled, iconOnly, selected };
+      for (const active of [false, true]) for (const iconOnly of [false, true]) for (const selected of [undefined, false, true]) {
+        const options = { component: 'THeaderButton' as const, tone, disabled, active, iconOnly, selected };
         expect(signatures(previews[headerPreviewKey(options)]!)).toEqual(signatures(renderToStaticMarkup(ReactHeaderPreview(options))));
       }
     }
   } finally { await window.happyDOM.close(); await rm(directory, { recursive: true, force: true }); }
-});
+}, 15_000);
 
 // 日本語・記号・絵文字・空文字をURLに保持し、壊れた文字コードは復元しない。
 test('ボタンの文言はStorybookのURLから元の文字列へ復元できる', () => {

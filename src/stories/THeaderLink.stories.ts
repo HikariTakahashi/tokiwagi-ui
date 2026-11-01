@@ -12,15 +12,16 @@ type Args = Omit<HeaderPreviewOptions, 'component' | 'disabled' | 'text' | 'href
 };
 const meta = {
   title: 'コンポーネント/ヘッダー/THeaderLink', id: 'components-theaderlink', tags: ['!autodocs'],
-  parameters: componentStoryParameters(['framework', 'tone', 'content', 'text', 'icon', 'href', 'target', 'aria-current']),
+  parameters: componentStoryParameters(['framework', 'tone', 'content', 'text', 'icon', 'active', 'href', 'target', 'aria-current']),
   args: { framework: 'react', tone: 'neutral', content: 'icon-text', text: 'リンク', icon: 'share',
-    href: '#header-link-target', target: '_self', current: 'unset', textcode: '', hrefcode: '' },
+    active: false, href: '#header-link-target', target: '_self', current: 'unset', textcode: '', hrefcode: '' },
   argTypes: {
     framework: frameworkControl,
     tone: { control: 'select', options: headerTones },
     content: { options: ['text', 'icon', 'icon-text'], control: { type: 'select', labels: { text: '文字のみ', icon: 'アイコンのみ', 'icon-text': '文字＋アイコン' } } },
     text: { control: 'text', description: 'アイコンのみでは読み上げ名に使用。空白だけの場合は「リンク」を表示します。' },
     icon: { control: 'select', options: iconNames },
+    active: { control: 'boolean', description: '背景と下線を表示。aria-currentは変更しません。押下中はactiveの値にかかわらず下線を表示します。' },
     href: { control: 'text', description: '空白だけの場合、見本は#header-link-targetへリンクします。' },
     target: { control: 'select', options: ['_self', '_blank', '_parent', '_top'] },
     current: { name: 'aria-current', control: 'select', options: ['unset', 'false', 'page', 'location', 'step', 'date', 'time', 'true'] },
