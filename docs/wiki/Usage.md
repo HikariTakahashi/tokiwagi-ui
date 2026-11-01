@@ -231,17 +231,26 @@ React・Vue・Astroの公開入口からTHeader・THeaderSection・THeaderButton
 | --- | --- |
 | THeader | Reactはchildren、Vue/Astroは既定slotにTHeaderSectionを配置。scrollLabelは既定「ヘッダー操作」。backgroundColorは全93トークン名、既定`--tkw-color-neutral-0` |
 | THeaderSection | positionはleft / center / rightの必須指定。children／既定slotに内容を配置 |
-| THeaderButton | toneはneutral / green / teal / blue / violet / rose / coral / amber、既定neutral。iconOnly・disabledは既定false。selectedは既定未指定。typeは既定button |
-| THeaderLink | hrefは必須。tone・iconOnlyはTHeaderButtonと共通。現在地はaria-current。target=_blankではrelにnoopenerを補完 |
+| THeaderButton | toneはneutral / green / teal / blue / violet / rose / coral / amber、既定neutral。iconOnly・active・disabledは既定false。selectedは既定未指定。typeは既定button |
+| THeaderLink | hrefは必須。tone・iconOnly・activeはTHeaderButtonと共通。現在地はaria-current。target=_blankではrelにnoopenerを補完 |
 | THeaderButtonGroup | children／既定slotにTHeaderButton・THeaderLinkを直接配置。aria-labelまたはaria-labelledbyでグループ名を指定 |
 
-ネイティブ属性、aria-*、data-*、className（React）／class（Vue・Astro）を対応する外側の要素へ渡します。React・Vueはネイティブイベントを接続できます。tone・iconOnly・selectedはDOMへそのまま転送せず表示状態に変換し、selectedを明示したときだけaria-pressedを設定します。selectedとaria-pressedの両方を渡した場合はselectedが優先します。グループのroleはgroupに固定します。不正なtone・type・boolean型・positionは描画時に日本語エラーで拒否します。positionはDOM属性に直接転送せず、配置を示すdata-positionに変換します。
+ネイティブ属性、aria-*、data-*、className（React）／class（Vue・Astro）を対応する外側の要素へ渡します。React・Vueはネイティブイベントを接続できます。tone・iconOnly・active・selectedはDOMへそのまま転送せず表示状態に変換し、selectedを明示したときだけaria-pressedを設定します。selectedとaria-pressedの両方を渡した場合はselectedが優先します。グループのroleはgroupに固定します。不正なtone・type・boolean型・positionは描画時に日本語エラーで拒否します。positionはDOM属性に直接転送せず、配置を示すdata-positionに変換します。
 
 backgroundColorは`--tkw-color-primary-blue-subtle`や`--tkw-color-secondary-navy`のように既存トークン名を指定します。任意のHEX値や`var(...)`は受け付けません。不正な値は描画時に日本語エラーで拒否し、DOMへはdata-backgroundとして出力します。選択肢はheaderBackgroundColors、型はHeaderBackgroundColorから参照できます。
 
 継承文字色はneutral-900、neutral-0、neutral-1000の順に背景とのコントラスト比4.5:1以上の色を使います。THeader内のボタンの通常背景は透明です。toneの前景色が4.5:1未満なら読みやすい色へ調整し、ホバー・押下・選択・無効状態では既存の背景・前景の組を使います。通常のclass・styleも引き続き利用できますが、子要素に独自CSSで固定した色や、利用側で上書きしたトークン値のコントラストは利用側で確認してください。リンクにも継承色を使う場合は`color: inherit`を設定します。
 
 THeaderの直下にTHeaderSectionをleft→center→rightの順で配置します。各位置は1つまでで、省略できます。左右は内容幅を取り、中央は残り幅の中央へ内容を揃えます。中央がなくても右側は右端へ、中央だけなら全幅の中央へ配置します。CSSでDOM順やフォーカス順を変更しません。従来のstart／end propsと名前付きslotは廃止し、この構成へ統一しました。
+
+THeaderButton・THeaderLinkは`active`（boolean、既定false）で背景と下線を表示できます。マウス・タッチなどで押している間（CSSの`:active`）も下線を表示します。離すと元の状態へ戻り、`active`は自動変更しません。`active`は見た目だけを指定し、`aria-pressed`・`aria-current`を設定しません。選択状態は`selected`、現在地は`aria-current`で伝えてください。`active=false`でも既存の選択・現在地の下線は保持されます。disabledボタンは押下の下線を出さず、明示されたactive・selectedの下線は無効色で表示します。
+
+```tsx
+<THeaderButton active={isMenuOpen} aria-expanded={isMenuOpen}>メニュー</THeaderButton>
+<THeaderLink href="/settings" active={isSettingsActive} aria-current={isSettingsActive ? 'page' : undefined}>設定</THeaderLink>
+```
+
+Vueでは`:active="isMenuOpen"`、Astroでは`active={isMenuOpen}`で指定できます。
 
 ヘッダーは高さ36pxの1行表示です。幅が不足した場合は内部だけを横スクロールさせます。スクロール領域はキーボードでも操作できます。長いタイトルの省略、リンク先の決定、メニューの表示、日付計算、保存、固定配置は利用側の責任です。THeaderButtonは通常のbutton操作を使い、グループ内に独自の矢印キー制御を追加しません。
 

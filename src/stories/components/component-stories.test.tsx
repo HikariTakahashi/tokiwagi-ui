@@ -42,7 +42,7 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
     ['TBrand', brand, ['framework', 'text', 'size']],
     ['THeader', header, ['framework', 'backgroundColor', 'tone', 'disabled', 'view']],
     ['THeaderSection', headerSection, ['framework', 'position']],
-    ['THeaderButton', headerButton, ['framework', 'tone', 'content', 'text', 'icon', 'selected', 'disabled']],
+    ['THeaderButton', headerButton, ['framework', 'tone', 'content', 'text', 'icon', 'active', 'selected', 'disabled']],
     ['THeaderButtonGroup', headerGroup, ['framework', 'tone', 'disabled', 'view']],
   ] as const) {
     const meta = story.default;

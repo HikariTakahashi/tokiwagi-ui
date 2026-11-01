@@ -15,6 +15,28 @@ plugin({ name: 'astro-header-test', setup(build) {
 const { THeader, THeaderSection, THeaderButton, THeaderLink, THeaderButtonGroup, TIcon } = await import('tokiwagi-ui/astro');
 const container = await experimental_AstroContainer.create();
 
+// activeの有無を静的HTMLへ反映し、既存の選択・現在地と独立させ、型を迂回した不正値を拒否する。
+test('Astroヘッダーのactiveはボタンとリンクの選択状態から独立して出力される', async () => {
+  const window = new Window();
+  try {
+    for (const component of [THeaderButton, THeaderLink]) for (const active of [undefined, false, true]) {
+      for (const selected of [false, true]) {
+        window.document.body.innerHTML = await container.renderToString(component, { props: {
+          active, ...(component === THeaderButton ? { selected: selected ? true : undefined } : { href: '/', 'aria-current': selected ? 'page' : undefined }),
+        } });
+        const node = window.document.body.firstElementChild!;
+        expect(node.hasAttribute('data-active')).toBe(active === true);
+        expect(node.hasAttribute('active')).toBe(false);
+        expect(node.hasAttribute('data-selected')).toBe(selected);
+        expect(node.hasAttribute('aria-pressed')).toBe(component === THeaderButton && selected);
+        expect(node.hasAttribute('aria-current')).toBe(component === THeaderLink && selected);
+      }
+      const error = await container.renderToString(component, { props: { href: '/', active: 'true' } }).catch((error: Error) => error.message);
+      expect(error).toContain('activeにはboolean');
+    }
+  } finally { await window.happyDOM.close(); }
+});
+
 // 公開リンクを静的描画し、全tone・現在地とリンク属性、slot、混在グループを保持する。
 test('Astroヘッダーリンクはリンク属性と現在地を静的HTMLへ出力する', async () => {
   const window = new Window();

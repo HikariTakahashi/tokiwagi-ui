@@ -5,6 +5,42 @@ import { act } from './test-act';
 import { THeader, THeaderSection, THeaderButton, THeaderLink, TIcon, THeaderButtonGroup, headerTones, type THeaderButtonProps, type THeaderSectionProps, type HeaderSectionPosition } from 'tokiwagi-ui/react';
 import 'tokiwagi-ui/header.css';
 
+// activeのSSRとhydrate後の更新を確認し、クリックやactive変更でARIAの選択状態が変わらないことを検証する。
+test('Reactヘッダーのactiveはボタンとリンクの選択状態から独立して更新できる', async () => {
+  const page = (active?: boolean) => <>
+    <THeaderButton active={active}>操作</THeaderButton>
+    <THeaderLink href="#settings" active={active}>設定</THeaderLink>
+    <THeaderButton active={active} selected>選択中</THeaderButton>
+    <THeaderLink href="#calendar" active={active} aria-current="page">現在地</THeaderLink>
+  </>;
+  const host = document.createElement('div'); host.innerHTML = renderToString(page()); document.body.append(host);
+  const nodes = [...host.children];
+  const recovered: unknown[] = [];
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    await act(async () => { root = hydrateRoot(host, page(), { onRecoverableError: error => recovered.push(error) }); });
+    for (const active of [true, false, undefined]) {
+      await act(async () => { root!.render(page(active)); });
+      expect([...host.children]).toEqual(nodes);
+      for (const node of nodes) {
+        expect(node.hasAttribute('data-active')).toBe(active === true);
+        expect(node.hasAttribute('active')).toBe(false);
+      }
+      expect(nodes[0]!.hasAttribute('aria-pressed')).toBe(false);
+      expect(nodes[1]!.hasAttribute('aria-current')).toBe(false);
+      expect(nodes[2]!.getAttribute('aria-pressed')).toBe('true');
+      expect(nodes[3]!.getAttribute('aria-current')).toBe('page');
+      expect(nodes[2]!.hasAttribute('data-selected')).toBe(true);
+      expect(nodes[3]!.hasAttribute('data-selected')).toBe(true);
+      await act(async () => { (nodes[0] as HTMLButtonElement).click(); });
+      expect(nodes[0]!.hasAttribute('data-active')).toBe(active === true);
+    }
+    expect(recovered).toEqual([]);
+  } finally { if (root) await act(async () => { root!.unmount(); }); host.remove(); }
+  expect(() => renderToStaticMarkup(<THeaderButton active={'true' as never} />)).toThrow('active');
+  expect(() => renderToStaticMarkup(<THeaderLink href="/" active={null as never} />)).toThrow('active');
+});
+
 // 公開リンクを全tone・現在地でSSRし、属性・装飾アイコン・混在グループのDOM順を保持する。
 test('Reactヘッダーリンクはリンク属性と現在地を保持する', () => {
   for (const tone of headerTones) for (const current of [undefined, false, 'false', true, 'page', 'location'] as const) {

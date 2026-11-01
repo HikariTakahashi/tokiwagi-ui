@@ -12,6 +12,8 @@
 
 toneはneutralと7色のプライマリーで既定neutralです。hover・押下・focus-visible・現在地を表現します。現在地は利用側で判定し、aria-currentにpage・locationなどを指定します。有効な現在地指定では背景と下線を表示し、未指定・falseでは表示しません。selected・disabledは提供しません。
 
+active（boolean、既定false）をtrueにすると背景と下線を表示します。マウス・タッチなどで押している間（CSSの:active）も下線を表示し、離すと元の状態へ戻ります。activeはクリックで自動変更しません。aria-currentは変更しないため、現在のページを表す場合はaria-currentも指定してください。
+
 THeader内では通常時の背景を透明にし、既存の文字色調整で背景と4.5:1以上のコントラストを確保します。状態表示は既存の背景・前景の組を使います。単独配置では通常時の白背景とtoneの前景色を使います。
 
 ## 使用しない場面

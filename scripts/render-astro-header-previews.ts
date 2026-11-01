@@ -26,14 +26,14 @@ for (const tone of headerTones) for (const disabled of [false, true]) {
   for (const component of ['THeader', 'THeaderButtonGroup'] as const) {
     for (const view of ['year', 'month', 'week'] as const) await render({ component, tone, disabled, view });
   }
-  for (const iconOnly of [false, true]) for (const selected of [undefined, false, true]) {
-    await render({ component: 'THeaderButton', tone, disabled, iconOnly, selected });
+  for (const active of [false, true]) for (const iconOnly of [false, true]) for (const selected of [undefined, false, true]) {
+    await render({ component: 'THeaderButton', tone, disabled, active, iconOnly, selected });
   }
 }
 for (const position of headerSectionPositions) await render({ component: 'THeaderSection', tone: 'neutral', disabled: false, position });
-for (const tone of headerTones) for (const iconOnly of [false, true]) {
+for (const tone of headerTones) for (const active of [false, true]) for (const iconOnly of [false, true]) {
   for (const current of [undefined, false, true, 'false', 'true', 'page', 'location', 'step', 'date', 'time'] as const) {
-    await render({ component: 'THeaderLink', tone, disabled: false, iconOnly, current });
+    await render({ component: 'THeaderLink', tone, disabled: false, active, iconOnly, current });
   }
 }
 for (const backgroundColor of headerBackgroundColors) {

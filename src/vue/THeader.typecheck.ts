@@ -1,6 +1,6 @@
 import { THeader, THeaderSection, THeaderButton, type THeaderSectionProps, type HeaderSectionPosition, type THeaderProps, type THeaderButtonProps, type THeaderButtonGroupProps } from 'tokiwagi-ui/vue';
 const header: THeaderProps = { class: ['header'], scrollLabel: '操作', id: 'header' };
-const button: THeaderButtonProps = { tone: 'blue', selected: true, disabled: false, 'aria-label': '共有', type: 'button' };
+const button: THeaderButtonProps = { active: true, tone: 'blue', selected: true, disabled: false, 'aria-label': '共有', type: 'button' };
 const group: THeaderButtonGroupProps = { 'aria-label': '表示形式' };
 const headerProps: InstanceType<typeof THeader>['$props'] = header;
 const buttonProps: InstanceType<typeof THeaderButton>['$props'] = button;
@@ -32,3 +32,7 @@ const inferredBackground: InstanceType<typeof THeader>['$props'] = coloredHeader
 // @ts-expect-error Vueの推論型でも未定義トークンを拒否する。
 const invalidInferredBackground: InstanceType<typeof THeader>['$props'] = { backgroundColor: 'red' };
 void [inferredBackground, invalidInferredBackground];
+
+// @ts-expect-error activeはbooleanだけを受け付ける。
+const invalidActive: THeaderButtonProps = { active: 'true' };
+void invalidActive;

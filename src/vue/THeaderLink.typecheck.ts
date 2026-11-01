@@ -1,6 +1,6 @@
 import { THeaderLink, type THeaderLinkProps } from 'tokiwagi-ui/vue';
 
-const props: THeaderLinkProps = { href: '/settings', tone: 'blue', 'aria-current': 'page',
+const props: THeaderLinkProps = { active: true, href: '/settings', tone: 'blue', 'aria-current': 'page',
   onClick: event => { const target: EventTarget | null = event.currentTarget; void target; } };
 const inferred: InstanceType<typeof THeaderLink>['$props'] = props;
 // @ts-expect-error hrefは必須。
@@ -16,3 +16,7 @@ const invalidDisabled: THeaderLinkProps = { href: '/', disabled: true };
 // @ts-expect-error フォーム送信用属性は受け取らない。
 const invalidForm: THeaderLinkProps = { href: '/', formaction: '/submit' };
 void [inferred, missingHref, missingInferredHref, invalidTone, invalidSelected, invalidDisabled, invalidForm];
+
+// @ts-expect-error activeはbooleanだけを受け付ける。
+const invalidActive: THeaderLinkProps = { href: '/', active: 'true' };
+void invalidActive;

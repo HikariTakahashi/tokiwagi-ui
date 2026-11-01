@@ -12,14 +12,15 @@ type Args = Omit<HeaderPreviewOptions, 'component' | 'selected' | 'text' | 'cont
 };
 const meta = {
   title: 'コンポーネント/ヘッダー/THeaderButton', id: 'components-theaderbutton', tags: ['!autodocs'],
-  parameters: componentStoryParameters(['framework', 'tone', 'content', 'text', 'icon', 'selected', 'disabled']),
-  args: { framework: 'react', tone: 'neutral', content: 'icon-text', text: '操作', icon: 'share', selected: 'unset', disabled: false, textcode: '' },
+  parameters: componentStoryParameters(['framework', 'tone', 'content', 'text', 'icon', 'active', 'selected', 'disabled']),
+  args: { framework: 'react', tone: 'neutral', content: 'icon-text', text: '操作', icon: 'share', active: false, selected: 'unset', disabled: false, textcode: '' },
   argTypes: {
     framework: frameworkControl,
     tone: { control: 'select', options: headerTones },
     content: { options: ['text', 'icon', 'icon-text'], control: { type: 'select', labels: { text: '文字のみ', icon: 'アイコンのみ', 'icon-text': '文字＋アイコン' } }, description: '使用例の表示形式。iconOnlyと内容を組み立てます。' },
     text: { control: 'text', description: '表示テキスト。アイコンのみの場合は読み上げ名として使用します。空白だけの場合は「操作」を表示します。' },
     icon: { control: 'select', options: iconNames, description: '既存の全329種から選択。文字のみの場合も選択は保持します。' },
+    active: { control: 'boolean', description: '背景と下線を表示。aria-pressedは変更しません。押下中はactiveの値にかかわらず下線を表示します。' },
     selected: { control: 'select', options: ['unset', 'off', 'on'], mapping: { unset: undefined, off: false, on: true } },
     disabled: { control: 'boolean' },
     textcode: { type: 'string', control: false, table: { disable: true } },

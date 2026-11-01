@@ -1,5 +1,22 @@
 import { expect, test } from 'bun:test';
 import { headerLinkState } from './header-link';
+import { headerButtonState } from './header';
+
+// activeの既定値・更新・不正値を両部品で検証し、選択状態は別に保持する。
+test('ヘッダーのactiveはbooleanで指定し、選択状態に影響しない', () => {
+  for (const active of [undefined, false, true]) {
+    expect(headerButtonState({ active }).active).toBe(active === true);
+    expect(headerButtonState({ active }).selected).toBeUndefined();
+    expect(headerLinkState({ href: '/', active }).active).toBe(active === true);
+    expect(headerLinkState({ href: '/', active }).selected).toBe(false);
+    expect(headerButtonState({ active, selected: true }).selected).toBe(true);
+    expect(headerLinkState({ href: '/', active, 'aria-current': 'page' }).selected).toBe(true);
+  }
+  for (const active of [null, 'true', 1]) {
+    expect(() => headerButtonState({ active: active as never })).toThrow('activeにはboolean');
+    expect(() => headerLinkState({ href: '/', active: active as never })).toThrow('activeにはboolean');
+  }
+});
 
 // 型を迂回したhrefと外観設定を拒否し、リンクの生成条件を全方式で共通化する。
 test('ヘッダーリンクは必須hrefと外観設定を検証する', () => {

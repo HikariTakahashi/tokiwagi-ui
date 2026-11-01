@@ -8,7 +8,7 @@ export type HeaderButtonContent = 'text' | 'icon' | 'icon-text';
 export type HeaderComponent = 'THeader' | 'THeaderButton' | 'THeaderLink' | 'THeaderButtonGroup' | 'THeaderSection';
 export type HeaderPreviewOptions = {
   tone: HeaderTone; disabled: boolean; backgroundColor?: HeaderBackgroundColor;
-  iconOnly?: boolean; selected?: boolean; view?: 'year' | 'month' | 'week';
+  iconOnly?: boolean; active?: boolean; selected?: boolean; view?: 'year' | 'month' | 'week';
   position?: HeaderSectionPosition; content?: HeaderButtonContent; text?: string; icon?: IconName;
   href?: string; target?: string; current?: HeaderLinkCurrent;
 } & ({ component: 'THeader' } | { component: 'THeaderButton' } | { component: 'THeaderLink' } | { component: 'THeaderButtonGroup' } | { component: 'THeaderSection' });
@@ -23,10 +23,12 @@ export function headerLinkHref(options: HeaderPreviewOptions): string {
   return options.href?.trim() ? options.href : '#header-link-target';
 }
 export function headerPreviewKey(options: HeaderPreviewOptions) {
-  if (options.component === 'THeaderLink') return `THeaderLink:${options.tone}:${headerButtonContent(options) === 'icon'}:${options.current ?? 'unset'}`;
+  const activeSuffix = options.active ? ':active' : '';
+  if (options.component === 'THeaderLink') return `THeaderLink:${options.tone}:${headerButtonContent(options) === 'icon'}:${options.current ?? 'unset'}${activeSuffix}`;
   if (options.component === 'THeaderSection') return `THeaderSection:${options.position ?? 'left'}`;
   const iconOnly = options.component === 'THeaderButton' ? headerButtonContent(options) === 'icon' : options.iconOnly ?? false;
-  return [options.component, options.tone, options.disabled, iconOnly, options.selected ?? 'unset', options.view ?? 'month'].join(':');
+  return [options.component, options.tone, options.disabled, iconOnly, options.selected ?? 'unset', options.view ?? 'month'].join(':')
+    + (options.component === 'THeaderButton' ? activeSuffix : '');
 }
 
 /** 見本の構成だけを共有し、React/Vueの公開部品をそれぞれ直接描画する。 */
@@ -46,7 +48,7 @@ export function renderHeaderExample<Node>(options: HeaderPreviewOptions, create:
       ...(content === 'text' ? [] : [icon(options.icon ?? 'share')]),
       ...(content === 'icon' ? [] : [text]),
     ];
-    const attributes = { iconOnly: content === 'icon', ...(content === 'icon' ? { 'aria-label': text } : {}) };
+    const attributes = { active: options.active, iconOnly: content === 'icon', ...(content === 'icon' ? { 'aria-label': text } : {}) };
     if (options.component === 'THeaderLink') return create('THeaderLink', {
       tone: options.tone, href: headerLinkHref(options), target: options.target, 'aria-current': options.current, ...attributes,
     }, children);
