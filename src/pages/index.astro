@@ -17,7 +17,7 @@ import { renderIconSvg } from '../lib/icon-assets';
   </head>
   <body>
     <a class="skip-link" href="#main">本文へスキップ</a>
-    <THeader scrollLabel="サイトヘッダーナビゲーション">
+    <THeader class="sticky top-0 z-10" scrollLabel="サイトヘッダーナビゲーション">
       <THeaderSection position="left">
         <TBrand />
       </THeaderSection>
@@ -81,11 +81,11 @@ import { renderIconSvg } from '../lib/icon-assets';
 <style>
   :root { background: var(--tkw-color-neutral-50); color: var(--tkw-color-neutral-900); color-scheme: light; font-synthesis: none; }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 36px; }
   body { margin: 0; }
   :where(main, footer) a { color: inherit; text-decoration: none; }
   :where(main, footer) a:focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 5px; }
-  .skip-link { position: absolute; top: -100px; left: 16px; z-index: 10; padding: 10px 14px; background: white; }
+  .skip-link { position: absolute; top: -100px; left: 16px; z-index: 20; padding: 10px 14px; background: white; }
   .skip-link:focus { top: 12px; }
   footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1480px; margin: auto; padding: 24px 4.5%; }
   .brand { display: inline-flex; align-items: center; white-space: nowrap; }
