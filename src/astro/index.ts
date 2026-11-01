@@ -9,6 +9,8 @@ export { default as THeader } from './THeader.astro';
 export type { THeaderProps } from './THeaderProps';
 export { default as THeaderButton } from './THeaderButton.astro';
 export type { THeaderButtonProps } from './THeaderButtonProps';
+export { default as THeaderLink } from './THeaderLink.astro';
+export type { THeaderLinkProps } from './THeaderLinkProps';
 export { default as THeaderButtonGroup } from './THeaderButtonGroup.astro';
 export type { THeaderButtonGroupProps } from './THeaderButtonGroupProps';
 export { headerTones, type HeaderTone, type HeaderSectionPosition } from '../lib/header';

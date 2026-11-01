@@ -12,8 +12,44 @@ plugin({ name: 'astro-header-test', setup(build) {
     }).code, loader: 'js',
   }));
 } });
-const { THeader, THeaderSection, THeaderButton, THeaderButtonGroup } = await import('tokiwagi-ui/astro');
+const { THeader, THeaderSection, THeaderButton, THeaderLink, THeaderButtonGroup, TIcon } = await import('tokiwagi-ui/astro');
 const container = await experimental_AstroContainer.create();
+
+// 公開リンクを静的描画し、全tone・現在地とリンク属性、slot、混在グループを保持する。
+test('Astroヘッダーリンクはリンク属性と現在地を静的HTMLへ出力する', async () => {
+  const window = new Window();
+  try {
+    const icon = await container.renderToString(TIcon, { props: { name: 'setting' } });
+    for (const tone of headerTones) for (const current of [undefined, false, 'false', true, 'page', 'location'] as const) {
+      const linkHtml = await container.renderToString(THeaderLink, { props: {
+        href: '/settings?q=予定#top', tone, 'aria-current': current, target: '_blank', rel: 'external opener',
+        iconOnly: true, 'aria-label': '設定', class: 'custom', id: 'settings', 'data-action': 'settings', title: '設定へ',
+      }, slots: { default: icon } });
+      const button = await container.renderToString(THeaderButton, { slots: { default: '操作' } });
+      window.document.body.innerHTML = await container.renderToString(THeaderButtonGroup, {
+        props: { 'aria-label': '操作と移動' }, slots: { default: button + linkHtml },
+      });
+      const link = window.document.querySelector('a')!;
+      expect(link.getAttribute('href')).toBe('/settings?q=予定#top');
+      expect(link.getAttribute('rel')).toBe('external noopener');
+      expect(link.getAttribute('target')).toBe('_blank');
+      expect(link.getAttribute('aria-current')).toBe(current === undefined ? null : String(current));
+      expect(link.hasAttribute('data-selected')).toBe(current === true || current === 'page' || current === 'location');
+      expect(link.getAttribute('data-tone')).toBe(tone);
+      expect(link.getAttribute('aria-label')).toBe('設定');
+      expect(link.classList.contains('custom')).toBe(true);
+      expect(link.getAttribute('title')).toBe('設定へ');
+      expect(link.getAttribute('data-action')).toBe('settings');
+      expect(link.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+      expect(link.hasAttribute('aria-pressed')).toBe(false);
+      expect([...window.document.querySelector('[role="group"]')!.children].map(node => node.tagName)).toEqual(['BUTTON', 'A']);
+    }
+    for (const href of [undefined, null, '', ' ', 123]) {
+      const error = await container.renderToString(THeaderLink, { props: { href } }).catch((error: Error) => error.message);
+      expect(error).toContain('href');
+    }
+  } finally { await window.happyDOM.close(); }
+});
 
 // 実Astro部品に3つの子セクションと属性を渡し、静的HTMLにネイティブの意味を残す。
 test('Astroヘッダーは3領域と操作属性を静的HTMLへ出力する', async () => {

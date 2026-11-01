@@ -2,10 +2,69 @@ import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
 import { createSSRApp, h, nextTick, ref } from 'vue';
 import { renderToString } from '@vue/server-renderer';
-import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, headerTones, type HeaderSectionPosition } from 'tokiwagi-ui/vue';
+import { THeader, THeaderSection, THeaderButton, THeaderLink, TIcon, THeaderButtonGroup, headerTones, type HeaderSectionPosition } from 'tokiwagi-ui/vue';
 
 let window: Window;
 const globals = new Map<string, PropertyDescriptor | undefined>();
+
+// 公開リンクをSSRし、全tone・現在地とリンク属性、既定slot、混在グループを検証する。
+test('Vueヘッダーリンクはリンク属性と現在地を保持する', async () => {
+  for (const tone of headerTones) for (const current of [undefined, false, 'false', true, 'page', 'location'] as const) {
+    const host = document.createElement('div');
+    host.innerHTML = await renderToString(createSSRApp({ render: () => h(THeaderButtonGroup, { 'aria-label': '操作と移動' }, () => [
+      h(THeaderButton, {}, () => '操作'),
+      h(THeaderLink, { href: '/settings?q=予定#top', tone, 'aria-current': current, target: '_blank', rel: 'external opener',
+        iconOnly: true, 'aria-label': '設定', class: 'custom', id: 'settings', 'data-action': 'settings', title: '設定へ' }, () => h(TIcon, { name: 'setting' })),
+    ]) }));
+    const link = host.querySelector('a')!;
+    expect(link.getAttribute('href')).toBe('/settings?q=予定#top');
+    expect(link.getAttribute('rel')).toBe('external noopener');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('aria-current')).toBe(current === undefined ? null : String(current));
+    expect(link.hasAttribute('data-selected')).toBe(current === true || current === 'page' || current === 'location');
+    expect(link.getAttribute('data-tone')).toBe(tone);
+    expect(link.getAttribute('aria-label')).toBe('設定');
+    expect(link.classList.contains('custom')).toBe(true);
+    expect(link.getAttribute('title')).toBe('設定へ');
+    expect(link.getAttribute('data-action')).toBe('settings');
+    expect(link.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+    expect(link.hasAttribute('aria-pressed')).toBe(false);
+    expect([...host.querySelector('[role="group"]')!.children].map(node => node.tagName)).toEqual(['BUTTON', 'A']);
+  }
+  const warnings = spyOn(console, 'warn').mockImplementation(() => {});
+  try {
+    const error = await renderToString(createSSRApp({ render: () => h(THeaderLink, { href: ' ' }) })).catch((error: Error) => error.message);
+    expect(error).toContain('href');
+  } finally { warnings.mockRestore(); }
+});
+
+// SSRのaをhydrateし、外部からの属性更新で同じDOMとリンクのイベント対象を維持する。
+test('Vueヘッダーリンクはhydrate後もネイティブイベントと属性更新に対応する', async () => {
+  const href = ref('/settings'); const current = ref(false); const target = ref('_blank');
+  const clicked: EventTarget[] = [];
+  const page = { render: () => h(THeaderLink, { href: href.value, 'aria-current': current.value ? 'page' : false,
+    target: target.value, rel: 'opener external', onClick: (event: MouseEvent) => { event.preventDefault(); clicked.push(event.currentTarget!); },
+  }, () => '設定') };
+  const host = document.createElement('div'); host.innerHTML = await renderToString(createSSRApp(page)); document.body.append(host);
+  const link = host.querySelector('a')!;
+  const warnings = spyOn(console, 'warn').mockImplementation(() => {});
+  const errors = spyOn(console, 'error').mockImplementation(() => {});
+  const app = createSSRApp(page);
+  try {
+    app.mount(host); link.click(); expect(clicked).toEqual([link]);
+    expect(link.hasAttribute('data-selected')).toBe(false);
+    href.value = '#next'; current.value = true; target.value = '_self'; await nextTick();
+    expect(host.querySelector('a')).toBe(link);
+    expect(link.getAttribute('href')).toBe('#next');
+    expect(link.getAttribute('rel')).toBe('opener external');
+    expect(link.getAttribute('aria-current')).toBe('page');
+    expect(link.hasAttribute('data-selected')).toBe(true);
+    current.value = false; target.value = '_blank'; await nextTick();
+    expect(link.hasAttribute('data-selected')).toBe(false);
+    expect(link.getAttribute('rel')).toBe('external noopener');
+    expect(warnings).not.toHaveBeenCalled(); expect(errors).not.toHaveBeenCalled();
+  } finally { app.unmount(); warnings.mockRestore(); errors.mockRestore(); host.remove(); }
+});
 beforeAll(() => {
   window = new Window();
   for (const [key, value] of Object.entries({ window, document: window.document, HTMLElement: window.HTMLElement,
