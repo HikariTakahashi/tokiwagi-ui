@@ -31,6 +31,11 @@ for (const tone of headerTones) for (const disabled of [false, true]) {
   }
 }
 for (const position of headerSectionPositions) await render({ component: 'THeaderSection', tone: 'neutral', disabled: false, position });
+for (const tone of headerTones) for (const iconOnly of [false, true]) {
+  for (const current of [undefined, false, true, 'false', 'true', 'page', 'location', 'step', 'date', 'time'] as const) {
+    await render({ component: 'THeaderLink', tone, disabled: false, iconOnly, current });
+  }
+}
 for (const backgroundColor of headerBackgroundColors) {
   previews[headerBackgroundPreviewKey(backgroundColor)] = await container.renderToString(THeader, { props: { backgroundColor, class: 'tkw-header-sample' } });
 }

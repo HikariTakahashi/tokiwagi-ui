@@ -14,8 +14,8 @@ import { astroHeaderButtonPreviewHtml } from './astro-header-button-preview';
 import type { AstroIconPreviews } from './components/astro-preview';
 import { encodeStoryText, decodeStoryText, savedStoryText } from './story-text-args';
 
-// 実Astro部品の生成結果とReact合成例の操作順・名前を照合し、Controlsの全条件を静的Storybookへ収録する。
-test('Astroのヘッダー見本は状態195条件と背景93条件を収録し、Reactと同じ操作部品を表示する', async () => {
+// 実Astro部品の生成結果とReact合成例を照合し、リンクを含むControlsの全条件を静的Storybookへ収録する。
+test('Astroのヘッダー見本はリンク128条件・既存195条件と背景93条件を収録する', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'tkw-header-test-'));
   const window = new Window();
   try {
@@ -26,7 +26,7 @@ test('Astroのヘッダー見本は状態195条件と背景93条件を収録し�
     const error = await new Response(process.stderr).text();
     expect(await process.exited, error).toBe(0);
     const previews = JSON.parse(await readFile(output, 'utf8')) as AstroHeaderPreviews;
-    expect(Object.keys(previews)).toHaveLength(288);
+    expect(Object.keys(previews)).toHaveLength(416);
     const previous = Object.getOwnPropertyDescriptor(globalThis, 'document');
     Object.defineProperty(globalThis, 'document', { configurable: true, value: window.document });
     try {
@@ -48,6 +48,20 @@ test('Astroのヘッダー見本は状態195条件と背景93条件を収録し�
       expect(host.querySelectorAll('.tkw-header-section')).toHaveLength(1);
       expect(host.querySelector('.tkw-header-section')?.getAttribute('data-position')).toBe(position);
       expect(host.textContent?.trim()).toBe('セクション');
+    }
+    for (const tone of headerTones) for (const iconOnly of [false, true]) {
+      for (const current of [undefined, false, true, 'false', 'true', 'page', 'location', 'step', 'date', 'time'] as const) {
+        const options = { component: 'THeaderLink' as const, tone, disabled: false, iconOnly, current };
+        const signature = (html: string) => {
+          const host = window.document.createElement('div'); host.innerHTML = html;
+          const link = host.querySelector('a')!;
+          return { href: link.getAttribute('href'), current: link.getAttribute('aria-current'),
+            selected: link.hasAttribute('data-selected'), iconOnly: link.hasAttribute('data-icon-only'),
+            tone: link.getAttribute('data-tone'), text: link.textContent?.trim(), label: link.getAttribute('aria-label'),
+            icons: link.querySelectorAll('svg').length };
+        };
+        expect(signature(previews[headerPreviewKey(options)]!)).toEqual(signature(renderToStaticMarkup(ReactHeaderPreview(options))));
+      }
     }
     const signatures = (html: string) => {
       const host = window.document.createElement('div'); host.innerHTML = html;
@@ -80,6 +94,11 @@ test('ボタンの文言はStorybookのURLから元の文字列へ復元でき�
     if (text !== '操作') expect(decodeStoryText(code)).toBe(text);
   }
   for (const code of [undefined, 123, 'u-110000', 'u-61--62', '<script>']) expect(decodeStoryText(code)).toBeUndefined();
+  for (const href of ['https://example.com/?q=予定&view=月#top', '/settings?a=1;b=2', '#本文', '', '  ']) {
+    const code = encodeStoryText(href, '#header-link-target');
+    expect(savedStoryText(`?args=hrefcode:${code};textcode:u-61`, 'href')).toBe(href);
+    expect(savedStoryText(`?args=hrefcode:${code};textcode:u-61`)).toBe('a');
+  }
 });
 
 // 実Astroテンプレートに任意の文言・全アイコンを組み合わせ、表示形式、読み上げ名、HTML安全性、ID分離を確認する。
@@ -122,6 +141,28 @@ test('Astroのボタン見本は3表示形式と全アイコン・任意テキ�
       const options = { component: 'THeaderButton' as const, tone: 'neutral' as const, disabled: false, content: 'icon' as const, text: '操作名', icon };
       expect(signature(astroHeaderButtonPreviewHtml(headers, icons, options, 'header-all-icons')))
         .toEqual(signature(renderToStaticMarkup(ReactHeaderPreview(options))));
+    }
+    const linkSignature = (html: string) => {
+      const host = document.createElement('div'); host.innerHTML = html;
+      const link = host.querySelector('a')!;
+      return { href: link.getAttribute('href'), target: link.getAttribute('target'), rel: link.getAttribute('rel'),
+        text: link.textContent?.trim(), label: link.getAttribute('aria-label'), current: link.getAttribute('aria-current'),
+        selected: link.hasAttribute('data-selected'), iconOnly: link.hasAttribute('data-icon-only'),
+        icons: [...link.querySelectorAll('svg')].map(svg => svg.getAttribute('width')), injected: host.querySelectorAll('script,img').length };
+    };
+    for (const content of ['text', 'icon', 'icon-text'] as const) for (const target of ['_self', '_blank']) {
+      for (const href of ['/settings?q=予定#top', '#本文', 'https://example.com/?q="<img src=x>"&a=1', '', '  ']) {
+        const options = { component: 'THeaderLink' as const, tone: 'blue' as const, disabled: false, content,
+          text: '<img src=x> 設定📅', icon: 'moon' as const, href, target, current: 'page' as const };
+        const html = astroHeaderButtonPreviewHtml(headers, icons, options, 'link-example');
+        expect(linkSignature(html)).toEqual(linkSignature(renderToStaticMarkup(ReactHeaderPreview(options))));
+        expect(linkSignature(html).injected).toBe(0);
+      }
+    }
+    for (const icon of iconNames) {
+      const options = { component: 'THeaderLink' as const, tone: 'neutral' as const, disabled: false, content: 'icon' as const, icon };
+      const html = astroHeaderButtonPreviewHtml(headers, icons, options, 'link-all-icons');
+      expect(linkSignature(html)).toEqual(linkSignature(renderToStaticMarkup(ReactHeaderPreview(options))));
     }
     const options = { component: 'THeaderButton' as const, tone: 'neutral' as const, disabled: false, content: 'icon' as const, icon: 'moon' as const };
     const host = document.createElement('div');

@@ -1,6 +1,6 @@
 ---
-import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/astro';
-import { headerButtonContent, headerButtonText, type HeaderPreviewOptions } from '../header-preview';
+import { THeader, THeaderSection, THeaderButton, THeaderLink, THeaderButtonGroup, TIcon } from 'tokiwagi-ui/astro';
+import { headerButtonContent, headerButtonText, headerLinkHref, type HeaderPreviewOptions } from '../header-preview';
 type Props = HeaderPreviewOptions;
 const { component, tone, disabled, selected, view = 'month', icon = 'share', position = 'left' } = Astro.props;
 const content = headerButtonContent(Astro.props);
@@ -9,6 +9,11 @@ const common = { tone, disabled };
 ---
 {component === 'THeaderSection' ? (
   <THeader class="tkw-header-sample"><THeaderSection position={position}>セクション</THeaderSection></THeader>
+) : component === 'THeaderLink' ? (
+  <THeaderLink tone={tone} href={headerLinkHref(Astro.props)} target={Astro.props.target} aria-current={Astro.props.current}
+    iconOnly={content === 'icon'} aria-label={content === 'icon' ? text : undefined}>
+    {content !== 'text' && <TIcon name={icon} />}{content !== 'icon' && text}
+  </THeaderLink>
 ) : component === 'THeaderButton' ? (
   <THeaderButton {...common} iconOnly={content === 'icon'} selected={selected} aria-label={content === 'icon' ? text : undefined}>
     {content !== 'text' && <TIcon name={icon} />}{content !== 'icon' && text}
