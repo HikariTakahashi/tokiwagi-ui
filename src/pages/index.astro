@@ -22,7 +22,7 @@ import { renderIconSvg } from '../lib/icon-assets';
         <TBrand />
       </THeaderSection>
       <THeaderSection position="right">
-        <nav class="flex" aria-label="ページ内ナビゲーション">
+        <nav class="flex" aria-label="ページ内ナビゲーション" data-section-navigation>
           <THeaderLink href="#principles">デザインの考え方</THeaderLink>
           <THeaderLink href="#foundations">基盤</THeaderLink>
           <THeaderLink href="http://localhost:6006/" target="_blank" rel="noopener noreferrer">Storybook <span aria-hidden="true">↗</span></THeaderLink>
@@ -71,6 +71,12 @@ import { renderIconSvg } from '../lib/icon-assets';
     <footer><a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><TBrand /></a><span>Color with purpose, meaning with clarity.</span><a href="#top">ページの先頭へ ↑</a></footer>
   </body>
 </html>
+
+<script>
+  import { initializeSectionNavigation } from '../lib/section-navigation';
+
+  initializeSectionNavigation(document, window);
+</script>
 
 <style>
   :root { background: var(--tkw-color-neutral-50); color: var(--tkw-color-neutral-900); color-scheme: light; font-synthesis: none; }
