@@ -2,7 +2,7 @@
 
 ## MIT対象
 
-リポジトリ直下の[LICENSE](LICENSE)は、Hikari Takahashiが権利を保有するコード・関連文書のうち、以下のブランド除外と第三者著作物を除いたものに適用します。TIconのReact・Vue・Astro実装、汎用SVG329種（`icons/logo/` を除く）、カラートークンとTailwindテーマ、共通処理、一般の開発・資料コードを含みます。
+リポジトリ直下の[LICENSE](LICENSE)は、Hikari Takahashiが権利を保有するコード・関連文書のうち、以下のブランド除外と第三者著作物を除いたものに適用します。TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupのReact・Vue・Astro実装、汎用SVG329種（`icons/logo/` を除く）、カラートークンとTailwindテーマ、共通処理、一般の開発・資料コードを含みます。
 
 著作権表示は `Copyright (c) 2026 Hikari Takahashi` です。MIT対象は商用利用・改変・再配布が可能で、著作権表示とライセンス文を保持する必要があります。無保証・免責などの正式な条件はLICENSEの全文に従います。本書はMIT本文を変更するものではありません。
 

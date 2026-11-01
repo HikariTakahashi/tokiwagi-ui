@@ -1,23 +1,29 @@
 import type { HeaderTone, HeaderSectionPosition } from '../lib/header';
 import type { HeaderBackgroundColor } from '../lib/header-background';
 import type { IconName } from '../lib/icon-sources';
+import type { HeaderLinkCurrent } from '../lib/header-link';
 
 export type HeaderButtonContent = 'text' | 'icon' | 'icon-text';
 
-export type HeaderComponent = 'THeader' | 'THeaderButton' | 'THeaderButtonGroup' | 'THeaderSection';
+export type HeaderComponent = 'THeader' | 'THeaderButton' | 'THeaderLink' | 'THeaderButtonGroup' | 'THeaderSection';
 export type HeaderPreviewOptions = {
   tone: HeaderTone; disabled: boolean; backgroundColor?: HeaderBackgroundColor;
   iconOnly?: boolean; selected?: boolean; view?: 'year' | 'month' | 'week';
   position?: HeaderSectionPosition; content?: HeaderButtonContent; text?: string; icon?: IconName;
-} & ({ component: 'THeader' } | { component: 'THeaderButton' } | { component: 'THeaderButtonGroup' } | { component: 'THeaderSection' });
+  href?: string; target?: string; current?: HeaderLinkCurrent;
+} & ({ component: 'THeader' } | { component: 'THeaderButton' } | { component: 'THeaderLink' } | { component: 'THeaderButtonGroup' } | { component: 'THeaderSection' });
 export type AstroHeaderPreviews = Record<string, string>;
 export function headerButtonContent(options: HeaderPreviewOptions): HeaderButtonContent {
   return options.content ?? (options.iconOnly ? 'icon' : 'icon-text');
 }
 export function headerButtonText(options: HeaderPreviewOptions): string {
-  return options.text?.trim() ? options.text : '操作';
+  return options.text?.trim() ? options.text : options.component === 'THeaderLink' ? 'リンク' : '操作';
+}
+export function headerLinkHref(options: HeaderPreviewOptions): string {
+  return options.href?.trim() ? options.href : '#header-link-target';
 }
 export function headerPreviewKey(options: HeaderPreviewOptions) {
+  if (options.component === 'THeaderLink') return `THeaderLink:${options.tone}:${headerButtonContent(options) === 'icon'}:${options.current ?? 'unset'}`;
   if (options.component === 'THeaderSection') return `THeaderSection:${options.position ?? 'left'}`;
   const iconOnly = options.component === 'THeaderButton' ? headerButtonContent(options) === 'icon' : options.iconOnly ?? false;
   return [options.component, options.tone, options.disabled, iconOnly, options.selected ?? 'unset', options.view ?? 'month'].join(':');
@@ -33,13 +39,18 @@ export function renderHeaderExample<Node>(options: HeaderPreviewOptions, create:
   const group = (label: string, children: Node[]) => create('THeaderButtonGroup', { 'aria-label': label }, children);
   const views = () => group('カレンダーの表示形式', (['year', 'month', 'week'] as const).map((view, i) =>
     button([['年', '月', '週'][i]!], { selected: (options.view ?? 'month') === view })));
-  if (options.component === 'THeaderButton') {
+  if (options.component === 'THeaderButton' || options.component === 'THeaderLink') {
     const content = headerButtonContent(options);
     const text = headerButtonText(options);
-    return button([
+    const children = [
       ...(content === 'text' ? [] : [icon(options.icon ?? 'share')]),
       ...(content === 'icon' ? [] : [text]),
-    ], { iconOnly: content === 'icon', selected: options.selected, ...(content === 'icon' ? { 'aria-label': text } : {}) });
+    ];
+    const attributes = { iconOnly: content === 'icon', ...(content === 'icon' ? { 'aria-label': text } : {}) };
+    if (options.component === 'THeaderLink') return create('THeaderLink', {
+      tone: options.tone, href: headerLinkHref(options), target: options.target, 'aria-current': options.current, ...attributes,
+    }, children);
+    return button(children, { ...attributes, selected: options.selected });
   }
   if (options.component === 'THeaderButtonGroup') return views();
   if (options.component === 'THeaderSection') return create('THeader', { className: 'tkw-header-sample' }, [

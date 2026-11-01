@@ -1,6 +1,6 @@
 # コンポーネントの使い方
 
-本ページの利用例はMIT対象のTIcon・THeader・THeaderSection・THeaderButton・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
+本ページの利用例はMIT対象のTIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
 
 ## 導入方法と対象環境
 
@@ -225,14 +225,15 @@ Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コ�
 
 ## ヘッダー共通部品
 
-React・Vue・Astroの公開入口からTHeader・THeaderSection・THeaderButton・THeaderButtonGroupと、それぞれのProps型、HeaderTone・headerTones・HeaderSectionPosition・HeaderBackgroundColor・headerBackgroundColorsを利用できます。利用側で `import 'tokiwagi-ui/header.css'` を一度追加してください。このCSSは必要なカラー・ニュートラル・書体トークンを読み込みます。Tailwind、Preflight、アプリのグローバルな要素リセットは不要です。
+React・Vue・Astroの公開入口からTHeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupと、それぞれのProps型、HeaderTone・headerTones・HeaderSectionPosition・HeaderBackgroundColor・headerBackgroundColorsを利用できます。利用側で `import 'tokiwagi-ui/header.css'` を一度追加してください。このCSSは必要なカラー・ニュートラル・書体トークンを読み込みます。Tailwind、Preflight、アプリのグローバルな要素リセットは不要です。
 
 | 部品 | API・既定値 |
 | --- | --- |
 | THeader | Reactはchildren、Vue/Astroは既定slotにTHeaderSectionを配置。scrollLabelは既定「ヘッダー操作」。backgroundColorは全93トークン名、既定`--tkw-color-neutral-0` |
 | THeaderSection | positionはleft / center / rightの必須指定。children／既定slotに内容を配置 |
 | THeaderButton | toneはneutral / green / teal / blue / violet / rose / coral / amber、既定neutral。iconOnly・disabledは既定false。selectedは既定未指定。typeは既定button |
-| THeaderButtonGroup | children／既定slotにTHeaderButtonを直接配置。aria-labelまたはaria-labelledbyでグループ名を指定 |
+| THeaderLink | hrefは必須。tone・iconOnlyはTHeaderButtonと共通。現在地はaria-current。target=_blankではrelにnoopenerを補完 |
+| THeaderButtonGroup | children／既定slotにTHeaderButton・THeaderLinkを直接配置。aria-labelまたはaria-labelledbyでグループ名を指定 |
 
 ネイティブ属性、aria-*、data-*、className（React）／class（Vue・Astro）を対応する外側の要素へ渡します。React・Vueはネイティブイベントを接続できます。tone・iconOnly・selectedはDOMへそのまま転送せず表示状態に変換し、selectedを明示したときだけaria-pressedを設定します。selectedとaria-pressedの両方を渡した場合はselectedが優先します。グループのroleはgroupに固定します。不正なtone・type・boolean型・positionは描画時に日本語エラーで拒否します。positionはDOM属性に直接転送せず、配置を示すdata-positionに変換します。
 
@@ -242,7 +243,7 @@ backgroundColorは`--tkw-color-primary-blue-subtle`や`--tkw-color-secondary-nav
 
 THeaderの直下にTHeaderSectionをleft→center→rightの順で配置します。各位置は1つまでで、省略できます。左右は内容幅を取り、中央は残り幅の中央へ内容を揃えます。中央がなくても右側は右端へ、中央だけなら全幅の中央へ配置します。CSSでDOM順やフォーカス順を変更しません。従来のstart／end propsと名前付きslotは廃止し、この構成へ統一しました。
 
-ヘッダーは高さ36pxの1行表示です。幅が不足した場合は内部だけを横スクロールさせます。スクロール領域はキーボードでも操作できます。長いタイトルの省略、リンク、メニューの表示、日付計算、保存、固定配置は利用側の責任です。THeaderButtonは通常のbutton操作を使い、グループ内に独自の矢印キー制御を追加しません。
+ヘッダーは高さ36pxの1行表示です。幅が不足した場合は内部だけを横スクロールさせます。スクロール領域はキーボードでも操作できます。長いタイトルの省略、リンク先の決定、メニューの表示、日付計算、保存、固定配置は利用側の責任です。THeaderButtonは通常のbutton操作を使い、グループ内に独自の矢印キー制御を追加しません。
 
 React:
 
@@ -316,3 +317,50 @@ import 'tokiwagi-ui/header.css';
 ```
 
 Astroは静的HTMLを出力します。操作は利用側のscriptでdata-actionなどにイベントを接続してください。React/VueのコールバックをAstroのHTML属性に渡す方式ではありません。React・VueはSSRとハイドレーションを利用でき、ヘッダー自体はIDを自動生成しません。aria-controlsなどで使うIDは利用側で一意に指定してください。
+
+
+### ヘッダーリンク
+
+THeaderLinkはhrefを持つa要素です。hrefは相対URL・絶対URL・フラグメントに対応し、未指定・空文字・空白のみは日本語エラーになります。toneは既定neutral、iconOnlyは既定falseです。アイコンのみではaria-labelまたはaria-labelledbyを指定してください。現在地は利用側がaria-currentで指定し、page・locationなどで背景と下線を表示します。selected・disabledは提供しません。
+
+ネイティブのリンク属性・class・data属性・aria属性を転送します。targetが_blankの場合、relからopenerを除き、他の値を保持してnoopenerを補完します。noreferrerは自動追加しません。Tab・Enter・修飾キー・中央クリック・右クリックによる標準のリンク操作を維持します。React・Vueはネイティブイベントを転送し、Astroは利用側scriptで接続します。ルーター連携や現在URLの自動判定は利用側の責任です。
+
+React:
+
+```tsx
+import { THeaderLink, TIcon } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/header.css';
+
+<THeaderLink href="/calendar" aria-current="page">カレンダー</THeaderLink>
+<THeaderLink href="/settings" iconOnly aria-label="設定"><TIcon name="setting" /></THeaderLink>
+<THeaderLink href="https://example.com/help" target="_blank">ヘルプ（別タブ）</THeaderLink>
+```
+
+Vue:
+
+```vue
+<script setup lang="ts">
+import { THeaderLink, TIcon } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/header.css';
+</script>
+
+<template>
+  <THeaderLink href="/calendar" aria-current="page">カレンダー</THeaderLink>
+  <THeaderLink href="/settings" icon-only aria-label="設定"><TIcon name="setting" /></THeaderLink>
+  <THeaderLink href="https://example.com/help" target="_blank">ヘルプ（別タブ）</THeaderLink>
+</template>
+```
+
+Astro:
+
+```astro
+---
+import { THeaderLink, TIcon } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/header.css';
+---
+<THeaderLink href="/calendar" aria-current="page">カレンダー</THeaderLink>
+<THeaderLink href="/settings" iconOnly aria-label="設定"><TIcon name="setting" /></THeaderLink>
+<THeaderLink href="https://example.com/help" target="_blank">ヘルプ（別タブ）</THeaderLink>
+```
+
+THeaderSection、THeaderButtonGroup内へ直接配置できます。グループ内ではTHeaderButtonと混在しても境界線が揃います。SSR・ハイドレーションを使う場合は、サーバーとクライアントで同じhref・aria-current・targetを指定してください。リンク自体はIDや遷移処理を生成しません。

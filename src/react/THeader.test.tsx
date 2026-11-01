@@ -2,8 +2,65 @@ import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { act } from './test-act';
-import { THeader, THeaderSection, THeaderButton, THeaderButtonGroup, headerTones, type THeaderButtonProps, type THeaderSectionProps, type HeaderSectionPosition } from 'tokiwagi-ui/react';
+import { THeader, THeaderSection, THeaderButton, THeaderLink, TIcon, THeaderButtonGroup, headerTones, type THeaderButtonProps, type THeaderSectionProps, type HeaderSectionPosition } from 'tokiwagi-ui/react';
 import 'tokiwagi-ui/header.css';
+
+// 公開リンクを全tone・現在地でSSRし、属性・装飾アイコン・混在グループのDOM順を保持する。
+test('Reactヘッダーリンクはリンク属性と現在地を保持する', () => {
+  for (const tone of headerTones) for (const current of [undefined, false, 'false', true, 'page', 'location'] as const) {
+    const local = new Window();
+    local.document.body.innerHTML = renderToStaticMarkup(<THeaderButtonGroup aria-label="操作と移動">
+      <THeaderButton>操作</THeaderButton>
+      <THeaderLink href="/settings?q=予定#top" tone={tone} aria-current={current} target="_blank" rel="external opener"
+        iconOnly aria-label="設定" className="custom" id="settings" data-action="settings" title="設定へ"><TIcon name="setting" /></THeaderLink>
+    </THeaderButtonGroup>);
+    const link = local.document.querySelector('a')!;
+    expect(link.getAttribute('href')).toBe('/settings?q=予定#top');
+    expect(link.getAttribute('rel')).toBe('external noopener');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('aria-current')).toBe(current === undefined ? null : String(current));
+    expect(link.hasAttribute('data-selected')).toBe(current === true || current === 'page' || current === 'location');
+    expect(link.getAttribute('data-tone')).toBe(tone);
+    expect(link.getAttribute('aria-label')).toBe('設定');
+    expect(link.classList.contains('custom')).toBe(true);
+    expect(link.getAttribute('title')).toBe('設定へ');
+    expect(link.getAttribute('data-action')).toBe('settings');
+    expect(link.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+    expect(link.hasAttribute('aria-pressed')).toBe(false);
+    expect([...local.document.querySelector('[role="group"]')!.children].map(node => node.tagName)).toEqual(['BUTTON', 'A']);
+    void local.happyDOM.close();
+  }
+  expect(() => renderToStaticMarkup(<THeaderLink href=" ">設定</THeaderLink>)).toThrow('href');
+});
+
+// SSRのaを再利用してhydrateし、href・現在地・target更新とリンク要素のイベント対象を確認する。
+test('Reactヘッダーリンクはhydrate後もネイティブイベントと属性更新に対応する', async () => {
+  const clicked: EventTarget[] = [];
+  const page = (href = '/settings', current = false, target = '_blank') => <THeaderLink href={href}
+    aria-current={current ? 'page' : false} target={target} rel="opener external"
+    onClick={event => { event.preventDefault(); clicked.push(event.currentTarget!); }}>設定</THeaderLink>;
+  const host = document.createElement('div'); host.innerHTML = renderToString(page()); document.body.append(host);
+  const link = host.querySelector('a')!;
+  const recovered: unknown[] = [];
+  const errors = spyOn(console, 'error').mockImplementation(() => {});
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    await act(async () => { root = hydrateRoot(host, page(), { onRecoverableError: error => recovered.push(error) }); });
+    await act(async () => { link.click(); });
+    expect(clicked).toEqual([link]);
+    expect(link.hasAttribute('data-selected')).toBe(false);
+    await act(async () => { root!.render(page('#next', true, '_self')); });
+    expect(host.querySelector('a')).toBe(link);
+    expect(link.getAttribute('href')).toBe('#next');
+    expect(link.getAttribute('rel')).toBe('opener external');
+    expect(link.getAttribute('aria-current')).toBe('page');
+    expect(link.hasAttribute('data-selected')).toBe(true);
+    await act(async () => { root!.render(page()); });
+    expect(link.hasAttribute('data-selected')).toBe(false);
+    expect(link.getAttribute('rel')).toBe('external noopener');
+    expect(recovered).toEqual([]); expect(errors).not.toHaveBeenCalled();
+  } finally { if (root) await act(async () => { root!.unmount(); }); errors.mockRestore(); host.remove(); }
+});
 
 let window: Window;
 let hydrateRoot: typeof import('react-dom/client')['hydrateRoot'];

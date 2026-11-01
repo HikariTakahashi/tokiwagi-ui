@@ -20,10 +20,10 @@ async function generate(): Promise<AstroHeaderPreviews> {
 }
 export function astroHeaderPreviewsPlugin(): Plugin {
   const dependencies = ['scripts/render-astro-header-previews.ts', 'src/stories/fixtures/HeaderPreview.astro',
-    'src/stories/header-preview.ts', 'src/stories/astro-header-preview.ts', 'src/lib/header-background.ts', 'src/lib/palette.ts',
+    'src/stories/header-preview.ts', 'src/stories/astro-header-preview.ts', 'src/lib/header-link.ts', 'src/lib/header-background.ts', 'src/lib/palette.ts',
     ...['colors', 'secondary', 'semantic', 'neutrals'].map(name => `tokens/${name}.css`), 'src/lib/header.ts', 'src/lib/icon-sources.ts', 'src/lib/icon-assets.ts',
     'src/astro/index.ts', 'src/astro/TIcon.astro', 'src/astro/TIconProps.ts',
-    ...['THeader', 'THeaderButton', 'THeaderButtonGroup', 'THeaderSection'].flatMap(name => [`src/astro/${name}.astro`, `src/astro/${name}Props.ts`]),
+    ...['THeader', 'THeaderButton', 'THeaderLink', 'THeaderButtonGroup', 'THeaderSection'].flatMap(name => [`src/astro/${name}.astro`, `src/astro/${name}Props.ts`]),
     ...['menu', 'dashboard', 'chevron-bottom', 'edit', 'calendar-check', 'share', 'chevron-left', 'chevron-right'].map(name => `icons/${name}/${name}.svg`),
   ].map(path => root + path);
   return astroPreviewDataPlugin('headers', generate, dependencies);

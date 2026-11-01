@@ -4,6 +4,7 @@ export { iconNames, isIconName, type IconName } from './icon-sources';
 export { TBrand, type TBrandProps } from './TBrand';
 export { THeader, type THeaderProps } from './THeader';
 export { THeaderButton, type THeaderButtonProps } from './THeaderButton';
+export { THeaderLink, type THeaderLinkProps } from './THeaderLink';
 export { THeaderButtonGroup, type THeaderButtonGroupProps } from './THeaderButtonGroup';
 export { headerTones, type HeaderTone, type HeaderSectionPosition } from '../lib/header';
 export { THeaderSection, type THeaderSectionProps } from './THeaderSection';

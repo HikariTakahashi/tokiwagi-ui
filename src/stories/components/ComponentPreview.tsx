@@ -40,7 +40,7 @@ function VuePreview(args: ComponentPreviewProps) {
   useEffect(() => {
     const app = createApp({ render: () => {
       const value = props.value;
-      if (value.component === 'THeader' || value.component === 'THeaderButton' || value.component === 'THeaderButtonGroup' || value.component === 'THeaderSection') return vueHeaderPreview(value);
+      if (value.component === 'THeader' || value.component === 'THeaderButton' || value.component === 'THeaderLink' || value.component === 'THeaderButtonGroup' || value.component === 'THeaderSection') return vueHeaderPreview(value);
       if (value.component === 'TIcon') return h(VueTIcon, { name: value.name, size: value.size, color: value.color });
       if (value.component === 'TLogo') return h(VueTLogo, { size: value.size, decorative: value.decorative });
       return h(VueTBrand, { text: value.text, size: value.size });
@@ -58,10 +58,10 @@ function VuePreview(args: ComponentPreviewProps) {
 export function ComponentPreview(args: ComponentPreviewProps) {
   const id = useId();
   const prefix = `tkw-preview-astro-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
-  if (args.component === 'THeader' || args.component === 'THeaderButton' || args.component === 'THeaderButtonGroup' || args.component === 'THeaderSection') {
+  if (args.component === 'THeader' || args.component === 'THeaderButton' || args.component === 'THeaderLink' || args.component === 'THeaderButtonGroup' || args.component === 'THeaderSection') {
     if (args.framework === 'vue') return <VuePreview {...args} />;
     if (args.framework === 'react') return <ReactHeaderPreview {...args} />;
-    if (args.component === 'THeaderButton') return <AstroComponentPreview load={loadHeaderButtons}>{({ headers, icons }) =>
+    if (args.component === 'THeaderButton' || args.component === 'THeaderLink') return <AstroComponentPreview load={loadHeaderButtons}>{({ headers, icons }) =>
       <div style={{ display: 'inline-flex' }} dangerouslySetInnerHTML={{ __html: astroHeaderButtonPreviewHtml(headers, icons, args, prefix) }} />
     }</AstroComponentPreview>;
     return <AstroComponentPreview load={loadHeaders}>{previews => {

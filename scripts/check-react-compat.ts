@@ -35,7 +35,7 @@ for (const version of matrix) {
         target: 'ES2022', module: 'ESNext', moduleResolution: 'Bundler', jsx: 'react-jsx',
         strict: true, noEmit: true, types: ['bun', 'react', 'react-dom'],
       },
-      files: ['src/react/TIcon.typecheck.tsx', 'src/react/TLogo.typecheck.tsx', 'src/react/TBrand.typecheck.tsx', 'src/react/THeader.typecheck.tsx', 'raw-svg.d.ts'],
+      files: ['src/react/TIcon.typecheck.tsx', 'src/react/TLogo.typecheck.tsx', 'src/react/TBrand.typecheck.tsx', 'src/react/THeader.typecheck.tsx', 'src/react/THeaderLink.typecheck.tsx', 'raw-svg.d.ts'],
     }, null, 2));
     // 公開型の検証と、テスト用API（act等）の型検証を分けて診断する。
     await Bun.write(join(directory, 'tsconfig.tests.json'), JSON.stringify({
