@@ -1,6 +1,8 @@
 import { plugin } from 'bun';
 import { transform } from '@astrojs/compiler-rs';
 import { experimental_AstroContainer } from 'astro/container';
+import { headerBackgroundColors } from '../src/lib/header-background';
+import { headerBackgroundPreviewKey } from '../src/stories/astro-header-preview';
 import { headerTones, headerSectionPositions } from '../src/lib/header';
 import { headerPreviewKey, type HeaderPreviewOptions, type AstroHeaderPreviews } from '../src/stories/header-preview';
 
@@ -14,6 +16,7 @@ plugin({ name: 'astro-header-preview-compiler', setup(build) {
   }));
 } });
 const { default: Preview } = await import('../src/stories/fixtures/HeaderPreview.astro');
+const { THeader } = await import('../src/astro/index');
 const container = await experimental_AstroContainer.create();
 const previews: AstroHeaderPreviews = {};
 const render = async (props: HeaderPreviewOptions) => {
@@ -28,4 +31,7 @@ for (const tone of headerTones) for (const disabled of [false, true]) {
   }
 }
 for (const position of headerSectionPositions) await render({ component: 'THeaderSection', tone: 'neutral', disabled: false, position });
+for (const backgroundColor of headerBackgroundColors) {
+  previews[headerBackgroundPreviewKey(backgroundColor)] = await container.renderToString(THeader, { props: { backgroundColor, class: 'tkw-header-sample' } });
+}
 await Bun.write(output, JSON.stringify(previews));

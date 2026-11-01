@@ -40,7 +40,7 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
     ['TLogo', logo, ['framework', 'size', 'decorative']],
     ['TBrand', brand, ['framework', 'text', 'size']],
-    ['THeader', header, ['framework', 'tone', 'disabled', 'view']],
+    ['THeader', header, ['framework', 'backgroundColor', 'tone', 'disabled', 'view']],
     ['THeaderSection', headerSection, ['framework', 'position']],
     ['THeaderButton', headerButton, ['framework', 'tone', 'content', 'text', 'icon', 'selected', 'disabled']],
     ['THeaderButtonGroup', headerGroup, ['framework', 'tone', 'disabled', 'view']],

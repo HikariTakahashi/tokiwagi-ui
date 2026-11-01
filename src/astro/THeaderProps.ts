@@ -1,2 +1,3 @@
 import type { HTMLAttributes } from 'astro/types';
-export type THeaderProps = HTMLAttributes<'header'> & { scrollLabel?: string };
+import type { HeaderBackgroundColor } from '../lib/header-background';
+export type THeaderProps = HTMLAttributes<'header'> & { scrollLabel?: string; backgroundColor?: HeaderBackgroundColor };

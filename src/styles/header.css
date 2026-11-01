@@ -1,6 +1,8 @@
 /* Import once: tokiwagi-ui/header.css. No reset or framework runtime. */
 @import '../../tokens/neutrals.css';
 @import '../../tokens/colors.css';
+@import '../../tokens/secondary.css';
+@import '../../tokens/semantic.css';
 @import '../../tokens/typography.css';
 
 .tkw-header {
@@ -8,8 +10,8 @@
   width: 100%;
   min-width: 0;
   height: 36px;
-  color: var(--tkw-color-neutral-900);
-  background: var(--tkw-color-neutral-0);
+  color: var(--tkw-header-text, var(--tkw-color-neutral-900));
+  background: var(--tkw-header-background, var(--tkw-color-neutral-0));
   box-shadow: 0 1px 0 var(--tkw-color-neutral-200);
   font-family: var(--tkw-font-family-sans);
 }
@@ -22,7 +24,7 @@
 }
 .tkw-header__scroll::-webkit-scrollbar { display: none; }
 .tkw-header__scroll:focus-visible {
-  outline: 2px solid var(--tkw-color-neutral-900);
+  outline: 2px solid currentColor;
   outline-offset: -2px;
 }
 .tkw-header__content {
@@ -43,6 +45,7 @@
 .tkw-header-section[data-position="center"] { flex-grow: 1; min-width: 0; justify-content: center; }
 .tkw-header-section[data-position="right"] { margin-inline-start: auto; justify-content: flex-end; }
 .tkw-header-button {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-neutral, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-neutral-900);
   --tkw-header-hover: var(--tkw-color-neutral-100);
   --tkw-header-active: var(--tkw-color-neutral-200);
@@ -63,7 +66,7 @@
   border: 0;
   border-radius: 0;
   background: var(--tkw-color-neutral-0);
-  color: var(--tkw-header-foreground);
+  color: var(--tkw-header-normal-foreground);
   font-family: var(--tkw-font-family-sans);
   font-size: 14px;
   font-weight: 600;
@@ -72,8 +75,9 @@
   text-decoration: none;
   cursor: pointer;
 }
+.tkw-header .tkw-header-button { background: transparent; }
 .tkw-header-button[data-icon-only] { width: 36px; padding: 0; }
-.tkw-header-button[data-selected] { background: var(--tkw-header-selected); }
+.tkw-header-button[data-selected] { background: var(--tkw-header-selected); color: var(--tkw-header-foreground); }
 .tkw-header-button[data-selected]::after {
   content: '';
   position: absolute;
@@ -81,14 +85,14 @@
   height: 3px;
   background: var(--tkw-header-indicator);
 }
-.tkw-header-button:hover:not(:disabled) { background: var(--tkw-header-hover); }
-.tkw-header-button:active:not(:disabled) { background: var(--tkw-header-active); }
+.tkw-header-button:hover:not(:disabled) { background: var(--tkw-header-hover); color: var(--tkw-header-foreground); }
+.tkw-header-button:active:not(:disabled) { background: var(--tkw-header-active); color: var(--tkw-header-foreground); }
 .tkw-header-button:focus-visible {
   z-index: 1;
-  outline: 2px solid var(--tkw-header-foreground);
+  outline: 2px solid currentColor;
   outline-offset: -3px;
 }
-.tkw-header-button:disabled {
+.tkw-header-button:disabled, .tkw-header .tkw-header-button:disabled {
   color: var(--tkw-color-neutral-600);
   background: var(--tkw-color-neutral-50);
   cursor: not-allowed;
@@ -108,10 +112,11 @@
 .tkw-header-button-group + .tkw-header-button-group { border-inline-start: 0; }
 @media (forced-colors: active) {
   .tkw-header-button[data-selected]::after { background: Highlight; }
-  .tkw-header-button:disabled { color: GrayText; }
+  .tkw-header-button:disabled, .tkw-header .tkw-header-button:disabled { color: GrayText; }
 }
 
 .tkw-header-button[data-tone="green"] {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-green, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-green-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-green-subtle);
   --tkw-header-active: var(--tkw-color-primary-green);
@@ -120,6 +125,7 @@
 }
 
 .tkw-header-button[data-tone="teal"] {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-teal, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-teal-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-teal-subtle);
   --tkw-header-active: var(--tkw-color-primary-teal);
@@ -128,6 +134,7 @@
 }
 
 .tkw-header-button[data-tone="blue"] {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-blue, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-blue-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-blue-subtle);
   --tkw-header-active: var(--tkw-color-primary-blue);
@@ -136,6 +143,7 @@
 }
 
 .tkw-header-button[data-tone="violet"] {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-violet, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-violet-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-violet-subtle);
   --tkw-header-active: var(--tkw-color-primary-violet);
@@ -144,6 +152,7 @@
 }
 
 .tkw-header-button[data-tone="rose"] {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-rose, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-rose-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-rose-subtle);
   --tkw-header-active: var(--tkw-color-primary-rose);
@@ -152,6 +161,7 @@
 }
 
 .tkw-header-button[data-tone="coral"] {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-coral, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-coral-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-coral-subtle);
   --tkw-header-active: var(--tkw-color-primary-coral);
@@ -160,6 +170,7 @@
 }
 
 .tkw-header-button[data-tone="amber"] {
+  --tkw-header-normal-foreground: var(--tkw-header-readable-amber, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-amber-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-amber-subtle);
   --tkw-header-active: var(--tkw-color-primary-amber);

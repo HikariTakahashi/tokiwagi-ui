@@ -29,7 +29,7 @@ for (const version of matrix) {
       },
       overrides: { '@types/react': version.reactTypes },
     }, null, 2));
-    await Bun.write(join(directory, 'raw-svg.d.ts'), "declare module '*.svg?raw' { const source: string; export default source; }\n");
+    await Bun.write(join(directory, 'raw-svg.d.ts'), "declare module '*.css?raw' { const source: string; export default source; }\ndeclare module '*.svg?raw' { const source: string; export default source; }\n");
     await Bun.write(join(directory, 'tsconfig.json'), JSON.stringify({
       compilerOptions: {
         target: 'ES2022', module: 'ESNext', moduleResolution: 'Bundler', jsx: 'react-jsx',

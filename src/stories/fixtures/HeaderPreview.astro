@@ -20,7 +20,7 @@ const common = { tone, disabled };
     <THeaderButton {...common} selected={view === 'week'}>週</THeaderButton>
   </THeaderButtonGroup>
 ) : (
-  <THeader class="tkw-header-sample">
+  <THeader class="tkw-header-sample" backgroundColor={Astro.props.backgroundColor}>
     <THeaderSection position="left">
       <THeaderButton {...common} iconOnly aria-label="メニューを開く" aria-expanded="false"><TIcon name="menu" /></THeaderButton>
       <a href="#home" class="tkw-header-sample__brand" aria-label="TokiWa Calendar ホーム"><span class="tkw-header-sample__toki">Toki</span><span class="tkw-header-sample__wa">Wa</span> Calendar</a>

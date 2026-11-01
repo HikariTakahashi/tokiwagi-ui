@@ -99,8 +99,8 @@ test('Astroの公開入口にREADME・Storybook・React・Vueランタイムは�
     entrypoints: [new URL('./index.ts', import.meta.url).pathname],
     external: ['astro/compiler-runtime'],
     plugins: [{ name: 'astro-import-audit', setup(build) {
-      build.onResolve({ filter: /\.svg\?raw$/ }, args => ({ path: resolve(args.resolveDir, args.path.slice(0, -4)), namespace: 'raw-svg' }));
-      build.onLoad({ filter: /.*/, namespace: 'raw-svg' }, args => {
+      build.onResolve({ filter: /\.(svg|css)\?raw$/ }, args => ({ path: resolve(args.resolveDir, args.path.slice(0, -4)), namespace: 'raw-asset' }));
+      build.onLoad({ filter: /.*/, namespace: 'raw-asset' }, args => {
         loaded.push(args.path);
         return { contents: readFileSync(args.path, 'utf8'), loader: 'text' };
       });

@@ -7,3 +7,5 @@ export { THeaderButton, type THeaderButtonProps } from './THeaderButton';
 export { THeaderButtonGroup, type THeaderButtonGroupProps } from './THeaderButtonGroup';
 export { headerTones, type HeaderTone, type HeaderSectionPosition } from '../lib/header';
 export { THeaderSection, type THeaderSectionProps } from './THeaderSection';
+
+export { headerBackgroundColors, type HeaderBackgroundColor } from '../lib/header-background';
