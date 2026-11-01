@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import 'tokiwagi-ui/header.css';
+import { TBrand, THeader, THeaderLink, THeaderSection } from 'tokiwagi-ui/astro';
 import { colors } from '../lib/palette';
 import { iconsByName } from '../lib/icon-catalog';
 import { renderIconSvg } from '../lib/icon-assets';
@@ -15,14 +17,18 @@ import { renderIconSvg } from '../lib/icon-assets';
   </head>
   <body>
     <a class="skip-link" href="#main">本文へスキップ</a>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>tokiwagi<span class="brand-muted"> ui</span></span></a>
-      <nav aria-label="ページ内ナビゲーション">
-        <a href="#principles">デザインの考え方</a>
-        <a href="#foundations">基盤</a>
-        <a class="nav-storybook" href="http://localhost:6006/" target="_blank" rel="noopener noreferrer">Storybook <span aria-hidden="true">↗</span></a>
-      </nav>
-    </header>
+    <THeader class="sticky top-0 z-10" scrollLabel="サイトヘッダーナビゲーション">
+      <THeaderSection position="left">
+        <TBrand />
+      </THeaderSection>
+      <THeaderSection position="right">
+        <nav class="flex" aria-label="ページ内ナビゲーション" data-section-navigation>
+          <THeaderLink href="#principles">デザインの考え方</THeaderLink>
+          <THeaderLink href="#foundations">基盤</THeaderLink>
+          <THeaderLink href="http://localhost:6006/" target="_blank" rel="noopener noreferrer">Storybook <span aria-hidden="true">↗</span></THeaderLink>
+        </nav>
+      </THeaderSection>
+    </THeader>
 
     <main id="main">
       <section class="hero" id="top" aria-labelledby="hero-title">
@@ -62,31 +68,28 @@ import { renderIconSvg } from '../lib/icon-assets';
 
       <section class="closing section-shell" aria-labelledby="closing-title"><div><span class="section-kicker">START BUILDING</span><h2 id="closing-title">同じルールから、<br />新しい画面へ。</h2></div><div><p>Storybook を開き、色と用途を確かめながら実装を進めます。</p><a class="button-primary" href="http://localhost:6006/" target="_blank" rel="noopener noreferrer">Storybook を開く <span aria-hidden="true">↗</span></a></div></section>
     </main>
-    <footer><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>tokiwagi<span class="brand-muted"> ui</span></span></a><span>Color with purpose, meaning with clarity.</span><a href="#top">ページの先頭へ ↑</a></footer>
+    <footer><a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><TBrand /></a><span>Color with purpose, meaning with clarity.</span><a href="#top">ページの先頭へ ↑</a></footer>
   </body>
 </html>
+
+<script>
+  import { initializeSectionNavigation } from '../lib/section-navigation';
+
+  initializeSectionNavigation(document, window);
+</script>
 
 <style>
   :root { background: var(--tkw-color-neutral-50); color: var(--tkw-color-neutral-900); color-scheme: light; font-synthesis: none; }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 36px; }
   body { margin: 0; }
-  a { color: inherit; text-decoration: none; }
-  a:focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 5px; }
-  .skip-link { position: absolute; top: -100px; left: 16px; z-index: 10; padding: 10px 14px; background: white; }
+  :where(main, footer) a { color: inherit; text-decoration: none; }
+  :where(main, footer) a:focus-visible { outline: 3px solid var(--tkw-color-neutral-900); outline-offset: 5px; }
+  .skip-link { position: absolute; top: -100px; left: 16px; z-index: 20; padding: 10px 14px; background: white; }
   .skip-link:focus { top: 12px; }
-  .site-header, footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1480px; margin: auto; padding: 24px 4.5%; }
-  .site-header { min-height: 86px; border-bottom: 1px solid var(--tkw-color-neutral-200); }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 23px; font-weight: 760; letter-spacing: -.08em; white-space: nowrap; }
-  .brand-muted { color: var(--tkw-color-neutral-600); font-weight: 430; }
-  .brand-mark { display: grid; grid-template-columns: repeat(2, 7px); gap: 3px; transform: rotate(-12deg); }
-  .brand-mark i { width: 7px; height: 7px; border-radius: 2px; background: var(--tkw-color-primary-green); }
-  .brand-mark i:nth-child(2) { background: var(--tkw-color-primary-teal); }
-  .brand-mark i:nth-child(3) { background: var(--tkw-color-primary-rose); }
-  .brand-mark i:nth-child(4) { background: var(--tkw-color-primary-amber); }
-  nav { display: flex; align-items: center; flex-wrap: wrap; gap: clamp(16px, 3vw, 38px); font-size: 12px; }
-  nav a:hover, footer a:last-child:hover, .text-link:hover { text-decoration: underline; text-underline-offset: 5px; }
-  .nav-storybook { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; }
+  footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1480px; margin: auto; padding: 24px 4.5%; }
+  .brand { display: inline-flex; align-items: center; white-space: nowrap; }
+  footer a:last-child:hover, .text-link:hover { text-decoration: underline; text-underline-offset: 5px; }
   .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(36px, 6vw, 100px); max-width: 1480px; min-height: 650px; margin: auto; padding: 70px 4.5% 94px; }
   .eyebrow, .section-kicker { display: inline-flex; align-items: center; gap: 10px; color: var(--tkw-color-neutral-600); font-size: 10px; font-weight: 700; letter-spacing: .15em; }
   .eyebrow-line { width: 18px; height: 1px; background: var(--tkw-color-neutral-800); }
@@ -139,5 +142,5 @@ import { renderIconSvg } from '../lib/icon-assets';
   footer { border-top: 1px solid var(--tkw-color-neutral-200); color: var(--tkw-color-neutral-600); font-size: 11px; }
   footer .brand { color: var(--tkw-color-neutral-900); }
   @media (max-width: 850px) { .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 62px; } .hero-art { max-width: 700px; } .principles { grid-template-columns: 1fr; gap: 25px; } }
-  @media (max-width: 620px) { .site-header { align-items: flex-start; flex-direction: column; gap: 20px; } nav { gap: 17px; } .hero { padding-top: 45px; } h1 { font-size: clamp(24px, 6.7vw, 42px); } .art-grid { min-height: 230px; } .art-card { padding: 8px 4px; } .art-name, .art-index { font-size: 8px; } .section-shell { padding-top: 70px; padding-bottom: 70px; } .foundations-heading, .closing { align-items: flex-start; flex-direction: column; } .foundations-heading p { margin-bottom: 0; } .foundation-grid { grid-template-columns: 1fr; } .closing { margin-bottom: 0; } footer { flex-wrap: wrap; } }
+  @media (max-width: 620px) { .hero { padding-top: 45px; } h1 { font-size: clamp(24px, 6.7vw, 42px); } .art-grid { min-height: 230px; } .art-card { padding: 8px 4px; } .art-name, .art-index { font-size: 8px; } .section-shell { padding-top: 70px; padding-bottom: 70px; } .foundations-heading, .closing { align-items: flex-start; flex-direction: column; } .foundations-heading p { margin-bottom: 0; } .foundation-grid { grid-template-columns: 1fr; } .closing { margin-bottom: 0; } footer { flex-wrap: wrap; } }
 </style>
