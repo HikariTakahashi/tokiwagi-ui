@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { TBrand } from 'tokiwagi-ui/astro';
 import { colors } from '../lib/palette';
 import { iconsByName } from '../lib/icon-catalog';
 import { renderIconSvg } from '../lib/icon-assets';
@@ -16,7 +17,7 @@ import { renderIconSvg } from '../lib/icon-assets';
   <body>
     <a class="skip-link" href="#main">本文へスキップ</a>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>tokiwagi<span class="brand-muted"> ui</span></span></a>
+      <a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><TBrand /></a>
       <nav aria-label="ページ内ナビゲーション">
         <a href="#principles">デザインの考え方</a>
         <a href="#foundations">基盤</a>
@@ -62,7 +63,7 @@ import { renderIconSvg } from '../lib/icon-assets';
 
       <section class="closing section-shell" aria-labelledby="closing-title"><div><span class="section-kicker">START BUILDING</span><h2 id="closing-title">同じルールから、<br />新しい画面へ。</h2></div><div><p>Storybook を開き、色と用途を確かめながら実装を進めます。</p><a class="button-primary" href="http://localhost:6006/" target="_blank" rel="noopener noreferrer">Storybook を開く <span aria-hidden="true">↗</span></a></div></section>
     </main>
-    <footer><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>tokiwagi<span class="brand-muted"> ui</span></span></a><span>Color with purpose, meaning with clarity.</span><a href="#top">ページの先頭へ ↑</a></footer>
+    <footer><a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><TBrand /></a><span>Color with purpose, meaning with clarity.</span><a href="#top">ページの先頭へ ↑</a></footer>
   </body>
 </html>
 
@@ -77,13 +78,7 @@ import { renderIconSvg } from '../lib/icon-assets';
   .skip-link:focus { top: 12px; }
   .site-header, footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1480px; margin: auto; padding: 24px 4.5%; }
   .site-header { min-height: 86px; border-bottom: 1px solid var(--tkw-color-neutral-200); }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 23px; font-weight: 760; letter-spacing: -.08em; white-space: nowrap; }
-  .brand-muted { color: var(--tkw-color-neutral-600); font-weight: 430; }
-  .brand-mark { display: grid; grid-template-columns: repeat(2, 7px); gap: 3px; transform: rotate(-12deg); }
-  .brand-mark i { width: 7px; height: 7px; border-radius: 2px; background: var(--tkw-color-primary-green); }
-  .brand-mark i:nth-child(2) { background: var(--tkw-color-primary-teal); }
-  .brand-mark i:nth-child(3) { background: var(--tkw-color-primary-rose); }
-  .brand-mark i:nth-child(4) { background: var(--tkw-color-primary-amber); }
+  .brand { display: inline-flex; align-items: center; white-space: nowrap; }
   nav { display: flex; align-items: center; flex-wrap: wrap; gap: clamp(16px, 3vw, 38px); font-size: 12px; }
   nav a:hover, footer a:last-child:hover, .text-link:hover { text-decoration: underline; text-underline-offset: 5px; }
   .nav-storybook { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; }
