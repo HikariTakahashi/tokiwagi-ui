@@ -1,0 +1,14 @@
+---
+import type { TTextProps } from './TTextProps';
+import { textState } from '../lib/text';
+interface Props extends TTextProps {}
+const { as, size, weight, lineHeight, tone, align, truncate, lineClamp, whiteSpace, inherit, italic, decoration,
+  class: className, style, ...attributes } = Astro.props;
+const state = textState({ as, size, weight, lineHeight, tone, align, truncate, lineClamp, whiteSpace, inherit, italic, decoration });
+const Tag = state.tag;
+const textStyle = Object.entries(state.style).map(([key, value]) => `${key}:${value}`).join(';');
+const mergedStyle = typeof style === 'object' && style !== null
+  ? { ...state.style, ...style }
+  : `${textStyle};${style ?? ''}`;
+---
+<Tag {...attributes} {...state.attributes} class:list={['tkw-text', className]} style={mergedStyle}><slot /></Tag>
