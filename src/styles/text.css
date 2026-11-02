@@ -1,0 +1,55 @@
+/* Import once: tokiwagi-ui/text.css. Styles are scoped to TText. */
+@import '../../tokens/neutrals.css';
+@import '../../tokens/semantic.css';
+@import '../../tokens/typography.css';
+
+.tkw-text {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font-family: var(--tkw-font-family-sans);
+  font-size: var(--tkw-text-size-base);
+  font-weight: var(--tkw-text-weight);
+  line-height: var(--tkw-text-line-height);
+  font-style: normal;
+  overflow-wrap: anywhere;
+}
+.tkw-text[data-inherit] { font-family: inherit; }
+.tkw-text[data-tone='default'] { color: var(--tkw-color-neutral-900); }
+.tkw-text[data-tone='muted'] { color: var(--tkw-color-neutral-600); }
+.tkw-text[data-tone='inherit'] { color: inherit; }
+.tkw-text[data-tone='success'] { color: var(--tkw-color-semantic-success-on-subtle); }
+.tkw-text[data-tone='warning'] { color: var(--tkw-color-semantic-warning-on-subtle); }
+.tkw-text[data-tone='error'] { color: var(--tkw-color-semantic-error-on-subtle); }
+.tkw-text[data-tone='info'] { color: var(--tkw-color-semantic-info-on-subtle); }
+.tkw-text[data-align='start'] { text-align: start; }
+.tkw-text[data-align='center'] { text-align: center; }
+.tkw-text[data-align='end'] { text-align: end; }
+.tkw-text[data-white-space='normal'] { white-space: normal; }
+.tkw-text[data-white-space='pre-line'] { white-space: pre-line; }
+.tkw-text[data-white-space='pre-wrap'] { white-space: pre-wrap; }
+.tkw-text[data-italic] { font-style: italic; }
+.tkw-text[data-decoration='none'] { text-decoration: none; }
+.tkw-text[data-decoration='underline'] { text-decoration: underline; }
+.tkw-text[data-decoration='line-through'] { text-decoration: line-through; }
+.tkw-text[data-truncate] {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tkw-text[data-line-clamp] {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--tkw-text-line-clamp);
+}
+@media (min-width: 640px) {
+  .tkw-text { font-size: var(--tkw-text-size-sm); }
+}
+@media (min-width: 1024px) {
+  .tkw-text { font-size: var(--tkw-text-size-lg); }
+}

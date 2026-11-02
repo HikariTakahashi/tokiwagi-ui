@@ -20,8 +20,9 @@ export function componentStoryParameters(controls: string[]) {
 // args更新では同じrootを使い、離脱時にReactと内部Vueをまとめて解放する。
 export function renderComponentStory(props: ComponentPreviewProps) {
   const preview = useMemo(() => {
-    const host = document.createElement(props.component.startsWith('THeader') ? 'div' : 'span');
-    host.style.display = 'inline-flex';
+    const host = document.createElement(props.component.startsWith('THeader') || props.component === 'TText' ? 'div' : 'span');
+    host.style.display = props.component === 'TText' ? 'block' : 'inline-flex';
+    if (props.component === 'TText') host.style.width = 'min(32rem, calc(100vw - 2rem))';
     return { host, root: createRoot(host) };
   }, []);
   useEffect(() => () => preview.root.unmount(), [preview]);

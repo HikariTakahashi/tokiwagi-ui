@@ -15,6 +15,7 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 
 | コンポーネント | Controls | 初期値 |
 | --- | --- | --- |
+| TText | framework・text・as・size・responsive・sizeSm・sizeLg・weight・lineHeight・tone・align・truncate・lineClamp・whiteSpace・inherit・italic・decoration | React・代表文言・span・サイズ/太さ/行高未指定・通常表示 |
 | TIcon | framework・name・size・color | React・bell・24px・currentColor |
 | TBrand | framework・text・size | React・Tokiwagi UI・32px |
 | TLogo | framework・size・decorative | React・32px・false |
@@ -50,3 +51,5 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 390px・1440pxで中央の見本、Controlsの操作とキーボードフォーカス、方式切り替え時の設定保持、URL再読み込みを確認します。Astroの読み込み・失敗・再試行、Vueのアンマウント、moon/toolのクリッピング、静的Storybookでの3方式の表示も検証します。個別ルールはREADMEとMDXの一対一の対応、6セクション、本文・表・リンクの表示と横はみ出し、キーボード操作、原本とStorybook双方でのリンク解決を確認します。テスト・型検査・両ビルドはAGENTS.mdに従います。
 
 THeaderLinkも共通描画を使い、Canvasにはリンクを1つ表示します。現在地のunsetは未指定として渡します。textとhrefは文字コードでURLへ保存し、日本語・記号・空文字を復元します。空白だけの文言は「リンク」、hrefは見本用の#header-link-targetへ置き換えます。Astroのリンク属性はDOM APIで反映します。
+
+TTextは幅32remを上限にビューポートへ収まる見本を1つ表示します。設定は標準Controlsで変更し、日本語・改行・記号・空文字は共通の文字コード保存でURLから復元します。size/weightのunsetは未指定で、inheritを確認できます。responsive時はsizeをbase（unsetならmd）としてsizeSm/sizeLgを640px/1024px以上へ適用します。Astroは実出力のspan/pテンプレートに共通設定処理の属性とCSS変数、textContentを反映します。

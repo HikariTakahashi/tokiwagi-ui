@@ -10,3 +10,8 @@ export { headerTones, type HeaderTone, type HeaderSectionPosition } from '../lib
 export { THeaderSection, type THeaderSectionProps } from './THeaderSection';
 
 export { headerBackgroundColors, type HeaderBackgroundColor } from '../lib/header-background';
+
+export { TText, type TTextProps } from './TText';
+
+export { textSizes, textWeights, textTones } from '../lib/text';
+export type { TextSize, TextResponsiveSize, TextWeight, TextTone, TextTag, TextAlign, TextWhiteSpace, TextDecoration, TextOptions } from '../lib/text';

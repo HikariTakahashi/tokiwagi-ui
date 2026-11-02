@@ -1,6 +1,7 @@
 ---
 import { resolveBrandText, brandStyle, brandNameStyle } from '../lib/brand';
 import TLogo from './TLogo.astro';
+import TText from './TText.astro';
 import type { TBrandProps } from './TBrandProps';
 
 interface Props extends TBrandProps {}
@@ -10,5 +11,5 @@ const brandText = resolveBrandText(text);
 ---
 <span class={className} style={brandStyle}>
   <TLogo size={size} decorative />
-  <span style={brandNameStyle}>{brandText}</span>
+  <TText as="span" tone="inherit" style={brandNameStyle}>{brandText}</TText>
 </span>

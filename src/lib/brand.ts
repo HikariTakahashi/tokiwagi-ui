@@ -16,4 +16,7 @@ export const brandNameStyle = {
   fontFamily: 'var(--tkw-font-family-sans)',
   fontSize: '16px', fontWeight: 600, lineHeight: 1.5, letterSpacing: 'normal',
   color: 'inherit', flexShrink: 0,
+  // TTextの汎用CSSが読み込まれていても、ブランド固有の折り返しと親の装飾を維持する。
+  whiteSpace: 'nowrap' as const, overflowWrap: 'normal' as const,
+  fontStyle: 'inherit' as const, textAlign: 'inherit' as const,
 };

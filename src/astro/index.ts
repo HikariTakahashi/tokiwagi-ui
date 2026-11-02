@@ -18,3 +18,9 @@ export { default as THeaderSection } from './THeaderSection.astro';
 export type { THeaderSectionProps } from './THeaderSectionProps';
 
 export { headerBackgroundColors, type HeaderBackgroundColor } from '../lib/header-background';
+
+export { default as TText } from './TText.astro';
+export type { TTextProps } from './TTextProps';
+
+export { textSizes, textWeights, textTones } from '../lib/text';
+export type { TextSize, TextResponsiveSize, TextWeight, TextTone, TextTag, TextAlign, TextWhiteSpace, TextDecoration, TextOptions } from '../lib/text';

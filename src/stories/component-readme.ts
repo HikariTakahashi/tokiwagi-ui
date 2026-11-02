@@ -1,6 +1,9 @@
 /** Markdown原本のリポジトリ内リンクを、Storybookの閲覧先へ変換する。 */
 export function componentReadmeForStorybook(readme: string): string {
   const destinations: Record<string, string> = {
+    '../../src/stories/TText.stories.ts': '/story/components-ttext--default',
+    '../TText/README.md': '/docs/components-ttext-rules--docs',
+    '../../src/stories/typography.mdx': '/docs/typography-rules--docs',
     '../../src/stories/THeaderLink.stories.ts': '/story/components-theaderlink--default',
     '../THeaderLink/README.md': '/docs/components-theaderlink-rules--docs',
     '../../src/stories/THeaderSection.stories.ts': '/story/components-theadersection--default',
