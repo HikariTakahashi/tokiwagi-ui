@@ -52,6 +52,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@astrojs/compiler-rs": "0.4.1",
+    "@chromatic-com/storybook": "5.6.0",
     "@playwright/test": "1.64.1",
     "@storybook/addon-a11y": "10.6.0",
     "@storybook/addon-docs": "10.6.0",
