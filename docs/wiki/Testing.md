@@ -65,6 +65,16 @@ export const Disabled: Story = {
 
 検査対象はストーリーで描画された状態です。Controlsの全組み合わせや、操作後の全状態を網羅するものではありません。自動検査の成功に加えて、キーボード操作、フォーカス、実Safari・VoiceOverなどでの手動確認も行ってください。
 
+### Storybook内のビジュアルテスト（Chromatic）
+
+`@chromatic-com/storybook` を登録し、Visual TestsパネルからChromaticのビジュアルテストを利用できます。Dev Containerではコンテナ内で `bun install --frozen-lockfile` を実行し、Storybookを再起動してください。
+
+初回はVisual Testsパネルの「Get started for free」からChromaticへログインし、利用するプロジェクトを接続します。`chromatic.config.json` には接続したプロジェクトの `projectId` と、既存の `build:storybook` を使うための `buildScriptName` を保持します。`projectId` はプロジェクト識別子で、秘密の `projectToken` とは異なります。
+
+接続後はサイドバーのVisual tests実行ボタンからストーリーをChromaticへアップロードして撮影・比較します。差分はVisual Testsパネルで確認し、意図した変更だけを基準として承認します。撮影はChromaticのクラウドで実行され、利用プランのスナップショット枠に計上されます。詳細は[Chromatic公式ガイド](https://docs.chromatic.com/docs/visual-tests-addon/)を参照してください。
+
+既存の `bun run test:visual` とGitHub Actionsの `Visual Tests` は、Firefox・WebKitによるアイコン画像比較として継続します。Chromaticの基準・結果とは別に管理します。`bun run test:storybook` はVitestの描画・操作・アクセシビリティ検査であり、Chromaticの撮影・比較は実行しません。Chromaticへの自動アップロードを行うCIジョブも追加していません。
+
 ### React互換性の検証結果
 
 2026年10月30日、[Issue #29](https://github.com/HikariTakahashi/tokiwagi-ui/issues/29)で確認しました。コンポーネントの対応範囲はpeer dependencyの `^18.0.0 || ^19.0.0` を維持します。ReactとReact DOMは表の同一バージョンを組み合わせています。開発依存の行は `package.json` に追従し、他の3行は固定します。
