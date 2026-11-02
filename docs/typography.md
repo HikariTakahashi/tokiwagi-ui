@@ -36,7 +36,7 @@ code, pre, kbd, samp { font-family: var(--tkw-font-family-mono); }
 
 Tailwind CSS v4では`tokiwagi-ui/tokens/tailwind.css`にも含まれます。`font-sans`・`font-mono`はそれぞれの共通トークンを参照します。Preflightの追加は不要です。
 
-TBrandの名称も`--tkw-font-family-sans`を参照します。利用側では色の`neutrals.css`とともに`typography.css`、または両方を含む`tailwind.css`を読み込んでください。名称の16px・太さ600・行高1.5・通常の字間は維持します。
+TBrandの名称は内部のTTextで描画し、`--tkw-font-family-sans`を参照します。ブランド専用の固定設定を渡すため、`text.css`の追加読み込みは不要で、読み込み済みの場合も表示を維持します。利用側では色の`neutrals.css`とともに`typography.css`、または両方を含む`tailwind.css`を読み込んでください。名称の16px・太さ600・行高1.5・通常の字間は維持します。
 
 ## 確認する文字列
 
@@ -46,6 +46,16 @@ TBrandの名称も`--tkw-font-family-sans`を参照します。利用側では�
 - 太さ：400（通常）・500（中）・600（強調）・700（太字）
 
 実機で日本語と英数字の混在、入力欄への継承、改行・省略・ボタンの横幅を確認します。太字だけで状態を表さず、必要な文言やアイコンも併記します。
+
+## TTextの文字設定
+
+TTextは共通のサンセリフトークンを参照し、既存画面の文字設定は変更しません。利用側で`tokiwagi-ui/text.css`を読み込みます。
+
+- smは0.875rem、mdは1rem、lgは1.125remです。ルート16px時は14・16・18pxで、既定はmdです。
+- 太さはnormal=400、medium=500、semibold=600、bold=700。行高は既定1.5で、正の数値による倍率を指定できます。
+- sizeをオブジェクトにすると、base、640px以上のsm、1024px以上のlgで切り替えます。未指定の段階は直前のサイズを使います。
+- inheritは書体・サイズ・太さ・行高を親から継承し、明示した設定を優先します。tone="inherit"で色も継承できます。
+- 斜体・下線・取り消し線は見た目の指定です。文意に応じたstrong・emなどは子要素として渡します。
 
 ## 参考
 

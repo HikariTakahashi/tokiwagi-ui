@@ -1,6 +1,6 @@
 # コンポーネントの使い方
 
-本ページの利用例はMIT対象のTIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
+本ページの利用例はMIT対象のTText・TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
 
 ## 導入方法と対象環境
 
@@ -373,3 +373,85 @@ import 'tokiwagi-ui/header.css';
 ```
 
 THeaderSection、THeaderButtonGroup内へ直接配置できます。グループ内ではTHeaderButtonと混在しても境界線が揃います。SSR・ハイドレーションを使う場合は、サーバーとクライアントで同じhref・aria-current・targetを指定してください。リンク自体はIDや遷移処理を生成しません。
+
+## TText
+
+React・Vue・Astroの各入口から`TText`・`TTextProps`と、`TextOptions`・`TextSize`・`TextResponsiveSize`・`TextWeight`・`TextTone`・`TextTag`・`TextAlign`・`TextWhiteSpace`・`TextDecoration`を利用できます。選択肢の`textSizes`・`textWeights`・`textTones`も公開します。
+
+利用側で`tokiwagi-ui/text.css`を一度読み込みます。必要なフォント・ニュートラル・状態色のトークンを含み、グローバルリセットは追加しません。既存コンポーネントの設定には影響しません。
+
+| 設定 | 指定値 | 既定 |
+| --- | --- | --- |
+| as | span / p | span |
+| size | sm / md / lg、または { base, sm?, lg? } | md |
+| weight | normal / medium / semibold / bold | normal |
+| lineHeight | 有限の正の数値による倍率 | 1.5 |
+| tone | default / muted / inherit / success / warning / error / info | default |
+| align | start / center / end | start |
+| truncate | boolean。1行で末尾省略 | false |
+| lineClamp | 正の整数。最大表示行数 | 未指定 |
+| whiteSpace | normal / pre-line / pre-wrap | normal |
+| inherit | 書体・サイズ・太さ・行高を親から継承 | false |
+| italic | boolean | false |
+| decoration | none / underline / line-through | none |
+
+サイズは0.875/1/1.125remで、ルート16px時は14/16/18pxです。レスポンシブサイズはbaseを必須とし、640px以上でsm、1024px以上でlgを適用します。未指定の段階は直前の値を引き継ぎます。表示幅の判定はCSSで行います。
+
+inherit時も、明示したsize・weight・lineHeightは優先されます。色の継承にはtone="inherit"を使います。truncateとlineClampの同時指定、不正な列挙値・数値は3方式で同じ日本語エラーになります。
+
+### React
+
+```tsx
+import { TText } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/text.css';
+
+<TText as="p" size={{ base: 'sm', sm: 'md', lg: 'lg' }} id="task-description">
+  開始前に<strong>開催場所</strong>を確認してください。
+</TText>
+<TText as="p" size="sm" tone="muted">変更内容は自動で保存されます。</TText>
+<TText as="p" tone="error" aria-live="polite">保存に失敗しました。</TText>
+<TText as="p" lineClamp={3} style={{ maxWidth: 320 }}>長い説明文を表示します。</TText>
+```
+
+### Vue
+
+```vue
+<script setup lang="ts">
+import { TText } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/text.css';
+</script>
+
+<template>
+  <TText as="p" :size="{ base: 'sm', sm: 'md', lg: 'lg' }">
+    開始前に<strong>開催場所</strong>を確認してください。
+  </TText>
+  <TText as="p" tone="error" aria-live="polite">保存に失敗しました。</TText>
+  <TText as="p" :line-clamp="3" style="max-width: 320px">長い説明文を表示します。</TText>
+</template>
+```
+
+### Astro
+
+```astro
+---
+import { TText } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/text.css';
+const memo = '今日の予定\n  開催場所を確認する';
+---
+
+<TText as="p" size={{ base: 'sm', sm: 'md', lg: 'lg' }}>
+  開始前に<strong>開催場所</strong>を確認してください。
+</TText>
+<TText as="p" whiteSpace="pre-wrap">{memo}</TText>
+<TText as="p" lineClamp={3} style="max-width: 320px">長い説明文を表示します。</TText>
+```
+
+Reactはchildren、Vue・Astroはデフォルトslotを使います。空文字やHTML風の文字列も扱え、通常の文字列をHTMLとして解釈しません。AstroのslotにHTMLを記述した場合は通常どおり要素として描画します。利用側がraw HTML挿入APIを使う場合は、入力の安全性を利用側で保証してください。
+
+標準のid・title・aria-*・data-*・class（ReactはclassName）・styleなどを外側へ転送します。React・Vueのネイティブイベントも転送します。Astroのイベントは標準HTML属性や利用側のスクリプトで扱い、React/Vueの関数イベントは受け取りません。ref転送は公開しません。SSRに対応し、React・Vueはハイドレーション後の設定更新に対応します。Astroの通常表示にはclient:*指定やクライアントJavaScriptは不要です。
+
+通常は長い日本語・URLを折り返し、余白は0です。段落はp、文中の一部はspanを使います。alignは要素内の文字揃えで、span自体の配置は親で調整します。省略を使う場合は親などで幅を制限し、詳細画面などに全文を確認できる導線を用意してください。DOM内の全文は保持します。truncateはwhiteSpaceより優先されます。操作要素を含む文章の省略は避けてください。
+
+固定toneは白・neutral-50背景でコントラスト4.5:1以上を検証します。継承色・任意の背景・利用側のstyle上書きは、組み合わせを利用側で確認してください。状態は色に加えて文言でも伝えます。見た目の太字・斜体と文章の意味は分け、必要に応じてstrong・em等を含めます。
+
+利用ルールは[TTextの個別README](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TText/README.md)、見本はStorybook「コンポーネント/TText」を参照してください。

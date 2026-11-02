@@ -29,7 +29,7 @@ UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-at
 
 - ロゴのアプリ向け公開名はReact・Vue・Astroともに `TLogo` です。`src/lib/logo.ts` が原本のdata URL・許可サイズ・余白・altを共通管理します。`size`（32/64/128、既定32）は図形の幅、`decorative`（既定false）は空altへの切り替えです。外側のspanに表示幅の1/4の余白とneutral-0背景を確保するため、占有領域は幅の1.5倍です。配置用class以外の属性・イベント・children／slotは転送しません。リンクと名称は親が担います。Storybook「コンポーネント/TLogo」で公開入口の実コンポーネントを確認し、Astroは専用のBun描画スクリプトと仮想モジュールで静的出力を収録します。SVG原本・配色・汎用アイコン329種は維持します。SSR・ハイドレーションとReact 18/19の公開型も検証します。data URL用のCSPとneutrals.cssの読み込みを利用例に記載します。
 
-- ロゴと名称のセットはReact・Vue・Astroの `TBrand` として公開します。`TLogo` をdecorativeで再利用し、`text`で指定した名称（既定「Tokiwagi UI」）を横並び・縦中央揃えで表示します。size（32/64/128、既定32）は図形幅で、配置用class以外の属性・イベント・children／slotを転送しません。書体はSan Franciscoを基準とする共通トークン `--tkw-font-family-sans`、名称は16px・太さ600・行高1.5、間隔8pxで、外側のpaddingを追加しません。全幅は図形幅×1.5＋8px＋名称の実測幅、高さは図形幅×1.5です。操作と状態表示は親リンクが担い、ホームリンクには表示名に合わせたaria-label（例：`aria-label="TokiWa Calendar ホーム"`）を付けます。`text`は空白だけではない文字列に限り、HTMLとして解釈しません。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを確認し、Astroは専用の描画スクリプトと仮想モジュールで収録します。LP・既存アプリへの適用は未実施です。
+- ロゴと名称のセットはReact・Vue・Astroの `TBrand` として公開します。`TLogo` をdecorativeで再利用し、内部の`TText`で`text`に指定した名称（既定「Tokiwagi UI」）を横並び・縦中央揃えで表示します。size（32/64/128、既定32）は図形幅で、配置用class以外の属性・イベント・children／slotを転送しません。書体はSan Franciscoを基準とする共通トークン `--tkw-font-family-sans`、名称は16px・太さ600・行高1.5、間隔8pxで、外側のpaddingを追加しません。内部TTextに固定のブランド設定とtone=inheritを渡し、折り返し・縮小を抑止します。text.cssの追加読み込みは不要で、読み込み済みでも寸法・親からの色継承と装飾を維持します。全幅は図形幅×1.5＋8px＋名称の実測幅、高さは図形幅×1.5です。操作と状態表示は親リンクが担い、ホームリンクには表示名に合わせたaria-label（例：`aria-label="TokiWa Calendar ホーム"`）を付けます。`text`は空白だけではない文字列に限り、HTMLとして解釈しません。Storybook「コンポーネント/TBrand」で3方式の実コンポーネントを確認し、Astroは専用の描画スクリプトと仮想モジュールで収録します。LP・既存アプリへの適用は未実施です。
 
 - Tokiwagi UIがアプリ向けに公開するコンポーネント名は、アッパーキャメルケース（PascalCase）とし、接頭辞は `T` です。`T` に用途を表すPascalCase名を続けます。例：`TIcon`、`TButton`、`TTextField`。
 - Vue・React・Astroで同じ用途を持つコンポーネントには同じ公開名を使います。フレームワークの違いはディレクトリや公開入口で区別します。
@@ -99,3 +99,7 @@ READMEは概要とWikiへの導線を扱います。Wiki管理ページの唯一
 - `THeaderLink`はhref必須のa要素で、THeaderButtonと同じCSS・tone・iconOnlyを共有します。空のhrefは日本語エラー、現在地はaria-currentで指定し下線を表示します。selected・disabledは提供しません。target=_blankではrelのopenerを除きnoopenerを補完し、他のrelは保持します。THeaderButtonGroupはボタンとリンクの混在に対応します。Storybookは「コンポーネント/ヘッダー/THeaderLink」で標準Controlsによる方式・tone・content・text・icon・href・target・aria-currentを扱い、textとhrefの日本語・記号もURLへ保持します。Astroの実リンクテンプレートにDOM APIで文言と属性を反映します。ルーター連携・現在URLの判定は利用側の責任です。
 
 - THeaderButton・THeaderLinkのactiveはboolean（既定false）で背景と3pxの下線を表示し、aria-pressed・aria-currentを変更しません。押下中（CSSの:active）も下線を表示し、離すと元へ戻ります。既存selected／aria-currentの下線は維持します。disabledは押下表示を抑止し、明示状態の下線は無効色です。Storybookの両部品にactive Controlsを置き、Astroの実状態テンプレートも収録します。
+
+## TText
+
+React・Vue・Astroの公開入口からTText・TTextPropsとTextOptions等の共通型を公開します。利用側で`tokiwagi-ui/text.css`を一度読み込みます。書体・色は既存トークンを参照し、サイズはsm/md/lg（0.875/1/1.125rem）、既定md、行高1.5、太さnormalです。asはspan/p（既定span）、toneはdefault/muted/inherit/success/warning/error/infoです。sizeはbaseを必須とするオブジェクトでも指定でき、640pxのsm・1024pxのlgへ直前の値を引き継ぎます。inheritは書体・サイズ・太さ・行高を親から継承し、明示設定を優先します。色の継承はtoneで指定します。truncateとlineClampは併用を拒否します。文字列・children/slot・標準属性を保持し、見出し・操作・全文表示の導線は利用側が担います。利用ルールは`components/TText/README.md`、APIはWikiのUsage、見本はStorybook「コンポーネント/TText」です。Astroの見本は公開実コンポーネントのspan/p出力を収録し、共通解決処理の属性・CSS変数とtextContentで入力を安全に反映します。

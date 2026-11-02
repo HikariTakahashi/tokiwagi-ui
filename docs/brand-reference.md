@@ -81,7 +81,7 @@ import 'tokiwagi-ui/tokens/neutrals.css';
 | `class`（Vue） | `HTMLAttributes['class']` | 外側のspanに付与する文字列・配列・オブジェクト |
 | `class`（Astro） | `string` | 外側のspanに付与する配置用クラス |
 
-名称は`text`で変更できます。書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は共通トークン `--tkw-font-family-sans` を参照し、San Franciscoを基準とするシステム書体を使います。名称は16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxです。利用側で `typography.css` を読み込みます。日本語や他OSはシステム書体へフォールバックし、フォント本体の配信は不要です。名称の色は親から継承します。ロゴの固定配色は変えません。
+名称は`text`で変更できます。書体・文字サイズ・間隔・内部ロゴのdecorativeは固定です。書体は共通トークン `--tkw-font-family-sans` を参照し、San Franciscoを基準とするシステム書体を使います。名称は内部のTTextで表示します。TTextにはブランド専用の固定設定を渡し、16px・太さ600・行高1.5、ロゴ領域と名称の間隔は8pxを維持します。利用側で `typography.css` を読み込みます。日本語や他OSはシステム書体へフォールバックし、フォント本体の配信は不要です。名称の色は親から継承します。TText単独利用向けの`text.css`を追加で読み込む必要はありません。すでに読み込んでいても名称の固定サイズ・折り返しなしを維持します。TBrandの公開APIは変わらず、内部TTextのprops・children／slotは公開しません。ロゴの固定配色は変えません。
 
 ```tsx
 import { TBrand } from 'tokiwagi-ui/react';
