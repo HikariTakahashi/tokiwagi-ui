@@ -15,6 +15,48 @@ Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です�
 
 `check:react-compat` は一時ディレクトリにReact・React DOMの18.0.0、18.3.1、19.0.0、開発依存の19系をそれぞれ導入します。各環境で公開型、テスト用APIの型、全329原本×4サイズのSSR、Happy DOM上の実コンポーネントのハイドレーション、props更新を検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` と `bun.lock` は変更せず、一時ディレクトリは成功・失敗にかかわらず削除します。各バージョンは既存のCIジョブ `tkw-react-compat` でも同じコマンドで継続検証します。
 
+## Storybook上のコンポーネントテスト
+
+Vitest addonを使い、ストーリーをPlaywrightのChromium上で実行します。依存関係の導入は、Storybookを起動する環境と同じターミナルで行ってください。Dev Containerはホストとは別の `node_modules` を使うため、ホストで導入済みでもコンテナ内で `bun install --frozen-lockfile` が必要です。初回はブラウザを準備し、addon導入前からStorybookを起動していた場合は依存関係の導入後に開発サーバーを再起動してください。
+
+```sh
+bun install --frozen-lockfile
+bunx playwright install chromium
+bun run storybook
+```
+
+Dev ContainerなどのLinux環境では、ブラウザ本体と必要なOSライブラリをまとめて `bunx playwright install --with-deps chromium` で導入します。コンテナの再作成後も必要に応じて実行してください。`Could not resolve addon "@storybook/addon-vitest"` が出る場合は、Storybookを停止し、同じ環境で上記の依存関係導入から実行し直してください。
+
+サイドバー下部のテストウィジェットから「Run tests」を押すと全ストーリーを実行します。個別ストーリーやグループのメニューからもコンポーネントテストを実行できます。結果はサイドバーに表示され、操作テストの詳細はInteractionsパネルで確認・再実行できます。監視を有効にすると変更時に再実行します。
+
+CLIでは、Storybookの開発サーバーを起動せずに実行できます。
+
+```sh
+bun run test:storybook        # 全ストーリーを1回実行
+bun run test:storybook:watch  # 変更を監視（デバッグ用Storybookも起動）
+bun run test:storybook -- src/stories/THeaderButton.stories.ts
+```
+
+`vitest.config.ts` の `storybook` プロジェクトだけを対象にします。既存の `bun test` とFirefox・WebKitの画像比較はそれぞれ独立して実行します。`play` のないストーリーも描画テストの対象です。アイコンの使用例には表示目的の `play` を追加しません。MDXのDocsページはテスト対象外です。Astroのストーリーでは、公開実コンポーネントから生成したHTML見本を検証します。
+
+操作やアサーションを追加する場合は `storybook/test` とストーリーの `play` を使います。`canvas` 内を検索し、非同期描画には `findByRole` などを使ってください。例えば、無効なボタンのストーリーは次のように検証できます。
+
+```ts
+import { expect } from 'storybook/test';
+
+// 無効な実ボタンが表示され、操作できないことを確認する。
+export const Disabled: Story = {
+  args: { disabled: true },
+  play: async ({ canvas }) => {
+    const button = await canvas.findByRole('button', { name: '操作' });
+    await expect(button).toBeVisible();
+    await expect(button).toBeDisabled();
+  },
+};
+```
+
+`THeaderButton.stories.ts` にはReact・Vue・Astroそれぞれの有効／無効の例を収録し、操作名、選択状態、クリック、キーボードによる発火、無効時の操作抑止を検証します。各ステップと期待結果は日本語で記述してください。CIでは既存の `tkw-storybook` 内でChromiumを準備し、静的ビルドに続けて同じテストを実行します。静的に公開されたStorybookではVitestの実行サーバーが動かないため、テストの新規実行にはローカル開発環境またはCLIを使います。
+
 ### React互換性の検証結果
 
 2026年10月30日、[Issue #29](https://github.com/HikariTakahashi/tokiwagi-ui/issues/29)で確認しました。コンポーネントの対応範囲はpeer dependencyの `^18.0.0 || ^19.0.0` を維持します。ReactとReact DOMは表の同一バージョンを組み合わせています。開発依存の行は `package.json` に追従し、他の3行は固定します。
@@ -47,7 +89,7 @@ React本体の下限とテスト用API・型定義の提供範囲は区別しま
 | `tkw-tests` | `bun test` | 色・アイコン・各方式の部品・見本・Wiki同期のテスト |
 | `tkw-react-compat` | `bun run check:react-compat` | React 18.0.0・18.3.1・19.0.0・開発依存19系の公開型・テスト用APIの型・SSR・ハイドレーション・更新 |
 | `tkw-build` | `bun run build` | Astro紹介ページの静的ビルド |
-| `tkw-storybook` | `bun run build:storybook` | Astro見本生成を含むStorybookの静的ビルド |
+| `tkw-storybook` | `bun run build:storybook`・`bun run test:storybook` | Astro見本生成を含むStorybookの静的ビルドとChromium上のコンポーネントテスト |
 
 各ジョブはUbuntu 24.04・Node.js 22.16.0・Bun 1.3.9を使用し、`bun install --frozen-lockfile`で本体の依存関係を導入します。React互換性チェックの一時環境は既存スクリプトで別途依存取得を行うため、ネットワーク接続が必要です。各ジョブの制限時間は30分、リポジトリへの権限は読み取りのみです。利用するActionはコミットSHAで固定します。CIからWiki・サイト・パッケージの公開は行いません。
 
@@ -223,7 +265,7 @@ CIでは `setup-bun` がZIPを展開するため、コンテナーに含まれ�
 
 ## テスト環境と対象
 
-単体テストのランナーはBun Test（`bun:test`）です。DOMとハイドレーションの検証にはHappy DOM、React・VueのSSRには各フレームワークのサーバー描画機能、AstroにはコンパイラとContainer APIを使用します。ブラウザの画像比較だけはPlaywright Testで別に実行します。
+単体テストのランナーはBun Test（`bun:test`）です。DOMとハイドレーションの検証にはHappy DOM、React・VueのSSRには各フレームワークのサーバー描画機能、AstroにはコンパイラとContainer APIを使用します。StorybookのコンポーネントテストはVitestのブラウザモード、画像比較はPlaywright Testで別に実行します。
 
 - `src/lib/*.test.ts`：トークンの読み込み、色の組み合わせ、アイコン原本・公開名・変換。
 - `src/react/`・`src/vue/`・`src/astro/` のテスト：公開Props、サイズ・不正入力、全原本の描画、ID分離、SSR・ハイドレーション（対応方式）。
