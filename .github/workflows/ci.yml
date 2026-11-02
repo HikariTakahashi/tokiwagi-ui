@@ -180,3 +180,7 @@ jobs:
         run: bun install --frozen-lockfile
       - name: tkw-storybookを実行
         run: bun run build:storybook
+      - name: コンポーネントテスト用のChromiumを準備
+        run: bunx playwright install --with-deps chromium
+      - name: ストーリーのコンポーネントテストを実行
+        run: bun run test:storybook
