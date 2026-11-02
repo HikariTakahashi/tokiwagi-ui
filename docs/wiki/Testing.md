@@ -57,6 +57,14 @@ export const Disabled: Story = {
 
 `THeaderButton.stories.ts` にはReact・Vue・Astroそれぞれの有効／無効の例を収録し、操作名、選択状態、クリック、キーボードによる発火、無効時の操作抑止を検証します。各ステップと期待結果は日本語で記述してください。CIでは既存の `tkw-storybook` 内でChromiumを準備し、静的ビルドに続けて同じテストを実行します。静的に公開されたStorybookではVitestの実行サーバーが動かないため、テストの新規実行にはローカル開発環境またはCLIを使います。
 
+### アクセシビリティテスト
+
+`@storybook/addon-a11y` により、各ストーリーをaxe-coreで検査します。Storybookを再起動し、標準のAccessibilityパネルを開くと、違反・成功・手動確認が必要な項目の詳細を確認できます。テストウィジェットのAccessibilityを有効にしてコンポーネントテストを実行すると、結果がサイドバーにも表示されます。Dev Containerでは起動前にコンテナ内で `bun install --frozen-lockfile` を実行してください。
+
+共通の `.storybook/preview.ts` で `a11y.test: 'error'` を指定しています。既存の `bun run test:storybook` とCIの `tkw-storybook` で描画・操作テストと併せて自動実行し、検出した違反はテスト失敗として報告します。追加のテストコマンドやsetupファイルは不要です。設定と実行方法は[Storybook公式ガイド](https://storybook.js.org/docs/writing-tests/accessibility-testing)も参照してください。
+
+検査対象はストーリーで描画された状態です。Controlsの全組み合わせや、操作後の全状態を網羅するものではありません。自動検査の成功に加えて、キーボード操作、フォーカス、実Safari・VoiceOverなどでの手動確認も行ってください。
+
 ### React互換性の検証結果
 
 2026年10月30日、[Issue #29](https://github.com/HikariTakahashi/tokiwagi-ui/issues/29)で確認しました。コンポーネントの対応範囲はpeer dependencyの `^18.0.0 || ^19.0.0` を維持します。ReactとReact DOMは表の同一バージョンを組み合わせています。開発依存の行は `package.json` に追従し、他の3行は固定します。
