@@ -2,6 +2,7 @@ import { defineComponent, h, type HTMLAttributes, type PropType } from 'vue';
 import type { LogoSize } from '../lib/logo';
 import { brandName, resolveBrandText, brandStyle, brandNameStyle } from '../lib/brand';
 import { TLogo } from './TLogo';
+import { TText } from './TText';
 
 export type TBrandProps = { text?: string; size?: LogoSize; class?: HTMLAttributes['class'] };
 
@@ -17,7 +18,7 @@ export const TBrand = defineComponent({
   setup(props) {
     return () => h('span', { class: props.class, style: brandStyle }, [
       h(TLogo, { size: props.size, decorative: true }),
-      h('span', { style: brandNameStyle }, resolveBrandText(props.text)),
+      h(TText, { as: 'span', tone: 'inherit', style: brandNameStyle }, () => resolveBrandText(props.text)),
     ]);
   },
 });

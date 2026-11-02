@@ -14,6 +14,9 @@ export function assertBrandHtml(html: string, size: LogoSize, className?: string
     expect(brand.children.length).toBe(2);
     const logo = brand.children[0] as HappyHTMLElement;
     const name = brand.children[1] as HappyHTMLElement;
+    expect(name.tagName).toBe('SPAN');
+    expect(name.className).toBe('tkw-text');
+    expect(name.getAttribute('data-tone')).toBe('inherit');
     expect(name.textContent).toBe(text);
     expect(brand.querySelectorAll('img')).toHaveLength(1);
     const image = brand.querySelector('img')!;
@@ -33,6 +36,13 @@ export function assertBrandHtml(html: string, size: LogoSize, className?: string
     expect(brand.style.padding).toBe('');
     expect(name.style.fontSize).toBe('16px');
     expect(name.style.fontWeight).toBe('600');
+    expect(name.style.lineHeight).toBe('1.5');
+    expect(name.style.color).toBe('inherit');
+    expect(name.style.whiteSpace).toBe('nowrap');
+    expect(name.style.overflowWrap).toBe('normal');
+    expect(name.style.flexShrink).toBe('0');
+    expect(name.style.fontStyle).toBe('inherit');
+    expect(name.style.textAlign).toBe('inherit');
     expect(brand.querySelector('[tabindex], a, button, [aria-label], [role], svg')).toBeNull();
     expect(brand.hasAttribute('tabindex')).toBe(false);
     expect(brand.hasAttribute('aria-label')).toBe(false);
@@ -40,7 +50,7 @@ export function assertBrandHtml(html: string, size: LogoSize, className?: string
     if (className) {
       expect(brand.className).toBe(className);
       expect(logo.className).toBe('');
-      expect(name.className).toBe('');
+      expect(name.className).toBe('tkw-text');
     }
   } finally {
     window.close();

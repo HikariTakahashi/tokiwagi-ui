@@ -25,6 +25,7 @@ async function generate(): Promise<AstroBrandPreviews> {
 /** Astroの実ブランドコンポーネントを静的HTMLにし、開発中も原本・API変更を反映する。 */
 export function astroBrandPreviewsPlugin(): Plugin {
   const dependencies = ['scripts/render-astro-brand-previews.ts', 'src/astro/TBrand.astro',
-    'src/astro/TBrandProps.ts', 'src/astro/TLogo.astro', 'src/astro/TLogoProps.ts', 'src/lib/brand.ts', 'src/astro/index.ts', 'src/lib/logo.ts', 'icons/logo/logo.svg'].map(path => root + path);
+    'src/astro/TBrandProps.ts', 'src/astro/TLogo.astro', 'src/astro/TLogoProps.ts', 'src/astro/TText.astro',
+    'src/astro/TTextProps.ts', 'src/lib/text.ts', 'src/lib/brand.ts', 'src/astro/index.ts', 'src/lib/logo.ts', 'icons/logo/logo.svg'].map(path => root + path);
   return astroPreviewDataPlugin('brands', generate, dependencies);
 }
