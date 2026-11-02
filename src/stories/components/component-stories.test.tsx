@@ -8,9 +8,11 @@ mock.module('virtual:tkw-astro-icons', () => ({ default: '/astro-icons.json' }))
 mock.module('virtual:tkw-astro-logos', () => ({ default: '/astro-logos.json' }));
 mock.module('virtual:tkw-astro-brands', () => ({ default: '/astro-brands.json' }));
 mock.module('virtual:tkw-astro-headers', () => ({ default: '/astro-headers.json' }));
+mock.module('virtual:tkw-astro-texts', () => ({ default: '/astro-texts.json' }));
 const icon = await import('../TIcon.stories');
 const logo = await import('../TLogo.stories');
 const brand = await import('../TBrand.stories');
+const text = await import('../TText.stories');
 const header = await import('../THeader.stories');
 const headerSection = await import('../THeaderSection.stories');
 const headerButton = await import('../THeaderButton.stories');
@@ -37,6 +39,7 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
 // 各ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
+    ['TText', text, ['framework', 'text', 'as', 'size', 'responsive', 'sizeSm', 'sizeLg', 'weight', 'lineHeight', 'tone', 'align', 'truncate', 'lineClamp', 'whiteSpace', 'inherit', 'italic', 'decoration']],
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
     ['TLogo', logo, ['framework', 'size', 'decorative']],
     ['TBrand', brand, ['framework', 'text', 'size']],
@@ -68,6 +71,10 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
 // 公開入口を実描画し、説明用UIの混入や、TLogoの配色・余白・altの退行を検出する。
 test('正常なReactプレビューには実コンポーネント以外のUIを追加しない', () => {
   const html = renderToStaticMarkup(createElement(ComponentPreview, { component: 'TIcon', ...icon.default.args }));
+  const textHtml = renderToStaticMarkup(createElement(ComponentPreview, { component: 'TText', framework: 'react', text: '<img src=x> & 日本語', as: 'p', tone: 'error' }));
+  expect(textHtml).toMatch(/^<p\b[\s\S]*<\/p>$/);
+  expect(textHtml).not.toContain('<img');
+  expect(textHtml).toContain('&lt;img src=x&gt; &amp; 日本語');
   expect(html).toMatch(/^<svg\b[\s\S]*<\/svg>$/);
   expect(html).toContain('width="24" height="24"');
   for (const size of [32, 64, 128] as const) {
@@ -100,6 +107,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     mock.module('virtual:tkw-astro-logos',()=>({default:'/logos.json'}));
     mock.module('virtual:tkw-astro-brands',()=>({default:'/brands.json'}));
     mock.module('virtual:tkw-astro-headers',()=>({default:'/headers.json'}));
+    mock.module('virtual:tkw-astro-texts',()=>({default:'/texts.json'}));
     let memo, cleanup;
     mock.module('storybook/preview-api',()=>({
       useArgs:()=>[{},()=>{}],
@@ -114,17 +122,20 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     spyOn(vue,'createApp').mockImplementation((...args)=>{
       const app=createApp(...args); unmounts.push(spyOn(app,'unmount')); return app;
     });
-    for (const name of ['TIcon','TLogo','TBrand']) {
+    for (const name of ['TIcon','TLogo','TBrand','TText']) {
       const {default:meta}=await import('./src/stories/'+name+'.stories.ts');
       let firstHost;
-      for (const size of name==='TIcon'?[20,32]:[64,128]) {
+      for (const size of name==='TText'?['sm','lg']:name==='TIcon'?[20,32]:[64,128]) {
         let host;
-        await act(async()=>{host=meta.render({...meta.args,framework:'vue',size,...(name==='TBrand'?{text:'カレンダー'+size}:{})});document.body.append(host);});
+        await act(async()=>{host=meta.render({...meta.args,framework:'vue',size,...(['TBrand','TText'].includes(name)?{text:'カレンダー'+size}:{})});document.body.append(host);});
         firstHost??=host;
         assert.equal(host,firstHost);
         const image=host.querySelector('svg,img');
-        assert.equal(image.getAttribute('width'),String(size));
-        if(name==='TBrand')assert.equal(host.textContent,'カレンダー'+size);
+        if(name==='TText') {
+          assert.equal(image,null);
+          assert.equal(host.querySelectorAll('.tkw-text').length,1);
+        } else assert.equal(image.getAttribute('width'),String(size));
+        if(['TBrand','TText'].includes(name))assert.equal(host.textContent,'カレンダー'+size);
       }
       const unmount=unmounts.at(-1);
       assert.equal(unmount.mock.calls.length,0);
@@ -135,7 +146,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
       firstHost.remove();
       memo=undefined;
     }
-    assert.equal(unmounts.length,3);
+    assert.equal(unmounts.length,4);
     await window.happyDOM.close();
   `;
   const result = Bun.spawnSync([process.execPath, '-e', script], { cwd: new URL('../../..', import.meta.url).pathname });

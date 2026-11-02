@@ -6,6 +6,7 @@ import { astroPreviewsPlugin } from './astro-previews.ts';
 import { astroLogoPreviewsPlugin } from './astro-logo-previews.ts';
 import { astroBrandPreviewsPlugin } from './astro-brand-previews.ts';
 import { astroHeaderPreviewsPlugin } from './astro-header-previews.ts';
+import { astroTextPreviewsPlugin } from './astro-text-previews.ts';
 import { iconSearchIndexPlugin } from './icon-search-index.ts';
 
 const config: StorybookConfig = {
@@ -23,7 +24,7 @@ const config: StorybookConfig = {
     },
   }],
   async viteFinal(config) {
-    config.plugins = [...(config.plugins ?? []), tailwindcss(), iconSearchIndexPlugin(), astroPreviewsPlugin(), astroLogoPreviewsPlugin(), astroBrandPreviewsPlugin(), astroHeaderPreviewsPlugin()];
+    config.plugins = [...(config.plugins ?? []), tailwindcss(), iconSearchIndexPlugin(), astroPreviewsPlugin(), astroLogoPreviewsPlugin(), astroBrandPreviewsPlugin(), astroHeaderPreviewsPlugin(), astroTextPreviewsPlugin()];
     // HTML版StorybookでVueを直接マウントするため、Vueプラグインが設定する既定フラグを明示する。
     config.define = {
       __VUE_OPTIONS_API__: 'true',
