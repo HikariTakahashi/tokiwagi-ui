@@ -57,7 +57,8 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
     expect(meta.parameters.controls).toEqual({ disable: false, include: [...controls], disableSaveFromUI: true });
     expect(Object.keys(meta.argTypes).filter(key => key !== 'textcode')).toEqual([...controls]);
     expect(meta.argTypes.framework.options).toEqual(['react', 'vue', 'astro']);
-    expect(story.Default.play).toBeUndefined();
+    if (name === 'THeaderButton') expect(story.Default.play).toBeFunction();
+    else expect(story.Default.play).toBeUndefined();
   }
   expect(icon.default.args).toEqual({ framework: 'react', name: 'bell', size: 24, color: 'currentColor' });
   expect(logo.default.args).toEqual({ framework: 'react', size: 32, decorative: false });

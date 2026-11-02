@@ -22,7 +22,7 @@ const config: StorybookConfig = {
         mdxCompileOptions: { remarkPlugins: [remarkGfm] },
       },
     },
-  }],
+  }, '@storybook/addon-vitest'],
   async viteFinal(config) {
     config.plugins = [...(config.plugins ?? []), tailwindcss(), iconSearchIndexPlugin(), astroPreviewsPlugin(), astroLogoPreviewsPlugin(), astroBrandPreviewsPlugin(), astroHeaderPreviewsPlugin(), astroTextPreviewsPlugin()];
     // HTML版StorybookでVueを直接マウントするため、Vueプラグインが設定する既定フラグを明示する。

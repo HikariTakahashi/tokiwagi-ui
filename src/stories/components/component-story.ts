@@ -26,8 +26,7 @@ export function renderComponentStory(props: ComponentPreviewProps) {
     return { host, root: createRoot(host) };
   }, []);
   useEffect(() => () => preview.root.unmount(), [preview]);
-  useEffect(() => {
-    flushSync(() => preview.root.render(createElement(ComponentPreview, props)));
-  }, [preview, props]);
+  // Storybookのeffectはplay完了後に走るため、検証開始前に実コンポーネントを描画する。
+  flushSync(() => preview.root.render(createElement(ComponentPreview, props)));
   return preview.host;
 }
