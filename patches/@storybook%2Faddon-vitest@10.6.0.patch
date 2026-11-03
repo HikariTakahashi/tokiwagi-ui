@@ -1,0 +1,13 @@
+diff --git a/dist/preset.js b/dist/preset.js
+index 88a320f0c477f6173108053d9c390c118ab2664a..70510cba1e36499412622b9fbd66e8e2fe458db7 100644
+--- a/dist/preset.js
++++ b/dist/preset.js
+@@ -211,6 +211,8 @@
+     child = executeNodeCommand({
+       scriptPath: vitestModulePath,
+       options: {
++        // State updates are consumed live; retaining their history grows quadratically.
++        buffer: { ipc: false },
+         env: {
+           VITEST: "true",
+           TEST: "true",
