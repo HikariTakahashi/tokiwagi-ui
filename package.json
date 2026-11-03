@@ -77,6 +77,7 @@
     "vue": "3.5.22"
   },
   "patchedDependencies": {
-    "@storybook/addon-vitest@10.6.0": "patches/@storybook%2Faddon-vitest@10.6.0.patch"
+    "@storybook/addon-vitest@10.6.0": "patches/@storybook%2Faddon-vitest@10.6.0.patch",
+    "storybook@10.6.0": "patches/storybook@10.6.0.patch"
   }
 }
