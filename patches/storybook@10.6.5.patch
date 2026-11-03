@@ -1,8 +1,7 @@
 diff --git a/dist/_browser-chunks/chunk-MOVZJCSM.js b/dist/_browser-chunks/chunk-MOVZJCSM.js
-index 7dfba7fb1757fc83bde5490fe709575302e43bee..d60ddea2a46dfdac2aa819c0811b85bc6160a9e0 100644
 --- a/dist/_browser-chunks/chunk-MOVZJCSM.js
 +++ b/dist/_browser-chunks/chunk-MOVZJCSM.js
-@@ -237,7 +237,7 @@ var CHANNEL_EVENT_PREFIX = "UNIVERSAL_STORE:", ProgressState = {
+@@ -237,7 +237,7 @@
        { actor: this.actor }
      ), setTimeout(() => {
        this.syncing.reject(new UniversalStoreFollowerTimeoutError(this.id));
@@ -11,11 +10,10 @@ index 7dfba7fb1757fc83bde5490fe709575302e43bee..d60ddea2a46dfdac2aa819c0811b85bc
    }
    emitToListeners(event, eventInfo) {
      let eventTypeListeners = this.listeners.get(event.type), everythingListeners = this.listeners.get("*");
-diff --git a/dist/_node-chunks/chunk-6EPLEZFZ.js b/dist/_node-chunks/chunk-6EPLEZFZ.js
-index 0d037e8241f878920bc2bb88e930c372c980ed13..311ac19d70d606178426f905abe125db8fed05b5 100644
---- a/dist/_node-chunks/chunk-6EPLEZFZ.js
-+++ b/dist/_node-chunks/chunk-6EPLEZFZ.js
-@@ -1140,7 +1140,7 @@ var require_dist = __commonJS({
+diff --git a/dist/_node-chunks/chunk-DDA64MVW.js b/dist/_node-chunks/chunk-DDA64MVW.js
+--- a/dist/_node-chunks/chunk-DDA64MVW.js
++++ b/dist/_node-chunks/chunk-DDA64MVW.js
+@@ -1140,7 +1140,7 @@
  // src/channels/websocket/index.ts
  var import_telejson = __toESM(require_dist(), 1);
  import * as EVENTS from "storybook/internal/core-events";
@@ -24,11 +22,10 @@ index 0d037e8241f878920bc2bb88e930c372c980ed13..311ac19d70d606178426f905abe125db
    constructor({
      url,
      onError,
-diff --git a/dist/_node-chunks/chunk-HFXQZX54.js b/dist/_node-chunks/chunk-HFXQZX54.js
-index dbc58a81908c2d8afd14abc7dfa69990f1cca2d2..ecaf232cf1427bafa08c6c9a8d1cdefc939e7768 100644
---- a/dist/_node-chunks/chunk-HFXQZX54.js
-+++ b/dist/_node-chunks/chunk-HFXQZX54.js
-@@ -308,7 +308,7 @@ var CHANNEL_EVENT_PREFIX = "UNIVERSAL_STORE:", ProgressState = {
+diff --git a/dist/_node-chunks/chunk-TLEZGMVE.js b/dist/_node-chunks/chunk-TLEZGMVE.js
+--- a/dist/_node-chunks/chunk-TLEZGMVE.js
++++ b/dist/_node-chunks/chunk-TLEZGMVE.js
+@@ -308,7 +308,7 @@
        { actor: this.actor }
      ), setTimeout(() => {
        this.syncing.reject(new UniversalStoreFollowerTimeoutError(this.id));
@@ -38,10 +35,9 @@ index dbc58a81908c2d8afd14abc7dfa69990f1cca2d2..ecaf232cf1427bafa08c6c9a8d1cdefc
    emitToListeners(event, eventInfo) {
      let eventTypeListeners = this.listeners.get(event.type), everythingListeners = this.listeners.get("*");
 diff --git a/dist/channels/index.js b/dist/channels/index.js
-index 64b14375924345709647991863ef91a7691bae4d..d93ad945423997800a4f538ed336a2dfa7013ad4 100644
 --- a/dist/channels/index.js
 +++ b/dist/channels/index.js
-@@ -181,7 +181,7 @@ var { document: document2, location } = globalThis, KEY = "storybook-channel", C
+@@ -273,7 +273,7 @@
  
  // src/channels/websocket/index.ts
  import * as EVENTS2 from "storybook/internal/core-events";
@@ -51,10 +47,9 @@ index 64b14375924345709647991863ef91a7691bae4d..d93ad945423997800a4f538ed336a2df
      url,
      onError,
 diff --git a/dist/manager/globals-runtime.js b/dist/manager/globals-runtime.js
-index a154aaa1ff6fdf7330d9671823a873b73ea7d815..b4c6afe6007ddfcbfca7371bc423f8409b1f80c4 100644
 --- a/dist/manager/globals-runtime.js
 +++ b/dist/manager/globals-runtime.js
-@@ -29241,7 +29241,7 @@ var CHANNEL_EVENT_PREFIX = "UNIVERSAL_STORE:", ProgressState = {
+@@ -29241,7 +29241,7 @@
        { actor: this.actor }
      ), setTimeout(() => {
        this.syncing.reject(new UniversalStoreFollowerTimeoutError(this.id));
@@ -63,7 +58,7 @@ index a154aaa1ff6fdf7330d9671823a873b73ea7d815..b4c6afe6007ddfcbfca7371bc423f840
    }
    emitToListeners(event, eventInfo) {
      let eventTypeListeners = this.listeners.get(event.type), everythingListeners = this.listeners.get("*");
-@@ -30863,7 +30863,7 @@ var { document: document2, location: location2 } = globalThis, KEY = "storybook-
+@@ -30981,7 +30981,7 @@
  };
  
  // src/channels/websocket/index.ts
@@ -72,11 +67,22 @@ index a154aaa1ff6fdf7330d9671823a873b73ea7d815..b4c6afe6007ddfcbfca7371bc423f840
    constructor({
      url,
      onError,
+diff --git a/dist/manager/runtime.js b/dist/manager/runtime.js
+--- a/dist/manager/runtime.js
++++ b/dist/manager/runtime.js
+@@ -27066,7 +27066,7 @@
+       { actor: this.actor }
+     ), setTimeout(() => {
+       this.syncing.reject(new UniversalStoreFollowerTimeoutError2(this.id));
+-    }, 1e3));
++    }, 30e3));
+   }
+   emitToListeners(event, eventInfo) {
+     let eventTypeListeners = this.listeners.get(event.type), everythingListeners = this.listeners.get("*");
 diff --git a/dist/preview/runtime.js b/dist/preview/runtime.js
-index 3cad9618aae48405ca285689e59b33ae9838cb58..1648ae381465b1eb3aa607aa32424f6e5eacd785 100644
 --- a/dist/preview/runtime.js
 +++ b/dist/preview/runtime.js
-@@ -11117,7 +11117,7 @@ var CHANNEL_EVENT_PREFIX = "UNIVERSAL_STORE:", ProgressState = {
+@@ -11117,7 +11117,7 @@
        { actor: this.actor }
      ), setTimeout(() => {
        this.syncing.reject(new UniversalStoreFollowerTimeoutError(this.id));
@@ -85,7 +91,7 @@ index 3cad9618aae48405ca285689e59b33ae9838cb58..1648ae381465b1eb3aa607aa32424f6e
    }
    emitToListeners(event, eventInfo) {
      let eventTypeListeners = this.listeners.get(event.type), everythingListeners = this.listeners.get("*");
-@@ -12809,7 +12809,7 @@ var { document: document2, location } = globalThis, KEY = "storybook-channel", C
+@@ -13270,7 +13270,7 @@
  };
  
  // src/channels/websocket/index.ts
