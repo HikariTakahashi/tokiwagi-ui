@@ -72,3 +72,37 @@ test('画面からの実行要求と親ストアの同期応答はVitestへ転�
   expect(sent).toHaveLength(3);
   expect(sent).toEqual(requests.map(event => ({ type: names[0], args: [{ event, eventInfo: { actor: { id: 'parent' } } }], from: 'server' })));
 });
+
+const runner = readFileSync(new URL('../node_modules/@storybook/addon-vitest/dist/node/vitest.js', import.meta.url), 'utf8');
+const runTestsMethod = runner.slice(runner.indexOf('async runTests(runPayload) {'), runner.indexOf('  async cancelCurrentRun() {'));
+
+async function runTwice(watching: boolean) {
+  const calls: string[] = [];
+  const vitest = {
+    isFirstRun: true, config: { coverage: { enabled: !watching } },
+    runTestSpecifications: async () => { calls.push('run'); vitest.isFirstRun = false; },
+  };
+  const runTests = runInNewContext(`({ ${runTestsMethod} }).runTests`);
+  const manager = {
+    vitest,
+    testManager: { store: { getState: () => ({ watching }), setState: () => {} } },
+    getCurrentRunConfig: () => ({ coverage: true }),
+    restartVitest: async () => { calls.push('restart'); vitest.isFirstRun = true; },
+    provideRunConfig: () => {}, resetGlobalTestNamePattern: () => {},
+    cancelCurrentRun: async () => {}, getStorybookTestSpecifications: async () => [],
+    getStories: () => [], filterTestSpecifications: () => ({ filteredTestSpecifications: [], filteredStoryIds: [] }),
+  };
+  await runTests.call(manager, {});
+  await runTests.call(manager, {});
+  return calls;
+}
+
+// 初回は初期ランナーを使い、2回目の手動実行だけ前のブラウザを閉じて再作成することを確認する。
+test('手動で再実行するときは前のブラウザを破棄してVitestを作り直す', async () => {
+  expect(await runTwice(false)).toEqual(['run', 'restart', 'run']);
+});
+
+// 監視モードで2回実行しても、ランナーを再作成せず差分実行を維持することを確認する。
+test('監視モードの再実行では既存のVitestを再利用する', async () => {
+  expect(await runTwice(true)).toEqual(['run', 'run']);
+});
