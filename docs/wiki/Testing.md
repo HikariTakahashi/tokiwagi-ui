@@ -37,6 +37,30 @@ bun run test:storybook:watch  # 変更を監視（デバッグ用Storybookも起
 bun run test:storybook -- src/stories/THeaderButton.stories.ts
 ```
 
+カバレッジも計測する場合は、StorybookのテストウィジェットでCoverageを有効にして全ストーリーを実行します。CLIでは `bun run test:storybook --coverage` を使います。カバレッジ用の `@vitest/coverage-v8`・`@vitest/coverage-istanbul` はVitest本体と同じバージョンで開発依存に含めています。CLIのHTMLレポートは `coverage/index.html` に生成され、`coverage/` はGit・型検査の対象から除外します。`Cannot find package '@vitest/coverage-v8'` が出る場合は、Storybookを停止し、同じ環境（Dev Container利用時はコンテナ内）で `bun install --frozen-lockfile` を実行して再起動してください。
+
+Coverage・Accessibilityをクリックしてもチェックが戻り、ブラウザのコンソールに `UniversalStoreFollowerTimeoutError` や `Cannot set state before store is ready` が出る場合は、画面とサーバーの状態同期が失敗しています。Storybookのページを再読み込みしてからテストウィジェットを開き、両方のチェックを有効にしてください。実行中はチェックを変更できません。Coverageを計測する場合はWatch modeをオフにし、ウィジェットの「Start test run」で全件実行します。チェック欄の右側にある結果ボタンは、検査結果ができるまで無効表示になります。
+
+`storybook@10.6.0` の初期同期は既定1秒、接続監視の追加猶予は5秒で、全件結果の同期や重い集計中にタイムアウトする場合があります。`patches/storybook@10.6.0.patch` で初期同期を30秒、接続監視の追加猶予を120秒（通知間隔15秒との合計135秒）に調整しています。監視による切断動作は維持します。`scripts/storybook-connection.test.ts` では、遅れて状態が届いても設定変更できることと、集計中の無通信を待ったうえで応答が戻らなければ切断することを検証します。Storybook更新時はパッチとテストの参照先を併せて確認してください。
+
+Dev ContainerではV8方式の全件計測でChromiumが終了したため、既定のカバレッジ方式はIstanbulにしています。`vitest.config.ts` の `storybook` プロジェクトでは `maxWorkers: 1` も指定し、Storybook・エディターと併用する場合のメモリ負荷を抑えながら、テスト間の隔離を保って直列実行します。
+
+Linuxのテスト用Chromiumには `--js-flags=--max-old-space-size=256` を渡し、使い終わったiframeの回収を促します。256MBはV8のold-spaceの上限設定です。macOSではこの起動オプションを追加しません。
+
+`bun run storybook` はNode.jsの `--max-old-space-size=768` を指定して起動します。この上限はVitest子プロセスにも引き継がれ、Storybook本体・VitestそれぞれのV8 old-spaceを768MiBに制限します。RSS全体の上限ではなく、ブラウザにも別途メモリが必要です。起動スクリプトを変更した場合は、既存のStorybookを停止して再起動してください。
+
+同じ起動スクリプトで `VITEST_CHROMIUM_GC_DISK_THRESHOLD_GB=Infinity` を渡し、Vitest 4.1.12に組み込まれたLinux・Chromium・Playwright向けGCをファイル間で毎回実行します。本来は一時ディスクの空き容量が少ない場合の対策ですが、ここでは空き容量による抑止を外し、全件テストの繰り返しによるブラウザのメモリ増加も抑えます。テストごとのiframe隔離は維持します。`scripts/storybook-browser-gc.test.ts` で空き容量が多いLinuxでのGC実行とmacOSへの非適用を検証します。Vitest更新時は、この環境変数・ファイル間GCの実装・テストの参照先を確認してください。
+
+高負荷時のカバレッジ計測・アクセシビリティ検査に対応するため、このプロジェクトの `testTimeout` は60秒です。THeaderButtonの操作テストでは、Astroの見本生成・取得を含む描画を最大30秒待ちます。時間内に描画・検査が完了しない場合は失敗として扱います。
+
+Storybook本体からの全件実行では、Vitest子プロセスのIPCメッセージ履歴に過去のテスト結果全体が蓄積され、メモリ不足でブラウザやサーバーが終了する問題を確認しています。`@storybook/addon-vitest@10.6.0` には `patches/@storybook%2Faddon-vitest@10.6.0.patch` を適用し、`buffer: { ipc: false }` で履歴保存を無効にします。さらに、子プロセスから受け取ったストア通知をWeakSetで識別し、同じ子プロセスへ返送する際の重複シリアライズを防ぎます。画面への結果通知、画面からの実行要求、親ストアの同期応答、標準出力・標準エラーは維持します。`scripts/storybook-ipc.test.ts` でこの転送動作を検証しています。パッチは `bun install --frozen-lockfile` で自動適用されるため、Dev Containerでも同じコマンドで依存を更新してください。addonのバージョンを変更する場合は、パッチ・テストの参照先とStorybook本体からの全件実行を再確認します。
+
+`Browser connection was closed while running tests` や `rpc is closed` は、テスト用ブラウザとの接続が失われた場合に発生します。Dev Containerでは実際にメモリ不足によるChromiumの強制終了を確認しています。タイムアウトの延長だけでは復旧しないため、上記パッチと起動スクリプトを適用してStorybookを再起動してください。未適用の環境では、ブラウザが終了した後にVitestへ古いセッションが残り、再実行で `Orchestrator not found` になる場合もあります。修正版を読み込むには、画面の再読み込みに加えてサーバー自体の再起動が必要です。
+
+同じaddonパッチで、監視をオフにした手動再実行の前にVitestを再作成します。既存のブラウザとセッションを閉じ、前回の実行で保持されたメモリや切断後の状態を次回へ持ち越さないためです。未実行の初期ランナーはそのまま使い、監視モードも従来どおり再利用します。手動実行と監視モードの切り替え動作も `scripts/storybook-ipc.test.ts` で検証します。Vitest 4.1.12の `isFirstRun` を参照するため、Vitest更新時はこの判定も確認してください。
+
+カバレッジ集計で `.tmp/coverage-*.json` の `ENOENT` が出る場合は、集計に必要な一時ファイルが失われています。実行中の `vitest.config.ts` などの設定変更や、同じカバレッジ出力先を使う複数のVitest実行を避けてください。テストと監視用CLIを停止してからStorybookを再起動し、Coverageを有効にして全ストーリーを実行します。実行中にカバレッジ出力先やキャッシュを削除しないでください。
+
 `vitest.config.ts` の `storybook` プロジェクトだけを対象にします。既存の `bun test` とFirefox・WebKitの画像比較はそれぞれ独立して実行します。`play` のないストーリーも描画テストの対象です。アイコンの使用例には表示目的の `play` を追加しません。MDXのDocsページはテスト対象外です。Astroのストーリーでは、公開実コンポーネントから生成したHTML見本を検証します。
 
 操作やアサーションを追加する場合は `storybook/test` とストーリーの `play` を使います。`canvas` 内を検索し、非同期描画には `findByRole` などを使ってください。例えば、無効なボタンのストーリーは次のように検証できます。
