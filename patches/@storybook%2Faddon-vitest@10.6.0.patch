@@ -1,8 +1,19 @@
 diff --git a/dist/preset.js b/dist/preset.js
-index 88a320f0c477f6173108053d9c390c118ab2664a..70510cba1e36499412622b9fbd66e8e2fe458db7 100644
+index 88a320f0c477f6173108053d9c390c118ab2664a..2344cd268b71d5db788aa2c76194962e98efd930 100644
 --- a/dist/preset.js
 +++ b/dist/preset.js
-@@ -211,6 +211,8 @@
+@@ -187,7 +187,10 @@ var importMetaResolve = (...args) => typeof import.meta.resolve != "function" &&
+ ), pathToFileURL(args[0]).href) : import.meta.resolve(...args);
+ 
+ // src/node/boot-test-runner.ts
++var childStoreEvents = new WeakSet();
+ var MAX_START_TIME = 3e4, vitestModulePath = fileURLToPath2(importMetaResolve("@storybook/addon-vitest/vitest")), eventQueue = [], child, ready = !1, unsubscribeStore, unsubscribeStatusStore, unsubscribeTestProviderStore, forwardUniversalStoreEvent = (storeEventName) => (event, eventInfo) => {
++  // The child already has its own updates; avoid serializing them back over IPC.
++  if (childStoreEvents.has(event)) return;
+   child?.send({
+     type: storeEventName,
+     args: [{ event, eventInfo }],
+@@ -211,6 +214,8 @@ var MAX_START_TIME = 3e4, vitestModulePath = fileURLToPath2(importMetaResolve("@
      child = executeNodeCommand({
        scriptPath: vitestModulePath,
        options: {
@@ -11,3 +22,13 @@ index 88a320f0c477f6173108053d9c390c118ab2664a..70510cba1e36499412622b9fbd66e8e2
          env: {
            VITEST: "true",
            TEST: "true",
+@@ -228,6 +233,9 @@ var MAX_START_TIME = 3e4, vitestModulePath = fileURLToPath2(importMetaResolve("@
+     ), unsubscribeTestProviderStore = internal_universalTestProviderStore.subscribe(
+       forwardUniversalStoreEvent(TEST_PROVIDER_STORE_CHANNEL_EVENT_NAME)
+     ), child.on("message", (event) => {
++      let storeEvent = event.args?.[0]?.event;
++      if (event.type.startsWith("UNIVERSAL_STORE:") && storeEvent && typeof storeEvent === "object")
++        childStoreEvents.add(storeEvent);
+       if (event.type === "ready") {
+         for (; eventQueue.length; ) {
+           let { type, args } = eventQueue.shift();
