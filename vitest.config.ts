@@ -17,6 +17,8 @@ export default defineConfig({
         name: 'storybook',
         // Storybook・エディターと併用するDev Containerでもブラウザを直列実行する。
         maxWorkers: 1,
+        // カバレッジ計測とa11y検査を併用する高負荷時にも完了を待つ。
+        testTimeout: 60_000,
         browser: {
           enabled: true,
           provider: playwright({

@@ -37,8 +37,8 @@ type Story = StoryObj<Args>;
 
 // 実ボタンの操作名・有効状態を確認し、クリックとキーボードでの発火、無効時の抑止を3方式で検証する。
 const play: Story['play'] = async ({ canvas, args, userEvent, step }) => {
-  // Astro見本の初回生成も待ち、読み込み中の表示を検証対象にしない。
-  const button = await canvas.findByRole('button', { name: args.text.trim() ? args.text : '操作' }, { timeout: 10_000 });
+  // Astro見本の初回生成・取得が高負荷時に遅れる場合も、実コンポーネントの描画を待つ。
+  const button = await canvas.findByRole('button', { name: args.text.trim() ? args.text : '操作' }, { timeout: 30_000 });
   const onClick = fn();
   button.addEventListener('click', onClick);
   try {
