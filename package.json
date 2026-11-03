@@ -41,7 +41,7 @@
     "visual:transfer": "bun scripts/visual-transfer.ts",
     "generate:icons": "bun scripts/generate-icons.ts",
     "check:react-compat": "bun scripts/check-react-compat.ts",
-    "storybook": "storybook dev --port 6006 --host 127.0.0.1 --no-open",
+    "storybook": "VITEST_CHROMIUM_GC_DISK_THRESHOLD_GB=Infinity node --max-old-space-size=768 node_modules/storybook/dist/bin/dispatcher.js dev --port 6006 --host 127.0.0.1 --no-open",
     "build:storybook": "storybook build --output-dir storybook-static"
   },
   "dependencies": {

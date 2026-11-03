@@ -15,9 +15,16 @@ export default defineConfig({
       })],
       test: {
         name: 'storybook',
+        // Storybook・エディターと併用するDev Containerでもブラウザを直列実行する。
+        maxWorkers: 1,
         browser: {
           enabled: true,
-          provider: playwright(),
+          provider: playwright({
+            // Linuxの全件実行で破棄済みiframeの回収を促し、ブラウザ切断を防ぐ。
+            launchOptions: process.platform === 'linux'
+              ? { args: ['--js-flags=--max-old-space-size=256'] }
+              : {},
+          }),
           headless: true,
           instances: [{ browser: 'chromium' }],
         },
