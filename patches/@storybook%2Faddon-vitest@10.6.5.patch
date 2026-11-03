@@ -1,8 +1,7 @@
 diff --git a/dist/node/vitest.js b/dist/node/vitest.js
-index 3b5ee71a4254be80ee2b83b85ed045351d1c556e..6d90883f7d8fb336dab4a660d329a332792ed9f3 100644
 --- a/dist/node/vitest.js
 +++ b/dist/node/vitest.js
-@@ -353,7 +353,8 @@ Please install the @vitest/${isIstanbul ? "coverage-istanbul" : "coverage-v8"} p
+@@ -355,7 +355,8 @@
    }
    async runTests(runPayload) {
      let { watching } = this.testManager.store.getState(), coverageShouldBeEnabled = !!this.getCurrentRunConfig().coverage && !watching && (runPayload?.storyIds?.length ?? 0) === 0, currentCoverage = this.vitest?.config.coverage?.enabled;
@@ -13,10 +12,9 @@ index 3b5ee71a4254be80ee2b83b85ed045351d1c556e..6d90883f7d8fb336dab4a660d329a332
      if (runPayload.storyIds?.length) {
        let regex = this.buildTestNamePatternForStories(filteredStories, allStories);
 diff --git a/dist/preset.js b/dist/preset.js
-index 88a320f0c477f6173108053d9c390c118ab2664a..2344cd268b71d5db788aa2c76194962e98efd930 100644
 --- a/dist/preset.js
 +++ b/dist/preset.js
-@@ -187,7 +187,10 @@ var importMetaResolve = (...args) => typeof import.meta.resolve != "function" &&
+@@ -187,7 +187,10 @@
  ), pathToFileURL(args[0]).href) : import.meta.resolve(...args);
  
  // src/node/boot-test-runner.ts
@@ -27,7 +25,7 @@ index 88a320f0c477f6173108053d9c390c118ab2664a..2344cd268b71d5db788aa2c76194962e
    child?.send({
      type: storeEventName,
      args: [{ event, eventInfo }],
-@@ -211,6 +214,8 @@ var MAX_START_TIME = 3e4, vitestModulePath = fileURLToPath2(importMetaResolve("@
+@@ -211,6 +214,8 @@
      child = executeNodeCommand({
        scriptPath: vitestModulePath,
        options: {
@@ -36,7 +34,7 @@ index 88a320f0c477f6173108053d9c390c118ab2664a..2344cd268b71d5db788aa2c76194962e
          env: {
            VITEST: "true",
            TEST: "true",
-@@ -228,6 +233,9 @@ var MAX_START_TIME = 3e4, vitestModulePath = fileURLToPath2(importMetaResolve("@
+@@ -228,6 +233,9 @@
      ), unsubscribeTestProviderStore = internal_universalTestProviderStore.subscribe(
        forwardUniversalStoreEvent(TEST_PROVIDER_STORE_CHANNEL_EVENT_NAME)
      ), child.on("message", (event) => {
