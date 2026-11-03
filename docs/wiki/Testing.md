@@ -41,7 +41,7 @@ bun run test:storybook -- src/stories/THeaderButton.stories.ts
 
 Coverage・Accessibilityをクリックしてもチェックが戻り、ブラウザのコンソールに `UniversalStoreFollowerTimeoutError` や `Cannot set state before store is ready` が出る場合は、画面とサーバーの状態同期が失敗しています。Storybookのページを再読み込みしてからテストウィジェットを開き、両方のチェックを有効にしてください。実行中はチェックを変更できません。Coverageを計測する場合はWatch modeをオフにし、ウィジェットの「Start test run」で全件実行します。チェック欄の右側にある結果ボタンは、検査結果ができるまで無効表示になります。
 
-`storybook@10.6.0` の初期同期は既定1秒、接続監視の追加猶予は5秒で、全件結果の同期や重い集計中にタイムアウトする場合があります。`patches/storybook@10.6.0.patch` で初期同期を30秒、接続監視の追加猶予を120秒（通知間隔15秒との合計135秒）に調整しています。監視による切断動作は維持します。`scripts/storybook-connection.test.ts` では、遅れて状態が届いても設定変更できることと、集計中の無通信を待ったうえで応答が戻らなければ切断することを検証します。Storybook更新時はパッチとテストの参照先を併せて確認してください。
+`storybook@10.6.5` の初期同期は既定1秒、接続監視の追加猶予は5秒で、全件結果の同期や重い集計中にタイムアウトする場合があります。`patches/storybook@10.6.5.patch` で初期同期を30秒、接続監視の追加猶予を120秒（通知間隔15秒との合計135秒）に調整しています。監視による切断動作は維持します。`scripts/storybook-connection.test.ts` では、遅れて状態が届いても設定変更できることと、集計中の無通信を待ったうえで応答が戻らなければ切断することを検証します。Storybook更新時はパッチとテストの参照先を併せて確認してください。 10.6.5への移植では内部チャンク名を更新し、Manager内のストア実装も同じ30秒に揃えています。
 
 Dev ContainerではV8方式の全件計測でChromiumが終了したため、既定のカバレッジ方式はIstanbulにしています。`vitest.config.ts` の `storybook` プロジェクトでは `maxWorkers: 1` も指定し、Storybook・エディターと併用する場合のメモリ負荷を抑えながら、テスト間の隔離を保って直列実行します。
 
@@ -53,9 +53,11 @@ Linuxのテスト用Chromiumには `--js-flags=--max-old-space-size=256` を渡�
 
 高負荷時のカバレッジ計測・アクセシビリティ検査に対応するため、このプロジェクトの `testTimeout` は60秒です。THeaderButtonの操作テストでは、Astroの見本生成・取得を含む描画を最大30秒待ちます。時間内に描画・検査が完了しない場合は失敗として扱います。
 
-Storybook本体からの全件実行では、Vitest子プロセスのIPCメッセージ履歴に過去のテスト結果全体が蓄積され、メモリ不足でブラウザやサーバーが終了する問題を確認しています。`@storybook/addon-vitest@10.6.0` には `patches/@storybook%2Faddon-vitest@10.6.0.patch` を適用し、`buffer: { ipc: false }` で履歴保存を無効にします。さらに、子プロセスから受け取ったストア通知をWeakSetで識別し、同じ子プロセスへ返送する際の重複シリアライズを防ぎます。画面への結果通知、画面からの実行要求、親ストアの同期応答、標準出力・標準エラーは維持します。`scripts/storybook-ipc.test.ts` でこの転送動作を検証しています。パッチは `bun install --frozen-lockfile` で自動適用されるため、Dev Containerでも同じコマンドで依存を更新してください。addonのバージョンを変更する場合は、パッチ・テストの参照先とStorybook本体からの全件実行を再確認します。
+Storybook本体からの全件実行では、Vitest子プロセスのIPCメッセージ履歴に過去のテスト結果全体が蓄積され、メモリ不足でブラウザやサーバーが終了する問題を確認しています。`@storybook/addon-vitest@10.6.5` には `patches/@storybook%2Faddon-vitest@10.6.5.patch` を適用し、`buffer: { ipc: false }` で履歴保存を無効にします。さらに、子プロセスから受け取ったストア通知をWeakSetで識別し、同じ子プロセスへ返送する際の重複シリアライズを防ぎます。画面への結果通知、画面からの実行要求、親ストアの同期応答、標準出力・標準エラーは維持します。`scripts/storybook-ipc.test.ts` でこの転送動作を検証しています。パッチは `bun install --frozen-lockfile` で自動適用されるため、Dev Containerでも同じコマンドで依存を更新してください。addonのバージョンを変更する場合は、パッチ・テストの参照先とStorybook本体からの全件実行を再確認します。
 
 `Browser connection was closed while running tests` や `rpc is closed` は、テスト用ブラウザとの接続が失われた場合に発生します。Dev Containerでは実際にメモリ不足によるChromiumの強制終了を確認しています。タイムアウトの延長だけでは復旧しないため、上記パッチと起動スクリプトを適用してStorybookを再起動してください。未適用の環境では、ブラウザが終了した後にVitestへ古いセッションが残り、再実行で `Orchestrator not found` になる場合もあります。修正版を読み込むには、画面の再読み込みに加えてサーバー自体の再起動が必要です。
+
+10.6.5への依存更新時には、macOSの既存環境で接続切断が起きる一方、クリーン環境では全347件が成功しました。全テストと開発サーバーを停止し、`node_modules/.vite`・`node_modules/.cache/storybook`の生成キャッシュを退避した後は、既存環境でも全件が成功しています。更新後に同じ症状が出る場合は、固定インストールとパッチの適用を確認したうえで、この切り分けも行ってください。
 
 同じaddonパッチで、監視をオフにした手動再実行の前にVitestを再作成します。既存のブラウザとセッションを閉じ、前回の実行で保持されたメモリや切断後の状態を次回へ持ち越さないためです。未実行の初期ランナーはそのまま使い、監視モードも従来どおり再利用します。手動実行と監視モードの切り替え動作も `scripts/storybook-ipc.test.ts` で検証します。Vitest 4.1.12の `isFirstRun` を参照するため、Vitest更新時はこの判定も確認してください。
 
