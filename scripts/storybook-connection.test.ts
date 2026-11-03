@@ -36,3 +36,21 @@ test('Storybookの状態同期が1秒を超えても設定を変更できる', (
     assert.deepEqual(store.getState(), { coverage: true, a11y: true });
   `);
 });
+
+// 集計中の20秒超の無通信を待ち、猶予135秒を超えたときは接続を切断することを確認する。
+test('Storybookの集計中に20秒通知がなくても切断せず、応答が戻らなければ切断する', () => {
+  runConnectionTest(`
+    const { WebsocketTransport } = await import('./node_modules/storybook/dist/_node-chunks/chunk-6EPLEZFZ.js');
+    const closed = [];
+    const socket = { close: (code, reason) => closed.push({ code, reason }), send: () => {} };
+    const transport = new WebsocketTransport({ url: 'ws://localhost/test', page: 'manager', createSocket: () => socket });
+    transport.setHandler(() => {});
+    socket.onopen();
+    mock.timers.tick(21000);
+    assert.equal(closed.length, 0);
+    mock.timers.tick(100000);
+    assert.equal(closed.length, 0);
+    mock.timers.tick(15000);
+    assert.deepEqual(closed, [{ code: 3008, reason: 'timeout' }]);
+  `);
+});
