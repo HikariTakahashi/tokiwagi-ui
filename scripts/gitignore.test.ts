@@ -24,7 +24,7 @@ function ignoredPaths(paths: string[]): string[] {
 test('生成物と環境ファイルはGitの管理対象から除外する', () => {
   const paths = [
     'node_modules/example/index.js', 'dist/index.html', 'storybook-static/index.html',
-    'playwright-report/index.html', 'test-results/report.json', '.visual-baselines/baseline.png',
+    'playwright-report/index.html', 'test-results/report.json', 'coverage/index.html', '.visual-baselines/baseline.png',
     '.visual-candidates/baselines.zip', '.visual-site/gallery.html', 'e2e/icons-snapshots/current.png',
     'debug-storybook.log', '.astro/types.d.ts', '.DS_Store', '.env', '.env.local', '.env.production',
   ];

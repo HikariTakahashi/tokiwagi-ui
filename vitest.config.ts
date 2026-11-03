@@ -5,6 +5,8 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    // V8の精密カバレッジ収集によるChromiumのメモリ増加を避ける。
+    coverage: { provider: 'istanbul' },
     projects: [{
       plugins: [storybookTest({
         configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
