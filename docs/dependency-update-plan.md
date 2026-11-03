@@ -8,21 +8,23 @@
 
 ## 更新順序と重要度
 
-| 順番 | 重要度 | 対象 | 現行 | 目標 | 理由・進め方 |
-| --- | --- | --- | --- | --- | --- |
-| 1 | 最優先 | `storybook`、`@storybook/addon-a11y`、`@storybook/addon-docs`、`@storybook/addon-vitest`、`@storybook/html-vite` | 10.6.0 | 10.6.5 | 本体とVitestアドオンの現行版がセキュリティ修正の対象。同じ版に揃え、既存の独自パッチも確認する。 |
-| 2 | 高 | Node.js（CI・Dev Container） | 22.16.0 | 22.23.4 | 最新AstroのNode.js要件を満たす。22系を維持し、CIとDev Containerを揃える。 |
-| 3 | 中 | Bun、`@types/bun` | 1.3.9 | 1.4.4 | 依存管理・テストの実行基盤を更新し、後続の検証環境を固定する。型定義の現行版は`bun.lock`の固定値。 |
-| 4 | 中 | Astro | 7.3.4 | 7.4.5 | Node.js更新後に実施し、紹介ページとAstro実コンポーネントの描画を確認する。 |
-| 4 | 中 | `@astrojs/check` | 0.9.10 | 0.9.12 | Astro関連の型チェックを更新する。TypeScript本体の更新は段階10で行う。 |
-| 4 | 中 | `@astrojs/compiler-rs` | 0.4.1 | 0.5.2 | Astroコンパイラーを更新し、実コンポーネントとStorybook用見本の生成を確認する。 |
-| 4 | 中 | Vite（間接依存） | 8.3.0 | 8.3.5 | Astro更新に伴い依存元との整合性と`bun.lock`の解決結果を確認する。直接依存への追加は不要。 |
-| 5 | 中 | `react`、`react-dom` | 19.3.0 | 19.3.1 | 同じ版に揃え、公開コンポーネントとReact 18・19の互換性を検証する。 |
-| 6 | 中 | `vue`、`@vue/server-renderer` | 3.5.22 | 3.5.44 | 同じ版に揃え、SSR・ハイドレーションを確認する。 |
-| 7 | 中 | `tailwindcss`、`@tailwindcss/vite` | 4.3.3 | 4.3.4 | 同じ版に揃え、CSS出力と画面表示を確認する。 |
-| 8 | 低・計画更新 | `vitest`、`@vitest/browser-playwright`、`@vitest/coverage-istanbul`、`@vitest/coverage-v8` | 4.1.12 | 5.1.0 | メジャー更新。Storybook更新後に同じ版へ揃え、ブラウザーテストとカバレッジを検証する。 |
-| 9 | 低・計画更新 | `happy-dom` | 20.14.5 | 21.0.4 | メジャー更新。DOM・ハイドレーションの既存テストへの影響を確認する。 |
-| 10 | 低・計画更新 | TypeScript | 5.9.3 | 6.0.3 | 型チェックの変更を実行時の更新から分け、最後に対応する。最新安定版7.0.2への更新は保留する。 |
+各段階の作業内容・完了条件・進捗は、表の対応Issueで管理する。段階4のAstro関連・Viteは、同じIssueでまとめて扱う。
+
+| 順番 | 重要度 | 対象 | 現行 | 目標 | 理由・進め方 | Issue |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 最優先 | `storybook`、`@storybook/addon-a11y`、`@storybook/addon-docs`、`@storybook/addon-vitest`、`@storybook/html-vite` | 10.6.0 | 10.6.5 | 本体とVitestアドオンの現行版がセキュリティ修正の対象。同じ版に揃え、既存の独自パッチも確認する。 | [#95](https://github.com/HikariTakahashi/tokiwagi-ui/issues/95) |
+| 2 | 高 | Node.js（CI・Dev Container） | 22.16.0 | 22.23.4 | 最新AstroのNode.js要件を満たす。22系を維持し、CIとDev Containerを揃える。 | [#96](https://github.com/HikariTakahashi/tokiwagi-ui/issues/96) |
+| 3 | 中 | Bun、`@types/bun` | 1.3.9 | 1.4.4 | 依存管理・テストの実行基盤を更新し、後続の検証環境を固定する。型定義の現行版は`bun.lock`の固定値。 | [#97](https://github.com/HikariTakahashi/tokiwagi-ui/issues/97) |
+| 4 | 中 | Astro | 7.3.4 | 7.4.5 | Node.js更新後に実施し、紹介ページとAstro実コンポーネントの描画を確認する。 | [#98](https://github.com/HikariTakahashi/tokiwagi-ui/issues/98) |
+| 4 | 中 | `@astrojs/check` | 0.9.10 | 0.9.12 | Astro関連の型チェックを更新する。TypeScript本体の更新は段階10で行う。 | [#98](https://github.com/HikariTakahashi/tokiwagi-ui/issues/98) |
+| 4 | 中 | `@astrojs/compiler-rs` | 0.4.1 | 0.5.2 | Astroコンパイラーを更新し、実コンポーネントとStorybook用見本の生成を確認する。 | [#98](https://github.com/HikariTakahashi/tokiwagi-ui/issues/98) |
+| 4 | 中 | Vite（間接依存） | 8.3.0 | 8.3.5 | Astro更新に伴い依存元との整合性と`bun.lock`の解決結果を確認する。直接依存への追加は不要。 | [#98](https://github.com/HikariTakahashi/tokiwagi-ui/issues/98) |
+| 5 | 中 | `react`、`react-dom` | 19.3.0 | 19.3.1 | 同じ版に揃え、公開コンポーネントとReact 18・19の互換性を検証する。 | [#99](https://github.com/HikariTakahashi/tokiwagi-ui/issues/99) |
+| 6 | 中 | `vue`、`@vue/server-renderer` | 3.5.22 | 3.5.44 | 同じ版に揃え、SSR・ハイドレーションを確認する。 | [#100](https://github.com/HikariTakahashi/tokiwagi-ui/issues/100) |
+| 7 | 中 | `tailwindcss`、`@tailwindcss/vite` | 4.3.3 | 4.3.4 | 同じ版に揃え、CSS出力と画面表示を確認する。 | [#101](https://github.com/HikariTakahashi/tokiwagi-ui/issues/101) |
+| 8 | 低・計画更新 | `vitest`、`@vitest/browser-playwright`、`@vitest/coverage-istanbul`、`@vitest/coverage-v8` | 4.1.12 | 5.1.0 | メジャー更新。Storybook更新後に同じ版へ揃え、ブラウザーテストとカバレッジを検証する。 | [#102](https://github.com/HikariTakahashi/tokiwagi-ui/issues/102) |
+| 9 | 低・計画更新 | `happy-dom` | 20.14.5 | 21.0.4 | メジャー更新。DOM・ハイドレーションの既存テストへの影響を確認する。 | [#103](https://github.com/HikariTakahashi/tokiwagi-ui/issues/103) |
+| 10 | 低・計画更新 | TypeScript | 5.9.3 | 6.0.3 | 型チェックの変更を実行時の更新から分け、最後に対応する。最新安定版7.0.2への更新は保留する。 | [#104](https://github.com/HikariTakahashi/tokiwagi-ui/issues/104) |
 
 ## 優先順位と更新先の判断
 
