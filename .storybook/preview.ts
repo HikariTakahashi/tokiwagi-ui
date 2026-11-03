@@ -8,6 +8,7 @@ import { theme } from './theme';
 
 const preview: Preview = {
   parameters: {
+    a11y: { test: 'error' },
     docs: { theme },
     layout: 'fullscreen',
     backgrounds: { disable: true },

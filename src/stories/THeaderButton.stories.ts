@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/html-vite';
+import { expect, fn } from 'storybook/test';
 import { headerTones } from '../lib/header';
 import { iconNames } from '../lib/icon-sources';
 import type { HeaderPreviewOptions, HeaderButtonContent } from './header-preview';
@@ -33,4 +34,47 @@ const meta = {
 } satisfies Meta<Args>;
 export default meta;
 type Story = StoryObj<Args>;
-export const Default: Story = {};
+
+// 実ボタンの操作名・有効状態を確認し、クリックとキーボードでの発火、無効時の抑止を3方式で検証する。
+const play: Story['play'] = async ({ canvas, args, userEvent, step }) => {
+  // Astro見本の初回生成・取得が高負荷時に遅れる場合も、実コンポーネントの描画を待つ。
+  const button = await canvas.findByRole('button', { name: args.text.trim() ? args.text : '操作' }, { timeout: 30_000 });
+  const onClick = fn();
+  button.addEventListener('click', onClick);
+  try {
+    await step('操作名と選択状態が設定に一致する', async () => {
+      await expect(button).toBeVisible();
+      if (args.selected === 'unset' || args.selected === undefined) {
+        await expect(button).not.toHaveAttribute('aria-pressed');
+      } else {
+        await expect(button).toHaveAttribute('aria-pressed', String(args.selected === 'on' || args.selected === true));
+      }
+    });
+    await step('有効時はクリックとキーボードで操作でき、無効時は発火しない', async () => {
+      if (args.disabled) {
+        await expect(button).toBeDisabled();
+        await userEvent.click(button);
+        button.focus();
+        await expect(button).not.toHaveFocus();
+        await userEvent.keyboard('{Enter}');
+        await expect(onClick).not.toHaveBeenCalled();
+      } else {
+        await expect(button).toBeEnabled();
+        await userEvent.click(button);
+        await expect(onClick).toHaveBeenCalledTimes(1);
+        await expect(button).toHaveFocus();
+        await userEvent.keyboard(' ');
+        await expect(onClick).toHaveBeenCalledTimes(2);
+      }
+    });
+  } finally {
+    button.removeEventListener('click', onClick);
+  }
+};
+
+export const Default: Story = { play };
+export const Disabled: Story = { name: '無効（React）', args: { disabled: true }, play };
+export const Vue: Story = { name: '操作（Vue）', args: { framework: 'vue', content: 'icon', selected: 'on' }, play };
+export const VueDisabled: Story = { name: '無効（Vue）', args: { framework: 'vue', disabled: true }, play };
+export const Astro: Story = { name: '操作（Astro）', args: { framework: 'astro', content: 'text', selected: 'off' }, play };
+export const AstroDisabled: Story = { name: '無効（Astro）', args: { framework: 'astro', disabled: true }, play };
