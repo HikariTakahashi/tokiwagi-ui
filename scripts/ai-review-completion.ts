@@ -19,6 +19,13 @@ function fromBot(user: GitHubUser | undefined, bot: typeof codex) {
   return user?.type === 'Bot' && user.id === bot.id && user.login === bot.login;
 }
 
+function hasCopilotResult(review: Review) {
+  // 利用枠不足・サービス障害でも同じボットのCOMMENTEDレビューが作られる。
+  return fromBot(review.user, copilot) && Boolean(review.body?.match(
+    /^Copilot reviewed [1-9]\d* out of [1-9]\d* changed files? in this pull request and generated (?:\d+ (?:new )?comments?|no (?:new )?comments)\./m,
+  ));
+}
+
 function codexCommentCommit(comment: Comment) {
   if (!fromBot(comment.user, codex) || comment.performed_via_github_app?.id !== codexAppId || !comment.body) return;
   const body = comment.body.trimStart();
@@ -54,7 +61,7 @@ export function reviewCompletion(comments: readonly Comment[], reviews: readonly
       const reported = review.body.match(/^\*\*Reviewed commit:\*\* `([0-9a-f]{10,40})`\s*$/m)?.[1];
       return reported && review.commit_id?.startsWith(reported);
     })?.commit_id;
-  const copilotCommit = copilotRequired ? posted.find(review => fromBot(review.user, copilot))?.commit_id : undefined;
+  const copilotCommit = copilotRequired ? posted.find(hasCopilotResult)?.commit_id : undefined;
   return {
     codexCommit,
     copilotCommit,

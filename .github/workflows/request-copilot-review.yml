@@ -78,7 +78,9 @@ jobs:
               appendFileSync(GITHUB_STEP_SUMMARY, 'Copilotレビューを省略：対象の差分またはPRの状態が変わりました\n');
               break;
             }
-            const response = await fetch(pull + '/copilot-code-review', { method: 'POST', headers, body: '{}' });
+            const response = await fetch(pull + '/copilot-code-review', {
+              method: 'POST', headers, body: JSON.stringify({ review_effort: 'lite' }),
+            });
             if (response.status === 201) {
               appendFileSync(GITHUB_STEP_SUMMARY, 'Copilotレビューを依頼しました\n');
               break;

@@ -24,7 +24,7 @@ const copilotReview = {
   state: 'COMMENTED',
   submitted_at: '2026-11-16T00:00:00Z',
   commit_id: nextCommit,
-  body: '## Pull request overview',
+  body: '## Pull request overview\n\nCopilot reviewed 1 out of 1 changed file in this pull request and generated no new comments.',
 };
 
 // 同じPRの完了記録を比較し、Approveがなくてもそれぞれのレビュー完了を認める。
@@ -72,6 +72,22 @@ test('発行元が違う記録と未提出のレビューでは通過しない',
   ]) {
     expect(reviewCompletion([codexSummary('completed')], [review], true).complete).toBe(false);
   }
+});
+
+test('Copilotの指摘ありと指摘なしは完了とし、同じ公式ボットの失敗通知は完了にしない', () => {
+  const quotaFailure = {
+    ...copilotReview,
+    body: 'Copilot was unable to review this pull request because the user who requested the review has insufficient remaining quota. Try requesting a review at a lower effort level.',
+  };
+  const serviceFailure = { ...copilotReview, body: 'Copilot encountered an error and was unable to review this pull request.' };
+  const withFindings = {
+    ...copilotReview,
+    body: '## Pull request overview\n\nCopilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.',
+  };
+  const codex = [codexSummary('completed')];
+  expect(reviewCompletion(codex, [quotaFailure, serviceFailure], true).complete).toBe(false);
+  expect(reviewCompletion(codex, [quotaFailure, withFindings], true).complete).toBe(true);
+  expect(reviewCompletion(codex, [copilotReview], true).complete).toBe(true);
 });
 
 // 再実行でサマリーが更新されても、公式ボットの完了コメントまたは提出済みレビューから一回分を確認する。
