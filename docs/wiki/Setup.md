@@ -3,7 +3,7 @@
 ## 前提
 
 - Bun **1.4.4**（`packageManager` の指定）。CI・Dev Containerと同じ版を使用します。
-- Node.js **22.23.4**。StorybookなどNode.jsを使用するツールは、CI・Dev Containerと同じ版で実行します。現行のAstroとAstroコンパイラが要求する最低版は22.12.0です。
+- Node.js **22.23.4**。Astro 7.4.5は22.23.4以上を要求します。StorybookなどNode.jsを使用するツールも、CI・Dev Containerと同じ版で実行します。
 - Git。GitHub上でIssue・PRを操作する開発者はGitHub CLIも用意します。
 - React・Vueは使う入口に対応するものを利用側へ導入します。開発リポジトリには見本・テスト用の依存が含まれています。
 
