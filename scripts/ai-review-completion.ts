@@ -4,6 +4,8 @@ import { setTimeout } from 'node:timers/promises';
 type GitHubUser = { id?: number; login?: string; type?: string };
 type Comment = { user?: GitHubUser; performed_via_github_app?: { id?: number }; body?: string };
 type Review = Comment & { state?: string; submitted_at?: string; commit_id?: string };
+type MergeablePull = { base: { sha: string }; head: { sha: string }; mergeable: boolean | null };
+type GetPath = (path: string, allowNotFound?: boolean) => Promise<Response>;
 
 const codex = { id: 199175422, login: 'chatgpt-codex-connector[bot]' };
 const copilot = { id: 175728472, login: 'copilot-pull-request-reviewer[bot]' };
@@ -15,6 +17,13 @@ const submitted = new Set(['COMMENTED', 'APPROVED', 'CHANGES_REQUESTED', 'DISMIS
 
 function fromBot(user: GitHubUser | undefined, bot: typeof codex) {
   return user?.type === 'Bot' && user.id === bot.id && user.login === bot.login;
+}
+
+function hasCopilotResult(review: Review) {
+  // 利用枠不足・サービス障害でも同じボットのCOMMENTEDレビューが作られる。
+  return fromBot(review.user, copilot) && Boolean(review.body?.match(
+    /^Copilot reviewed [1-9]\d* out of [1-9]\d* changed files? in this pull request and generated (?:\d+ (?:new )?comments?|no (?:new )?comments)\./m,
+  ));
 }
 
 function codexCommentCommit(comment: Comment) {
@@ -52,7 +61,7 @@ export function reviewCompletion(comments: readonly Comment[], reviews: readonly
       const reported = review.body.match(/^\*\*Reviewed commit:\*\* `([0-9a-f]{10,40})`\s*$/m)?.[1];
       return reported && review.commit_id?.startsWith(reported);
     })?.commit_id;
-  const copilotCommit = copilotRequired ? posted.find(review => fromBot(review.user, copilot))?.commit_id : undefined;
+  const copilotCommit = copilotRequired ? posted.find(hasCopilotResult)?.commit_id : undefined;
   return {
     codexCommit,
     copilotCommit,
@@ -61,12 +70,28 @@ export function reviewCompletion(comments: readonly Comment[], reviews: readonly
   };
 }
 
+export async function testMergeCommit(pullNumber: string, pr: MergeablePull, get: GetPath) {
+  if (pr.mergeable !== true) return;
+  // API 2026-03-10にはPRのmerge_commit_shaがないため、GitHubのマージ用refを参照する。
+  const refResponse = await get(`/git/ref/pull/${pullNumber}/merge`, true);
+  if (refResponse.status === 404) return;
+  const ref = await refResponse.json() as { object?: { type?: string; sha?: string } };
+  const sha = ref.object?.sha;
+  if (ref.object?.type !== 'commit' || !sha || !fullSha.test(sha)) return;
+
+  // refが再計算の途中なら、現在のベースと先端が親になるまでステータスを書かない。
+  const commitResponse = await get(`/git/commits/${sha}`, true);
+  if (commitResponse.status === 404) return;
+  const { parents } = await commitResponse.json() as { parents?: { sha: string }[] };
+  if (parents?.length === 2 && parents[0]?.sha === pr.base.sha && parents[1]?.sha === pr.head.sha) return sha;
+}
+
 async function checkPR() {
   const {
     GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_SERVER_URL, GITHUB_RUN_ID, GITHUB_STEP_SUMMARY,
     GH_TOKEN, PR_NUMBER, PR_HEAD_SHA, COPILOT_REQUIRED,
   } = process.env;
-  if (!/^[1-9]\d*$/.test(PR_NUMBER ?? '') || !fullSha.test(PR_HEAD_SHA ?? '') || !GH_TOKEN ||
+  if (!PR_NUMBER || !/^[1-9]\d*$/.test(PR_NUMBER) || !fullSha.test(PR_HEAD_SHA ?? '') || !GH_TOKEN ||
     !GITHUB_API_URL || !GITHUB_REPOSITORY || !GITHUB_SERVER_URL || !GITHUB_RUN_ID || !GITHUB_STEP_SUMMARY) {
     throw new Error('PRまたはGitHub Actionsの実行情報を取得できませんでした。');
   }
@@ -78,9 +103,11 @@ async function checkPR() {
     'Content-Type': 'application/json',
     'X-GitHub-Api-Version': '2026-03-10',
   };
-  async function get(path: string) {
+  async function get(path: string, allowNotFound = false) {
     const response = await fetch(repo + path, { headers, signal: AbortSignal.timeout(15_000) });
-    if (!response.ok) throw new Error(`${path} を取得できませんでした (HTTP ${response.status})`);
+    if (!response.ok && !(allowNotFound && response.status === 404)) {
+      throw new Error(`${path} を取得できませんでした (HTTP ${response.status})`);
+    }
     return response;
   }
   async function all<T>(path: string): Promise<T[]> {
@@ -107,12 +134,16 @@ async function checkPR() {
   }
 
   const pull = `/pulls/${PR_NUMBER}`;
+  const mergeCommitFor = (pr: MergeablePull) => testMergeCommit(PR_NUMBER, pr, get);
   async function currentPR() {
-    const pr = await (await get(pull)).json() as {
-      head: { sha: string }; base: { ref: string };
-      draft: boolean; state: string; mergeable: boolean | null; merge_commit_sha: string | null;
+    const pr = await (await get(pull)).json() as MergeablePull & {
+      base: { ref: string }; draft: boolean; state: string;
     };
     return pr.state === 'open' && !pr.draft && pr.base.ref === 'main' && pr.head.sha === PR_HEAD_SHA ? pr : undefined;
+  }
+  async function currentMergeCommit() {
+    const pr = await currentPR();
+    return pr && await mergeCommitFor(pr);
   }
 
   const requireCopilot = COPILOT_REQUIRED !== 'false';
@@ -125,7 +156,7 @@ async function checkPR() {
       return;
     }
     // ステータスはテスト用マージコミットへ付け、別のPRと共用される先端SHAには付けない。
-    const mergeCommit = pr.mergeable === true && fullSha.test(pr.merge_commit_sha ?? '') ? pr.merge_commit_sha! : undefined;
+    const mergeCommit = await mergeCommitFor(pr);
     if (mergeCommit && pendingCommit !== mergeCommit) {
       await status(mergeCommit, 'pending', 'CodexとCopilotのレビュー完了を確認中');
       pendingCommit = mergeCommit;
@@ -137,12 +168,12 @@ async function checkPR() {
     ]);
     result = reviewCompletion(comments, reviews, requireCopilot);
 
-    if (result.complete && mergeCommit && (await currentPR())?.merge_commit_sha === mergeCommit) {
+    if (result.complete && mergeCommit && (await currentMergeCommit()) === mergeCommit) {
       await status(mergeCommit, 'success', result.copilotSkipped ? 'Codex完了・Copilot対象外' : 'CodexとCopilotのレビュー完了');
       break;
     }
     if (attempt === 36) {
-      if (mergeCommit && (await currentPR())?.merge_commit_sha === mergeCommit) {
+      if (mergeCommit && (await currentMergeCommit()) === mergeCommit) {
         await status(mergeCommit, 'failure', '制限時間内に必要なレビューの完了を確認できませんでした');
       }
       process.exitCode = 1;
