@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { reviewCompletion } from './ai-review-completion';
+import { reviewCompletion, testMergeCommit } from './ai-review-completion';
 
 const commit = 'a'.repeat(40);
 const nextCommit = 'b'.repeat(40);
@@ -92,4 +92,21 @@ test('Codexの指摘なしコメントと指摘付きレビューの完了記録
   expect(reviewCompletion([codexSummary('running', nextCommit), clean], [], false).codexCommit).toBe(commit.slice(0, 10));
   expect(reviewCompletion([codexSummary('running', nextCommit)], [withFindings], false).codexCommit).toBe(commit);
   expect(reviewCompletion([], [{ ...withFindings, commit_id: nextCommit }], false).complete).toBe(false);
+});
+
+test('PRの応答にmerge_commit_shaがなくても、現在のベースと先端に対応するマージ用コミットを使う', async () => {
+  const mergeSha = 'c'.repeat(40);
+  const pr = { base: { sha: commit }, head: { sha: nextCommit }, mergeable: true };
+  const fixtures = {
+    [`/git/ref/pull/119/merge`]: { object: { type: 'commit', sha: mergeSha } },
+    [`/git/commits/${mergeSha}`]: { parents: [{ sha: commit }, { sha: nextCommit }] },
+  };
+  const github = async (path: string) => {
+    if (!(path in fixtures)) throw new Error(`Unexpected GitHub API request: ${path}`);
+    return Response.json(fixtures[path]!);
+  };
+  expect(await testMergeCommit('119', pr, github)).toBe(mergeSha);
+  expect(await testMergeCommit('119', { ...pr, head: { sha: 'd'.repeat(40) } }, github)).toBeUndefined();
+  expect(await testMergeCommit('119', { ...pr, base: { sha: 'd'.repeat(40) } }, github)).toBeUndefined();
+  expect(await testMergeCommit('119', pr, async () => new Response(null, { status: 404 }))).toBeUndefined();
 });
