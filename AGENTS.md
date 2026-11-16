@@ -6,7 +6,7 @@
 
 アプリ向けの再利用可能なUIコンポーネントを新規作成する場合は、併せて [component-creator skill](.agents/skills/component-creator/SKILL.md) を読み、命名・公開API・利用例・検証の手順を適用します。
 
-UI変更のPRでは、[github-media-attach skill](.agents/skills/github-media-attach/SKILL.md) を使い、Computer Useで確認・撮影した変更画面のスクリーンショットを添付します。操作の流れを示す必要がある場合は動画も添付します。既存PR・Issue・コメントへの画像・動画添付を依頼された場合も、同スキルを適用します。
+UI変更時はブラウザーで表示と操作を確認します。確認と撮影には利用可能なブラウザーツール、Playwright、手動操作などを使えます。UI変更のPRでは [github-media-attach skill](.agents/skills/github-media-attach/SKILL.md) に従い、変更箇所と画面の文脈が分かるスクリーンショットを「添付ファイル」欄に添付します。操作の流れを示す必要がある場合は動画も添付します。撮影・添付・添付後の表示確認のいずれかを実施できない場合は、該当項目と理由をPRに記載します。既存PR・Issue・コメントへの画像・動画添付を依頼された場合も、同スキルを適用します。
 
 ## 役割
 
@@ -62,7 +62,7 @@ bun run test:visual      # PlaywrightのFirefox・WebKitで基準画像と比較
 - 各色の通常・ホバー・押下と `-on`、淡い背景と `-on-subtle` の56組について、4.5:1以上を検証します。任意の色の組み合わせへの保証ではありません。
 - テストの `describe` と `test` は日本語で書き、各テストの直前に目的・条件・期待結果を記す日本語コメントを置きます。テストを変更したら `bun test` を実行します。
 - 画像比較は `e2e/*.visual.ts` のPlaywrightテストとして分離します。基準画像はLinux amd64の固定Playwrightコンテナーで生成し、専用の公開リポジトリ `HikariTakahashi/tokiwagi-ui-visual-results` のRelease `visual-test-baselines` に継続保存します。PNGをGitに含めません。通常の `test:visual` は外部の承認済みZIPをSHA-256と64条件で検証して `.visual-baselines/` へ一時復元し、基準画像を更新しません。`Visual Tests` はFirefox・WebKitでReact／Vueの代表4図柄×4サイズを検証し、成功・失敗とも画像一覧・差分レポートを7日保存します。`Transfer Visual Reports` はmainのコードと保管先に限定したSecret `VISUAL_STORAGE_TOKEN` でレポートZIPを専用リポジトリのReleaseへ転送します。同リポジトリの `Publish Visual Reports` がPages公開と毎時の期限切れRelease・公開ファイル削除を行います。 同一リポジトリのPRでは転送ワークフローが公開を確認して、完了・短いコミットSHA・成功／失敗件数・日本時間の削除予定日時・クリック可能な確認画像をConversationへコメントします。結果画像をPR本文へ追加しません。転送ジョブだけに `pull-requests: write` を付与し、同じ実行の再送はbot自身のコメントを更新します。通常のPRテストへ転送用Secretを渡しません。候補生成と `Approve Visual Baselines` による外部基準の切り替えは別の手動操作です。更新・差分確認は `docs/wiki/Testing.md` に従います。実Safari・VoiceOverでの確認とは区別します。
-- UI変更時は `bun run check`、`bun run build`、`bun run build:storybook` を実行し、ブラウザでモバイル・デスクトップ表示、キーボードフォーカス、ボタンのホバー・押下を確認します。
+- UI変更時は `bun run check`、`bun run build`、`bun run build:storybook` を実行し、ブラウザーでモバイル・デスクトップ表示、キーボードフォーカス、ボタンのホバー・押下を確認します。
 
 ## ドキュメントとライセンス
 
