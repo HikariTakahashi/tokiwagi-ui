@@ -21,9 +21,12 @@ function fromBot(user: GitHubUser | undefined, bot: typeof codex) {
 
 function hasCopilotResult(review: Review) {
   // 利用枠不足・サービス障害でも同じボットのCOMMENTEDレビューが作られる。
-  return fromBot(review.user, copilot) && Boolean(review.body?.match(
-    /^Copilot reviewed [1-9]\d* out of [1-9]\d* changed files? in this pull request and generated (?:\d+ (?:new )?comments?|no (?:new )?comments)\./m,
-  ));
+  const body = review.body?.trimStart();
+  if (!fromBot(review.user, copilot) || !body) return false;
+  // 判定はすべてレビュー完了。承認の有無や指摘数をマージ条件にはしない。
+  const overviewV2 = /^<!-- ccr-overview-v2 -->\s*(?:## Copilot review overview\s*)?### (?:🟢 Approval recommended|🟡 Changes recommended|🔵 Needs a closer look)[\t ]*(?:\r?\n|$)/;
+  const legacyOverview = /^Copilot reviewed [1-9]\d* out of [1-9]\d* changed files? in this pull request and generated (?:\d+ (?:new )?comments?|no (?:new )?comments)\./m;
+  return overviewV2.test(body) || legacyOverview.test(body);
 }
 
 function codexCommentCommit(comment: Comment) {

@@ -90,6 +90,22 @@ test('Copilotの指摘ありと指摘なしは完了とし、同じ公式ボッ�
   expect(reviewCompletion(codex, [copilotReview], true).complete).toBe(true);
 });
 
+test('実際のCopilot v2形式は判定に関わらず完了とし、判定のない通知や偽の投稿は通さない', () => {
+  const marker = '<!-- ccr-overview-v2 -->\n\n';
+  const triedOnGitHub = marker + '### 🔵 Needs a closer look\n\n外部ワークフローの実行結果はGitHub上で確認。\n\n' +
+    '**No open issues** 🎉\n\n<sub>Review effort: Lite</sub>';
+  const codex = [codexSummary('completed')];
+  for (const body of [
+    triedOnGitHub,
+    marker + '## Copilot review overview\r\n\r\n### 🟡 Changes recommended\r\n\r\nDetails',
+    marker + '### 🟢 Approval recommended',
+  ]) {
+    expect(reviewCompletion(codex, [{ ...copilotReview, body }], true).complete).toBe(true);
+  }
+  expect(reviewCompletion(codex, [{ ...copilotReview, body: marker + 'Copilot was unable to review.' }], true).complete).toBe(false);
+  expect(reviewCompletion(codex, [{ ...copilotReview, body: triedOnGitHub, user: { ...copilotBot, id: 1 } }], true).complete).toBe(false);
+});
+
 // 再実行でサマリーが更新されても、公式ボットの完了コメントまたは提出済みレビューから一回分を確認する。
 test('Codexの指摘なしコメントと指摘付きレビューの完了記録を区別して拾う', () => {
   const clean = {
