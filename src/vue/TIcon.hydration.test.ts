@@ -31,7 +31,9 @@ afterAll(async () => {
   }
 });
 
-function createPage(idPrefix: string, initial: TIconProps[] = (['moon', 'tool'] as const)
+type IconFixtureProps = Omit<TIconProps, 'class'> & { class?: string };
+
+function createPage(idPrefix: string, initial: IconFixtureProps[] = (['moon', 'tool'] as const)
   .flatMap(name => iconSizes.map(size => ({ name, size })))) {
   const icons = ref(initial);
   const page = { render: () => h('div', icons.value.map((props, index) => h(TIcon, { ...props, key: index }))) };
@@ -45,7 +47,7 @@ function createPage(idPrefix: string, initial: TIconProps[] = (['moon', 'tool'] 
   };
 }
 
-function assertIcons(container: HTMLElement, props: TIconProps[]) {
+function assertIcons(container: HTMLElement, props: IconFixtureProps[]) {
   const svgs = [...container.querySelectorAll('svg')];
   expect(svgs).toHaveLength(props.length);
   const ids = [...container.querySelectorAll('[id]')].map(node => node.id);
@@ -111,8 +113,8 @@ test('VueのTIconはハイドレーションと色更新で全SVGとID・参照�
 
 // 同じインスタンスのname・size・color・classを更新し、元に戻してもSVG本体と参照IDは変わらない。
 test('VueのTIconはハイドレーション後の図柄・サイズ・色・クラス更新と復元を反映する', async () => {
-  const initial: TIconProps = { name: 'moon', size: 16, class: 'before' };
-  const updated: TIconProps = { name: 'tool', size: 32, class: 'after', color: 'var(--tkw-color-primary-blue-on-subtle)' };
+  const initial: IconFixtureProps = { name: 'moon', size: 16, class: 'before' };
+  const updated: IconFixtureProps = { name: 'tool', size: 32, class: 'after', color: 'var(--tkw-color-primary-blue-on-subtle)' };
   const page = createPage('更新', [initial]);
   const app = page.createApp();
   const container = document.createElement('div');
