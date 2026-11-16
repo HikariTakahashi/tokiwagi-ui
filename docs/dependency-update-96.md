@@ -31,4 +31,17 @@ Ubuntu 24.04・Linux arm64の検証コンテナで、`node --version`は`v22.23.
 | `bun run test:storybook` | 成功。`bunx playwright install --with-deps chromium`で準備し、Chromium上の339ファイル・347件がすべて完了。 |
 | Workflowの静的検証 | actionlint成功。6ジョブのNode.js固定版と実行版出力、Dev Container設定との一致を確認。CIの変更判定で全6チェックが選ばれることも確認。 |
 
-GitHub Actions上での実行版と各ジョブの結果は未確認。PRのCI・Visual Testsのログで、対象6ジョブの `node --version` が `v22.23.4` であり、各チェックが完了することを確認する。Wikiの公開はmainへのマージとSync Wiki成功後に確認する。今回の変更は実行環境・設定・文書に限る。画像比較・ブラウザーでの目視確認・実Safari・VoiceOverはローカルでは実施していない。
+### GitHub Actions
+
+2026年11月16日（日本時間）、[PR #110](https://github.com/HikariTakahashi/tokiwagi-ui/pull/110) のCIとVisual Testsが成功した。対象6ジョブすべてでBun 1.3.9による `bun install --frozen-lockfile` が成功し、`node --version` の出力は再構築したDev Containerと同じ `v22.23.4` だった。[CIの実行結果](https://github.com/HikariTakahashi/tokiwagi-ui/actions/runs/43788363526)・[Visual Testsの実行結果](https://github.com/HikariTakahashi/tokiwagi-ui/actions/runs/43788363707)
+
+| ジョブ | Node.jsの実測値 | 結果 |
+| --- | --- | --- |
+| `tkw-typecheck` | `v22.23.4` | 型チェック成功。 |
+| `tkw-tests` | `v22.23.4` | 単体テスト228件成功。 |
+| `tkw-react-compat` | `v22.23.4` | React 18・19の互換性チェック成功。 |
+| `tkw-build` | `v22.23.4` | Astroの静的ビルド成功。 |
+| `tkw-storybook` | `v22.23.4` | Storybookの静的ビルドとChromium上のテスト347件が成功。 |
+| `tkw-visual` | `v22.23.4` | Firefox・WebKitで基準画像との比較64件が成功。 |
+
+Wikiの公開はSync Wikiの実行結果で別途確認する。画像比較はGitHub Actionsで実施し、ブラウザーでの目視確認・実Safari・VoiceOverはローカルでは未実施。
