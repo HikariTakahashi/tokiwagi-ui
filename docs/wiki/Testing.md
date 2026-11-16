@@ -103,18 +103,18 @@ export const Disabled: Story = {
 
 ### React互換性の検証結果
 
-2026年10月30日、[Issue #29](https://github.com/HikariTakahashi/tokiwagi-ui/issues/29)で確認しました。コンポーネントの対応範囲はpeer dependencyの `^18.0.0 || ^19.0.0` を維持します。ReactとReact DOMは表の同一バージョンを組み合わせています。開発依存の行は `package.json` に追従し、他の3行は固定します。
+2026年11月16日、[Issue #99](https://github.com/HikariTakahashi/tokiwagi-ui/issues/99)でReact・React DOM 19.3.1への更新に合わせて再検証しました。初回の互換性検証は[Issue #29](https://github.com/HikariTakahashi/tokiwagi-ui/issues/29)で実施しています。コンポーネントの対応範囲はpeer dependencyの `^18.0.0 || ^19.0.0` を維持します。ReactとReact DOMは表の同一バージョンを組み合わせています。開発依存の行は `package.json` に追従し、他の3行は固定します。
 
 | React / React DOM | `@types/react` | `@types/react-dom` | 公開型 | テスト用APIの型 | SSR・DOMハイドレーション・props更新 |
 | --- | --- | --- | --- | --- | --- |
-| 18.0.0（18系の下限） | 18.3.18 | 18.3.5 | 成功 | 成功 | 18件成功 |
-| 18.3.1（既存対象） | 18.3.18 | 18.3.5 | 成功 | 成功 | 18件成功 |
-| 19.0.0（19系の下限） | 19.0.0 | 19.0.0 | 成功 | 成功 | 18件成功 |
-| 19.3.0（現在の開発依存） | 19.3.0 | 19.3.0 | 成功 | 成功 | 18件成功 |
+| 18.0.0（18系の下限） | 18.3.18 | 18.3.5 | 成功 | 成功 | 31件成功 |
+| 18.3.1（既存対象） | 18.3.18 | 18.3.5 | 成功 | 成功 | 31件成功 |
+| 19.0.0（19系の下限） | 19.0.0 | 19.0.0 | 成功 | 成功 | 31件成功 |
+| 19.3.1（現在の開発依存） | 19.3.0 | 19.3.0 | 成功 | 成功 | 31件成功 |
 
-互換性チェック実行前後で、通常の `node_modules` 内のファイルと `bun.lock` のSHA-256が一致することも確認しました。
+互換性チェックは一時環境で実行し、通常の開発依存はReact・React DOM 19.3.1を維持しました。固定インストール前後と互換性チェック後で `bun.lock` のSHA-256が一致することも確認しました。
 
-公開入口からTIcon・TLogo・TBrandの許可propsと拒否すべき値を型検査します。SSR出力を `hydrateRoot` に渡し、SVG・画像・名称のDOMを再利用し、復旧エラーやconsole警告が出ないことを確認します。TIconではIDとクリッピング参照、複数rootの `identifierPrefix` による分離、図柄・サイズ・色・クラスの更新と復元を検証します。TLogo・TBrandではサイズや装飾状態の更新、原本画像の保持、親リンクの操作も検証します。これはHappy DOMによるDOM検証で、実ブラウザの見た目の確認とは別です。
+公開入口からTIcon・TLogo・TBrand・ヘッダー部品・TTextの許可propsと拒否すべき値を型検査します。SSR出力を `hydrateRoot` に渡し、SVG・画像・名称のDOMを再利用し、復旧エラーやconsole警告が出ないことを確認します。TIconではIDとクリッピング参照、複数rootの `identifierPrefix` による分離、図柄・サイズ・色・クラスの更新と復元を検証します。TLogo・TBrandではサイズや装飾状態の更新、原本画像の保持、親リンクの操作も検証します。ヘッダー部品では属性・選択状態・active・イベント・配置・背景色、TTextでは内容・属性・設定・イベントの更新も検証します。これはHappy DOMによるDOM検証で、実ブラウザの見た目の確認とは別です。
 
 React本体の下限とテスト用API・型定義の提供範囲は区別します。React 18.0.0は `React.act` をexportしないため、テスト専用の `src/react/test-act.ts` で `react-dom/test-utils` の `act` に切り替えます。新しいバージョンでは `React.act` を使い、非推奨警告を抑制しません（[React公式の案内](https://react.dev/warnings/react-dom-test-utils)）。アプリ向け公開入口はこのヘルパーを読み込みません。
 
