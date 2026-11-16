@@ -1,6 +1,6 @@
 # テスト方法
 
-`tokiwagi-ui` ディレクトリで、CIと同じNode.js 22.23.4・Bun 1.3.9を使用して実行します。
+`tokiwagi-ui` ディレクトリで、CIと同じNode.js 22.23.4・Bun 1.4.4を使用して実行します。
 
 ```sh
 bun install --frozen-lockfile
@@ -135,7 +135,7 @@ React本体の下限とテスト用API・型定義の提供範囲は区別しま
 | `tkw-build` | `bun run build` | Astro紹介ページの静的ビルド |
 | `tkw-storybook` | `bun run build:storybook`・`bun run test:storybook` | Astro見本生成を含むStorybookの静的ビルドとChromium上のコンポーネントテスト |
 
-各ジョブはUbuntu 24.04・Node.js 22.23.4・Bun 1.3.9を使用し、`bun install --frozen-lockfile`で本体の依存関係を導入します。React互換性チェックの一時環境は既存スクリプトで別途依存取得を行うため、ネットワーク接続が必要です。各ジョブの制限時間は30分、リポジトリへの権限は読み取りのみです。利用するActionはコミットSHAで固定します。CIからWiki・サイト・パッケージの公開は行いません。
+各ジョブはUbuntu 24.04・Node.js 22.23.4・Bun 1.4.4を使用し、`bun install --frozen-lockfile`で本体の依存関係を導入します。Bunを準備する各ジョブのログには`bun --version`の結果を残します。React互換性チェックの一時環境は既存スクリプトで別途依存取得を行うため、ネットワーク接続が必要です。各ジョブの制限時間は30分、リポジトリへの権限は読み取りのみです。利用するActionはコミットSHAで固定します。CIからWiki・サイト・パッケージの公開は行いません。
 
 ### 変更内容に応じた実行・省略
 
@@ -238,7 +238,7 @@ Linux amd64の公式Playwrightコンテナーを使います。イメージ・Pl
 docker run --rm --platform linux/amd64 --ipc=host \
   -v "$PWD":/work -v /work/node_modules -w /work -e CI=true \
   mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea \
-  bash -lc 'npm install --prefix /tmp/tkw-visual-tools --no-package-lock node@22.23.4 bun@1.3.9 &&
+  bash -lc 'npm install --prefix /tmp/tkw-visual-tools --no-package-lock node@22.23.4 bun@1.4.4 &&
     export PATH="/tmp/tkw-visual-tools/node_modules/.bin:$PATH" &&
     bun install --frozen-lockfile &&
     bun run test:visual'

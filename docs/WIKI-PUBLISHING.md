@@ -59,7 +59,7 @@ GitHub Wikiは本体と別のGitリポジトリです。[GitHub公式の更新�
 4. 差分がある場合だけ通常のcommit・pushを行い、コミット名とActionsの概要に同期元コミットを記録します。差分がなければ正常終了し、Git履歴を保持します。
 5. 初回はActionsの成功に加え、7原稿との一致、Home・Sidebar・README・LICENSEへの遷移、表・コードブロック・見出しの表示を確認してください。公開確認後に本書の導入状況と確認日を更新します。
 
-認証にはGitHub標準の `GITHUB_TOKEN` とジョブの `contents: write` を使用します。個人用トークンや追加Secret、アプリ依存関係のインストールは不要です。同期はBun 1.3.9と標準APIで実行します。
+認証にはGitHub標準の `GITHUB_TOKEN` とジョブの `contents: write` を使用します。個人用トークンや追加Secret、アプリ依存関係のインストールは不要です。同期はBun 1.4.4と標準APIで実行します。
 
 ## 管理対象と削除
 
@@ -82,7 +82,7 @@ Wikiリポジトリの `.wiki-sync-manifest` に、同期で管理するペー�
 
 ## ローカル検証
 
-同期処理だけならBun 1.3.9とGitで検証でき、ネットワーク接続やアプリの依存インストールは不要です。
+同期処理だけならBun 1.4.4とGitで検証でき、ネットワーク接続やアプリの依存インストールは不要です。
 
 ```sh
 bun test scripts/sync-wiki.test.ts

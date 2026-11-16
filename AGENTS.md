@@ -38,7 +38,7 @@ UI変更時はブラウザーで表示と操作を確認します。確認と撮
 
 ## 起動・ビルド
 
-`tokiwagi-ui` ディレクトリで Bun 1.3.9 以上を使います。依存関係は `bun.lock` で固定します。
+`tokiwagi-ui` ディレクトリで CI・Dev Container と同じ Bun 1.4.4（`packageManager` の指定）を使います。依存関係は `bun.lock` で固定します。
 
 ```sh
 bun install --frozen-lockfile
