@@ -9,9 +9,9 @@ import { promisify } from 'node:util';
 type GitHubUser = { id?: number; login?: string; type?: string };
 type Comment = { user?: GitHubUser; performed_via_github_app?: { id?: number }; body?: string };
 type Review = Comment & { state?: string; submitted_at?: string; commit_id?: string };
-type MergeablePull = { base: { sha: string }; head: { sha: string }; mergeable: boolean | null };
-type Pull = MergeablePull & { number: number; base: { ref: string }; draft: boolean; state: string };
-type GetPath = (path: string, allowNotFound?: boolean) => Promise<Response>;
+type Pull = { number: number; base: { ref: string; sha: string }; head: { sha: string }; draft: boolean; state: string };
+type GetPath = (path: string) => Promise<Response>;
+type MergePull = (number: string, head: string) => Promise<string>;
 
 const statusContext = 'tkw-ai-review-complete';
 const parallelPulls = 4;
@@ -82,28 +82,12 @@ export function reviewCompletion(comments: readonly Comment[], reviews: readonly
   };
 }
 
-export async function testMergeCommit(pullNumber: string, pr: MergeablePull, get: GetPath) {
-  if (pr.mergeable !== true) return;
-  // API 2026-03-10にはPRのmerge_commit_shaがないため、GitHubのマージ用refを参照する。
-  const refResponse = await get(`/git/ref/pull/${pullNumber}/merge`, true);
-  if (refResponse.status === 404) return;
-  const ref = await refResponse.json() as { object?: { type?: string; sha?: string } };
-  const sha = ref.object?.sha;
-  if (ref.object?.type !== 'commit' || !sha || !fullSha.test(sha)) return;
-
-  // refが再計算の途中なら、現在のベースと先端が親になるまでステータスを書かない。
-  const commitResponse = await get(`/git/commits/${sha}`, true);
-  if (commitResponse.status === 404) return;
-  const { parents } = await commitResponse.json() as { parents?: { sha: string }[] };
-  if (parents?.length === 2 && parents[0]?.sha === pr.base.sha && parents[1]?.sha === pr.head.sha) return sha;
-}
-
 function githubReviewAPI() {
   const {
     GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_SERVER_URL, GITHUB_RUN_ID, GH_TOKEN,
   } = process.env;
-  if (!GH_TOKEN || !GITHUB_API_URL || !GITHUB_REPOSITORY || !GITHUB_SERVER_URL || !GITHUB_RUN_ID) {
-    throw new Error('GitHub Actionsの実行情報を取得できませんでした。');
+  if (!GH_TOKEN || !GITHUB_API_URL || !GITHUB_REPOSITORY) {
+    throw new Error('GitHub APIの認証またはリポジトリ情報を取得できませんでした。');
   }
 
   const repo = `${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}`;
@@ -113,14 +97,15 @@ function githubReviewAPI() {
     'Content-Type': 'application/json',
     'X-GitHub-Api-Version': '2026-03-10',
   };
-  async function get(path: string, allowNotFound = false) {
+  async function get(path: string) {
     const response = await fetch(repo + path, { headers, signal: AbortSignal.timeout(15_000) });
-    if (!response.ok && !(allowNotFound && response.status === 404)) {
+    if (!response.ok) {
       throw new Error(`${path} を取得できませんでした (HTTP ${response.status})`);
     }
     return response;
   }
   async function status(commit: string, state: 'pending' | 'success' | 'failure', description: string) {
+    if (!GITHUB_SERVER_URL || !GITHUB_RUN_ID) throw new Error('GitHub Actionsの実行URLを取得できませんでした。');
     const response = await fetch(`${repo}/statuses/${commit}`, {
       method: 'POST',
       headers,
@@ -134,10 +119,24 @@ function githubReviewAPI() {
     });
     if (!response.ok) throw new Error(`レビュー完了状況を登録できませんでした (HTTP ${response.status})`);
   }
-  return { get, status };
+  const merge: MergePull = async (number, head) => {
+    const response = await fetch(`${repo}/pulls/${number}/merge`, {
+      method: 'PUT',
+      headers,
+      signal: AbortSignal.timeout(15_000),
+      body: JSON.stringify({ sha: head, merge_method: 'merge' }),
+    });
+    if (!response.ok) throw new Error(`GitHubがPR #${number} のマージを拒否しました (HTTP ${response.status})`);
+    const result = await response.json() as { merged?: boolean; sha?: string };
+    if (result.merged !== true || !result.sha || !fullSha.test(result.sha)) {
+      throw new Error(`PR #${number} のマージ結果を確認できませんでした。`);
+    }
+    return result.sha;
+  };
+  return { get, status, merge };
 }
 
-type ReviewAPI = ReturnType<typeof githubReviewAPI>;
+type ReviewAPI = Pick<ReturnType<typeof githubReviewAPI>, 'get' | 'status'>;
 
 async function all<T>(get: GetPath, path: string): Promise<T[]> {
   const result: T[] = [];
@@ -151,7 +150,8 @@ async function all<T>(get: GetPath, path: string): Promise<T[]> {
 
 async function openMainPull(get: GetPath, pullNumber: string) {
   const pr = await (await get(`/pulls/${pullNumber}`)).json() as Pull;
-  if (pr.state === 'open' && !pr.draft && pr.base.ref === 'main') return pr;
+  if (pr.state === 'open' && !pr.draft && pr.base.ref === 'main' &&
+      fullSha.test(pr.base.sha) && fullSha.test(pr.head.sha)) return pr;
 }
 
 function reviewEvidence(get: GetPath, pullNumber: string) {
@@ -159,6 +159,17 @@ function reviewEvidence(get: GetPath, pullNumber: string) {
     all<Comment>(get, `/issues/${pullNumber}/comments`),
     all<Review>(get, `/pulls/${pullNumber}/reviews`),
   ]);
+}
+
+async function completedPullReviews(get: GetPath, pr: Pull, needsCopilot: (pr: Pull) => boolean | Promise<boolean>) {
+  const [comments, reviews] = await reviewEvidence(get, String(pr.number));
+  const result = reviewCompletion(comments, reviews, true);
+  if (result.complete) return result;
+  if (result.codexCommit && !await needsCopilot(pr)) return reviewCompletion(comments, reviews, false);
+}
+
+function samePullCommits(current: Pull | undefined, prior: Pull) {
+  return current?.base.sha === prior.base.sha && current.head.sha === prior.head.sha;
 }
 
 function successDescription(result: ReturnType<typeof reviewCompletion>) {
@@ -174,52 +185,39 @@ function reviewSummary(result: ReturnType<typeof reviewCompletion>) {
 
 async function checkPR({ get, status }: ReviewAPI, summaryPath: string) {
   const { PR_NUMBER, PR_BASE_SHA, PR_HEAD_SHA, COPILOT_REQUIRED } = process.env;
-  if (!PR_NUMBER || !/^[1-9]\d*$/.test(PR_NUMBER) || !fullSha.test(PR_BASE_SHA ?? '') || !fullSha.test(PR_HEAD_SHA ?? '')) {
+  if (!PR_NUMBER || !/^[1-9]\d*$/.test(PR_NUMBER) ||
+      !PR_BASE_SHA || !fullSha.test(PR_BASE_SHA) || !PR_HEAD_SHA || !fullSha.test(PR_HEAD_SHA)) {
     throw new Error('対象PRの番号、ベースSHA、先端SHAを取得できませんでした。');
   }
   const currentPR = async () => {
     const pr = await openMainPull(get, PR_NUMBER);
-    // イベント時点のベースで得たCopilot要否を、別のベースとのマージ用SHAには適用しない。
     if (pr && pr.base.sha === PR_BASE_SHA && pr.head.sha === PR_HEAD_SHA) return pr;
   };
-  const mergeCommitFor = (pr: MergeablePull) => testMergeCommit(PR_NUMBER, pr, get);
-  async function currentMergeCommit() {
-    const pr = await currentPR();
-    return pr && await mergeCommitFor(pr);
-  }
 
   const requireCopilot = COPILOT_REQUIRED !== 'false';
   let result = reviewCompletion([], [], requireCopilot);
-  let pendingCommit: string | undefined;
   for (let attempt = 0; attempt <= 36; attempt += 1) {
     const pr = await currentPR();
     if (!pr) {
       appendFileSync(summaryPath, 'PRの差分または状態が変わりました。現在のPRの実行結果を確認してください。\n');
       return;
     }
-    // ステータスはテスト用マージコミットへ付け、別のPRと共用される先端SHAには付けない。
-    const mergeCommit = await mergeCommitFor(pr);
-    if (mergeCommit && pendingCommit !== mergeCommit) {
-      if (!await hasSuccessfulReviewStatus(get, mergeCommit)) {
-        await status(mergeCommit, 'pending', 'CodexとCopilotのレビュー完了を確認中');
-      }
-      pendingCommit = mergeCommit;
+    if (attempt === 0 && !await hasSuccessfulReviewStatus(get, PR_HEAD_SHA)) {
+      await status(PR_HEAD_SHA, 'pending', 'CodexとCopilotのレビュー完了を確認中');
     }
 
     const [comments, reviews] = await reviewEvidence(get, PR_NUMBER);
     result = reviewCompletion(comments, reviews, requireCopilot);
 
-    if (result.complete && mergeCommit && (await currentMergeCommit()) === mergeCommit) {
-      await status(mergeCommit, 'success', successDescription(result));
+    if (result.complete && await currentPR()) {
+      if (!await hasSuccessfulReviewStatus(get, PR_HEAD_SHA)) {
+        await status(PR_HEAD_SHA, 'success', successDescription(result));
+      }
       break;
     }
     if (attempt === 36) {
-      if (mergeCommit && (await currentMergeCommit()) === mergeCommit) {
-        if (await hasSuccessfulReviewStatus(get, mergeCommit)) {
-          appendFileSync(summaryPath, '現在のマージ用コミットにはレビュー完了が登録済みです。\n');
-          return;
-        }
-        await status(mergeCommit, 'failure', '制限時間内に必要なレビューの完了を確認できませんでした');
+      if (await currentPR() && !await hasSuccessfulReviewStatus(get, PR_HEAD_SHA)) {
+        await status(PR_HEAD_SHA, 'failure', '制限時間内に必要なレビューの完了を確認できませんでした');
       }
       process.exitCode = 1;
       break;
@@ -231,7 +229,7 @@ async function checkPR({ get, status }: ReviewAPI, summaryPath: string) {
     '## AIレビュー完了',
     '',
     ...reviewSummary(result),
-    ...(process.exitCode ? ['- レビューまたはマージ用コミットを確認できませんでした。'] : []),
+    ...(process.exitCode ? ['- このPRのレビュー完了を確認できませんでした。'] : []),
     '',
   ].join('\n'));
 }
@@ -246,27 +244,34 @@ export async function restoreReviewStatus(
   { get, status }: ReviewAPI,
   pullNumber: string,
   needsCopilot: (pr: Pull) => boolean | Promise<boolean>,
+  expectedHead?: string,
 ) {
   const pr = await openMainPull(get, pullNumber);
-  if (!pr) return;
+  if (!pr || (expectedHead && pr.head.sha !== expectedHead)) return;
 
-  const mergeCommit = await testMergeCommit(pullNumber, pr, get);
-  if (!mergeCommit || await hasSuccessfulReviewStatus(get, mergeCommit)) return;
+  const head = pr.head.sha;
+  if (!expectedHead && await hasSuccessfulReviewStatus(get, head)) return;
+  const result = await completedPullReviews(get, pr, needsCopilot);
+  if (!result || !samePullCommits(await openMainPull(get, pullNumber), pr)) return;
+  if (!await hasSuccessfulReviewStatus(get, head)) await status(head, 'success', successDescription(result));
+  return { head, result };
+}
 
-  const [comments, reviews] = await reviewEvidence(get, pullNumber);
-  let result = reviewCompletion(comments, reviews, true);
-  if (!result.codexCommit) return;
-  if (!result.complete) {
-    if (await needsCopilot(pr)) return;
-    result = reviewCompletion(comments, reviews, false);
+// 同じHEADに別PRの成功があっても、このPR自身のレビュー完了が必要。
+export async function mergeReviewedPull(
+  { get, merge }: { get: GetPath; merge: MergePull },
+  pullNumber: string,
+  expectedHead: string,
+  needsCopilot: (pr: Pull) => boolean | Promise<boolean> = needsCopilotForPull,
+) {
+  const pr = await openMainPull(get, pullNumber);
+  if (!pr || pr.head.sha !== expectedHead) throw new Error('対象PRの状態または先端SHAが変わりました。');
+  if (!await completedPullReviews(get, pr, needsCopilot)) throw new Error(`PR #${pullNumber} の必要なレビューが未完了です。`);
+  if (!await hasSuccessfulReviewStatus(get, expectedHead)) throw new Error('先端SHAのAIレビュー完了ステータスが成功していません。');
+  if (!samePullCommits(await openMainPull(get, pullNumber), pr)) {
+    throw new Error('レビュー確認中にPRのベースまたは先端SHAが変わりました。');
   }
-
-  // 判定中に登録された成功を重複させず、現在のマージ用refにだけ書く。
-  if (await hasSuccessfulReviewStatus(get, mergeCommit)) return;
-  const latest = await openMainPull(get, pullNumber);
-  if (!latest || await testMergeCommit(pullNumber, latest, get) !== mergeCommit) return;
-  await status(mergeCommit, 'success', successDescription(result));
-  return { mergeCommit, result };
+  return merge(pullNumber, expectedHead);
 }
 
 export async function needsCopilotForPull(pr: Pick<Pull, 'base' | 'head' | 'number'>, cwd = process.cwd()) {
@@ -290,7 +295,7 @@ export async function needsCopilotForPull(pr: Pick<Pull, 'base' | 'head' | 'numb
   try {
     const eventPath = join(directory, 'event.json');
     const outputPath = join(directory, 'output');
-    // マージ用コミットの親として確認したベースから、通常ジョブと同じ判定スクリプトを取得する。
+    // PRのベースから、通常ジョブと同じ判定スクリプトを取得する。
     for (const path of ['scripts/ci-changes.ts', 'scripts/copilot-review-changes.ts']) {
       const { stdout } = await git(['show', `${pr.base.sha}:${path}`]);
       await writeFile(join(directory, basename(path)), stdout);
@@ -327,7 +332,7 @@ export async function restoreOpenPRs(api: ReviewAPI, summaryPath: string) {
         const restored = await restoreReviewStatus(api, String(number), needsCopilotForPull);
         if (!restored) continue;
         appendFileSync(summaryPath, [
-          `## PR #${number} (${restored.mergeCommit})`,
+          `## PR #${number} (${restored.head})`,
           '',
           ...reviewSummary(restored.result),
           '',
@@ -345,9 +350,31 @@ export async function restoreOpenPRs(api: ReviewAPI, summaryPath: string) {
 
 if (import.meta.main) {
   const summaryPath = process.env.GITHUB_STEP_SUMMARY;
-  if (!summaryPath) throw new Error('GitHub Actionsの実行概要の保存先を取得できませんでした。');
   const api = githubReviewAPI();
-  if (process.argv.includes('--restore')) {
+  if (process.argv.includes('--merge-reviewed')) {
+    const { PR_NUMBER, PR_HEAD_SHA } = process.env;
+    if (!PR_NUMBER || !/^[1-9]\d*$/.test(PR_NUMBER) || !PR_HEAD_SHA || !fullSha.test(PR_HEAD_SHA)) {
+      throw new Error('対象PRの番号または先端SHAを取得できませんでした。');
+    }
+    const sha = await mergeReviewedPull(api, PR_NUMBER, PR_HEAD_SHA);
+    const message = `PR #${PR_NUMBER} を \`${sha}\` としてマージしました。`;
+    if (summaryPath) appendFileSync(summaryPath, `${message}\n`);
+    else console.log(message);
+  } else if (!summaryPath) {
+    throw new Error('GitHub Actionsの実行概要の保存先を取得できませんでした。');
+  } else if (process.argv.includes('--restore-head')) {
+    const { GITHUB_REF_NAME, GITHUB_REPOSITORY_OWNER, GITHUB_SHA } = process.env;
+    if (!GITHUB_REF_NAME || !GITHUB_REPOSITORY_OWNER || !GITHUB_SHA || !fullSha.test(GITHUB_SHA)) {
+      throw new Error('手動実行のブランチまたは先端SHAを取得できませんでした。');
+    }
+    const head = encodeURIComponent(`${GITHUB_REPOSITORY_OWNER}:${GITHUB_REF_NAME}`);
+    const prs = await all<Pick<Pull, 'number' | 'head' | 'draft'>>(api.get, `/pulls?state=open&base=main&head=${head}`);
+    const [pr, other] = prs;
+    if (!pr || other || pr.draft || pr.head.sha !== GITHUB_SHA) throw new Error('対象ブランチに対応するPRを一意に確認できませんでした。');
+    const result = await restoreReviewStatus(api, String(pr.number), needsCopilotForPull, GITHUB_SHA);
+    if (!result) throw new Error(`PR #${pr.number} のレビュー完了を確認できませんでした。`);
+    appendFileSync(summaryPath, `PR #${pr.number} の先端 \`${GITHUB_SHA}\` にAIレビュー完了ステータスを確認しました。\n`);
+  } else if (process.argv.includes('--restore')) {
     if (!await restoreOpenPRs(api, summaryPath)) process.exitCode = 1;
   } else {
     await checkPR(api, summaryPath);
