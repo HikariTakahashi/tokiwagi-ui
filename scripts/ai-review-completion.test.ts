@@ -1,5 +1,5 @@
 import { expect, mock, test } from 'bun:test';
-import { restoreReviewStatus, reviewCompletion, testMergeCommit } from './ai-review-completion';
+import { restoreOpenPRs, restoreReviewStatus, reviewCompletion, testMergeCommit } from './ai-review-completion';
 
 const commit = 'a'.repeat(40);
 const nextCommit = 'b'.repeat(40);
@@ -185,7 +185,7 @@ function recoveryFixture() {
 // ベースと先端を保ったままマージ用SHAを再生成すると、新しいSHAだけに成功を追加する。
 test('再生成されたマージ用SHAにレビュー完了を一度だけ登録する', async () => {
   const fixture = recoveryFixture();
-  const documentationOnly = () => false;
+  const documentationOnly = async () => false;
   expect(await restoreReviewStatus(fixture, '129', documentationOnly)).toBeUndefined();
   fixture.mergeSha = regeneratedMerge;
   expect((await restoreReviewStatus(fixture, '129', documentationOnly))?.mergeCommit).toBe(regeneratedMerge);
@@ -217,4 +217,42 @@ test('確認中にマージ用refが変わった場合は古いSHAに書き込�
   };
   expect(await restoreReviewStatus(fixture, '129', changeMergeRef)).toBeUndefined();
   expect(fixture.status).not.toHaveBeenCalled();
+});
+
+// 先頭のPRがAPI応答を待っていても、空いた枠から後続のPRを処理する。並行実行は最大4件に抑える。
+test('遅いPRを待つ間に空いた枠で後続のPRの確認を進める', async () => {
+  const slowPR = Promise.withResolvers<void>();
+  const otherPRs = Promise.withResolvers<void>();
+  const firstFourStarted = Promise.withResolvers<void>();
+  const fifthStarted = Promise.withResolvers<void>();
+  const started: number[] = [];
+  const finished: number[] = [];
+  const get = async (path: string) => {
+    if (path === '/pulls?state=open&base=main&per_page=100&page=1') {
+      return Response.json([1, 2, 3, 4, 5, 6].map(number => ({ number, draft: number === 6 })));
+    }
+    const number = Number(path.match(/^\/pulls\/(\d+)$/)?.[1]);
+    if (!number) throw new Error(`Unexpected GitHub API request: ${path}`);
+    started.push(number);
+    if (started.length === 4) firstFourStarted.resolve();
+    if (number === 5) fifthStarted.resolve();
+    await (number === 1 ? slowPR.promise : otherPRs.promise);
+    finished.push(number);
+    return Response.json({ state: 'open', draft: true });
+  };
+  const status = mock(async () => {});
+  const run = restoreOpenPRs({ get, status }, '');
+  try {
+    await firstFourStarted.promise;
+    expect(started).toEqual([1, 2, 3, 4]);
+    otherPRs.resolve();
+    await fifthStarted.promise;
+    expect(finished).not.toContain(1);
+  } finally {
+    otherPRs.resolve();
+    slowPR.resolve();
+    await run;
+  }
+  expect(started).toEqual([1, 2, 3, 4, 5]);
+  expect(status).not.toHaveBeenCalled();
 });

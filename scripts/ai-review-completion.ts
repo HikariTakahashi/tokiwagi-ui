@@ -1,6 +1,7 @@
-import { execFileSync } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 import { setTimeout } from 'node:timers/promises';
+import { promisify } from 'node:util';
 import { changedPaths } from './ci-changes';
 import { planCopilotReview } from './copilot-review-changes';
 
@@ -12,6 +13,8 @@ type Pull = MergeablePull & { number: number; base: { ref: string }; draft: bool
 type GetPath = (path: string, allowNotFound?: boolean) => Promise<Response>;
 
 const statusContext = 'tkw-ai-review-complete';
+const parallelPulls = 4;
+const execFileAsync = promisify(execFile);
 const codex = { id: 199175422, login: 'chatgpt-codex-connector[bot]' };
 const copilot = { id: 175728472, login: 'copilot-pull-request-reviewer[bot]' };
 const codexAppId = 1144995;
@@ -233,7 +236,7 @@ async function hasReviewStatus(get: GetPath, commit: string) {
 export async function restoreReviewStatus(
   { get, status }: ReviewAPI,
   pullNumber: string,
-  needsCopilot: (pr: Pull) => boolean,
+  needsCopilot: (pr: Pull) => boolean | Promise<boolean>,
 ) {
   const pr = await openMainPull(get, pullNumber);
   if (!pr) return;
@@ -245,7 +248,7 @@ export async function restoreReviewStatus(
   let result = reviewCompletion(comments, reviews, true);
   if (!result.codexCommit) return;
   if (!result.complete) {
-    if (needsCopilot(pr)) return;
+    if (await needsCopilot(pr)) return;
     result = reviewCompletion(comments, reviews, false);
   }
 
@@ -257,44 +260,59 @@ export async function restoreReviewStatus(
   return { mergeCommit, result };
 }
 
-function needsCopilotForPull(pr: Pull) {
-  try {
-    execFileSync('git', ['fetch', '--no-tags', 'origin', pr.base.sha, `refs/pull/${pr.number}/head`], {
-      stdio: ['ignore', 'pipe', 'pipe'],
-      timeout: 30_000,
-    });
-  } catch {
-    // ローカルに比較対象が取得済みか確認し、比較できなければCopilotを必須にする。
+async function needsCopilotForPull(pr: Pull) {
+  const event = { pull_request: pr };
+  let changes = changedPaths('pull_request', event, process.cwd());
+  if (changes.forceReason) {
+    try {
+      // 並列に取得するため、リモート追跡refやFETCH_HEADを更新せずにオブジェクトを取得する。
+      await execFileAsync('git', [
+        'fetch', '--no-tags', '--refmap=', '--no-write-fetch-head', '--no-auto-maintenance',
+        'origin', pr.base.sha, `refs/pull/${pr.number}/head`,
+      ], { timeout: 30_000 });
+    } catch {
+      // 他のPRの取得で履歴が揃った可能性もあるため、再比較してCopilotの要否を決める。
+    }
+    changes = changedPaths('pull_request', event, process.cwd());
   }
-  const { paths, forceReason } = changedPaths('pull_request', { pull_request: pr }, process.cwd());
-  return planCopilotReview(paths, forceReason).run;
+  return planCopilotReview(changes.paths, changes.forceReason).run;
 }
 
-async function restoreOpenPRs(api: ReviewAPI, summaryPath: string) {
+export async function restoreOpenPRs(api: ReviewAPI, summaryPath: string) {
   const prs = await all<Pick<Pull, 'number' | 'draft'>>(api.get, '/pulls?state=open&base=main');
-  for (const { number, draft } of prs) {
-    if (draft) continue;
-    try {
-      const restored = await restoreReviewStatus(api, String(number), needsCopilotForPull);
-      if (!restored) continue;
-      appendFileSync(summaryPath, [
-        `## PR #${number} (${restored.mergeCommit})`,
-        '',
-        ...reviewSummary(restored.result),
-        '',
-        '',
-      ].join('\n'));
-    } catch (error) {
-      console.error(`PR #${number} のレビュー完了状況を復元できませんでした。`, error);
-      process.exitCode = 1;
+  const openPRs = prs.filter(pr => !pr.draft);
+  const queue = openPRs.values();
+  let failed = false;
+
+  async function restoreFromQueue() {
+    for (const { number } of queue) {
+      try {
+        const restored = await restoreReviewStatus(api, String(number), needsCopilotForPull);
+        if (!restored) continue;
+        appendFileSync(summaryPath, [
+          `## PR #${number} (${restored.mergeCommit})`,
+          '',
+          ...reviewSummary(restored.result),
+          '',
+          '',
+        ].join('\n'));
+      } catch (error) {
+        console.error(`PR #${number} のレビュー完了状況を復元できませんでした。`, error);
+        failed = true;
+      }
     }
   }
+  await Promise.all(Array.from({ length: Math.min(parallelPulls, openPRs.length) }, restoreFromQueue));
+  return !failed;
 }
 
 if (import.meta.main) {
   const summaryPath = process.env.GITHUB_STEP_SUMMARY;
   if (!summaryPath) throw new Error('GitHub Actionsの実行概要の保存先を取得できませんでした。');
   const api = githubReviewAPI();
-  if (process.argv.includes('--restore')) await restoreOpenPRs(api, summaryPath);
-  else await checkPR(api, summaryPath);
+  if (process.argv.includes('--restore')) {
+    if (!await restoreOpenPRs(api, summaryPath)) process.exitCode = 1;
+  } else {
+    await checkPR(api, summaryPath);
+  }
 }
