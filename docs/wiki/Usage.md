@@ -29,6 +29,8 @@ bun add ../tokiwagi-ui
 
 必要なトークンのCSSをアプリ全体で一度読み込みます。`colors.css`（42）、`secondary.css`（18）、`semantic.css`（24）、`neutrals.css`（9）の計93トークンが定義元です。HEXを利用側や文書へ複製せず、CSSカスタムプロパティを参照してください。
 
+プライマリーの `-on` は白です。基準色と `-hover` 上では大きな文字やアイコンに使います。通常サイズの文字には、`-subtle` と `-on-subtle` の組み合わせなど、4.5:1以上の配色を使います。
+
 Tailwind CSS v4の利用側では、既存のTailwindエントリに `@import "tokiwagi-ui/tokens/tailwind.css";` を追加して共有テーマを読み込めます。`@theme inline` は既存トークンを参照します。このテーマ自体はPreflightを読み込みません。
 
 ## Astroでの利用

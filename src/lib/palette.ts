@@ -6,6 +6,12 @@ export const suffixes = ['', '-hover', '-active', '-subtle', '-on', '-on-subtle'
 export const variants = [
   ['', '通常'], ['-hover', 'ホバー'], ['-active', '押下'], ['-subtle', '淡い背景'],
 ] as const;
+export const primaryTextContrastMinimum = {
+  '': 3,
+  '-hover': 3,
+  '-active': 4.5,
+  '-subtle': 4.5,
+} satisfies Record<typeof variants[number][0], number>;
 export const tokenName = (key: string, suffix = '') => `--tkw-color-primary-${key}${suffix}`;
 
 export const neutrals = [

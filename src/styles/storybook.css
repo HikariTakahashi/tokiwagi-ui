@@ -48,10 +48,14 @@
 .tkw-color-heading > code, .tkw-key { color: var(--tkw-color-neutral-600); font-size: 11px; }
 .tkw-variant-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .tkw-variant { min-width: 0; }
+.tkw-variant-label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 8px; margin-bottom: 6px; font-size: 12px; }
 .tkw-variant-swatch { display: flex; min-height: 150px; flex-direction: column; justify-content: space-between; padding: 15px; border-radius: 9px; }
 .tkw-variant-swatch span { font-size: 11px; }
 .tkw-variant-swatch strong { font-size: 23px; font-weight: 600; }
 .tkw-variant-swatch code { font-size: 12px; }
+.tkw-variant[data-family="primary"] .tkw-variant-swatch { justify-content: center; }
+.tkw-variant[data-family="primary"] .tkw-variant-swatch strong,
+.tkw-demo[data-family="primary"] button { font-size: 1.75rem; font-weight: 700; }
 .tkw-variant-meta { display: flex; justify-content: space-between; gap: 9px; margin-top: 10px; font-size: 10px; }
 .tkw-variant-meta span { flex: 0 0 auto; }
 .tkw-foreground { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--tkw-color-neutral-200); color: var(--tkw-color-neutral-600); font-size: 10px; }
