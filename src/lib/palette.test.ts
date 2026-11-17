@@ -67,10 +67,12 @@ describe('カラートークン', () => {
     expect(() => parseNeutralTokens(neutralCss.replace('#A1A1AA', '#XYZXYZ'))).toThrow('不正なHEX: --tkw-color-neutral-400');
   });
 
-  // セカンダリー18トークンがすべて存在し、文字と背景の12組が4.5:1以上のコントラストを持つことを確認する。
+  // セカンダリー18トークン、通常・ホバー・押下の白文字、文字と背景12組の4.5:1以上を確認する。
   test('セカンダリー18トークンと文字・背景12組がアクセシビリティ基準を満たす', () => {
     const tokens = parseSecondaryTokens(secondaryCss);
     expect(Object.keys(tokens)).toHaveLength(18);
+    expect(tokens[secondaryTokenName('lime', '-on')]).toBe('#FFFFFF');
+    expect(tokens[secondaryTokenName('orange', '-on')]).toBe('#FFFFFF');
     for (const [key] of secondaryColors) for (const [suffix] of variants) {
       const foreground = suffix === '-subtle' ? '-on-subtle' : '-on';
       expect(contrast(tokens[secondaryTokenName(key, suffix)]!, tokens[secondaryTokenName(key, foreground)]!)).toBeGreaterThanOrEqual(4.5);
@@ -80,7 +82,7 @@ describe('カラートークン', () => {
   // セカンダリートークンの欠落や不正なHEXに対し、問題のあるトークン名を含む日本語エラーを返すことを確認する。
   test('不足または不正なセカンダリートークンを名前付きで報告する', () => {
     expect(() => parseSecondaryTokens(secondaryCss.replace(/--tkw-color-secondary-lime:.*;/, ''))).toThrow('不足しているトークン: --tkw-color-secondary-lime');
-    expect(() => parseSecondaryTokens(secondaryCss.replace('#F3A24F', '#ORANGE'))).toThrow('不正なHEX: --tkw-color-secondary-orange');
+    expect(() => parseSecondaryTokens(secondaryCss.replace(/(--tkw-color-secondary-orange:)\s*#[\da-f]{6}/i, '$1 #ORANGE'))).toThrow('不正なHEX: --tkw-color-secondary-orange');
   });
 
   // セマンティック24トークンがすべて存在し、文字と背景の16組が4.5:1以上のコントラストを持つことを確認する。

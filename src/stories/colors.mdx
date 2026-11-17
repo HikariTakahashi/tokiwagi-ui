@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/addon-docs/blocks';
-import { PrimaryColorTokenTable } from './components/PrimaryColorTokenTable';
+import { ColorTokenTable } from './components/ColorTokenTable';
 
 <Meta title="カラー/使用ルール" />
 
@@ -39,6 +39,7 @@ Tokiwagi UI はライトモードを対象とします。白とニュートラ�
 - 状態を色だけで伝えず、アイコン、見出し、説明文を併用します。選択状態や操作領域にもラベルや印を併用します。
 - プライマリーの `-on` は白です。通常・ホバーの塗りつぶしでは、24px以上の太字ラベルなど大きな文字やアイコンに使います。コントラストは3:1以上です。
 - プライマリーの押下色と白、淡い背景と同系色の濃い `-on-subtle` は4.5:1以上です。通常サイズの文字には、背景と前景の組み合わせで4.5:1以上を確保します。
+- セカンダリーの通常・ホバー・押下の `-on` は白です。淡い背景には同系色の濃い `-on-subtle` を組み合わせます。
 - セカンダリーとセマンティックは、通常・ホバー・押下と `-on`、淡い背景と `-on-subtle` の各組み合わせで4.5:1以上です。
 - ニュートラルの見出しには `900`、本文には `800`、補助テキストには `600` を基本として使います。`1000` は最大コントラストが必要な場合に限ります。
 
@@ -46,7 +47,13 @@ Tokiwagi UI はライトモードを対象とします。白とニュートラ�
 
 色と状態は[プライマリーの色見本](./?path=/story/カラー-トークンと使用例--primary)のControlsで切り替えられます。
 
-<PrimaryColorTokenTable />
+<ColorTokenTable family="primary" />
+
+## セカンダリーのトークン一覧
+
+色と状態は[セカンダリーの色見本](./?path=/story/カラー-トークンと使用例--secondary)のControlsで切り替えられます。
+
+<ColorTokenTable family="secondary" />
 
 ## 実装時の参照
 
