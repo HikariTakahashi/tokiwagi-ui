@@ -1,0 +1,52 @@
+name: Merge AI Reviewed PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR番号
+        required: true
+        type: string
+      head_sha:
+        description: マージするPRの先端SHA
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: merge-ai-reviewed-pr
+
+jobs:
+  merge:
+    if: ${{ github.repository == 'HikariTakahashi/tokiwagi-ui' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: ai-review-merge
+    permissions:
+      contents: read
+    steps:
+      - name: mainのマージ判定コードを取得
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bunを準備
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: '1.4.4'
+      - name: マージ専用GitHub Appのトークンを発行
+        id: merge-app
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ vars.AI_REVIEW_MERGE_APP_ID }}
+          private-key: ${{ secrets.AI_REVIEW_MERGE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: read
+          permission-statuses: read
+      - name: 対象PRのレビュー完了を再確認してマージ
+        env:
+          GH_TOKEN: ${{ steps.merge-app.outputs.token }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          PR_HEAD_SHA: ${{ inputs.head_sha }}
+        run: bun scripts/ai-review-completion.ts --merge-reviewed
