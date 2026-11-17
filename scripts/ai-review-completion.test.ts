@@ -1,5 +1,9 @@
 import { expect, mock, test } from 'bun:test';
-import { restoreOpenPRs, restoreReviewStatus, reviewCompletion, testMergeCommit } from './ai-review-completion';
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { needsCopilotForPull, restoreOpenPRs, restoreReviewStatus, reviewCompletion, testMergeCommit } from './ai-review-completion';
 
 const commit = 'a'.repeat(40);
 const nextCommit = 'b'.repeat(40);
@@ -233,6 +237,48 @@ test('確認中にマージ用refが変わった場合は古いSHAに書き込�
   };
   expect(await restoreReviewStatus(fixture, '129', changeMergeRef)).toBeUndefined();
   expect(fixture.status).not.toHaveBeenCalled();
+});
+
+// mainで分類が変わっていても指定されたベースの規則で判定し、判定スクリプトのないベースでは省略しない。
+test('マージ用コミットのベースごとにCopilotの要否を判定する', async () => {
+  const cwd = mkdtempSync(join(tmpdir(), 'tkw-copilot-base-'));
+  const git = (...args: string[]) => execFileSync('git', [
+    '-c', 'user.name=Test', '-c', 'user.email=test@example.com', '-c', 'commit.gpgsign=false',
+    '-c', 'core.hooksPath=/dev/null', ...args,
+  ], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const saveCommit = (message: string) => {
+    git('add', '-A');
+    git('commit', '--allow-empty', '-m', message);
+    return git('rev-parse', 'HEAD');
+  };
+  try {
+    git('init', '--initial-branch=main');
+    const withoutRules = saveCommit('initial');
+    mkdirSync(join(cwd, 'scripts'));
+    const currentRules = readFileSync(join(import.meta.dir, 'ci-changes.ts'), 'utf8');
+    const changesPath = join(cwd, 'scripts', 'ci-changes.ts');
+    writeFileSync(changesPath, currentRules.replace(
+      'function checksFor(path: string): CheckId[] {',
+      "function checksFor(path: string): CheckId[] {\n  if (path === 'review-probe.md') return [];",
+    ));
+    writeFileSync(join(cwd, 'scripts', 'copilot-review-changes.ts'),
+      readFileSync(join(import.meta.dir, 'copilot-review-changes.ts'), 'utf8'));
+    const oldBase = saveCommit('old rules');
+    git('checkout', '-b', 'feature');
+    writeFileSync(join(cwd, 'review-probe.md'), 'docs');
+    const head = saveCommit('PR changes');
+    git('checkout', 'main');
+    writeFileSync(changesPath, currentRules);
+    const newBase = saveCommit('new rules');
+
+    const prAtBase = (sha: string) => ({ number: 129, base: { ref: 'main', sha }, head: { sha: head } });
+    expect(await needsCopilotForPull(prAtBase(oldBase), cwd)).toBe(false);
+    expect(await needsCopilotForPull(prAtBase(newBase), cwd)).toBe(true);
+    expect(await needsCopilotForPull(prAtBase(withoutRules), cwd)).toBe(true);
+    expect(git('rev-parse', 'HEAD')).toBe(newBase);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
 });
 
 // 先頭のPRがAPI応答を待っていても、空いた枠から後続のPRを処理する。並行実行は最大4件に抑える。

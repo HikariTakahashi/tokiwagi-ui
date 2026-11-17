@@ -1,9 +1,10 @@
 import { execFile } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { basename, join } from 'node:path';
 import { setTimeout } from 'node:timers/promises';
 import { promisify } from 'node:util';
-import { changedPaths } from './ci-changes';
-import { planCopilotReview } from './copilot-review-changes';
 
 type GitHubUser = { id?: number; login?: string; type?: string };
 type Comment = { user?: GitHubUser; performed_via_github_app?: { id?: number }; body?: string };
@@ -172,13 +173,14 @@ function reviewSummary(result: ReturnType<typeof reviewCompletion>) {
 }
 
 async function checkPR({ get, status }: ReviewAPI, summaryPath: string) {
-  const { PR_NUMBER, PR_HEAD_SHA, COPILOT_REQUIRED } = process.env;
-  if (!PR_NUMBER || !/^[1-9]\d*$/.test(PR_NUMBER) || !fullSha.test(PR_HEAD_SHA ?? '')) {
-    throw new Error('対象PRの番号または先端SHAを取得できませんでした。');
+  const { PR_NUMBER, PR_BASE_SHA, PR_HEAD_SHA, COPILOT_REQUIRED } = process.env;
+  if (!PR_NUMBER || !/^[1-9]\d*$/.test(PR_NUMBER) || !fullSha.test(PR_BASE_SHA ?? '') || !fullSha.test(PR_HEAD_SHA ?? '')) {
+    throw new Error('対象PRの番号、ベースSHA、先端SHAを取得できませんでした。');
   }
   const currentPR = async () => {
     const pr = await openMainPull(get, PR_NUMBER);
-    if (pr?.head.sha === PR_HEAD_SHA) return pr;
+    // イベント時点のベースで得たCopilot要否を、別のベースとのマージ用SHAには適用しない。
+    if (pr && pr.base.sha === PR_BASE_SHA && pr.head.sha === PR_HEAD_SHA) return pr;
   };
   const mergeCommitFor = (pr: MergeablePull) => testMergeCommit(PR_NUMBER, pr, get);
   async function currentMergeCommit() {
@@ -267,22 +269,50 @@ export async function restoreReviewStatus(
   return { mergeCommit, result };
 }
 
-async function needsCopilotForPull(pr: Pull) {
-  const event = { pull_request: pr };
-  let changes = changedPaths('pull_request', event, process.cwd());
-  if (changes.forceReason) {
+export async function needsCopilotForPull(pr: Pick<Pull, 'base' | 'head' | 'number'>, cwd = process.cwd()) {
+  if (!fullSha.test(pr.base.sha) || !fullSha.test(pr.head.sha)) return true;
+  const git = (args: string[]) => execFileAsync('git', args, { cwd, timeout: 30_000, encoding: 'utf8' });
+  try {
+    await git(['merge-base', pr.base.sha, pr.head.sha]);
+  } catch {
     try {
       // 並列に取得するため、リモート追跡refやFETCH_HEADを更新せずにオブジェクトを取得する。
-      await execFileAsync('git', [
+      await git([
         'fetch', '--no-tags', '--refmap=', '--no-write-fetch-head', '--no-auto-maintenance',
         'origin', pr.base.sha, `refs/pull/${pr.number}/head`,
-      ], { timeout: 30_000 });
+      ]);
     } catch {
-      // 他のPRの取得で履歴が揃った可能性もあるため、再比較してCopilotの要否を決める。
+      // 別のPRの取得で履歴が揃っていれば、判定スクリプトから比較できる。
     }
-    changes = changedPaths('pull_request', event, process.cwd());
   }
-  return planCopilotReview(changes.paths, changes.forceReason).run;
+
+  const directory = await mkdtemp(join(tmpdir(), 'tkw-copilot-review-'));
+  try {
+    const eventPath = join(directory, 'event.json');
+    const outputPath = join(directory, 'output');
+    // マージ用コミットの親として確認したベースから、通常ジョブと同じ判定スクリプトを取得する。
+    for (const path of ['scripts/ci-changes.ts', 'scripts/copilot-review-changes.ts']) {
+      const { stdout } = await git(['show', `${pr.base.sha}:${path}`]);
+      await writeFile(join(directory, basename(path)), stdout);
+    }
+    await writeFile(eventPath, JSON.stringify({ pull_request: pr }));
+    await execFileAsync(process.execPath, ['--no-env-file', '--no-install', join(directory, 'copilot-review-changes.ts')], {
+      cwd,
+      timeout: 30_000,
+      env: {
+        PATH: process.env.PATH,
+        GITHUB_EVENT_NAME: 'pull_request_target',
+        GITHUB_EVENT_PATH: eventPath,
+        GITHUB_OUTPUT: outputPath,
+      },
+    });
+    return (await readFile(outputPath, 'utf8')).trim() !== 'review=false';
+  } catch {
+    // ベースのスクリプトまたは判定結果を取得できない場合はCopilotを必須にする。
+    return true;
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 }
 
 export async function restoreOpenPRs(api: ReviewAPI, summaryPath: string) {
