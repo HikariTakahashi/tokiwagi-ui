@@ -1,9 +1,14 @@
 import rawPrimary from '../../../tokens/colors.css?raw';
 import rawSecondary from '../../../tokens/secondary.css?raw';
+import rawSemantic from '../../../tokens/semantic.css?raw';
+import rawNeutral from '../../../tokens/neutrals.css?raw';
 import {
-  colors, contrast, parseSecondaryTokens, parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum,
-  secondaryColors, secondaryForegroundTokenName, secondaryTokenName, tokenName, variants,
+  colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens, parseSemanticTokens,
+  parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum, secondaryColors, secondaryForegroundTokenName,
+  secondaryTokenName, semanticColors, semanticForegroundTokenName, semanticTokenName, tokenName, variants,
 } from '../../lib/palette';
+
+const standardTextMinimum = { '': 4.5, '-hover': 4.5, '-active': 4.5, '-subtle': 4.5 };
 
 const palettes = {
   primary: {
@@ -20,9 +25,18 @@ const palettes = {
     tokens: parseSecondaryTokens(rawSecondary),
     backgroundName: secondaryTokenName,
     foregroundName: secondaryForegroundTokenName,
-    minimum: { '': 4.5, '-hover': 4.5, '-active': 4.5, '-subtle': 4.5 },
+    minimum: standardTextMinimum,
+  },
+  semantic: {
+    label: 'セマンティック',
+    colors: semanticColors,
+    tokens: parseSemanticTokens(rawSemantic),
+    backgroundName: semanticTokenName,
+    foregroundName: semanticForegroundTokenName,
+    minimum: standardTextMinimum,
   },
 };
+const neutralTokens = parseNeutralTokens(rawNeutral);
 
 export function ColorTokenTable({ family }: { family: keyof typeof palettes }) {
   const { label: familyLabel, colors, tokens, backgroundName, foregroundName, minimum } = palettes[family];
@@ -51,6 +65,34 @@ export function ColorTokenTable({ family }: { family: keyof typeof palettes }) {
               </tr>
             );
           }))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function NeutralTokenTable() {
+  return (
+    <div className="tkw-color-table-scroll" role="region" aria-label="ニュートラルの配色表" tabIndex={0}>
+      <table className="tkw-color-table tkw-neutral-token-table" aria-label="ニュートラルの配色トークン">
+        <thead>
+          <tr>
+            <th scope="col">段階</th>
+            <th scope="col">色</th>
+            <th scope="col">用途</th>
+          </tr>
+        </thead>
+        <tbody>
+          {neutrals.map(([step, usage]) => {
+            const token = neutralTokenName(step);
+            return (
+              <tr key={step}>
+                <th scope="row">{step}</th>
+                <td><code>{neutralTokens[token]}</code><br /><code>{token}</code></td>
+                <td>{usage}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/addon-docs/blocks';
-import { ColorTokenTable } from './components/ColorTokenTable';
+import { ColorTokenTable, NeutralTokenTable } from './components/ColorTokenTable';
 
 <Meta title="カラー/使用ルール" />
 
@@ -36,7 +36,7 @@ Tokiwagi UI はライトモードを対象とします。白とニュートラ�
 ## 状態とアクセシビリティ
 
 - 成功は完了・保存成功、警告は注意・要確認、エラーは失敗・入力不備、情報は案内・進行状況に使います。
-- 状態を色だけで伝えず、アイコン、見出し、説明文を併用します。選択状態や操作領域にもラベルや印を併用します。
+- 状態を色だけで伝えず、アイコン、見出し、説明文を併用します。同じ状態には画面間で同じ意味と色を使います。選択状態や操作領域にもラベルや印を併用します。
 - プライマリーの `-on` は白です。通常・ホバーの塗りつぶしでは、24px以上の太字ラベルなど大きな文字やアイコンに使います。コントラストは3:1以上です。
 - プライマリーの押下色と白、淡い背景と同系色の濃い `-on-subtle` は4.5:1以上です。通常サイズの文字には、背景と前景の組み合わせで4.5:1以上を確保します。
 - セカンダリーの通常・ホバー・押下の `-on` は白です。淡い背景には同系色の濃い `-on-subtle` を組み合わせます。
@@ -54,6 +54,18 @@ Tokiwagi UI はライトモードを対象とします。白とニュートラ�
 色と状態は[セカンダリーの色見本](./?path=/story/カラー-トークンと使用例--secondary)のControlsで切り替えられます。
 
 <ColorTokenTable family="secondary" />
+
+## セマンティックのトークン一覧
+
+色と状態は[セマンティックの色見本](./?path=/story/カラー-トークンと使用例--semantic)のControlsで切り替えられます。
+
+<ColorTokenTable family="semantic" />
+
+## ニュートラルのトークン一覧
+
+9段階の色は[ニュートラルの色見本](./?path=/story/カラー-トークンと使用例--neutrals)のControlsで切り替えられます。
+
+<NeutralTokenTable />
 
 ## 実装時の参照
 

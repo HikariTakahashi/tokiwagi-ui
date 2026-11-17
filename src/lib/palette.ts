@@ -45,6 +45,8 @@ export const semanticColors = [
   ['info', '情報', '案内・進行状況', 'i', '同期を開始しました', '完了までしばらくお待ちください。'],
 ] as const;
 export const semanticTokenName = (key: string, suffix = '') => `--tkw-color-semantic-${key}${suffix}`;
+export const semanticForegroundTokenName = (key: string, suffix: typeof variants[number][0]) =>
+  semanticTokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
 
 /** Only literal six-digit HEX tokens are supported; CSS remains the source of truth. */
 export function parseTokens(css: string): Record<string, string> {
