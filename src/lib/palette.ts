@@ -35,6 +35,8 @@ export const secondaryColors = [
   ['navy', 'ネイビー', '画面を引き締める落ち着いたアクセント'],
 ] as const;
 export const secondaryTokenName = (key: string, suffix = '') => `--tkw-color-secondary-${key}${suffix}`;
+export const secondaryForegroundTokenName = (key: string, suffix: typeof variants[number][0]) =>
+  secondaryTokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
 
 export const semanticColors = [
   ['success', '成功', '完了・保存成功', '✓', '保存しました', '変更内容が反映されました。'],

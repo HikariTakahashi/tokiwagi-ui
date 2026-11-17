@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/addon-docs/blocks';
-import { PrimaryColorTokenTable } from './components/PrimaryColorTokenTable';
+import { ColorTokenTable } from './components/ColorTokenTable';
 
 <Meta title="カラー/使用ルール" />
 
@@ -47,7 +47,13 @@ Tokiwagi UI はライトモードを対象とします。白とニュートラ�
 
 色と状態は[プライマリーの色見本](./?path=/story/カラー-トークンと使用例--primary)のControlsで切り替えられます。
 
-<PrimaryColorTokenTable />
+<ColorTokenTable family="primary" />
+
+## セカンダリーのトークン一覧
+
+色と状態は[セカンダリーの色見本](./?path=/story/カラー-トークンと使用例--secondary)のControlsで切り替えられます。
+
+<ColorTokenTable family="secondary" />
 
 ## 実装時の参照
 

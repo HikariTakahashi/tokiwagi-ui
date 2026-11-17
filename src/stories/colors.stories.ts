@@ -1,28 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/html-vite';
-import rawSecondary from '../../tokens/secondary.css?raw';
 import rawSemantic from '../../tokens/semantic.css?raw';
 import rawNeutral from '../../tokens/neutrals.css?raw';
 import {
   colors, contrast, neutrals, neutralTokenName, parseNeutralTokens,
-  parseSecondaryTokens, parseSemanticTokens, primaryForegroundTokenName, secondaryColors,
+  parseSemanticTokens, primaryForegroundTokenName, secondaryColors, secondaryForegroundTokenName,
   secondaryTokenName, semanticColors, semanticTokenName, tokenName, variants,
 } from '../lib/palette';
 
-const secondary = parseSecondaryTokens(rawSecondary);
 const semantic = parseSemanticTokens(rawSemantic);
 const neutral = parseNeutralTokens(rawNeutral);
 
-type Family = 'secondary' | 'semantic';
-type PrimaryArgs = { color: string; state: string };
-type TokenMap = Record<string, string>;
-type ColorRow = { key: string; name: string; purpose: string; example?: string; description?: string; icon?: string };
+type SwatchArgs = { color: string; state: string };
+type SwatchColor = readonly [key: string, label: string, ...details: string[]];
+type SwatchTokenName = (key: string, suffix: typeof variants[number][0]) => string;
 
-const nameFor: Record<Family, (key: string, suffix?: string) => string> = {
-  secondary: secondaryTokenName,
-  semantic: semanticTokenName,
-};
-
-const primaryStates = variants.map(([suffix, label]) => ({
+const swatchStates = variants.map(([suffix, label]) => ({
   key: suffix.slice(1) || 'normal',
   suffix,
   label,
@@ -49,100 +41,102 @@ function page(title: string, lead: string, body: string): HTMLElement {
   return root;
 }
 
-function variantCard(family: Family, key: string, tokens: TokenMap, suffix: string, label: string): string {
-  const token = nameFor[family](key, suffix);
-  const foreground = nameFor[family](key, suffix === '-subtle' ? '-on-subtle' : '-on');
-  const ratio = contrast(tokens[token]!, tokens[foreground]!);
+function semanticVariantCard(key: string, suffix: string, label: string): string {
+  const token = semanticTokenName(key, suffix);
+  const foreground = semanticTokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
+  const ratio = contrast(semantic[token]!, semantic[foreground]!);
   const result = ratio >= 4.5 ? '適合' : '要確認';
   return `<div class="tkw-variant">
     <div class="tkw-variant-swatch" style="background:var(${token});color:var(${foreground})">
-      <span>${label}</span><strong>Aa あいう</strong><code>${tokens[token]}</code>
+      <span>${label}</span><strong>Aa あいう</strong><code>${semantic[token]}</code>
     </div>
     <div class="tkw-variant-meta"><code>${token}</code><span class="${ratio < 4.5 ? 'tkw-fail' : ''}">${ratio.toFixed(2)}:1 · ${result}</span></div>
-    <div class="tkw-foreground"><span>文字・アイコン</span><code>${foreground} = ${tokens[foreground]}</code></div>
+    <div class="tkw-foreground"><span>文字・アイコン</span><code>${foreground} = ${semantic[foreground]}</code></div>
   </div>`;
 }
 
-function colorCard(family: Family, row: ColorRow, tokens: TokenMap): string {
-  const base = nameFor[family](row.key);
-  const on = nameFor[family](row.key, '-on');
-  const subtle = nameFor[family](row.key, '-subtle');
-  const onSubtle = nameFor[family](row.key, '-on-subtle');
-  const hover = nameFor[family](row.key, '-hover');
-  const active = nameFor[family](row.key, '-active');
+function semanticColorCard([key, name, purpose, icon, title, description]: typeof semanticColors[number]): string {
+  const base = semanticTokenName(key);
+  const on = semanticTokenName(key, '-on');
+  const subtle = semanticTokenName(key, '-subtle');
+  const onSubtle = semanticTokenName(key, '-on-subtle');
+  const hover = semanticTokenName(key, '-hover');
+  const active = semanticTokenName(key, '-active');
   return `<article class="tkw-color-card">
-    <div class="tkw-color-heading"><div><span class="tkw-key">${row.key}</span><h2>${row.name}</h2><p>${row.purpose}</p></div><code>${base}</code></div>
-    <div class="tkw-variant-grid">${variants.map(([suffix, label]) => variantCard(family, row.key, tokens, suffix, label)).join('')}</div>
+    <div class="tkw-color-heading"><div><span class="tkw-key">${key}</span><h2>${name}</h2><p>${purpose}</p></div><code>${base}</code></div>
+    <div class="tkw-variant-grid">${variants.map(([suffix, label]) => semanticVariantCard(key, suffix, label)).join('')}</div>
     <div class="tkw-demo" style="--tkw-demo-bg:var(${base});--tkw-demo-hover:var(${hover});--tkw-demo-active:var(${active});--tkw-demo-on:var(${on});--tkw-demo-subtle:var(${subtle});--tkw-demo-on-subtle:var(${onSubtle})">
       <span class="tkw-demo-label">使用例</span>
-      <button type="button">${row.icon ?? '＋'} ${row.example ?? 'タスクを追加'}</button>
-      <span class="tkw-demo-tag">${row.name}のラベル</span>
-      <div class="tkw-demo-panel"><strong>${row.example ?? '次のアイデアをまとめる'}</strong><span>${row.description ?? row.purpose}</span></div>
+      <button type="button">${icon} ${title}</button>
+      <span class="tkw-demo-tag">${name}のラベル</span>
+      <div class="tkw-demo-panel"><strong>${title}</strong><span>${description}</span></div>
     </div>
   </article>`;
 }
 
-function familyPage(title: string, lead: string, family: Family, rows: ColorRow[], tokens: TokenMap, note: string): HTMLElement {
-  const ratios = rows.flatMap(row => variants.map(([suffix]) => {
-    const background = nameFor[family](row.key, suffix);
-    const foreground = nameFor[family](row.key, suffix === '-subtle' ? '-on-subtle' : '-on');
-    return contrast(tokens[background]!, tokens[foreground]!);
+function semanticPage(title: string, lead: string, note: string): HTMLElement {
+  const ratios = semanticColors.flatMap(([key]) => variants.map(([suffix]) => {
+    const background = semanticTokenName(key, suffix);
+    const foreground = semanticTokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
+    return contrast(semantic[background]!, semantic[foreground]!);
   }));
   const failures = ratios.filter(ratio => ratio < 4.5).length;
   const summary = `<div class="tkw-summary ${failures ? 'tkw-fail' : ''}"><strong>${failures ? `要確認：${failures}組が4.5:1未満` : `${ratios.length} / ${ratios.length} 組が4.5:1以上`}</strong><span>通常サイズの文字に対する背景と文字の組み合わせ</span></div>`;
-  return page(title, lead, `<p class="tkw-rule">${note}</p>${summary}<div class="tkw-color-list">${rows.map(row => colorCard(family, row, tokens)).join('')}</div>`);
+  return page(title, lead, `<p class="tkw-rule">${note}</p>${summary}<div class="tkw-color-list">${semanticColors.map(semanticColorCard).join('')}</div>`);
+}
+
+function swatchStory(
+  palette: readonly [SwatchColor, ...SwatchColor[]],
+  backgroundName: SwatchTokenName,
+  foregroundName: SwatchTokenName,
+) {
+  const defaultColor = palette[0];
+  return {
+    parameters: {
+      layout: 'centered',
+      controls: { disable: false, include: ['色', '状態'], disableSaveFromUI: true },
+      options: { layout: { showPanel: true } },
+    },
+    args: { color: defaultColor[0], state: 'normal' },
+    argTypes: {
+      color: {
+        name: '色',
+        options: palette.map(([key]) => key),
+        control: { type: 'select', labels: Object.fromEntries(palette.map(([key, label]) => [key, label])) },
+      },
+      state: {
+        name: '状態',
+        options: swatchStates.map(({ key }) => key),
+        control: { type: 'select', labels: Object.fromEntries(swatchStates.map(({ key, label }) => [key, label])) },
+      },
+    },
+    render: ({ color, state }) => {
+      const [key, colorLabel] = palette.find(([value]) => value === color) ?? defaultColor;
+      const { suffix, label } = swatchStates.find(({ key }) => key === state) ?? swatchStates[0]!;
+      const background = backgroundName(key, suffix);
+      const foreground = foregroundName(key, suffix);
+      return `<div class="tkw-color-swatch" role="img" aria-label="${colorLabel}・${label}" style="background-color:var(${background});color:var(${foreground})">Aa あいう</div>`;
+    },
+  } satisfies StoryObj<SwatchArgs>;
 }
 
 export const Primary = {
+  ...swatchStory(colors, tokenName, primaryForegroundTokenName),
   name: 'プライマリー · 42トークン',
   tags: ['!autodocs'],
-  parameters: {
-    layout: 'centered',
-    controls: { disable: false, include: ['色', '状態'], disableSaveFromUI: true },
-    options: { layout: { showPanel: true } },
-  },
-  args: { color: 'green', state: 'normal' },
-  argTypes: {
-    color: {
-      name: '色',
-      options: colors.map(([key]) => key),
-      control: { type: 'select', labels: Object.fromEntries(colors) },
-    },
-    state: {
-      name: '状態',
-      options: primaryStates.map(({ key }) => key),
-      control: { type: 'select', labels: Object.fromEntries(primaryStates.map(({ key, label }) => [key, label])) },
-    },
-  },
-  render: ({ color, state }) => {
-    const [key, name] = colors.find(([value]) => value === color) ?? colors[0];
-    const { suffix, label } = primaryStates.find(({ key }) => key === state) ?? primaryStates[0]!;
-    const background = tokenName(key, suffix);
-    const foreground = primaryForegroundTokenName(key, suffix);
-    return `<div class="tkw-primary-color-swatch" role="img" aria-label="${name}・${label}" style="background-color:var(${background});color:var(${foreground})">Aa あいう</div>`;
-  },
-} satisfies StoryObj<PrimaryArgs>;
+};
 
-export const Secondary: Story = {
+export const Secondary = {
+  ...swatchStory(secondaryColors, secondaryTokenName, secondaryForegroundTokenName),
   name: 'セカンダリー · 18トークン',
-  render: () => familyPage(
-    '主役を支える3色。',
-    '3色 × 6トークン。装飾、分類、補助的な強調に使用します。',
-    'secondary',
-    secondaryColors.map(([key, name, purpose]) => ({ key, name, purpose })),
-    secondary,
-    '3色に優先順位はありません。成功・警告・エラー・情報など、意味の固定された状態にはセマンティックカラーを使います。',
-  ),
+  tags: ['!autodocs'],
 };
 
 export const Semantic: Story = {
   name: 'セマンティック · 24トークン',
-  render: () => familyPage(
+  render: () => semanticPage(
     '状態を、色とことばで伝える。',
     '4状態 × 6トークン。通常・ホバー・押下は操作に、淡い背景は通知やバナーに使います。',
-    'semantic',
-    semanticColors.map(([key, name, purpose, icon, title, description]) => ({ key, name, purpose, icon, example: title, description })),
-    semantic,
     '状態を色だけで伝えず、アイコン・見出し・説明文を併用します。同じ状態には画面間で同じ意味と色を使います。',
   ),
 };
