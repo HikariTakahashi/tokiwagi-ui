@@ -1,17 +1,34 @@
 import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
-import { colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens, parseSemanticTokens, parseTokens, secondaryColors, secondaryTokenName, semanticColors, semanticTokenName, tokenName, variants } from './palette';
+import {
+  colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens,
+  parseSemanticTokens, parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum, secondaryColors, secondaryTokenName,
+  semanticColors, semanticTokenName, tokenName, variants,
+} from './palette';
 const css = readFileSync(new URL('../../tokens/colors.css', import.meta.url), 'utf8');
 const neutralCss = readFileSync(new URL('../../tokens/neutrals.css', import.meta.url), 'utf8');
 const secondaryCss = readFileSync(new URL('../../tokens/secondary.css', import.meta.url), 'utf8');
 const semanticCss = readFileSync(new URL('../../tokens/semantic.css', import.meta.url), 'utf8');
 describe('カラートークン', () => {
-  // プライマリー42トークンがすべて存在し、文字と背景の28組が4.5:1以上のコントラストを持つことを確認する。
-  test('プライマリー42トークンと文字・背景28組がアクセシビリティ基準を満たす', () => {
+  // プライマリー42トークンと白文字を確認し、通常・ホバーで3:1以上、押下・淡い背景で4.5:1以上を検証する。
+  test('プライマリー42トークンと文字・背景28組が用途ごとのコントラスト基準を満たす', () => {
     const tokens = parseTokens(css);
     expect(Object.keys(tokens)).toHaveLength(42);
-    for (const [key] of colors) for (const [suffix] of variants) {
-      expect(contrast(tokens[tokenName(key, suffix)]!, tokens[tokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on')]!)).toBeGreaterThanOrEqual(4.5);
+    for (const [key] of colors) {
+      const white = tokens[tokenName(key, '-on')]!;
+      expect(white).toBe('#FFFFFF');
+      for (const [suffix] of variants) {
+        const foreground = tokens[primaryForegroundTokenName(key, suffix)]!;
+        expect(contrast(tokens[tokenName(key, suffix)]!, foreground)).toBeGreaterThanOrEqual(primaryTextContrastMinimum[suffix]);
+      }
+    }
+  });
+  // 紹介ページの小さな番号と色名は基準背景上でニュートラル900を使い、4.5:1以上を確保する。
+  test('プライマリー7色の基準背景で紹介ページの文字色が4.5:1以上になる', () => {
+    const primary = parseTokens(css);
+    const ink = parseNeutralTokens(neutralCss)[neutralTokenName('900')]!;
+    for (const [key] of colors) {
+      expect(contrast(primary[tokenName(key)]!, ink)).toBeGreaterThanOrEqual(4.5);
     }
   });
   // コントラスト計算が既知の値と一致し、前景色と背景色を入れ替えても結果が変わらないことを確認する。

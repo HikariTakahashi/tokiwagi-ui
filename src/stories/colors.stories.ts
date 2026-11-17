@@ -1,28 +1,32 @@
 import type { Meta, StoryObj } from '@storybook/html-vite';
-import rawPrimary from '../../tokens/colors.css?raw';
 import rawSecondary from '../../tokens/secondary.css?raw';
 import rawSemantic from '../../tokens/semantic.css?raw';
 import rawNeutral from '../../tokens/neutrals.css?raw';
 import {
   colors, contrast, neutrals, neutralTokenName, parseNeutralTokens,
-  parseSecondaryTokens, parseSemanticTokens, parseTokens, secondaryColors,
+  parseSecondaryTokens, parseSemanticTokens, primaryForegroundTokenName, secondaryColors,
   secondaryTokenName, semanticColors, semanticTokenName, tokenName, variants,
 } from '../lib/palette';
 
-const primary = parseTokens(rawPrimary);
 const secondary = parseSecondaryTokens(rawSecondary);
 const semantic = parseSemanticTokens(rawSemantic);
 const neutral = parseNeutralTokens(rawNeutral);
 
-type Family = 'primary' | 'secondary' | 'semantic';
+type Family = 'secondary' | 'semantic';
+type PrimaryArgs = { color: string; state: string };
 type TokenMap = Record<string, string>;
 type ColorRow = { key: string; name: string; purpose: string; example?: string; description?: string; icon?: string };
 
 const nameFor: Record<Family, (key: string, suffix?: string) => string> = {
-  primary: tokenName,
   secondary: secondaryTokenName,
   semantic: semanticTokenName,
 };
+
+const primaryStates = variants.map(([suffix, label]) => ({
+  key: suffix.slice(1) || 'normal',
+  suffix,
+  label,
+}));
 
 const meta = {
   title: 'カラー/トークンと使用例',
@@ -89,17 +93,35 @@ function familyPage(title: string, lead: string, family: Family, rows: ColorRow[
   return page(title, lead, `<p class="tkw-rule">${note}</p>${summary}<div class="tkw-color-list">${rows.map(row => colorCard(family, row, tokens)).join('')}</div>`);
 }
 
-export const Primary: Story = {
+export const Primary = {
   name: 'プライマリー · 42トークン',
-  render: () => familyPage(
-    '7色、それぞれが主役。',
-    '7色 × 6トークン。プロジェクトやカテゴリに応じて色を選び、同じ対象には画面間で同じ色を使います。',
-    'primary',
-    colors.map(([key, name]) => ({ key, name, purpose: '主要操作・カテゴリ・選択状態。広い背景には淡い色を使う。' })),
-    primary,
-    '7色に優先順位はありません。主要操作の色は文脈に応じて選び、文字とアイコンには対応する on / on-subtle を組み合わせます。',
-  ),
-};
+  tags: ['!autodocs'],
+  parameters: {
+    layout: 'centered',
+    controls: { disable: false, include: ['色', '状態'], disableSaveFromUI: true },
+    options: { layout: { showPanel: true } },
+  },
+  args: { color: 'green', state: 'normal' },
+  argTypes: {
+    color: {
+      name: '色',
+      options: colors.map(([key]) => key),
+      control: { type: 'select', labels: Object.fromEntries(colors) },
+    },
+    state: {
+      name: '状態',
+      options: primaryStates.map(({ key }) => key),
+      control: { type: 'select', labels: Object.fromEntries(primaryStates.map(({ key, label }) => [key, label])) },
+    },
+  },
+  render: ({ color, state }) => {
+    const [key, name] = colors.find(([value]) => value === color) ?? colors[0];
+    const { suffix, label } = primaryStates.find(({ key }) => key === state) ?? primaryStates[0]!;
+    const background = tokenName(key, suffix);
+    const foreground = primaryForegroundTokenName(key, suffix);
+    return `<div class="tkw-primary-color-swatch" role="img" aria-label="${name}・${label}" style="background-color:var(${background});color:var(${foreground})">Aa あいう</div>`;
+  },
+} satisfies StoryObj<PrimaryArgs>;
 
 export const Secondary: Story = {
   name: 'セカンダリー · 18トークン',

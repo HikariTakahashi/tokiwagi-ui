@@ -78,6 +78,28 @@
 .tkw-neutral-example div:nth-child(3) p { color: var(--tkw-color-neutral-600); }
 .tkw-neutral-example button { padding: 10px 14px; border: 0; border-radius: 7px; background: var(--tkw-color-neutral-100); color: var(--tkw-color-neutral-400); font-size: 12px; }
 
+.tkw-primary-color-swatch {
+  display: grid;
+  box-sizing: border-box;
+  width: 176px;
+  max-width: 100%;
+  min-height: 72px;
+  place-items: center;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: var(--tkw-font-family-sans);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.tkw-primary-color-table-scroll { max-width: 100%; overflow-x: auto; margin-block: 16px; }
+.tkw-primary-color-table-scroll:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.tkw-primary-color-table-scroll .tkw-primary-color-table { width: 100%; min-width: 46rem; margin: 0; }
+.tkw-primary-color-table th,
+.tkw-primary-color-table td { vertical-align: top; }
+.tkw-primary-color-table code { white-space: nowrap; }
+
 @media (max-width: 900px) {
   .tkw-variant-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tkw-color-heading { flex-direction: column; }

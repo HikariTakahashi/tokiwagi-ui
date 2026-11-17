@@ -49,6 +49,7 @@
   --tkw-header-foreground: var(--tkw-color-neutral-900);
   --tkw-header-hover: var(--tkw-color-neutral-100);
   --tkw-header-active: var(--tkw-color-neutral-200);
+  --tkw-header-active-foreground: var(--tkw-header-foreground);
   --tkw-header-selected: var(--tkw-color-neutral-100);
   --tkw-header-indicator: var(--tkw-color-neutral-900);
   appearance: none;
@@ -89,7 +90,11 @@
   background: var(--tkw-header-indicator);
 }
 .tkw-header-button:hover:not(:disabled) { background: var(--tkw-header-hover); color: var(--tkw-header-foreground); }
-.tkw-header-button:active:not(:disabled) { background: var(--tkw-header-active); color: var(--tkw-header-foreground); }
+.tkw-header-button:active:not(:disabled) {
+  --tkw-header-indicator: var(--tkw-header-active-foreground);
+  background: var(--tkw-header-active);
+  color: var(--tkw-header-active-foreground);
+}
 .tkw-header-button:focus-visible {
   z-index: 1;
   outline: 2px solid currentColor;
@@ -125,7 +130,8 @@
   --tkw-header-normal-foreground: var(--tkw-header-readable-green, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-green-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-green-subtle);
-  --tkw-header-active: var(--tkw-color-primary-green);
+  --tkw-header-active: var(--tkw-color-primary-green-active);
+  --tkw-header-active-foreground: var(--tkw-color-primary-green-on);
   --tkw-header-selected: var(--tkw-color-primary-green-subtle);
   --tkw-header-indicator: var(--tkw-color-primary-green-on-subtle);
 }
@@ -134,7 +140,8 @@
   --tkw-header-normal-foreground: var(--tkw-header-readable-teal, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-teal-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-teal-subtle);
-  --tkw-header-active: var(--tkw-color-primary-teal);
+  --tkw-header-active: var(--tkw-color-primary-teal-active);
+  --tkw-header-active-foreground: var(--tkw-color-primary-teal-on);
   --tkw-header-selected: var(--tkw-color-primary-teal-subtle);
   --tkw-header-indicator: var(--tkw-color-primary-teal-on-subtle);
 }
@@ -143,7 +150,8 @@
   --tkw-header-normal-foreground: var(--tkw-header-readable-blue, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-blue-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-blue-subtle);
-  --tkw-header-active: var(--tkw-color-primary-blue);
+  --tkw-header-active: var(--tkw-color-primary-blue-active);
+  --tkw-header-active-foreground: var(--tkw-color-primary-blue-on);
   --tkw-header-selected: var(--tkw-color-primary-blue-subtle);
   --tkw-header-indicator: var(--tkw-color-primary-blue-on-subtle);
 }
@@ -152,7 +160,8 @@
   --tkw-header-normal-foreground: var(--tkw-header-readable-violet, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-violet-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-violet-subtle);
-  --tkw-header-active: var(--tkw-color-primary-violet);
+  --tkw-header-active: var(--tkw-color-primary-violet-active);
+  --tkw-header-active-foreground: var(--tkw-color-primary-violet-on);
   --tkw-header-selected: var(--tkw-color-primary-violet-subtle);
   --tkw-header-indicator: var(--tkw-color-primary-violet-on-subtle);
 }
@@ -161,7 +170,8 @@
   --tkw-header-normal-foreground: var(--tkw-header-readable-rose, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-rose-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-rose-subtle);
-  --tkw-header-active: var(--tkw-color-primary-rose);
+  --tkw-header-active: var(--tkw-color-primary-rose-active);
+  --tkw-header-active-foreground: var(--tkw-color-primary-rose-on);
   --tkw-header-selected: var(--tkw-color-primary-rose-subtle);
   --tkw-header-indicator: var(--tkw-color-primary-rose-on-subtle);
 }
@@ -170,7 +180,8 @@
   --tkw-header-normal-foreground: var(--tkw-header-readable-coral, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-coral-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-coral-subtle);
-  --tkw-header-active: var(--tkw-color-primary-coral);
+  --tkw-header-active: var(--tkw-color-primary-coral-active);
+  --tkw-header-active-foreground: var(--tkw-color-primary-coral-on);
   --tkw-header-selected: var(--tkw-color-primary-coral-subtle);
   --tkw-header-indicator: var(--tkw-color-primary-coral-on-subtle);
 }
@@ -179,7 +190,8 @@
   --tkw-header-normal-foreground: var(--tkw-header-readable-amber, var(--tkw-header-foreground));
   --tkw-header-foreground: var(--tkw-color-primary-amber-on-subtle);
   --tkw-header-hover: var(--tkw-color-primary-amber-subtle);
-  --tkw-header-active: var(--tkw-color-primary-amber);
+  --tkw-header-active: var(--tkw-color-primary-amber-active);
+  --tkw-header-active-foreground: var(--tkw-color-primary-amber-on);
   --tkw-header-selected: var(--tkw-color-primary-amber-subtle);
   --tkw-header-indicator: var(--tkw-color-primary-amber-on-subtle);
 }

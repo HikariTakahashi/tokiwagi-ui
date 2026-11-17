@@ -22,6 +22,7 @@ Copilot Code Review の担当は、`.github/copilot-instructions.md` のUIとパ
 
 - カラーの値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` が唯一の定義元です。全93トークン（プライマリー42、セカンダリー18、セマンティック24、ニュートラル9）は確定しています。ユーザーから変更指示があるまで値、色数、用途を維持してください。
 - カラーの使用ルールと見本は Storybook の「カラー」に置きます。数値は CSS から読み込み、Storybook や LP に別の値を定義しません。
+- プライマリーのCanvasは中央に色見本を1つ置き、7色と4状態を標準Controlsで切り替えてURLに保持します。値とコントラスト比は「カラー/使用ルール」で確認します。
 - ロゴは `icons/logo/logo.svg`、使用ルールは同じディレクトリの `README.md` が管理元です。Storybookの「ロゴ/使用ルール」（`src/icons/logo.mdx`）に原本を参照する32・64・128pxの見本とダウンロードを置きます。固定配色・最小32pxのブランド資産として扱い、汎用アイコン329種の一覧・個別ページ照合・TIcon公開名生成から分離します。`src/lib/icon-assets.ts` の `isBrandAssetName` で識別し、SVG原本の形状・配色は維持します。ロゴのルールは案で、アプリ画面への適用は未実施です。
 - アイコンの名前は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）、各アイコンの用途・使用ルールと検索用の別名は `icons/<公開名>/README.md`、既存参照 ID は「アイコン/既存フロントエンドとの対応」が管理元です。`bell` の詳細ルールは確定済み、ほかは詳細ルール案です。README には「概要」「使用場面」「状態の表し方」「使用しない場面」「表示とアクセシビリティ」「関連アイコンと使い分け」の6セクションを記載します。SVG 原本329個は各 README と同じ `icons/<公開名>/` に収録済みです。Storybook の個別ページは README を読み込んで表示し、各個別Docsから対応する使用例にリンクします。「アイコン/使用例」の全329ストーリーはReact版の公開TIconを1つ中央に表示し、公開名は各図柄に固定、初期値は24px・currentColorです。Controlsは16・20・24・32pxと、継承・ニュートラル・7色のプライマリーのみとし、既存トークンを参照して選択をURLに保持します。Actions・Interactionsは標準パネルとして残し、イベントや表示目的のplay関数を追加しません。独自の見出し・説明・サイズ同時比較・コピー・原本ダウンロードは使用例に置きません。一覧は従来の前景・背景の組み合わせを維持します。既存画面への置き換えは未実装です。
 - `tokiwagi-ui` の略称は `tkw` です。ライトモードを対象とし、7色のプライマリーを対等に扱います。
@@ -67,7 +68,7 @@ bun run test:visual      # PlaywrightのFirefox・WebKitで基準画像と比較
 
 - カラーの見本、HEX、コントラスト比は CSS トークンの編集を Storybook の開発サーバー再起動なしで反映します。パース処理とコントラスト計算は `src/lib/palette.ts` を共有します。
 - 欠落・不正な6桁HEX・重複は対象トークン名を含む日本語エラーで検出します。CSS コメントは除外し、コントラスト不足だけでは閲覧を止めません。
-- 各色の通常・ホバー・押下と `-on`、淡い背景と `-on-subtle` の56組について、4.5:1以上を検証します。任意の色の組み合わせへの保証ではありません。
+- 既定の前景・背景56組のコントラストを検証します。プライマリーの通常・ホバーは大きな白文字で3:1以上、押下の白文字と淡い背景の濃い文字は4.5:1以上です。セカンダリーとセマンティックは4.5:1以上です。
 - テストの `describe` と `test` は日本語で書き、各テストの直前に目的・条件・期待結果を記す日本語コメントを置きます。テストを変更したら `bun test` を実行します。
 - 画像比較は `e2e/*.visual.ts` のPlaywrightテストとして分離します。基準画像はLinux amd64の固定Playwrightコンテナーで生成し、専用の公開リポジトリ `HikariTakahashi/tokiwagi-ui-visual-results` のRelease `visual-test-baselines` に継続保存します。PNGをGitに含めません。通常の `test:visual` は外部の承認済みZIPをSHA-256と64条件で検証して `.visual-baselines/` へ一時復元し、基準画像を更新しません。`Visual Tests` はFirefox・WebKitでReact／Vueの代表4図柄×4サイズを検証し、成功・失敗とも画像一覧・差分レポートを7日保存します。`Transfer Visual Reports` はmainのコードと保管先に限定したSecret `VISUAL_STORAGE_TOKEN` でレポートZIPを専用リポジトリのReleaseへ転送します。同リポジトリの `Publish Visual Reports` がPages公開と毎時の期限切れRelease・公開ファイル削除を行います。 同一リポジトリのPRでは転送ワークフローが公開を確認して、完了・短いコミットSHA・成功／失敗件数・日本時間の削除予定日時・クリック可能な確認画像をConversationへコメントします。結果画像をPR本文へ追加しません。転送ジョブだけに `pull-requests: write` を付与し、同じ実行の再送はbot自身のコメントを更新します。通常のPRテストへ転送用Secretを渡しません。候補生成と `Approve Visual Baselines` による外部基準の切り替えは別の手動操作です。更新・差分確認は `docs/wiki/Testing.md` に従います。実Safari・VoiceOverでの確認とは区別します。
 - UI変更時は `bun run check`、`bun run build`、`bun run build:storybook` を実行し、ブラウザーでモバイル・デスクトップ表示、キーボードフォーカス、ボタンのホバー・押下を確認します。
