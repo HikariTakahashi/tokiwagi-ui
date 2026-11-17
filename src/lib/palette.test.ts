@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import {
   colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens,
-  parseSemanticTokens, parseTokens, primaryTextContrastMinimum, secondaryColors, secondaryTokenName,
+  parseSemanticTokens, parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum, secondaryColors, secondaryTokenName,
   semanticColors, semanticTokenName, tokenName, variants,
 } from './palette';
 const css = readFileSync(new URL('../../tokens/colors.css', import.meta.url), 'utf8');
@@ -18,7 +18,7 @@ describe('カラートークン', () => {
       const white = tokens[tokenName(key, '-on')]!;
       expect(white).toBe('#FFFFFF');
       for (const [suffix] of variants) {
-        const foreground = suffix === '-subtle' ? tokens[tokenName(key, '-on-subtle')]! : white;
+        const foreground = tokens[primaryForegroundTokenName(key, suffix)]!;
         expect(contrast(tokens[tokenName(key, suffix)]!, foreground)).toBeGreaterThanOrEqual(primaryTextContrastMinimum[suffix]);
       }
     }

@@ -1,29 +1,32 @@
 import type { Meta, StoryObj } from '@storybook/html-vite';
-import rawPrimary from '../../tokens/colors.css?raw';
 import rawSecondary from '../../tokens/secondary.css?raw';
 import rawSemantic from '../../tokens/semantic.css?raw';
 import rawNeutral from '../../tokens/neutrals.css?raw';
 import {
   colors, contrast, neutrals, neutralTokenName, parseNeutralTokens,
-  parseSecondaryTokens, parseSemanticTokens, parseTokens, primaryTextContrastMinimum, secondaryColors,
+  parseSecondaryTokens, parseSemanticTokens, primaryForegroundTokenName, secondaryColors,
   secondaryTokenName, semanticColors, semanticTokenName, tokenName, variants,
 } from '../lib/palette';
 
-const primary = parseTokens(rawPrimary);
 const secondary = parseSecondaryTokens(rawSecondary);
 const semantic = parseSemanticTokens(rawSemantic);
 const neutral = parseNeutralTokens(rawNeutral);
 
-type Family = 'primary' | 'secondary' | 'semantic';
-type ColorVariant = typeof variants[number][0];
+type Family = 'secondary' | 'semantic';
+type PrimaryArgs = { color: string; state: string };
 type TokenMap = Record<string, string>;
 type ColorRow = { key: string; name: string; purpose: string; example?: string; description?: string; icon?: string };
 
 const nameFor: Record<Family, (key: string, suffix?: string) => string> = {
-  primary: tokenName,
   secondary: secondaryTokenName,
   semantic: semanticTokenName,
 };
+
+const primaryStates = variants.map(([suffix, label]) => ({
+  key: suffix.slice(1) || 'normal',
+  suffix,
+  label,
+}));
 
 const meta = {
   title: 'カラー/トークンと使用例',
@@ -46,26 +49,16 @@ function page(title: string, lead: string, body: string): HTMLElement {
   return root;
 }
 
-function minimumContrast(family: Family, suffix: ColorVariant): number {
-  return family === 'primary' ? primaryTextContrastMinimum[suffix] : 4.5;
-}
-
-function variantCard(family: Family, key: string, tokens: TokenMap, suffix: ColorVariant, label: string): string {
+function variantCard(family: Family, key: string, tokens: TokenMap, suffix: string, label: string): string {
   const token = nameFor[family](key, suffix);
   const foreground = nameFor[family](key, suffix === '-subtle' ? '-on-subtle' : '-on');
   const ratio = contrast(tokens[token]!, tokens[foreground]!);
-  const minimum = minimumContrast(family, suffix);
-  const passes = ratio >= minimum;
-  const primary = family === 'primary';
-  const sample = '<strong>Aa あいう</strong>';
-  const title = `<span>${label}</span>`;
-  const hex = `<code>${tokens[token]}</code>`;
-  return `<div class="tkw-variant" data-family="${family}">
-    ${primary ? `<div class="tkw-variant-label">${title}${hex}</div>` : ''}
+  const result = ratio >= 4.5 ? '適合' : '要確認';
+  return `<div class="tkw-variant">
     <div class="tkw-variant-swatch" style="background:var(${token});color:var(${foreground})">
-      ${primary ? sample : title + sample + hex}
+      <span>${label}</span><strong>Aa あいう</strong><code>${tokens[token]}</code>
     </div>
-    <div class="tkw-variant-meta"><code>${token}</code><span class="${passes ? '' : 'tkw-fail'}">${ratio.toFixed(2)}:1 · ${passes ? '適合' : '要確認'}</span></div>
+    <div class="tkw-variant-meta"><code>${token}</code><span class="${ratio < 4.5 ? 'tkw-fail' : ''}">${ratio.toFixed(2)}:1 · ${result}</span></div>
     <div class="tkw-foreground"><span>文字・アイコン</span><code>${foreground} = ${tokens[foreground]}</code></div>
   </div>`;
 }
@@ -80,7 +73,7 @@ function colorCard(family: Family, row: ColorRow, tokens: TokenMap): string {
   return `<article class="tkw-color-card">
     <div class="tkw-color-heading"><div><span class="tkw-key">${row.key}</span><h2>${row.name}</h2><p>${row.purpose}</p></div><code>${base}</code></div>
     <div class="tkw-variant-grid">${variants.map(([suffix, label]) => variantCard(family, row.key, tokens, suffix, label)).join('')}</div>
-    <div class="tkw-demo" data-family="${family}" style="--tkw-demo-bg:var(${base});--tkw-demo-hover:var(${hover});--tkw-demo-active:var(${active});--tkw-demo-on:var(${on});--tkw-demo-subtle:var(${subtle});--tkw-demo-on-subtle:var(${onSubtle})">
+    <div class="tkw-demo" style="--tkw-demo-bg:var(${base});--tkw-demo-hover:var(${hover});--tkw-demo-active:var(${active});--tkw-demo-on:var(${on});--tkw-demo-subtle:var(${subtle});--tkw-demo-on-subtle:var(${onSubtle})">
       <span class="tkw-demo-label">使用例</span>
       <button type="button">${row.icon ?? '＋'} ${row.example ?? 'タスクを追加'}</button>
       <span class="tkw-demo-tag">${row.name}のラベル</span>
@@ -90,30 +83,45 @@ function colorCard(family: Family, row: ColorRow, tokens: TokenMap): string {
 }
 
 function familyPage(title: string, lead: string, family: Family, rows: ColorRow[], tokens: TokenMap, note: string): HTMLElement {
-  const results = rows.flatMap(row => variants.map(([suffix]) => {
+  const ratios = rows.flatMap(row => variants.map(([suffix]) => {
     const background = nameFor[family](row.key, suffix);
     const foreground = nameFor[family](row.key, suffix === '-subtle' ? '-on-subtle' : '-on');
-    return contrast(tokens[background]!, tokens[foreground]!) >= minimumContrast(family, suffix);
+    return contrast(tokens[background]!, tokens[foreground]!);
   }));
-  const failures = results.filter(passes => !passes).length;
-  const criteria = family === 'primary'
-    ? '通常・ホバーは大きな文字で3:1以上。押下・淡い背景は通常サイズの文字で4.5:1以上。'
-    : '通常サイズの文字で4.5:1以上。';
-  const summary = `<div class="tkw-summary ${failures ? 'tkw-fail' : ''}"><strong>${failures ? `要確認：${failures}組が基準未満` : `${results.length} / ${results.length} 組が基準以上`}</strong><span>${criteria}</span></div>`;
+  const failures = ratios.filter(ratio => ratio < 4.5).length;
+  const summary = `<div class="tkw-summary ${failures ? 'tkw-fail' : ''}"><strong>${failures ? `要確認：${failures}組が4.5:1未満` : `${ratios.length} / ${ratios.length} 組が4.5:1以上`}</strong><span>通常サイズの文字に対する背景と文字の組み合わせ</span></div>`;
   return page(title, lead, `<p class="tkw-rule">${note}</p>${summary}<div class="tkw-color-list">${rows.map(row => colorCard(family, row, tokens)).join('')}</div>`);
 }
 
-export const Primary: Story = {
+export const Primary = {
   name: 'プライマリー · 42トークン',
-  render: () => familyPage(
-    '7色、それぞれが主役。',
-    '7色 × 6トークン。プロジェクトやカテゴリに応じて色を選び、同じ対象には画面間で同じ色を使います。',
-    'primary',
-    colors.map(([key, name]) => ({ key, name, purpose: '主要操作・カテゴリ・選択状態。広い背景には淡い色を使う。' })),
-    primary,
-    '主要操作の色は文脈に応じて選びます。塗りつぶしでは大きな白文字やアイコンに on、淡い背景では同系色の濃い文字やアイコンに on-subtle を使います。',
-  ),
-};
+  tags: ['!autodocs'],
+  parameters: {
+    layout: 'centered',
+    controls: { disable: false, include: ['色', '状態'], disableSaveFromUI: true },
+    options: { layout: { showPanel: true } },
+  },
+  args: { color: 'green', state: 'normal' },
+  argTypes: {
+    color: {
+      name: '色',
+      options: colors.map(([key]) => key),
+      control: { type: 'select', labels: Object.fromEntries(colors) },
+    },
+    state: {
+      name: '状態',
+      options: primaryStates.map(({ key }) => key),
+      control: { type: 'select', labels: Object.fromEntries(primaryStates.map(({ key, label }) => [key, label])) },
+    },
+  },
+  render: ({ color, state }) => {
+    const [key, name] = colors.find(([value]) => value === color) ?? colors[0];
+    const { suffix, label } = primaryStates.find(({ key }) => key === state) ?? primaryStates[0]!;
+    const background = tokenName(key, suffix);
+    const foreground = primaryForegroundTokenName(key, suffix);
+    return `<div class="tkw-primary-color-swatch" role="img" aria-label="${name}・${label}" style="background-color:var(${background});color:var(${foreground})">Aa あいう</div>`;
+  },
+} satisfies StoryObj<PrimaryArgs>;
 
 export const Secondary: Story = {
   name: 'セカンダリー · 18トークン',

@@ -13,6 +13,8 @@ export const primaryTextContrastMinimum = {
   '-subtle': 4.5,
 } satisfies Record<typeof variants[number][0], number>;
 export const tokenName = (key: string, suffix = '') => `--tkw-color-primary-${key}${suffix}`;
+export const primaryForegroundTokenName = (key: string, suffix: typeof variants[number][0]) =>
+  tokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
 
 export const neutrals = [
   ['0', 'カード・前景'],
