@@ -198,7 +198,9 @@ async function checkPR({ get, status }: ReviewAPI, summaryPath: string) {
     // ステータスはテスト用マージコミットへ付け、別のPRと共用される先端SHAには付けない。
     const mergeCommit = await mergeCommitFor(pr);
     if (mergeCommit && pendingCommit !== mergeCommit) {
-      await status(mergeCommit, 'pending', 'CodexとCopilotのレビュー完了を確認中');
+      if (!await hasSuccessfulReviewStatus(get, mergeCommit)) {
+        await status(mergeCommit, 'pending', 'CodexとCopilotのレビュー完了を確認中');
+      }
       pendingCommit = mergeCommit;
     }
 
@@ -211,6 +213,10 @@ async function checkPR({ get, status }: ReviewAPI, summaryPath: string) {
     }
     if (attempt === 36) {
       if (mergeCommit && (await currentMergeCommit()) === mergeCommit) {
+        if (await hasSuccessfulReviewStatus(get, mergeCommit)) {
+          appendFileSync(summaryPath, '現在のマージ用コミットにはレビュー完了が登録済みです。\n');
+          return;
+        }
         await status(mergeCommit, 'failure', '制限時間内に必要なレビューの完了を確認できませんでした');
       }
       process.exitCode = 1;
@@ -228,9 +234,10 @@ async function checkPR({ get, status }: ReviewAPI, summaryPath: string) {
   ].join('\n'));
 }
 
-async function hasReviewStatus(get: GetPath, commit: string) {
-  const statuses = await all<{ context: string }>(get, `/commits/${commit}/statuses`);
-  return statuses.some(status => status.context === statusContext);
+async function hasSuccessfulReviewStatus(get: GetPath, commit: string) {
+  const statuses = await all<{ context: string; state: string }>(get, `/commits/${commit}/statuses`);
+  // APIは新しい順で返すため、このコンテキストの最初の状態を確認する。
+  return statuses.find(status => status.context === statusContext)?.state === 'success';
 }
 
 export async function restoreReviewStatus(
@@ -242,7 +249,7 @@ export async function restoreReviewStatus(
   if (!pr) return;
 
   const mergeCommit = await testMergeCommit(pullNumber, pr, get);
-  if (!mergeCommit || await hasReviewStatus(get, mergeCommit)) return;
+  if (!mergeCommit || await hasSuccessfulReviewStatus(get, mergeCommit)) return;
 
   const [comments, reviews] = await reviewEvidence(get, pullNumber);
   let result = reviewCompletion(comments, reviews, true);
@@ -252,8 +259,8 @@ export async function restoreReviewStatus(
     result = reviewCompletion(comments, reviews, false);
   }
 
-  // 判定中に通常のワークフローが登録した結果を保ち、現在のマージ用refにだけ書く。
-  if (await hasReviewStatus(get, mergeCommit)) return;
+  // 判定中に登録された成功を重複させず、現在のマージ用refにだけ書く。
+  if (await hasSuccessfulReviewStatus(get, mergeCommit)) return;
   const latest = await openMainPull(get, pullNumber);
   if (!latest || await testMergeCommit(pullNumber, latest, get) !== mergeCommit) return;
   await status(mergeCommit, 'success', successDescription(result));

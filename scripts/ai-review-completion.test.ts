@@ -151,9 +151,9 @@ function recoveryFixture() {
     mergeSha: originalMerge,
     comments: [codexSummary('completed')],
     reviews: [] as (typeof copilotReview)[],
-    statuses: new Set([originalMerge]),
-    status: mock(async (sha: string, _state: string, _description: string) => {
-      fixture.statuses.add(sha);
+    statuses: new Map([[originalMerge, ['success']]]),
+    status: mock(async (sha: string, state: string, _description: string) => {
+      fixture.statuses.set(sha, [state, ...fixture.statuses.get(sha) ?? []]);
     }),
     async get(path: string) {
       switch (path) {
@@ -173,7 +173,9 @@ function recoveryFixture() {
           return Response.json(fixture.reviews);
         case `/commits/${originalMerge}/statuses?per_page=100&page=1`:
         case `/commits/${regeneratedMerge}/statuses?per_page=100&page=1`:
-          return Response.json(fixture.statuses.has(path.split('/')[2]!) ? [{ context: 'tkw-ai-review-complete' }] : []);
+          return Response.json(fixture.statuses.get(path.split('/')[2]!)?.map(state => ({
+            context: 'tkw-ai-review-complete', state,
+          })) ?? []);
         default:
           throw new Error(`Unexpected GitHub API request: ${path}`);
       }
@@ -191,6 +193,20 @@ test('再生成されたマージ用SHAにレビュー完了を一度だけ登�
   expect((await restoreReviewStatus(fixture, '129', documentationOnly))?.mergeCommit).toBe(regeneratedMerge);
   expect(await restoreReviewStatus(fixture, '129', documentationOnly)).toBeUndefined();
   expect(fixture.status.mock.calls).toEqual([[regeneratedMerge, 'success', 'Codex完了・Copilot対象外']]);
+});
+
+// 最新状態が待機や失敗なら、過去に成功があっても現在のレビュー完了を確認してから更新する。
+test.each(['pending', 'failure'])('最新状態が %s のマージ用SHAはレビュー完了後に成功へ更新する', async state => {
+  const fixture = recoveryFixture();
+  fixture.statuses.set(originalMerge, [state, 'success']);
+  fixture.comments = [codexSummary('running')];
+  expect(await restoreReviewStatus(fixture, '129', () => false)).toBeUndefined();
+  expect(fixture.status).not.toHaveBeenCalled();
+
+  fixture.comments = [codexSummary('completed')];
+  await restoreReviewStatus(fixture, '129', () => false);
+  expect(await restoreReviewStatus(fixture, '129', () => false)).toBeUndefined();
+  expect(fixture.status.mock.calls).toEqual([[originalMerge, 'success', 'Codex完了・Copilot対象外']]);
 });
 
 // 現在のPRでCodexが未完了、または必要なCopilotレビューが未提出なら成功を送らない。
