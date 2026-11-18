@@ -1,17 +1,45 @@
 import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
-import { colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens, parseSemanticTokens, parseTokens, secondaryColors, secondaryTokenName, semanticColors, semanticTokenName, tokenName, variants } from './palette';
+import {
+  colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens,
+  parseSemanticTokens, parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum, secondaryColors, secondaryTextContrastMinimum, secondaryTokenName,
+  semanticColors, semanticTokenName, tokenName, variants,
+} from './palette';
 const css = readFileSync(new URL('../../tokens/colors.css', import.meta.url), 'utf8');
 const neutralCss = readFileSync(new URL('../../tokens/neutrals.css', import.meta.url), 'utf8');
 const secondaryCss = readFileSync(new URL('../../tokens/secondary.css', import.meta.url), 'utf8');
 const semanticCss = readFileSync(new URL('../../tokens/semantic.css', import.meta.url), 'utf8');
 describe('カラートークン', () => {
-  // プライマリー42トークンがすべて存在し、文字と背景の28組が4.5:1以上のコントラストを持つことを確認する。
-  test('プライマリー42トークンと文字・背景28組がアクセシビリティ基準を満たす', () => {
+  // プライマリーは白文字を使い、イエローの既知の不足3組を除く25組で用途ごとの基準を検証する。
+  test('プライマリー42トークンが揃い、既知の例外を除く配色がコントラスト基準を満たす', () => {
     const tokens = parseTokens(css);
     expect(Object.keys(tokens)).toHaveLength(42);
-    for (const [key] of colors) for (const [suffix] of variants) {
-      expect(contrast(tokens[tokenName(key, suffix)]!, tokens[tokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on')]!)).toBeGreaterThanOrEqual(4.5);
+    for (const [key] of colors) {
+      expect(tokens[tokenName(key, '-on')]).toBe('#FFFFFF');
+      for (const [suffix] of variants) {
+        const foreground = tokens[primaryForegroundTokenName(key, suffix)]!;
+        const minimum = suffix === '-active' || suffix === '-subtle' ? 4.5 : 3;
+        expect(primaryTextContrastMinimum(key, suffix)).toBe(minimum);
+        if (key === 'amber' && suffix !== '-subtle') continue;
+        expect(contrast(tokens[tokenName(key, suffix)]!, foreground)).toBeGreaterThanOrEqual(minimum);
+      }
+    }
+  });
+  // 指定されたイエローの白文字3状態について、基準を下げず実測値と不足を検出する。
+  test('イエローの白文字は通常・ホバー・押下でコントラスト不足として検出される', () => {
+    const tokens = parseTokens(css);
+    for (const [suffix, expectedRatio] of [['', 2.13], ['-hover', 2.60], ['-active', 3.37]] as const) {
+      const ratio = contrast(tokens[tokenName('amber', suffix)]!, tokens[tokenName('amber', '-on')]!);
+      expect(ratio).toBeCloseTo(expectedRatio, 2);
+      expect(ratio).toBeLessThan(primaryTextContrastMinimum('amber', suffix));
+    }
+  });
+  // 紹介ページの小さな番号と色名は基準背景上でニュートラル900を使い、4.5:1以上を確保する。
+  test('プライマリー7色の基準背景で紹介ページの文字色が4.5:1以上になる', () => {
+    const primary = parseTokens(css);
+    const ink = parseNeutralTokens(neutralCss)[neutralTokenName('900')]!;
+    for (const [key] of colors) {
+      expect(contrast(primary[tokenName(key)]!, ink)).toBeGreaterThanOrEqual(4.5);
     }
   });
   // コントラスト計算が既知の値と一致し、前景色と背景色を入れ替えても結果が変わらないことを確認する。
@@ -50,20 +78,24 @@ describe('カラートークン', () => {
     expect(() => parseNeutralTokens(neutralCss.replace('#A1A1AA', '#XYZXYZ'))).toThrow('不正なHEX: --tkw-color-neutral-400');
   });
 
-  // セカンダリー18トークンがすべて存在し、文字と背景の12組が4.5:1以上のコントラストを持つことを確認する。
-  test('セカンダリー18トークンと文字・背景12組がアクセシビリティ基準を満たす', () => {
+  // ライム・オレンジの通常・ホバーは大きな白文字で3:1以上、他の組み合わせは4.5:1以上を確認する。
+  test('セカンダリー18トークンと文字・背景12組が用途ごとのコントラスト基準を満たす', () => {
     const tokens = parseSecondaryTokens(secondaryCss);
     expect(Object.keys(tokens)).toHaveLength(18);
+    expect(tokens[secondaryTokenName('lime', '-on')]).toBe('#FFFFFF');
+    expect(tokens[secondaryTokenName('orange', '-on')]).toBe('#FFFFFF');
     for (const [key] of secondaryColors) for (const [suffix] of variants) {
       const foreground = suffix === '-subtle' ? '-on-subtle' : '-on';
-      expect(contrast(tokens[secondaryTokenName(key, suffix)]!, tokens[secondaryTokenName(key, foreground)]!)).toBeGreaterThanOrEqual(4.5);
+      const minimum = key === 'navy' || suffix === '-active' || suffix === '-subtle' ? 4.5 : 3;
+      expect(secondaryTextContrastMinimum(key, suffix)).toBe(minimum);
+      expect(contrast(tokens[secondaryTokenName(key, suffix)]!, tokens[secondaryTokenName(key, foreground)]!)).toBeGreaterThanOrEqual(minimum);
     }
   });
 
   // セカンダリートークンの欠落や不正なHEXに対し、問題のあるトークン名を含む日本語エラーを返すことを確認する。
   test('不足または不正なセカンダリートークンを名前付きで報告する', () => {
     expect(() => parseSecondaryTokens(secondaryCss.replace(/--tkw-color-secondary-lime:.*;/, ''))).toThrow('不足しているトークン: --tkw-color-secondary-lime');
-    expect(() => parseSecondaryTokens(secondaryCss.replace('#F3A24F', '#ORANGE'))).toThrow('不正なHEX: --tkw-color-secondary-orange');
+    expect(() => parseSecondaryTokens(secondaryCss.replace(/(--tkw-color-secondary-orange:)\s*#[\da-f]{6}/i, '$1 #ORANGE'))).toThrow('不正なHEX: --tkw-color-secondary-orange');
   });
 
   // セマンティック24トークンがすべて存在し、文字と背景の16組が4.5:1以上のコントラストを持つことを確認する。

@@ -6,7 +6,19 @@ export const suffixes = ['', '-hover', '-active', '-subtle', '-on', '-on-subtle'
 export const variants = [
   ['', '通常'], ['-hover', 'ホバー'], ['-active', '押下'], ['-subtle', '淡い背景'],
 ] as const;
+const largeTextContrastMinimum = {
+  '': 3,
+  '-hover': 3,
+  '-active': 4.5,
+  '-subtle': 4.5,
+} satisfies Record<typeof variants[number][0], number>;
+export const primaryTextContrastMinimum = (_key: string, suffix: typeof variants[number][0]) =>
+  largeTextContrastMinimum[suffix];
+export const secondaryTextContrastMinimum = (key: string, suffix: typeof variants[number][0]) =>
+  key === 'lime' || key === 'orange' ? largeTextContrastMinimum[suffix] : 4.5;
 export const tokenName = (key: string, suffix = '') => `--tkw-color-primary-${key}${suffix}`;
+export const primaryForegroundTokenName = (key: string, suffix: typeof variants[number][0]) =>
+  tokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
 
 export const neutrals = [
   ['0', 'カード・前景'],
@@ -27,6 +39,8 @@ export const secondaryColors = [
   ['navy', 'ネイビー', '画面を引き締める落ち着いたアクセント'],
 ] as const;
 export const secondaryTokenName = (key: string, suffix = '') => `--tkw-color-secondary-${key}${suffix}`;
+export const secondaryForegroundTokenName = (key: string, suffix: typeof variants[number][0]) =>
+  secondaryTokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
 
 export const semanticColors = [
   ['success', '成功', '完了・保存成功', '✓', '保存しました', '変更内容が反映されました。'],
@@ -35,6 +49,8 @@ export const semanticColors = [
   ['info', '情報', '案内・進行状況', 'i', '同期を開始しました', '完了までしばらくお待ちください。'],
 ] as const;
 export const semanticTokenName = (key: string, suffix = '') => `--tkw-color-semantic-${key}${suffix}`;
+export const semanticForegroundTokenName = (key: string, suffix: typeof variants[number][0]) =>
+  semanticTokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
 
 /** Only literal six-digit HEX tokens are supported; CSS remains the source of truth. */
 export function parseTokens(css: string): Record<string, string> {
