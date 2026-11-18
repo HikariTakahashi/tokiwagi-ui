@@ -147,3 +147,16 @@ test('画像比較省略の条件が転送と通知の全ステップを停止�
   expect(comment.if).toContain('!cancelled()');
   expect(comment.if).not.toContain('success()');
 });
+
+// 書き込みトークンを使うレビュー依頼も、PRのベースにあるコードだけを実行する。
+test('Copilot依頼はベースのスクリプトで利用枠通知を確認する', () => {
+  const config = workflow('request-copilot-review');
+  const job = config.jobs.request!;
+  expect(config.on.pull_request_target?.branches).toEqual(['main']);
+  expect(job.permissions).toEqual({ contents: 'read', 'pull-requests': 'write' });
+  const checkout = job.steps.find(step => step.uses?.startsWith('actions/checkout@'))!;
+  expect(checkout.with).toEqual({ ref: '${{ github.event.pull_request.base.sha }}', 'persist-credentials': false });
+  const request = job.steps.find(step => step.run === 'bun scripts/request-copilot-review.ts')!;
+  expect(request.env?.PR_HEAD_SHA).toBe('${{ github.event.pull_request.head.sha }}');
+  expect(request.env?.REVIEW_TOKEN).toBe('${{ secrets.COPILOT_REVIEW_TOKEN || github.token }}');
+});

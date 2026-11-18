@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { basename, join } from 'node:path';
 import { setTimeout } from 'node:timers/promises';
 import { promisify } from 'node:util';
+import { copilotQuotaExceeded } from './copilot-quota';
 
 type GitHubUser = { id?: number; login?: string; type?: string };
 type Comment = { user?: GitHubUser; performed_via_github_app?: { id?: number }; body?: string };
@@ -74,11 +75,13 @@ export function reviewCompletion(comments: readonly Comment[], reviews: readonly
       return reported && review.commit_id?.startsWith(reported);
     })?.commit_id;
   const copilotCommit = copilotRequired ? posted.find(hasCopilotResult)?.commit_id : undefined;
+  const quotaExceeded = copilotRequired && !copilotCommit && copilotQuotaExceeded(posted);
   return {
     codexCommit,
     copilotCommit,
-    copilotSkipped: !copilotRequired,
-    complete: Boolean(codexCommit && (!copilotRequired || copilotCommit)),
+    copilotQuotaExceeded: quotaExceeded,
+    copilotSkipped: !copilotRequired || quotaExceeded,
+    complete: Boolean(codexCommit && (!copilotRequired || copilotCommit || quotaExceeded)),
   };
 }
 
@@ -173,13 +176,14 @@ function samePullCommits(current: Pull | undefined, prior: Pull) {
 }
 
 function successDescription(result: ReturnType<typeof reviewCompletion>) {
-  return result.copilotSkipped ? 'Codex完了・Copilot対象外' : 'CodexとCopilotのレビュー完了';
+  return result.copilotQuotaExceeded ? 'Codex完了・Copilot利用上限のため省略' :
+    result.copilotSkipped ? 'Codex完了・Copilot対象外' : 'CodexとCopilotのレビュー完了';
 }
 
 function reviewSummary(result: ReturnType<typeof reviewCompletion>) {
   return [
     `- Codex ${result.codexCommit ? '完了 (' + result.codexCommit + ')' : '未完了'}`,
-    `- Copilot ${result.copilotSkipped ? '対象外' : result.copilotCommit ? '完了 (' + result.copilotCommit + ')' : '未完了'}`,
+    `- Copilot ${result.copilotQuotaExceeded ? '利用上限のため省略' : result.copilotSkipped ? '対象外' : result.copilotCommit ? '完了 (' + result.copilotCommit + ')' : '未完了'}`,
   ];
 }
 
