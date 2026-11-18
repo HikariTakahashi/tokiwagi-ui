@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import {
   colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens,
-  parseSemanticTokens, parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum, secondaryColors, secondaryTokenName,
+  parseSemanticTokens, parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum, secondaryColors, secondaryTextContrastMinimum, secondaryTokenName,
   semanticColors, semanticTokenName, tokenName, variants,
 } from './palette';
 const css = readFileSync(new URL('../../tokens/colors.css', import.meta.url), 'utf8');
@@ -10,17 +10,28 @@ const neutralCss = readFileSync(new URL('../../tokens/neutrals.css', import.meta
 const secondaryCss = readFileSync(new URL('../../tokens/secondary.css', import.meta.url), 'utf8');
 const semanticCss = readFileSync(new URL('../../tokens/semantic.css', import.meta.url), 'utf8');
 describe('カラートークン', () => {
-  // プライマリー42トークンと白文字を確認し、通常・ホバーで3:1以上、押下・淡い背景で4.5:1以上を検証する。
-  test('プライマリー42トークンと文字・背景28組が用途ごとのコントラスト基準を満たす', () => {
+  // プライマリーは白文字を使い、イエローの既知の不足3組を除く25組で用途ごとの基準を検証する。
+  test('プライマリー42トークンが揃い、既知の例外を除く配色がコントラスト基準を満たす', () => {
     const tokens = parseTokens(css);
     expect(Object.keys(tokens)).toHaveLength(42);
     for (const [key] of colors) {
-      const white = tokens[tokenName(key, '-on')]!;
-      expect(white).toBe('#FFFFFF');
+      expect(tokens[tokenName(key, '-on')]).toBe('#FFFFFF');
       for (const [suffix] of variants) {
         const foreground = tokens[primaryForegroundTokenName(key, suffix)]!;
-        expect(contrast(tokens[tokenName(key, suffix)]!, foreground)).toBeGreaterThanOrEqual(primaryTextContrastMinimum[suffix]);
+        const minimum = suffix === '-active' || suffix === '-subtle' ? 4.5 : 3;
+        expect(primaryTextContrastMinimum(key, suffix)).toBe(minimum);
+        if (key === 'amber' && suffix !== '-subtle') continue;
+        expect(contrast(tokens[tokenName(key, suffix)]!, foreground)).toBeGreaterThanOrEqual(minimum);
       }
+    }
+  });
+  // 指定されたイエローの白文字3状態について、基準を下げず実測値と不足を検出する。
+  test('イエローの白文字は通常・ホバー・押下でコントラスト不足として検出される', () => {
+    const tokens = parseTokens(css);
+    for (const [suffix, expectedRatio] of [['', 2.13], ['-hover', 2.60], ['-active', 3.37]] as const) {
+      const ratio = contrast(tokens[tokenName('amber', suffix)]!, tokens[tokenName('amber', '-on')]!);
+      expect(ratio).toBeCloseTo(expectedRatio, 2);
+      expect(ratio).toBeLessThan(primaryTextContrastMinimum('amber', suffix));
     }
   });
   // 紹介ページの小さな番号と色名は基準背景上でニュートラル900を使い、4.5:1以上を確保する。
@@ -67,15 +78,17 @@ describe('カラートークン', () => {
     expect(() => parseNeutralTokens(neutralCss.replace('#A1A1AA', '#XYZXYZ'))).toThrow('不正なHEX: --tkw-color-neutral-400');
   });
 
-  // セカンダリー18トークン、通常・ホバー・押下の白文字、文字と背景12組の4.5:1以上を確認する。
-  test('セカンダリー18トークンと文字・背景12組がアクセシビリティ基準を満たす', () => {
+  // ライム・オレンジの通常・ホバーは大きな白文字で3:1以上、他の組み合わせは4.5:1以上を確認する。
+  test('セカンダリー18トークンと文字・背景12組が用途ごとのコントラスト基準を満たす', () => {
     const tokens = parseSecondaryTokens(secondaryCss);
     expect(Object.keys(tokens)).toHaveLength(18);
     expect(tokens[secondaryTokenName('lime', '-on')]).toBe('#FFFFFF');
     expect(tokens[secondaryTokenName('orange', '-on')]).toBe('#FFFFFF');
     for (const [key] of secondaryColors) for (const [suffix] of variants) {
       const foreground = suffix === '-subtle' ? '-on-subtle' : '-on';
-      expect(contrast(tokens[secondaryTokenName(key, suffix)]!, tokens[secondaryTokenName(key, foreground)]!)).toBeGreaterThanOrEqual(4.5);
+      const minimum = key === 'navy' || suffix === '-active' || suffix === '-subtle' ? 4.5 : 3;
+      expect(secondaryTextContrastMinimum(key, suffix)).toBe(minimum);
+      expect(contrast(tokens[secondaryTokenName(key, suffix)]!, tokens[secondaryTokenName(key, foreground)]!)).toBeGreaterThanOrEqual(minimum);
     }
   });
 

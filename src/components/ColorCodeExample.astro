@@ -1,7 +1,7 @@
 ---
 import { TIcon } from 'tokiwagi-ui/astro';
 import { colorExampleCss, colorExamples, neutralColorExamples, semanticColorExamples, type ColorExampleVariant, type SemanticColor } from '../lib/color-code-example';
-import { contrast, neutrals, neutralTokenName, variants } from '../lib/palette';
+import { contrast, neutrals, neutralTokenName, tokenName, variants } from '../lib/palette';
 
 interface Props {
   name: string;
@@ -84,6 +84,10 @@ const initial = states[initialIndex]!;
     </span>
     <span class="sample-detail">コントラスト比 <span data-color-contrast>{initial.contrastRatio}</span></span>
   </div>
+
+  {token === tokenName('amber') && (
+    <p class="contrast-note">イエローの白文字はコントラスト基準未達です。通常・ホバーは3:1未満、押下は4.5:1未満です。</p>
+  )}
 
   <div class="color-values">
     <code data-color-hex>{initial.hex}</code>
@@ -184,6 +188,7 @@ const initial = states[initialIndex]!;
     font-weight: 700;
     line-height: 1.35;
   }
+  .contrast-note { margin: 12px 0 0; font-size: .875rem; }
   .color-values {
     display: grid;
     grid-template-columns: max-content max-content minmax(0, max-content) max-content;

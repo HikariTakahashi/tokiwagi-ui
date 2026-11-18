@@ -6,12 +6,16 @@ export const suffixes = ['', '-hover', '-active', '-subtle', '-on', '-on-subtle'
 export const variants = [
   ['', '通常'], ['-hover', 'ホバー'], ['-active', '押下'], ['-subtle', '淡い背景'],
 ] as const;
-export const primaryTextContrastMinimum = {
+const largeTextContrastMinimum = {
   '': 3,
   '-hover': 3,
   '-active': 4.5,
   '-subtle': 4.5,
 } satisfies Record<typeof variants[number][0], number>;
+export const primaryTextContrastMinimum = (_key: string, suffix: typeof variants[number][0]) =>
+  largeTextContrastMinimum[suffix];
+export const secondaryTextContrastMinimum = (key: string, suffix: typeof variants[number][0]) =>
+  key === 'lime' || key === 'orange' ? largeTextContrastMinimum[suffix] : 4.5;
 export const tokenName = (key: string, suffix = '') => `--tkw-color-primary-${key}${suffix}`;
 export const primaryForegroundTokenName = (key: string, suffix: typeof variants[number][0]) =>
   tokenName(key, suffix === '-subtle' ? '-on-subtle' : '-on');
