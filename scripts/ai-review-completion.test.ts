@@ -36,6 +36,7 @@ test('Codexの完了とCopilotの提出をそれぞれ一回確認する', () =>
   expect(reviewCompletion([codexSummary('completed')], [copilotReview], true)).toEqual({
     codexCommit: commit,
     copilotCommit: nextCommit,
+    copilotQuotaExceeded: false,
     copilotSkipped: false,
     complete: true,
   });
@@ -47,6 +48,7 @@ test('Copilot対象外でもCodexが完了するまで満たさない', () => {
   expect(reviewCompletion([codexSummary('completed')], [], false)).toEqual({
     codexCommit: commit,
     copilotCommit: undefined,
+    copilotQuotaExceeded: false,
     copilotSkipped: true,
     complete: true,
   });
@@ -78,9 +80,10 @@ test('発行元が違う記録と未提出のレビューでは通過しない',
   }
 });
 
-test('Copilotの指摘ありと指摘なしは完了とし、同じ公式ボットの失敗通知は完了にしない', () => {
+test('Copilotの利用上限は省略とし一般障害は未完了にする', () => {
   const quotaFailure = {
     ...copilotReview,
+    submitted_at: new Date().toISOString(),
     body: 'Copilot was unable to review this pull request because the user who requested the review has insufficient remaining quota. Try requesting a review at a lower effort level.',
   };
   const serviceFailure = { ...copilotReview, body: 'Copilot encountered an error and was unable to review this pull request.' };
@@ -89,8 +92,12 @@ test('Copilotの指摘ありと指摘なしは完了とし、同じ公式ボッ�
     body: '## Pull request overview\n\nCopilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.',
   };
   const codex = [codexSummary('completed')];
-  expect(reviewCompletion(codex, [quotaFailure, serviceFailure], true).complete).toBe(false);
-  expect(reviewCompletion(codex, [quotaFailure, withFindings], true).complete).toBe(true);
+  expect(reviewCompletion(codex, [serviceFailure], true).complete).toBe(false);
+  expect(reviewCompletion(codex, [quotaFailure, serviceFailure], true)).toMatchObject({
+    complete: true, copilotSkipped: true, copilotQuotaExceeded: true, copilotCommit: undefined,
+  });
+  expect(reviewCompletion([], [quotaFailure], true).complete).toBe(false);
+  expect(reviewCompletion(codex, [quotaFailure, withFindings], true)).toMatchObject({ complete: true, copilotSkipped: false });
   expect(reviewCompletion(codex, [copilotReview], true).complete).toBe(true);
 });
 
@@ -201,6 +208,21 @@ test('同じPRの必要なレビューが完了するまで成功を登録しな
   fixture.comments = [codexSummary('completed')];
   await restoreReviewStatus(fixture, '129', () => true);
   expect(fixture.status.mock.calls).toEqual([[nextCommit, 'success', 'CodexとCopilotのレビュー完了']]);
+});
+
+test('利用上限で省略したPRの復元とマージでもCodex完了を必要とする', async () => {
+  const fixture = recoveryFixture();
+  fixture.reviews = [{ ...copilotReview, submitted_at: new Date().toISOString(),
+    body: 'Copilot was unable to review this pull request because the user who requested the review has insufficient remaining quota.' }];
+  fixture.comments = [];
+  expect(await restoreReviewStatus(fixture, '129', () => true)).toBeUndefined();
+  const merge = mock(async (_number: string, _head: string) => 'c'.repeat(40));
+  await expect(mergeReviewedPull({ get: fixture.get, merge }, '129', nextCommit, () => true)).rejects.toThrow('未完了');
+  expect(merge).not.toHaveBeenCalled();
+  fixture.comments = [codexSummary('completed')];
+  expect((await restoreReviewStatus(fixture, '129', () => true))?.result.copilotQuotaExceeded).toBe(true);
+  expect(fixture.status.mock.calls).toEqual([[nextCommit, 'success', 'Codex完了・Copilot利用上限のため省略']]);
+  expect(await mergeReviewedPull({ get: fixture.get, merge }, '129', nextCommit, () => true)).toBe('c'.repeat(40));
 });
 
 // 判定に使用したベースや先端が登録前に切り替わった場合は、古い判定を書き込まない。

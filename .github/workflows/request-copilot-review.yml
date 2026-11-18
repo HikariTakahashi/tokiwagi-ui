@@ -48,53 +48,25 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     permissions:
+      contents: read
       pull-requests: write
     steps:
+      - name: ベース側の依頼スクリプトを取得
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Bunを準備
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: '1.4.4'
       - name: 最新のPRにCopilotレビューを依頼
         env:
           # 自動トークンで依頼できない場合のみ、対応するリポジトリSecretを設定する。
           REVIEW_TOKEN: ${{ secrets.COPILOT_REVIEW_TOKEN || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          node --input-type=module <<'JS'
-          import { appendFileSync } from 'node:fs';
-          import { setTimeout } from 'node:timers/promises';
-
-          const { GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_STEP_SUMMARY, PR_NUMBER, PR_HEAD_SHA, REVIEW_TOKEN } = process.env;
-          const headers = {
-            Accept: 'application/vnd.github+json',
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + REVIEW_TOKEN,
-            'X-GitHub-Api-Version': '2026-03-10',
-          };
-          const pull = GITHUB_API_URL + '/repos/' + GITHUB_REPOSITORY + '/pulls/' + PR_NUMBER;
-
-          for (let attempt = 0; attempt < 6; attempt += 1) {
-            const current = await fetch(pull, { headers });
-            if (!current.ok) throw new Error('PRの状態を取得できませんでした (HTTP ' + current.status + ')');
-            const pr = await current.json();
-            if (pr.head.sha !== PR_HEAD_SHA || pr.state !== 'open' || pr.draft) {
-              appendFileSync(GITHUB_STEP_SUMMARY, 'Copilotレビューを省略：対象の差分またはPRの状態が変わりました\n');
-              break;
-            }
-            const response = await fetch(pull + '/copilot-code-review', {
-              method: 'POST', headers, body: JSON.stringify({ review_effort: 'lite' }),
-            });
-            if (response.status === 201) {
-              appendFileSync(GITHUB_STEP_SUMMARY, 'Copilotレビューを依頼しました\n');
-              break;
-            }
-            if (response.status === 409 && attempt < 5) {
-              await setTimeout(10_000);
-              continue;
-            }
-            const body = await response.json().catch(() => ({}));
-            const reason = typeof body.failure_reason === 'string' && /^[A-Z0-9_]+$/.test(body.failure_reason)
-              ? ' / ' + body.failure_reason : '';
-            throw new Error('Copilotレビューを依頼できませんでした (HTTP ' + response.status + reason + ')');
-          }
-          JS
+        run: bun scripts/request-copilot-review.ts
 
   completion:
     name: AIレビューの完了を確認
