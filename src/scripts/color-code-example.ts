@@ -1,6 +1,7 @@
 import { EditorView, minimalSetup } from 'codemirror';
 import { css } from '@codemirror/lang-css';
 import { colorExampleCss, colorExampleDocument, type ColorExample, type ColorExampleVariant, type SemanticColor } from '../lib/color-code-example';
+import { initializeColorExamples } from '../lib/color-example-initialization';
 
 async function writeClipboard(value: string) {
   try {
@@ -39,6 +40,8 @@ function setupColorExample(panel: HTMLElement) {
   const exampleSelect = panel.querySelector<HTMLSelectElement>('[data-example]')!;
   const formatSelect = panel.querySelector<HTMLSelectElement>('[data-format]')!;
   const editorHost = panel.querySelector<HTMLElement>('[data-editor]')!;
+  const focusEditor = panel.ownerDocument.activeElement === editorHost;
+  editorHost.removeAttribute('tabindex');
   const preview = panel.querySelector<HTMLIFrameElement>('[data-preview]')!;
   const feedback = panel.querySelector<HTMLElement>('[data-copy-feedback]')!;
   const codeCopyLabel = panel.querySelector<HTMLElement>('[data-code-copy-label]')!;
@@ -96,6 +99,7 @@ function setupColorExample(panel: HTMLElement) {
       ],
     });
     preview.srcdoc = colorExampleDocument(example, source, semantic);
+    return editor;
   }
 
   swatches.forEach((button, index) => button.addEventListener('click', () => {
@@ -142,7 +146,8 @@ function setupColorExample(panel: HTMLElement) {
     });
   }
 
-  updateExample();
+  const initialEditor = updateExample();
+  if (focusEditor) initialEditor.focus();
 }
 
-document.querySelectorAll<HTMLElement>('[data-color-code-example]').forEach(setupColorExample);
+initializeColorExamples(document.querySelectorAll<HTMLElement>('[data-color-code-example]'), setupColorExample);

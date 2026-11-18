@@ -121,7 +121,7 @@ const initial = states[initialIndex]!;
   </div>
 
   <div class="code-layout">
-    <div class="code-editor" data-editor>
+    <div class="code-editor" data-editor tabindex="0" role="group" aria-label={name + 'のCSSコードを編集'}>
       <pre><code>{colorExampleCss(initial, initialExample, false)}</code></pre>
     </div>
     <iframe class="code-preview" data-preview sandbox="" loading="lazy" title={name + 'のコンポーネント表示例'}></iframe>
