@@ -120,7 +120,36 @@ const stateSwatches = variants.map(([suffix, label]) => {
       </THeaderSection>
     </THeader>
 
-    <div class="page-shell">
+    <div class="page-shell colors-layout">
+      <aside class="colors-sidebar">
+        <details class="colors-toc" data-colors-toc>
+          <summary>このページの目次</summary>
+          <nav aria-label="カラーの目次">
+            <ul class="toc-list">
+              <li data-toc-group><a href="#states">ガイドライン</a></li>
+              {palettes.map(({ id, title, layout, swatches }) => (
+                <li data-toc-group>
+                  {layout === 'rows' ? (
+                    <details class="toc-disclosure" data-toc-disclosure>
+                      <summary id={`toc-${id}`} data-toc-target={id} aria-controls={`toc-${id}-children`}>
+                        <span>{id === 'semantic' ? 'セマンティック' : title}</span>
+                        <span class="toc-chevron"><TIcon name="chevron-right" size={16} /></span>
+                      </summary>
+                      <ul id={`toc-${id}-children`} aria-labelledby={`toc-${id}`}>
+                        {swatches.map(({ name, token }) => (
+                          <li><a href={`#${token.replace('--tkw-color-', '')}`}>{name}</a></li>
+                        ))}
+                      </ul>
+                    </details>
+                  ) : <a href={`#${id}`}>{title}</a>}
+                </li>
+              ))}
+              <li data-toc-group><a href="#accessibility">アクセシビリティ</a></li>
+            </ul>
+          </nav>
+        </details>
+      </aside>
+
       <main id="main" tabindex="-1">
         <header class="hero">
           <div>
@@ -190,7 +219,7 @@ const stateSwatches = variants.map(([suffix, label]) => {
               <ul class="palette-rows" role="list">
                 {palette.swatches.map(({ name, token, purpose, semantic }) => (
                   <li class="palette-row">
-                    <h3>{name}</h3>
+                    <h3 id={token.replace('--tkw-color-', '')} tabindex="-1">{name}</h3>
                     {purpose && <p>{purpose}</p>}
                     <ColorCodeExample name={name} token={token} tokens={tokens} semantic={semantic} />
                   </li>
@@ -225,6 +254,10 @@ const stateSwatches = variants.map(([suffix, label]) => {
   </body>
 </html>
 
+<script>
+  import '../scripts/colors-navigation';
+</script>
+
 <style>
   :global(html) {
     background: var(--tkw-color-neutral-50);
@@ -257,7 +290,94 @@ const stateSwatches = variants.map(([suffix, label]) => {
   }
   .skip-link:focus { top: 8px; }
   .page-shell { width: min(100% - clamp(32px, 8vw, 96px), 1200px); margin-inline: auto; }
+  .colors-layout { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 24px; }
   main { min-width: 0; }
+  .colors-sidebar { min-width: 0; padding-top: 24px; }
+  .colors-toc {
+    border: 1px solid var(--tkw-color-neutral-200);
+    border-radius: 16px;
+    background: var(--tkw-color-neutral-0);
+  }
+  .colors-toc summary { padding: 10px 12px; font-weight: 650; cursor: pointer; }
+  .colors-toc summary:focus-visible {
+    outline: 2px solid var(--tkw-color-neutral-900);
+    outline-offset: -2px;
+  }
+  .colors-toc nav { padding: 12px; }
+  .toc-list, .toc-list ul { margin: 0; padding: 0; list-style: none; }
+  .toc-list > li + li { margin-top: 28px; }
+  .toc-list ul { margin-top: 8px; margin-inline-start: 24px; }
+  .toc-list a, .toc-list summary {
+    display: block;
+    position: relative;
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: var(--tkw-color-neutral-600);
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 20px;
+    text-decoration: none;
+  }
+  .toc-list > li > a, .toc-list summary {
+    padding: 8px 12px;
+    color: var(--tkw-color-neutral-900);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .toc-list summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    list-style: none;
+  }
+  .toc-list summary::-webkit-details-marker { display: none; }
+  .toc-chevron {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    transition: transform 140ms ease;
+  }
+  .toc-disclosure[open] > summary .toc-chevron { transform: rotate(90deg); }
+  .toc-list a:hover, .toc-list summary:hover { background: var(--tkw-color-neutral-100); color: var(--tkw-color-neutral-900); }
+  .toc-list a:active, .toc-list summary:active { background: var(--tkw-color-neutral-200); color: var(--tkw-color-neutral-900); }
+  .toc-list a:focus-visible, .toc-list summary:focus-visible { outline-offset: -2px; }
+  .toc-list [aria-current="location"] {
+    background: var(--tkw-color-neutral-100);
+    color: var(--tkw-color-neutral-900);
+    font-weight: 700;
+  }
+  .toc-list [aria-current="location"]::before {
+    content: "";
+    position: absolute;
+    inset-block: 6px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--tkw-color-neutral-900);
+  }
+  @media (min-width: 1024px) {
+    .colors-layout {
+      width: 100%;
+      margin-inline: 0;
+      padding-inline-end: 24px;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+    main, footer { width: 100%; max-width: 1200px; }
+    .colors-sidebar { position: sticky; top: 36px; grid-row: span 2; padding-top: 0; }
+    .colors-toc { border-inline-start: 0; border-start-start-radius: 0; border-end-start-radius: 0; }
+    .colors-toc[open] { height: calc(100dvh - 36px); overflow-y: auto; }
+    .colors-toc[open] > summary { display: none; }
+  }
+  @media (pointer: coarse) {
+    .colors-toc summary { min-height: 44px; }
+    .toc-list a { display: flex; align-items: center; min-height: 44px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .toc-chevron { transition: none; }
+  }
   .hero {
     padding-block: clamp(32px, 4vw, 56px);
   }
