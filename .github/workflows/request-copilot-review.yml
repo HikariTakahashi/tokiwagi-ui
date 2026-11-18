@@ -120,6 +120,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           COPILOT_REQUIRED: ${{ needs.changes.result != 'success' || needs.changes.outputs.review != 'false' }}
         run: bun scripts/ai-review-completion.ts
