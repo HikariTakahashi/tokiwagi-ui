@@ -1,0 +1,283 @@
+---
+import { TIcon } from 'tokiwagi-ui/astro';
+import { colorExampleCss, colorExamples, neutralColorExamples, semanticColorExamples, type ColorExampleVariant, type SemanticColor } from '../lib/color-code-example';
+import { contrast, neutrals, neutralTokenName, variants } from '../lib/palette';
+
+interface Props {
+  name: string;
+  token: string;
+  tokens: Record<string, string>;
+  semantic?: SemanticColor;
+  neutral?: boolean;
+}
+
+const { name, token, tokens, semantic, neutral = false } = Astro.props;
+const examples = neutral ? neutralColorExamples : semantic ? semanticColorExamples : colorExamples;
+const initialExample = neutral ? 'background' : semantic ? 'banner' : 'button';
+const englishLabels = { '': 'normal', '-hover': 'hover', '-active': 'active', '-subtle': 'subtle' };
+const states = neutral ? neutrals.map(([step, purpose]): ColorExampleVariant => {
+  const background = neutralTokenName(step);
+  const foreground = neutralTokenName(Number(step) >= 600 ? '0' : '900');
+  const hex = tokens[background]!;
+  const foregroundHex = tokens[foreground]!;
+  return {
+    label: step,
+    english: 'neutral-' + step,
+    purpose,
+    token: background,
+    hex,
+    foreground,
+    foregroundHex,
+    contrastRatio: contrast(hex, foregroundHex).toFixed(2) + ':1',
+  };
+}) : variants.map(([suffix, label]): ColorExampleVariant => {
+  const background = token + suffix;
+  const foreground = token + (suffix === '-subtle' ? '-on-subtle' : '-on');
+  const hex = tokens[background]!;
+  const foregroundHex = tokens[foreground]!;
+  return {
+    label: suffix === '' ? '標準' : suffix === '-subtle' ? '淡い色' : label,
+    english: englishLabels[suffix],
+    token: background,
+    hex,
+    foreground,
+    foregroundHex,
+    contrastRatio: contrast(hex, foregroundHex).toFixed(2) + ':1',
+  };
+});
+const initialIndex = states.findIndex(state => state.token === token);
+const initial = states[initialIndex]!;
+---
+
+<div
+  class:list={{ 'semantic-examples': !!semantic, 'neutral-examples': neutral }}
+  data-color-code-example
+  data-semantic={semantic}
+  data-variants={JSON.stringify(states)}
+  data-initial-index={initialIndex}
+  data-editor-label={name + 'のCSSコード'}
+>
+  <div class="color-states" role="group" aria-label={name + (neutral ? 'の段階' : 'の色の状態')}>
+    {states.map((state, index) => (
+      <button
+        type="button"
+        data-color-state
+        aria-label={neutral ? state.label + '（' + state.purpose + '）' : state.label}
+        aria-pressed={index === initialIndex}
+      >
+        <span class="state-chip" style={{ backgroundColor: 'var(' + state.token + ')' }} aria-hidden="true"></span>
+      </button>
+    ))}
+  </div>
+
+  <div
+    class="color-sample"
+    data-color-sample
+    style={{ backgroundColor: 'var(' + initial.token + ')', color: 'var(' + initial.foreground + ')' }}
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <span class="sample-name" data-color-name>{initial.label}</span>
+    <span class="sample-detail">
+      {neutral && <><span data-color-purpose>{initial.purpose}</span> / </>}
+      <span data-color-english lang="en">{initial.english}</span>
+    </span>
+    <span class="sample-detail">コントラスト比 <span data-color-contrast>{initial.contrastRatio}</span></span>
+  </div>
+
+  <div class="color-values">
+    <code data-color-hex>{initial.hex}</code>
+    <button class="copy-button" type="button" data-copy="hex" aria-label="カラーコードをコピー">
+      <span data-copy-icon="copy"><TIcon name="copy" size={20} /></span>
+      <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
+    </button>
+    <code data-color-token aria-live="polite">{initial.token}</code>
+    <button class="copy-button" type="button" data-copy="token" aria-label="CSSトークンをコピー">
+      <span data-copy-icon="copy"><TIcon name="copy" size={20} /></span>
+      <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
+    </button>
+  </div>
+  <span class="copy-feedback" data-copy-feedback role="status"></span>
+
+  <div class="code-toolbar">
+    <button class="copy-button copy-code" type="button" data-copy="code">
+      <span data-code-copy-label aria-live="polite">コードをコピー</span>
+      <span data-copy-icon="copy"><TIcon name="copy" size={20} /></span>
+      <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
+    </button>
+    <div class="code-options">
+      <select data-example aria-label="見本">
+        {Object.entries(examples).map(([value, example]) => <option value={value}>{example.label}</option>)}
+      </select>
+      <select data-format aria-label="色の指定方法">
+        <option value="tokens">CSS変数</option>
+        <option value="hex">HEX値</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="code-layout">
+    <div class="code-editor" data-editor>
+      <pre><code>{colorExampleCss(initial, initialExample, false)}</code></pre>
+    </div>
+    <iframe class="code-preview" data-preview sandbox="" loading="lazy" title={name + 'のコンポーネント表示例'}></iframe>
+  </div>
+</div>
+
+<script>
+  import '../scripts/color-code-example';
+</script>
+
+<style>
+  button, select {
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  button:focus-visible, select:focus-visible, .code-editor:focus-within {
+    outline: 2px solid var(--tkw-color-neutral-900);
+    outline-offset: 2px;
+  }
+  .color-states {
+    display: grid;
+    grid-template-columns: repeat(4, clamp(44px, 8vw, 56px));
+    gap: clamp(6px, 1.5vw, 10px);
+    margin-top: 10px;
+  }
+  .color-states button {
+    display: grid;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 4px;
+    border: 1px solid var(--tkw-color-neutral-200);
+    border-radius: 7px;
+    background: var(--tkw-color-neutral-0);
+  }
+  .color-states button[aria-pressed="true"] {
+    border-color: var(--tkw-color-neutral-900);
+    box-shadow: inset 0 0 0 1px var(--tkw-color-neutral-900);
+  }
+  .state-chip {
+    aspect-ratio: 1;
+    border: 1px solid var(--tkw-color-neutral-200);
+    border-radius: 4px;
+  }
+  .color-sample {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 3px;
+    min-height: clamp(96px, 20vw, 150px);
+    margin-top: 12px;
+    padding: 10px clamp(12px, 3vw, 24px);
+    border: 1px solid var(--tkw-color-neutral-200);
+    border-radius: 8px;
+    text-align: left;
+  }
+  .sample-name {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .sample-detail {
+    font-size: max(20px, 1.25rem);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .color-values {
+    display: grid;
+    grid-template-columns: max-content max-content minmax(0, max-content) max-content;
+    align-items: center;
+    gap: clamp(4px, 1vw, 8px);
+    margin-top: 10px;
+  }
+  .color-values code {
+    min-width: 0;
+    padding: 5px 8px;
+    border-radius: 4px;
+    background: var(--tkw-color-neutral-100);
+    font-size: .75rem;
+    overflow-wrap: anywhere;
+  }
+  .copy-button, select {
+    min-height: 36px;
+    border: 1px solid var(--tkw-color-neutral-200);
+    border-radius: 6px;
+    background: var(--tkw-color-neutral-0);
+  }
+  .copy-button {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    padding: 0;
+  }
+  .copy-button [data-copy-icon="check"] { display: none; }
+  .copy-button[data-copied="true"] [data-copy-icon="copy"] { display: none; }
+  .copy-button[data-copied="true"] [data-copy-icon="check"] { display: grid; }
+  .copy-button:hover, .color-states button:hover { background: var(--tkw-color-neutral-100); }
+  .copy-button:active, .color-states button:active { background: var(--tkw-color-neutral-200); }
+  .copy-feedback { display: block; color: var(--tkw-color-neutral-600); font-size: .8125rem; }
+  .copy-feedback:not(:empty) { margin-top: 4px; }
+  .code-toolbar, .code-options { display: flex; align-items: center; gap: 8px; }
+  .code-toolbar {
+    justify-content: space-between;
+    margin: 12px 0 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--tkw-color-neutral-200);
+  }
+  .code-options { margin-inline-start: auto; }
+  .copy-button.copy-code {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    padding: 4px 8px;
+    white-space: nowrap;
+  }
+  select { padding: 4px 8px; }
+  .code-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(120px, 1fr);
+    gap: 8px;
+  }
+  .code-editor, .code-preview {
+    min-width: 0;
+    border: 1px solid var(--tkw-color-neutral-200);
+    border-radius: 6px;
+    background: var(--tkw-color-neutral-50);
+  }
+  .code-editor {
+    overflow: hidden;
+    font-family: var(--tkw-font-family-mono);
+    font-size: .875rem;
+  }
+  .code-editor pre { margin: 0; padding: 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .code-editor :global(.cm-editor) { min-height: 128px; }
+  .code-editor :global(.cm-content) { padding: 8px 6px; font-family: inherit; }
+  .code-editor :global(.cm-scroller) { font-family: inherit; }
+  .code-editor :global(.cm-editor.cm-focused) { outline: none; }
+  .code-preview { box-sizing: border-box; width: 100%; height: 130px; }
+  .semantic-examples .code-layout, .neutral-examples .code-layout {
+    grid-template-columns: minmax(0, 3fr) minmax(240px, 2fr);
+  }
+  .semantic-examples .code-preview, .neutral-examples .code-preview { height: 220px; }
+  .neutral-examples .color-states { grid-template-columns: repeat(9, clamp(44px, 8vw, 56px)); }
+  @media (max-width: 700px) {
+    .semantic-examples .code-layout, .neutral-examples .code-layout { grid-template-columns: minmax(0, 1fr); }
+    .neutral-examples .color-states { grid-template-columns: repeat(3, clamp(44px, 8vw, 56px)); }
+  }
+  @media (max-width: 480px) {
+    .code-layout { grid-template-columns: minmax(0, 1fr); }
+    .code-preview { height: 78px; }
+    select { padding-inline: 4px; }
+  }
+  @media (max-width: 460px) {
+    .code-toolbar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .copy-code { justify-self: start; }
+  }
+  @media (pointer: coarse) {
+    .copy-button { width: 44px; }
+    .copy-button, select { min-height: 44px; }
+  }
+</style>

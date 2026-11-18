@@ -59,9 +59,9 @@ import { renderIconSvg } from '../lib/icon-assets';
 
       <section class="foundations section-shell" id="foundations" aria-labelledby="foundations-title">
         <div class="section-topline"><span class="section-kicker">02 / FOUNDATIONS</span><span>THE BUILDING BLOCKS</span></div>
-        <div class="foundations-heading"><h2 id="foundations-title">つくるための、<br />共通の基盤。</h2><p>カラーの確定ルールと、アイコンの命名・用途案を Storybook にまとめています。実装するときの参照先です。</p></div>
+        <div class="foundations-heading"><h2 id="foundations-title">つくるための、<br />共通の基盤。</h2><p>カラーの選び方と組み合わせ、アイコンの命名と用途を確認できます。</p></div>
         <div class="foundation-grid">
-          <article class="foundation-card color-card"><div class="foundation-card-top"><span>01 / COLORS</span><span>確定</span></div><div class="color-mini" aria-hidden="true">{colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}</div><h3>カラー</h3><p>プライマリー、セカンダリー、状態色、ニュートラル。全93トークンの値と使い方、背景と文字の組み合わせを確認できます。</p><a href="http://localhost:6006/?path=/docs/カラー-使用ルール--docs" target="_blank" rel="noopener noreferrer">ルールを見る <span aria-hidden="true">↗</span></a></article>
+          <article class="foundation-card color-card"><div class="foundation-card-top"><span>01 / COLORS</span><span>確定</span></div><div class="color-mini" aria-hidden="true">{colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}</div><h3>カラー</h3><p>プライマリー、セカンダリー、状態色、ニュートラル。色見本と用途、背景と文字の組み合わせを確認できます。</p><a href="/colors/">カラーを詳しく見る <span aria-hidden="true">→</span></a></article>
           <article class="foundation-card icon-card"><div class="foundation-card-top"><span>02 / ICONS</span><span>329 SVG</span></div><div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div><h3>アイコン</h3><p>329個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</p><a href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer">アイコンを見る <span aria-hidden="true">↗</span></a></article>
         </div>
       </section>
@@ -134,6 +134,8 @@ import { renderIconSvg } from '../lib/icon-assets';
   .foundation-card h3 { margin: 0 0 8px; font-size: 22px; }
   .foundation-card p { max-width: 450px; margin-bottom: 24px; color: var(--tkw-color-neutral-600); font-size: 12px; line-height: 1.9; }
   .foundation-card a { display: inline-flex; gap: 20px; align-self: flex-start; margin-top: auto; font-size: 12px; font-weight: 700; }
+  .color-card { position: relative; }
+  .color-card a::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
   .foundation-card a:hover { text-decoration: underline; text-underline-offset: 5px; }
   .closing { display: flex; align-items: end; justify-content: space-between; gap: 35px; margin-bottom: 80px; border-top: 1px solid var(--tkw-color-neutral-200); }
   .closing h2 { margin-bottom: 0; }
