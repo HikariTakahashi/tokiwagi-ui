@@ -5,10 +5,10 @@ import rawNeutral from '../../../tokens/neutrals.css?raw';
 import {
   colors, contrast, neutrals, neutralTokenName, parseNeutralTokens, parseSecondaryTokens, parseSemanticTokens,
   parseTokens, primaryForegroundTokenName, primaryTextContrastMinimum, secondaryColors, secondaryForegroundTokenName,
-  secondaryTokenName, semanticColors, semanticForegroundTokenName, semanticTokenName, tokenName, variants,
+  secondaryTextContrastMinimum, secondaryTokenName, semanticColors, semanticForegroundTokenName, semanticTokenName, tokenName, variants,
 } from '../../lib/palette';
 
-const standardTextMinimum = { '': 4.5, '-hover': 4.5, '-active': 4.5, '-subtle': 4.5 };
+const standardTextMinimum = (_key: string, _suffix: typeof variants[number][0]) => 4.5;
 
 const palettes = {
   primary: {
@@ -25,7 +25,7 @@ const palettes = {
     tokens: parseSecondaryTokens(rawSecondary),
     backgroundName: secondaryTokenName,
     foregroundName: secondaryForegroundTokenName,
-    minimum: standardTextMinimum,
+    minimum: secondaryTextContrastMinimum,
   },
   semantic: {
     label: 'セマンティック',
@@ -56,12 +56,15 @@ export function ColorTokenTable({ family }: { family: keyof typeof palettes }) {
             const background = backgroundName(key, suffix);
             const foreground = foregroundName(key, suffix);
             const ratio = contrast(tokens[background]!, tokens[foreground]!);
+            const requiredRatio = minimum(key, suffix);
             return (
               <tr key={background}>
                 <th scope="row">{name}<br />{label}</th>
                 <td><code>{tokens[background]}</code><br /><code>{background}</code></td>
                 <td><code>{tokens[foreground]}</code><br /><code>{foreground}</code></td>
-                <td>{ratio.toFixed(2)}:1{ratio < minimum[suffix] && <strong className="tkw-fail"> 要確認</strong>}</td>
+                <td>{ratio.toFixed(2)}:1{ratio < requiredRatio
+                  ? <strong className="tkw-fail"> 要確認</strong>
+                  : requiredRatio === 3 && <span>（大きな文字向け）</span>}</td>
               </tr>
             );
           }))}

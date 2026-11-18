@@ -43,10 +43,10 @@
   --tkw-color-primary-coral-on: #FFFFFF;
   --tkw-color-primary-coral-on-subtle: #3D2117;
   /* イエロー / amber */
-  --tkw-color-primary-amber: #B18C00;
-  --tkw-color-primary-amber-hover: #A07F00;
-  --tkw-color-primary-amber-active: #907200;
-  --tkw-color-primary-amber-subtle: #FDF0CE;
+  --tkw-color-primary-amber: #E3A800;
+  --tkw-color-primary-amber-hover: #CF9700;
+  --tkw-color-primary-amber-active: #B88200;
+  --tkw-color-primary-amber-subtle: #FFF3BF;
   --tkw-color-primary-amber-on: #FFFFFF;
-  --tkw-color-primary-amber-on-subtle: #443613;
+  --tkw-color-primary-amber-on-subtle: #2D2000;
 }

@@ -1,18 +1,18 @@
 /* tokiwagi-ui: supporting secondary colors, light mode. Source of truth. */
 :root {
   /* ライム / lime */
-  --tkw-color-secondary-lime: #557A19;
-  --tkw-color-secondary-lime-hover: #4A6C13;
-  --tkw-color-secondary-lime-active: #3F5D0E;
-  --tkw-color-secondary-lime-subtle: #F3F9E8;
+  --tkw-color-secondary-lime: #739B00;
+  --tkw-color-secondary-lime-hover: #659000;
+  --tkw-color-secondary-lime-active: #527800;
+  --tkw-color-secondary-lime-subtle: #F1FAD6;
   --tkw-color-secondary-lime-on: #FFFFFF;
   --tkw-color-secondary-lime-on-subtle: #26370D;
 
   /* オレンジ / orange */
-  --tkw-color-secondary-orange: #AA5A0A;
-  --tkw-color-secondary-orange-hover: #974E08;
-  --tkw-color-secondary-orange-active: #844307;
-  --tkw-color-secondary-orange-subtle: #FFF3E5;
+  --tkw-color-secondary-orange: #E06B00;
+  --tkw-color-secondary-orange-hover: #C75A00;
+  --tkw-color-secondary-orange-active: #AC4C00;
+  --tkw-color-secondary-orange-subtle: #FFF0DB;
   --tkw-color-secondary-orange-on: #FFFFFF;
   --tkw-color-secondary-orange-on-subtle: #44260C;
 
