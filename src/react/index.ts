@@ -2,6 +2,8 @@ export { TIcon, type TIconProps, type IconSize } from './TIcon';
 export { TLogo, type TLogoProps, type LogoSize } from './TLogo';
 export { iconNames, isIconName, type IconName } from '../lib/icon-sources';
 export { TBrand, type TBrandProps } from './TBrand';
+export { TButton, type TButtonProps } from './TButton';
+export { buttonTones, type ButtonTone } from '../lib/button';
 export { THeader, type THeaderProps } from './THeader';
 export { THeaderButton, type THeaderButtonProps } from './THeaderButton';
 export { THeaderLink, type THeaderLinkProps } from './THeaderLink';
