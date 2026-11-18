@@ -2,6 +2,10 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createApp, h, shallowRef } from 'vue';
 import { TText as ReactTText } from 'tokiwagi-ui/react';
 import { TText as VueTText } from 'tokiwagi-ui/vue';
+import { TButton as VueTButton } from 'tokiwagi-ui/vue';
+import { TButton as ReactTButton } from 'tokiwagi-ui/react';
+import { astroButtonPreviewHtml, type ButtonPreviewOptions, type AstroButtonPreviews } from '../button-preview';
+import buttonsUrl from 'virtual:tkw-astro-buttons';
 import { astroTextPreviewHtml, type TextPreviewOptions, type AstroTextPreviews } from '../text-preview';
 import textsUrl from 'virtual:tkw-astro-texts';
 import { TIcon as ReactTIcon, TLogo as ReactTLogo, TBrand as ReactTBrand, type TIconProps, type TLogoProps, type TBrandProps } from 'tokiwagi-ui/react';
@@ -21,6 +25,7 @@ import { ReactHeaderPreview, vueHeaderPreview } from './HeaderPreview';
 import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
 export type ComponentPreviewProps = { framework: Framework } & (
+  | ButtonPreviewOptions
   | TextPreviewOptions
   | HeaderPreviewOptions
   | { component: 'TIcon' } & Required<Pick<TIconProps, 'name' | 'size' | 'color'>>
@@ -29,6 +34,11 @@ export type ComponentPreviewProps = { framework: Framework } & (
 );
 
 const loadTexts = createAstroPreviewLoader<AstroTextPreviews>(textsUrl);
+const loadButtons = createAstroPreviewLoader<AstroButtonPreviews>(buttonsUrl);
+const loadButtonAssets = async () => {
+  const [buttons, icons] = await Promise.all([loadButtons(), loadIcons()]);
+  return { buttons, icons };
+};
 const loadIcons = createAstroPreviewLoader<AstroIconPreviews>(iconsUrl);
 const loadLogos = createAstroPreviewLoader<AstroLogoPreviews>(logosUrl);
 const loadHeaders = createAstroPreviewLoader<AstroHeaderPreviews>(headersUrl);
@@ -46,6 +56,11 @@ function VuePreview(args: ComponentPreviewProps) {
   useEffect(() => {
     const app = createApp({ render: () => {
       const value = props.value;
+      if (value.component === 'TButton') {
+        return h(VueTButton, {
+          tone: value.tone, leadingIcon: value.leadingIcon, disabled: value.disabled,
+        }, () => value.text);
+      }
       if (value.component === 'THeader' || value.component === 'THeaderButton' || value.component === 'THeaderLink' || value.component === 'THeaderButtonGroup' || value.component === 'THeaderSection') return vueHeaderPreview(value);
       if (value.component === 'TText') {
         const { component, framework, text, ...options } = value;
@@ -59,6 +74,9 @@ function VuePreview(args: ComponentPreviewProps) {
     app.mount(host.current!);
     return () => app.unmount();
   }, [id, props]);
+  if (args.component === 'TButton') {
+    return <span ref={host} style={{ display: 'inline-flex' }} />;
+  }
   return args.component.startsWith('THeader') || args.component === 'TText'
     ? <div ref={host} style={{ display: args.component === 'TText' ? 'block' : 'inline-flex' }} />
     : <span ref={host} style={{ display: 'inline-flex' }} />;
@@ -68,6 +86,15 @@ function VuePreview(args: ComponentPreviewProps) {
 export function ComponentPreview(args: ComponentPreviewProps) {
   const id = useId();
   const prefix = `tkw-preview-astro-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
+  if (args.component === 'TButton') {
+    if (args.framework === 'vue') return <VuePreview {...args} />;
+    const { component, framework, text, ...options } = args;
+    if (framework === 'react') return <ReactTButton {...options}>{text}</ReactTButton>;
+    return <AstroComponentPreview load={loadButtonAssets}>{({ buttons, icons }) =>
+      <span style={{ display: 'inline-flex' }}
+        dangerouslySetInnerHTML={{ __html: astroButtonPreviewHtml(buttons, icons, args, prefix) }} />
+    }</AstroComponentPreview>;
+  }
   if (args.component === 'TText') {
     if (args.framework === 'vue') return <VuePreview {...args} />;
     const { component, framework, text, ...options } = args;

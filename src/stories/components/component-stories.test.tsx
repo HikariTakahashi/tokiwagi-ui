@@ -9,10 +9,12 @@ mock.module('virtual:tkw-astro-logos', () => ({ default: '/astro-logos.json' }))
 mock.module('virtual:tkw-astro-brands', () => ({ default: '/astro-brands.json' }));
 mock.module('virtual:tkw-astro-headers', () => ({ default: '/astro-headers.json' }));
 mock.module('virtual:tkw-astro-texts', () => ({ default: '/astro-texts.json' }));
+mock.module('virtual:tkw-astro-buttons', () => ({ default: '/astro-buttons.json' }));
 const icon = await import('../TIcon.stories');
 const logo = await import('../TLogo.stories');
 const brand = await import('../TBrand.stories');
 const text = await import('../TText.stories');
+const button = await import('../TButton.stories');
 const header = await import('../THeader.stories');
 const headerSection = await import('../THeaderSection.stories');
 const headerButton = await import('../THeaderButton.stories');
@@ -39,6 +41,7 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
 // 各ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
+    ['TButton', button, ['framework', 'text', 'tone', 'leadingIcon', 'disabled']],
     ['TText', text, ['framework', 'text', 'as', 'size', 'responsive', 'sizeSm', 'sizeLg', 'weight', 'lineHeight', 'tone', 'align', 'truncate', 'lineClamp', 'whiteSpace', 'inherit', 'italic', 'decoration']],
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
     ['TLogo', logo, ['framework', 'size', 'decorative']],
@@ -109,6 +112,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     mock.module('virtual:tkw-astro-brands',()=>({default:'/brands.json'}));
     mock.module('virtual:tkw-astro-headers',()=>({default:'/headers.json'}));
     mock.module('virtual:tkw-astro-texts',()=>({default:'/texts.json'}));
+    mock.module('virtual:tkw-astro-buttons',()=>({default:'/buttons.json'}));
     let memo, cleanup;
     mock.module('storybook/preview-api',()=>({
       useArgs:()=>[{},()=>{}],
