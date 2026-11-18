@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { componentReadmeForStorybook } from './component-readme';
 
-const names = ['TBrand', 'THeader', 'THeaderButton', 'THeaderButtonGroup', 'THeaderLink', 'THeaderSection', 'TIcon', 'TLogo', 'TText'];
+const names = ['TBrand', 'TButton', 'THeader', 'THeaderButton', 'THeaderButtonGroup', 'THeaderLink', 'THeaderSection', 'TIcon', 'TLogo', 'TText'];
 const sourceRoot = new URL('../../components/', import.meta.url);
 const pagesRoot = new URL('./component-rules/', import.meta.url);
 const sections = ['概要', '使用場面', '状態の表し方', '使用しない場面', '表示とアクセシビリティ', '関連コンポーネントと使い分け'];
@@ -49,7 +49,8 @@ test('利用ルールのリンクは原本とStorybookの両方で解決でき�
       const id = metadata.match(/\bid[:=]\s*['"]([^'"]+)['"]/)?.[1]
         ?? metadata.match(/<Meta title="([^"]+)"/)?.[1]?.replaceAll('/', '-');
       expect(id).toBeDefined();
-      expect(renderedLinks[index]).toBe(`./?path=/${destination.endsWith('.stories.ts') ? 'story' : 'docs'}/${id}--${destination.endsWith('.stories.ts') ? 'default' : 'docs'}`);
+      const story = destination.endsWith('.stories.ts');
+      expect(renderedLinks[index]).toBe(`./?path=/${story ? 'story' : 'docs'}/${id}--${story ? 'default' : 'docs'}`);
     });
   }
 });

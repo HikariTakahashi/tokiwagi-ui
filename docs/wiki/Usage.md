@@ -1,6 +1,6 @@
 # コンポーネントの使い方
 
-本ページの利用例はMIT対象のTText・TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
+本ページの利用例はMIT対象のTButton・TText・TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
 
 ## 導入方法と対象環境
 
@@ -224,6 +224,70 @@ Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コ�
 - ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
 - アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全329アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに329個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の全329ストーリーではReact版の公開TIconを1つ中央に表示します。公開名は固定し、初期値は24px・currentColorです。Controlsで16・20・24・32pxと、継承・ニュートラル・7色のプライマリーを切り替え、選択をURLに保持します。Actions・Interactionsは標準パネルとして表示します。各個別ルールから対応する使用例に移動できます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
+
+## TButton
+
+React・Vue・Astroの公開入口 `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` から `TButton`、`TButtonProps`、`ButtonTone`、`buttonTones` を利用できます。`tokiwagi-ui/button.css` をアプリで一度読み込むと、状態のスタイルと必要な色・書体トークンが適用されます。文字は1.75rem・太さ700、高さは50px以上です。
+
+Reactではchildrenと標準のイベントpropsを使います。
+
+```tsx
+import { TButton } from 'tokiwagi-ui/react'
+import 'tokiwagi-ui/button.css'
+
+export function SaveButton({ onSave }: { onSave: () => void }) {
+  return <TButton tone="blue" leadingIcon="save" onClick={onSave}>保存する</TButton>
+}
+```
+
+Vueでは既定スロットと標準のイベントを使います。
+
+```vue
+<script setup lang="ts">
+import { TButton } from 'tokiwagi-ui/vue'
+import 'tokiwagi-ui/button.css'
+
+const emit = defineEmits<{ save: [] }>()
+</script>
+
+<template>
+  <form @submit.prevent="emit('save')">
+    <TButton type="submit" tone="blue" leading-icon="save" class="save-button">
+      保存する
+    </TButton>
+  </form>
+</template>
+
+<style scoped>
+.save-button { inline-size: min(100%, 375px); }
+</style>
+```
+
+Astroでは静的なHTMLを出力し、フォームの送信または利用側のscriptで操作を接続します。
+
+```astro
+---
+import { TButton } from 'tokiwagi-ui/astro'
+import 'tokiwagi-ui/button.css'
+---
+<form method="post" action="/save">
+  <TButton type="submit" tone="blue" leadingIcon="save" name="action" value="save">
+    保存する
+  </TButton>
+</form>
+```
+
+| 指定 | 値と挙動 |
+| --- | --- |
+| `tone` | `neutral`、`green`、`teal`、`blue`、`violet`、`rose`、`coral`、`amber`。既定は `neutral`。有効なプライマリー色では背景に各色のトークンを使い、文字と装飾アイコンを白で表示する |
+| `leadingIcon` | 省略可。既存の `IconName` を32pxの装飾アイコンとして表示 |
+| children／既定スロット | 「保存する」などの操作名を表示 |
+| `type` | `button`（既定）、`submit`、`reset` |
+| `disabled` | 既定は `false`。有効にするとネイティブのボタンを無効化 |
+
+標準のボタン属性とReact・Vueのネイティブイベントは外側の `button` に渡します。AstroはHTMLのイベント属性や利用側のscriptを使用します。型を迂回した不正な色・type・アイコン名・disabledは日本語エラーで検出します。React 18/19・VueのSSRとハイドレーションには同じ内容・propsを使用し、アイコンのIDはTIconの方式に従います。Astroの表示にはクライアントJavaScriptは不要です。保存や送信の状態は利用側で管理します。
+
+利用ルールは [TButtonの個別README](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TButton/README.md)、動作の見本はStorybookの「コンポーネント/TButton」にあります。
 
 ## ヘッダー共通部品
 
