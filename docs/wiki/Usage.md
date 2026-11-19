@@ -57,7 +57,7 @@ const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
 
 | 指定 | 型・既定値 | 用途 |
 | --- | --- | --- |
-| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
+| `name` | `IconName`（必須） | 全336個の公開名から選ぶ |
 | `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ |
 | `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は既存トークンを参照 |
 | `class` | `string` | SVGのクラス名 |
@@ -70,7 +70,7 @@ React・Vue版と同じ装飾用APIです。SVGの `aria-hidden="true"`・`focus
 
 Storybookの「コンポーネント/TIcon」でAstroを選ぶと、実コンポーネントが生成した静的HTMLを表示します。React・Vueとの切り替え時も公開名・サイズ・色は維持します。
 
-StorybookのAstro見本は `.storybook/astro-previews.ts` がBunの別プロセスで公開入口の実コンポーネントを全329種×4サイズ描画し、仮想モジュールとして供給します。生成JSONは一時ファイルへの書き込み完了後に読み込み、成功・失敗にかかわらず一時ファイルを削除します。Astro選択時にHTMLデータを読み込み、複数表示ではIDだけをインスタンスごとに分離します。色は親から継承します。Astroランタイムや別のAstroサーバーは不要で、静的Storybookにも描画結果を収録します。開発中に原本・実コンポーネントを編集すると再生成し、色CSSの変更は既存のHMRで反映します。生成結果はコミットしません。
+StorybookのAstro見本は `.storybook/astro-previews.ts` がBunの別プロセスで公開入口の実コンポーネントを全336種×4サイズ描画し、仮想モジュールとして供給します。生成JSONは一時ファイルへの書き込み完了後に読み込み、成功・失敗にかかわらず一時ファイルを削除します。Astro選択時にHTMLデータを読み込み、複数表示ではIDだけをインスタンスごとに分離します。色は親から継承します。Astroランタイムや別のAstroサーバーは不要で、静的Storybookにも描画結果を収録します。開発中に原本・実コンポーネントを編集すると再生成し、色CSSの変更は既存のHMRで反映します。生成結果はコミットしません。
 
 `bun test` はAstroコンパイラと [公式Container API](https://docs.astro.build/en/reference/container-reference/) で実コンポーネントを描画し、全原本×4サイズ、並行描画のID、入力エラー、固定属性、公開入口への資料・他ランタイムの混入を検証します。
 
@@ -120,7 +120,7 @@ export function Actions() {
 
 | 指定 | 型・既定値 | 用途 |
 | --- | --- | --- |
-| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
+| `name` | `IconName`（必須） | 全336個の公開名から選ぶ |
 | `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ |
 | `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は既存トークンを参照 |
 | `className` | `string` | React形式のクラス名をSVGに適用 |
@@ -202,7 +202,7 @@ const safeName: IconName = isIconName(fromApi) ? fromApi : 'help';
 
 | 指定 | 型・既定値 | 用途 |
 | --- | --- | --- |
-| `name` | `IconName`（必須） | 全329個の公開名から選ぶ |
+| `name` | `IconName`（必須） | 全336個の公開名から選ぶ |
 | `size` | `IconSize = 16 \| 20 \| 24 \| 32`、既定24 | 正方形の表示サイズ。Vueテンプレートでは `:size="20"` のように数値で渡す |
 | `color` | `string`、既定 `currentColor` | 親の文字色を継承。明示指定は `var(--tkw-color-…)` を使う |
 | `class` | Vueの `HTMLAttributes['class']` | 文字列・配列・オブジェクトをSVGに適用 |
@@ -221,9 +221,138 @@ Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コ�
 - コンポーネントの利用ルールは [TBrand](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TBrand/README.md)・[TIcon](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TIcon/README.md)・[TLogo](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TLogo/README.md) の個別READMEが管理元です。Storybookの「コンポーネント/個別ルール」はこれらを読み込む表示用ページで、最小プレビューとは分けて参照できます。MIT対象の公開API・利用コード・導入説明は本ページ、ブランドの詳細は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保持します。
 - カラー値は `tokens/colors.css`、`tokens/secondary.css`、`tokens/semantic.css`、`tokens/neutrals.css` の全93トークンが定義元です。Storybook の見本・HEX・コントラスト表示はこれらを読み込みます。
 - カラーの使用ルールと操作例は Storybook の「カラー」にあります。CSS を編集して保存すると開発中の表示に反映されます。
-- ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、329種の汎用アイコン一覧とTIconの公開名生成には含めません。
-- アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全329アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに329個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の全329ストーリーではReact版の公開TIconを1つ中央に表示します。公開名は固定し、初期値は24px・currentColorです。Controlsで16・20・24・32pxと、継承・ニュートラル・7色のプライマリーを切り替え、選択をURLに保持します。Actions・Interactionsは標準パネルとして表示します。各個別ルールから対応する使用例に移動できます。
+- ロゴの原本は `icons/logo/logo.svg`、使用ルールは `icons/logo/README.md` が管理元です。Storybookの「ロゴ/使用ルール」で32・64・128pxの見本、名称との併記、原本ダウンロードを確認できます。固定配色と最小32pxのルールを持つブランド資産として管理し、336種の汎用アイコン一覧とTIconの公開名生成には含めません。
+- 画面遷移に添える右上矢印は `arrow-top-right`・`arrow-top-right-off`・`calendar-arrow-top-right`・`task-arrow-top-right`・`circle-arrow-top-right`・`square-arrow-top-right`・`triangle-arrow-top-right` です。例：`<TIcon name="arrow-top-right" />`。鎖の `link` 系とメールの `circle-mail` は従来どおり利用できます。
+- アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全336アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに336個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の全336ストーリーではReact版の公開TIconを1つ中央に表示します。公開名は固定し、初期値は24px・currentColorです。Controlsで16・20・24・32pxと、継承・ニュートラル・7色のプライマリーを切り替え、選択をURLに保持します。Actions・Interactionsは標準パネルとして表示します。各個別ルールから対応する使用例に移動できます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
+
+## TLinkButton
+
+画面遷移をTButtonと同じ大きさ・配色のボタンとして表示します。React・Vue・Astroの公開入口から`TLinkButton`と`TLinkButtonProps`をインポートし、`tokiwagi-ui/link-button.css`を一度読み込みます。このCSSはTButtonの共通CSSも読み込むため、ボタン用CSSの追加読み込みは不要です。
+
+```tsx
+// React
+import { TLinkButton } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/link-button.css';
+
+<TLinkButton href="/calendar" leadingIcon="calendar" trailingIcon="arrow-top-right">
+  カレンダーを開く
+</TLinkButton>
+```
+
+```vue
+<script setup lang="ts">
+import { TLinkButton } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/link-button.css';
+</script>
+<template>
+  <TLinkButton href="/calendar" leading-icon="calendar" trailing-icon="arrow-top-right">カレンダーを開く</TLinkButton>
+</template>
+```
+
+```astro
+---
+import { TLinkButton } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/link-button.css';
+---
+<TLinkButton href="/calendar" leadingIcon="calendar" trailingIcon="arrow-top-right">カレンダーを開く</TLinkButton>
+```
+
+
+`size`は文字・アイコン・最小高さ・左右余白を連動させます。文字はrem、表のpxは標準16pxのルート文字サイズでの値です。縦のpaddingは6px、長い文言では高さが伸びます。角丸・色はサイズに連動させません。
+
+| size | 文字 | アイコン | 最小高さ | 左右padding | gap |
+| --- | --- | --- | --- | --- | --- |
+| sm | 1.25rem（20px） | 20px | 40px | 12px | 6px |
+| md | 1.5rem（24px） | 24px | 44px | 14px | 8px |
+| lg（既定） | 1.75rem（28px） | 32px | 50px | 16px | 10px |
+
+```tsx
+<TLinkButton href="/calendar" size="md" trailingIcon="arrow-top-right">カレンダーを開く</TLinkButton>
+```
+
+`LinkButtonSize`・`linkButtonSizes`・`LinkButtonOptions`は各方式の公開入口からインポートできます。TLinkButtonではinheritや未定義サイズを型・実行時の両方で拒否します。
+
+標準属性はTLinkと同じです。sizeはTLinkButton専用のLinkButtonSize（sm/md/lg、既定lg）を指定します。href必須、toneの既定はneutral、leadingIcon・trailingIconは既定なし、target・rel・aria-current・downloadなどa要素の属性を受け付けます。文字ラベルはchildren／既定スロットで渡します。React・VueのネイティブイベントとclassName／classを転送します。空のhref・不正な色・未登録のアイコンには日本語エラーを返します。disabledはboolean（既定false）で、TButtonと同じ規則で不正値を拒否します。
+
+サイズ未指定では現在の角丸12px、高さ50px以上、文字1.75rem・太さ700、前後アイコン32pxを維持します。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
+
+色とホバー・押下・フォーカスはTButtonと同じトークンとCSSです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの既定の文字サイズ継承と16pxアイコンはそれぞれ維持します。
+
+React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
+
+`disabled={true}`（Vueは`:disabled="true"`、Astroは`disabled`）で無効化します。TButtonと同じ無効色・影なし・操作不可カーソルを使い、ホバーと押下の配色を抑止します。無効時はhref・target・rel・download・pingなどのリンク属性とtabindex・autofocus・accesskey・contenteditable、渡されたクリック・キー・ポインター操作のハンドラーを除きます。role="link"とaria-disabled="true"を付け、Tab移動から外します。hrefはpropsとして引き続き必須で、有効に戻すと属性・イベントを復元します。React・Vueはクリック・中央クリック・ダブルクリック・起動キーの伝播も抑止し、Astroはクライアントscriptなしで遷移しない静的HTMLを出力します。利用側で後付けするイベントやルーターの委譲処理はaria-disabledを確認してください。aria-disabledだけの指定では動作を無効にしません。
+
+```tsx
+<TLinkButton href="/calendar" disabled={true}>カレンダーを開く</TLinkButton>
+```
+
+VueのautofocusはTLinkButtonPropsとコンポーネントの推論型で受け付けます。ReactではautoFocus、Astroではautofocusを指定します。disabled時はいずれも出力しません。
+
+```vue
+<TLinkButton href="/calendar" autofocus :disabled="false">カレンダーを開く</TLinkButton>
+```
+
+## TLink
+
+React・Vue・Astroで本文や補助導線の画面遷移に使います。各方式の公開入口から`TLink`・`TLinkProps`と`linkTones`・`LinkTone`・`LinkOptions`・`LinkCurrent`・`linkSizes`・`LinkSize`をインポートできます。`tokiwagi-ui/link.css`を一度読み込みます。
+
+```tsx
+// React
+import { TLink } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/link.css';
+
+<TLink href="/calendar" tone="blue" trailingIcon="arrow-top-right">カレンダーを開く</TLink>
+```
+
+```vue
+<script setup lang="ts">
+import { TLink } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/link.css';
+</script>
+
+<template>
+  <TLink href="/calendar" tone="blue" trailing-icon="arrow-top-right">カレンダーを開く</TLink>
+</template>
+```
+
+```astro
+---
+import { TLink } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/link.css';
+---
+<TLink href="/calendar" tone="blue" trailingIcon="arrow-top-right">カレンダーを開く</TLink>
+```
+
+| 指定 | 型・既定値 | 用途 |
+| --- | --- | --- |
+| `href` | `string`（必須） | 相対URL・絶対URL・フラグメントなど。未指定・空文字・空白のみは日本語エラー |
+| `tone` | `LinkTone`、既定`neutral` | neutral / green / teal / blue / violet / rose / coral / amber |
+| `size` | `LinkSize`、既定`inherit` | inherit / sm / md / lg。文字とアイコンを連動 |
+| `leadingIcon` / `trailingIcon` | `IconName`、既定なし | 前後の装飾アイコン。SVGは公開TIconを再利用 |
+| `aria-current` | `LinkCurrent`、既定未指定 | 現在地を太字と太い下線で表示。false・文字列falseは強調しない |
+| `target` / `rel` / `download` など | ネイティブのa要素の属性 | `_blank`ではopenerを除きnoopenerを補完。その他のrelを保持 |
+| `className`（React）/ `class`（Vue・Astro） | 各方式のネイティブ型 | クラスを追加 |
+
+
+| TLinkのsize | 文字 | アイコン |
+| --- | --- | --- |
+| inherit（既定） | 親から継承 | 16px |
+| sm | 0.875rem（標準14px） | 16px |
+| md | 1rem（標準16px） | 16px |
+| lg | 1.125rem（標準18px） | 20px |
+
+```tsx
+<TLink href="/calendar" size="sm">予定の詳細を見る</TLink>
+```
+
+サイズ未指定では親の書式と16pxアイコンを維持します。文字サイズはremで、アイコン間隔は文字サイズに応じたemです。未定義のsizeは型・実行時の両方で拒否します。
+
+内容はReactのchildren、Vue・Astroの既定スロットです。size=inheritでは文字の書式を周囲から継承します。通常時も下線を表示します。色にはneutral-900またはプライマリーのon-subtleトークンを使います。リンクの背景は透明なので、利用先の背景とのコントラストは利用側で確認してください。ホバー・押下は下線の太さ、キーボードフォーカスは輪郭で示します。長い文言は行内で折り返します。
+
+ネイティブの属性とReact・Vueのイベントをa要素へ転送します。Tab・Enter、修飾キー・中央クリック・右クリックによるリンク操作を維持し、Spaceを独自にクリックへ変換しません。URLの決定・入力値の検証・ルーターとの連携・現在地の自動判定は利用側の責任です。disabledは提供しません。保存や切り替えの操作にはTButton、ヘッダーの移動にはTHeaderLinkを使います。
+
+React・Vueはサーバーとクライアントで同じpropsと内容を渡してハイドレーションします。複数rootのID接頭辞などTIconのSSRルールも適用されます。Astroは静的なa要素を出力し、ハイドレーションを必要としません。実行時の処理は利用側scriptで接続します。Storybookの「コンポーネント/TLink」は3方式の実部品を1つ表示し、Controlsの設定をURLへ保存・復元します。
 
 ## TButton
 

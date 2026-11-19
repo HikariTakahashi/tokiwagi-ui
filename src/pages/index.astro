@@ -62,7 +62,7 @@ import { renderIconSvg } from '../lib/icon-assets';
         <div class="foundations-heading"><h2 id="foundations-title">つくるための、<br />共通の基盤。</h2><p>カラーの選び方と組み合わせ、アイコンの命名と用途を確認できます。</p></div>
         <div class="foundation-grid">
           <article class="foundation-card color-card"><div class="foundation-card-top"><span>01 / COLORS</span><span>確定</span></div><div class="color-mini" aria-hidden="true">{colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}</div><h3>カラー</h3><p>プライマリー、セカンダリー、状態色、ニュートラル。色見本と用途、背景と文字の組み合わせを確認できます。</p><a href="/colors/">カラーを詳しく見る <span aria-hidden="true">→</span></a></article>
-          <article class="foundation-card icon-card"><div class="foundation-card-top"><span>02 / ICONS</span><span>329 SVG</span></div><div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div><h3>アイコン</h3><p>329個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</p><a href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer">アイコンを見る <span aria-hidden="true">↗</span></a></article>
+          <article class="foundation-card icon-card"><div class="foundation-card-top"><span>02 / ICONS</span><span>336 SVG</span></div><div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div><h3>アイコン</h3><p>336個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</p><a href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer">アイコンを見る <span aria-hidden="true">↗</span></a></article>
         </div>
       </section>
 

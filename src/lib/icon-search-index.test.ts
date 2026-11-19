@@ -6,11 +6,11 @@ import { generateIconSearchIndex } from '../../.storybook/icon-search-index';
 import { filterIcons, iconCategories } from './icon-assets';
 import { parseIconSearchLabels } from './icon-search-labels';
 
-// 実際の生成経路で329件・6分類・全READMEの別名・リンクを照合し、本文や図形の初期配信を防ぐ。
+// 実際の生成経路で336件・6分類・全READMEの別名・リンクを照合し、本文や図形の初期配信を防ぐ。
 test('検索索引は原本と一致し、README全文とSVGを含まない', () => {
   const index = generateIconSearchIndex();
-  expect(index).toHaveLength(329);
-  expect(iconCategories.map(([category]) => index.filter(icon => icon.category === category).length)).toEqual([132, 40, 40, 38, 39, 40]);
+  expect(index).toHaveLength(336);
+  expect(iconCategories.map(([category]) => index.filter(icon => icon.category === category).length)).toEqual([134, 41, 41, 39, 40, 41]);
   expect(index.some(icon => icon.name === 'logo')).toBe(false);
   for (const icon of index) {
     const readme = readFileSync(new URL(`../../icons/${icon.name}/README.md`, import.meta.url), 'utf8');

@@ -13,7 +13,7 @@ bun run build:storybook
 
 Astro の出力は `dist/`、Storybook の出力は `storybook-static/` です。Vue・React・Astro向けの `TIcon` があります。Storybookの「コンポーネント/TIcon・TBrand・TLogo」はbell-offの使用例と同じストーリー形式です。Canvasには見本1つだけを中央表示し、設定は標準Controlsとargsで変更・URL保存します。TIconではReact・Vue・Astroを切り替えても公開名・サイズ・色を保持します。詳細説明のAstro側への移設は別作業です。npm配布・外部ホスティングと既存Nuxt画面の置き換えは未実施です。GitHubリポジトリ自体はPublicです。
 
-`check:react-compat` は一時ディレクトリにReact・React DOMの18.0.0、18.3.1、19.0.0、開発依存の19系をそれぞれ導入します。各環境で公開型、テスト用APIの型、全329原本×4サイズのSSR、Happy DOM上の実コンポーネントのハイドレーション、props更新を検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` と `bun.lock` は変更せず、一時ディレクトリは成功・失敗にかかわらず削除します。各バージョンは既存のCIジョブ `tkw-react-compat` でも同じコマンドで継続検証します。
+`check:react-compat` は一時ディレクトリにReact・React DOMの18.0.0、18.3.1、19.0.0、開発依存の19系をそれぞれ導入します。各環境で公開型、テスト用APIの型、全336原本×4サイズのSSR、Happy DOM上の実コンポーネントのハイドレーション、props更新を検証します。依存取得にはネットワーク接続が必要です。通常の `node_modules` と `bun.lock` は変更せず、一時ディレクトリは成功・失敗にかかわらず削除します。各バージョンは既存のCIジョブ `tkw-react-compat` でも同じコマンドで継続検証します。
 
 ## Storybook上のコンポーネントテスト
 

@@ -1,0 +1,15 @@
+---
+import type { TLinkButtonProps } from './TLinkButtonProps';
+import { linkButtonState, linkButtonAttributes } from '../lib/link-button';
+import { linkButtonSizeState } from '../lib/link-size';
+import TIcon from './TIcon.astro';
+interface Props extends TLinkButtonProps {}
+const { href, tone, size, leadingIcon, trailingIcon, disabled, target, rel, class: className, ...attributes } = Astro.props;
+const sizing = linkButtonSizeState(size);
+const state = linkButtonState({ href, tone, leadingIcon, trailingIcon, disabled, target: target ?? undefined, rel: rel ?? undefined,
+  'aria-current': attributes['aria-current'] ?? undefined });
+const forwarded = linkButtonAttributes(attributes, state.disabled);
+---
+<a {...forwarded} href={state.disabled ? undefined : state.href} target={state.disabled ? undefined : target} rel={state.disabled ? undefined : state.rel}
+  role={state.disabled ? 'link' : attributes.role} aria-disabled={state.disabled ? true : attributes['aria-disabled']} class:list={['tkw-button', 'tkw-link-button', className]}
+  data-size={sizing.size} data-tone={state.tone} data-current={state.isCurrent || undefined} data-disabled={state.disabled || undefined}>{state.leadingIcon !== undefined && <span class="tkw-button__icon tkw-link-button__leading-icon"><TIcon name={state.leadingIcon} size={sizing.iconSize} /></span>}<span class="tkw-button__label tkw-link-button__label"><slot /></span>{state.trailingIcon !== undefined && <span class="tkw-button__icon tkw-link-button__trailing-icon"><TIcon name={state.trailingIcon} size={sizing.iconSize} /></span>}</a>

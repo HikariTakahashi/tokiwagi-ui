@@ -27,3 +27,13 @@ export type { TTextProps } from './TTextProps';
 
 export { textSizes, textWeights, textTones } from '../lib/text';
 export type { TextSize, TextResponsiveSize, TextWeight, TextTone, TextTag, TextAlign, TextWhiteSpace, TextDecoration, TextOptions } from '../lib/text';
+
+export { default as TLink } from './TLink.astro';
+export type { TLinkProps } from './TLinkProps';
+export { linkTones, type LinkTone, type LinkOptions, type LinkCurrent } from '../lib/link';
+
+export { default as TLinkButton } from './TLinkButton.astro';
+export type { TLinkButtonProps } from './TLinkButtonProps';
+
+export { linkSizes, linkButtonSizes, type LinkSize, type LinkButtonSize } from '../lib/link-size';
+export type { LinkButtonOptions } from '../lib/link';

@@ -22,11 +22,11 @@ const container = await experimental_AstroContainer.create();
 const render = (props: TIconProps | Record<string, unknown>) => container.renderToString(TIcon, { props });
 const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule)="[^"]*"/g);
 
-// 共通公開名と原本を照合し、Astroでも全329図柄を選べることを確認する。
-test('Astroの公開名と読み込むSVGは全329原本に一致する', () => {
+// 共通公開名と原本を照合し、Astroでも全336図柄を選べることを確認する。
+test('Astroの公開名と読み込むSVGは全336原本に一致する', () => {
   const directory = new URL('../../icons/', import.meta.url);
   expect<readonly string[]>(iconNames).toEqual(readdirSync(directory).filter(name => !isBrandAssetName(name)).sort());
-  expect(iconNames).toHaveLength(329);
+  expect(iconNames).toHaveLength(336);
   for (const name of iconNames) expect(iconSources[name]).toBe(readFileSync(new URL(`${name}/${name}.svg`, directory), 'utf8'));
 });
 

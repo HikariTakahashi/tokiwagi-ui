@@ -10,8 +10,8 @@ const stories = await Promise.all(iconNames.map(async name => {
 const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule)="[^"]*"/g);
 
 // 生成された全CSFを読み込み、公開名固定・初期値・最小限のControlsと標準パネルを確認する。
-test('全329ストーリーは図柄ごとの名前と共通の閲覧設定を持つ', () => {
-  expect(stories).toHaveLength(329);
+test('全336ストーリーは図柄ごとの名前と共通の閲覧設定を持つ', () => {
+  expect(stories).toHaveLength(336);
   for (const { name, meta, example } of stories) {
     expect(meta.id).toBe(`icons-${name}-examples`);
     expect(example.name).toBe(name);

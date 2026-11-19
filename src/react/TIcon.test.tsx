@@ -9,11 +9,11 @@ import { iconSizes, isBrandAssetName } from '../lib/icon-assets';
 const render = (name: IconName, size: IconSize = 24) => renderToString(<TIcon name={name} size={size} />);
 const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule)="[^"]*"/g);
 
-// 原本の追加・削除・差し替え後も、両フレームワークで共有する公開名とraw importが全329原本に一致する。
+// 原本の追加・削除・差し替え後も、両フレームワークで共有する公開名とraw importが全336原本に一致する。
 test('Reactの公開名と読み込むSVGは全原本と一致する', () => {
   const directory = new URL('../../icons/', import.meta.url);
   expect<readonly string[]>(iconNames).toEqual(readdirSync(directory).filter(name => !isBrandAssetName(name)).sort());
-  expect(iconNames).toHaveLength(329);
+  expect(iconNames).toHaveLength(336);
   for (const name of iconNames) expect(iconSources[name]).toBe(readFileSync(new URL(`${name}/${name}.svg`, directory), 'utf8'));
 });
 

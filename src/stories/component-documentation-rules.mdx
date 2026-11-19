@@ -15,6 +15,8 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 
 | コンポーネント | Controls | 初期値 |
 | --- | --- | --- |
+| TLinkButton | framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-current | React・カレンダーを開く・#link-button-target・neutral・lg・両アイコンなし・false・_self・rel空文字・unset |
+| TLink | framework・text・href・tone・size・leadingIcon・trailingIcon・target・rel・aria-current | React・予定の詳細を見る・#link-target・neutral・inherit・アイコンなし・_self・空文字・unset |
 | TButton | framework・text・tone・leadingIcon・disabled | React・操作・neutral・アイコンなし・false |
 | TText | framework・text・as・size・responsive・sizeSm・sizeLg・weight・lineHeight・tone・align・truncate・lineClamp・whiteSpace・inherit・italic・decoration | React・代表文言・span・サイズ/太さ/行高未指定・通常表示 |
 | TIcon | framework・name・size・color | React・bell・24px・currentColor |
@@ -26,9 +28,9 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 | THeaderLink | framework・tone・content・text・icon・href・target・aria-current | React・neutral・文字＋アイコン・リンク・share・#header-link-target・_self・unset |
 | THeaderButtonGroup | framework・tone・disabled・view | React・neutral・false・month（合成例） |
 
-ヘッダー5部品は「コンポーネント/ヘッダー」配下にまとめ、既存のストーリーID・URLを維持します。個別ルールは引き続き「コンポーネント/個別ルール」に配置します。同じ共通描画と標準Controlsを使います。THeaderは幅1440pxを上限にビューポートへ収まる合成例を1つ表示し、狭い画面では部品内部を横スクロールします。selectedのunsetは未指定、offはfalse、onはtrueとして渡します。Astroは公開部品の状態別テンプレートを実描画して収録します。THeaderButtonの文字のみ／アイコンのみ／文字＋アイコンはcontentで切り替え、textと全329種のiconを変更できます。アイコンのみではtextを読み上げ名に使い、空白だけの文言は「操作」に置き換えます。日本語・記号・空文字の入力も文字コードをURLに保持して復元します。Astroは実ボタンのテンプレートと実TIconの生成済みHTMLを組み合わせ、入力テキストをHTMLとして解釈しません。THeaderは子のTHeaderSectionでleft・center・rightを指定する構成です。THeaderSectionの見本は親THeaderの中に1つ表示し、positionで左右・中央の配置を変更します。見本にアプリ固有のメニューや日付移動処理は追加しません。
+ヘッダー5部品は「コンポーネント/ヘッダー」配下にまとめ、既存のストーリーID・URLを維持します。個別ルールは引き続き「コンポーネント/個別ルール」に配置します。同じ共通描画と標準Controlsを使います。THeaderは幅1440pxを上限にビューポートへ収まる合成例を1つ表示し、狭い画面では部品内部を横スクロールします。selectedのunsetは未指定、offはfalse、onはtrueとして渡します。Astroは公開部品の状態別テンプレートを実描画して収録します。THeaderButtonの文字のみ／アイコンのみ／文字＋アイコンはcontentで切り替え、textと全336種のiconを変更できます。アイコンのみではtextを読み上げ名に使い、空白だけの文言は「操作」に置き換えます。日本語・記号・空文字の入力も文字コードをURLに保持して復元します。Astroは実ボタンのテンプレートと実TIconの生成済みHTMLを組み合わせ、入力テキストをHTMLとして解釈しません。THeaderは子のTHeaderSectionでleft・center・rightを指定する構成です。THeaderSectionの見本は親THeaderの中に1つ表示し、positionで左右・中央の配置を変更します。見本にアプリ固有のメニューや日付移動処理は追加しません。
 
-方式はReact・Vue・Astroの順とし、切り替えても他の設定を保持します。TIconの公開名は329種、サイズは16・20・24・32px、色は継承・ニュートラル・7色のプライマリーから選びます。色はbell-offと同じ既存トークンへのmappingで指定し、URLには選択肢のキーを保持します。TLogo・TBrandは32・64・128pxで、原本の固定配色と余白を維持します。
+方式はReact・Vue・Astroの順とし、切り替えても他の設定を保持します。TIconの公開名は336種、サイズは16・20・24・32px、色は継承・ニュートラル・7色のプライマリーから選びます。色はbell-offと同じ既存トークンへのmappingで指定し、URLには選択肢のキーを保持します。TLogo・TBrandは32・64・128pxで、原本の固定配色と余白を維持します。
 
 TButtonの方式はReact・Vue・Astroから選択し、切り替え時も文言・色・アイコン・無効状態を保持します。文言は共通の文字コード保存で復元し、空白だけの場合は「操作」を表示します。Astroは実TButtonと実TIconの生成済みHTMLを使い、文言をtextContentで反映します。
 
@@ -56,3 +58,11 @@ TButtonの方式はReact・Vue・Astroから選択し、切り替え時も文言
 THeaderLinkも共通描画を使い、Canvasにはリンクを1つ表示します。現在地のunsetは未指定として渡します。textとhrefは文字コードでURLへ保存し、日本語・記号・空文字を復元します。空白だけの文言は「リンク」、hrefは見本用の#header-link-targetへ置き換えます。Astroのリンク属性はDOM APIで反映します。
 
 TTextは幅32remを上限にビューポートへ収まる見本を1つ表示します。設定は標準Controlsで変更し、日本語・改行・記号・空文字は共通の文字コード保存でURLから復元します。size/weightのunsetは未指定で、inheritを確認できます。responsive時はsizeをbase（unsetならmd）としてsizeSm/sizeLgを640px/1024px以上へ適用します。Astroは実出力のspan/pテンプレートに共通設定処理の属性とCSS変数、textContentを反映します。
+
+TLinkは本文用の下線付きリンクを1つ表示します。3方式で文言・href・色・前後アイコン・target・rel・現在地を保持し、textとhrefは共通の文字コード保存で日本語・記号・空文字をURLから復元します。空白だけの文言は「リンク」、hrefは#link-targetを見本に使います。Astroは実リンクと実TIconの出力を使い、属性をDOM API、文言をtextContentで反映します。
+
+TLinkButtonは角丸12pxのボタン型リンクを1つ表示します。設定・方式切り替え・textとhrefのURL保存はTLinkと同じ共通処理を利用し、前後アイコンは32pxです。Astroも実TLinkButtonと実TIconの出力を使います。Canvasに比較や独自設定欄を追加しません。
+
+TLinkのsizeはinherit/sm/md/lg（既定inherit）、TLinkButtonのsizeはsm/md/lg（既定lg）を標準selectで変更します。サイズは方式切り替えとURL再読み込みで保持し、文言や他の設定と同じ見本1つに反映します。Astroもサイズに応じた実TIcon出力を選びます。
+
+TLinkButtonのdisabledは標準boolean Controls（既定false）で切り替え、方式切り替えとURL復元でも保持します。Astroは有効・無効それぞれの実コンポーネント出力を使います。

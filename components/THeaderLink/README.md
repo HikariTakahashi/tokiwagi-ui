@@ -32,6 +32,6 @@ target・rel・ネイティブ属性・class・data属性・aria属性を転送�
 
 [使用例を見る](../../src/stories/THeaderLink.stories.ts)
 
-[THeader](../THeader/README.md) / [THeaderSection](../THeaderSection/README.md) / [THeaderButton](../THeaderButton/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md) / [TIcon](../TIcon/README.md)
+[TLink](../TLink/README.md) / [THeader](../THeader/README.md) / [THeaderSection](../THeaderSection/README.md) / [THeaderButton](../THeaderButton/README.md) / [THeaderButtonGroup](../THeaderButtonGroup/README.md) / [TIcon](../TIcon/README.md)
 
 [カラーの使用ルール](../../src/stories/colors.mdx)
