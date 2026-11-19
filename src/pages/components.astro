@@ -1,0 +1,229 @@
+---
+import '../styles/global.css';
+import '../styles/components-page.css';
+import 'tokiwagi-ui/button.css';
+import 'tokiwagi-ui/card.css';
+import 'tokiwagi-ui/header.css';
+import 'tokiwagi-ui/link.css';
+import 'tokiwagi-ui/link-button.css';
+import 'tokiwagi-ui/select.css';
+import 'tokiwagi-ui/sidebar.css';
+import 'tokiwagi-ui/text.css';
+import {
+  TBrand, TButton, TCard, TCardHeader, TCardTitle, TCardDescription, TCardBody,
+  THeader, THeaderSection, THeaderLink, THeaderButton, THeaderButtonGroup,
+  TIcon, TLink, TLinkButton, TLogo, TSelect, TSidebarLayout, TSidebar,
+  TSidebarHeader, TSidebarBody, TSidebarFooter, TSidebarMain, TText,
+} from 'tokiwagi-ui/astro';
+import { colors } from '../lib/palette';
+
+const storybook = 'http://localhost:6006/';
+const storyUrl = (name: string) => `${storybook}?path=/story/components-${name.toLowerCase()}--default`;
+const ruleUrl = (name: string) => `${storybook}?path=/docs/components-${name.toLowerCase()}-rules--docs`;
+const categories = [
+  { value: 'all', label: 'すべて' },
+  { value: 'display', label: '表示' },
+  { value: 'action', label: '操作・入力' },
+  { value: 'layout', label: 'レイアウト' },
+];
+const families = [
+  {
+    id: 'buttons', title: 'ボタン', name: 'TButton', category: 'action',
+    description: '実行する操作を、分かりやすく。',
+    usage: '保存・追加など、その場で処理を実行するときに。ページを移動する導線にはリンクを使います。',
+    parts: [['TButton', '文字とアイコンで操作を伝えるボタン。色・サイズ・無効状態を揃えます。']],
+  },
+  {
+    id: 'links', title: 'リンク', name: 'TLink', category: 'action',
+    description: '次に進む場所を、自然に伝える。',
+    usage: '別のページや資料へ進むときに。文章中の導線と、強調したい導線で使い分けます。',
+    parts: [
+      ['TLink', '本文の書式を引き継ぐ、下線付きのリンク。'],
+      ['TLinkButton', 'ボタンの見た目で、移動先を強調するリンク。'],
+    ],
+  },
+  {
+    id: 'selects', title: 'セレクト', name: 'TSelect', category: 'action',
+    description: '選択肢から、ひとつを選ぶ。',
+    usage: 'プロジェクトや並び順など、候補が決まった項目の単一選択に。ラベルを添えて、何を選ぶか伝えます。',
+    parts: [['TSelect', 'ラベル・説明・エラー表示を関連付けられる、ネイティブの選択欄。']],
+  },
+  {
+    id: 'text', title: 'テキスト', name: 'TText', category: 'display',
+    description: '情報の強弱と、読みやすさを整える。',
+    usage: '本文、補助文、状態メッセージに。サイズ・太さ・色を揃え、必要に応じて周囲の書式を引き継ぎます。',
+    parts: [['TText', '文字の書式と省略表示を揃える部品。見出しの構造や全文への導線は親要素で用意します。']],
+  },
+  {
+    id: 'cards', title: 'カード', name: 'TCard', category: 'layout',
+    description: '関連する情報を、ひとまとまりに。',
+    usage: 'プロジェクトの概要やタスクの要約に。見出し・説明・操作・メディアを、必要な部分だけ組み合わせます。',
+    parts: [
+      ['TCard', '関連情報をまとめる外枠。'],
+      ['TCardHeader', '見出しと説明を配置する領域。'],
+      ['TCardTitle', '見出し階層に合わせて使うタイトル。'],
+      ['TCardDescription', 'タイトルを補う説明文。'],
+      ['TCardBody', '本文や情報を配置する領域。'],
+      ['TCardFooter', '補足や操作を置く領域。'],
+      ['TCardMedia', '画像や動画を配置する領域。'],
+      ['TCardActionArea', 'カードの領域をリンクにする部品。内側に別の操作要素は置きません。'],
+    ],
+  },
+  {
+    id: 'headers', title: 'ヘッダー', name: 'THeader', category: 'layout',
+    description: '画面の入口と、共通の操作を揃える。',
+    usage: '画面上部のブランド・ナビゲーション・操作に。左・中央・右の領域を組み合わせて配置します。',
+    parts: [
+      ['THeader', '背景・高さ・横スクロールを担うヘッダー。'],
+      ['THeaderSection', '左・中央・右の配置領域。'],
+      ['THeaderButton', 'ヘッダー内で処理や選択を行うボタン。'],
+      ['THeaderLink', 'ヘッダー内の移動先を示すリンク。'],
+      ['THeaderButtonGroup', '関連するボタンやリンクをまとめるグループ。'],
+    ],
+  },
+  {
+    id: 'sidebars', title: 'サイドバー', name: 'TSidebar', category: 'layout',
+    description: '移動する場所と、作業する場所を整える。',
+    usage: '説明ページの目次や、設定画面の補足情報に。本文と左右のサイドバーを組み合わせます。',
+    parts: [
+      ['TSidebarLayout', 'サイドバーと本文を並べる全体の配置。'],
+      ['TSidebar', '左または右に置く、開閉可能な補助領域。'],
+      ['TSidebarMain', '本文や作業内容を置く中央の領域。'],
+      ['TSidebarHeader', 'サイドバーの見出し領域。'],
+      ['TSidebarBody', '目次や補足情報を置く本文領域。'],
+      ['TSidebarFooter', '末尾の補足や操作を置く領域。'],
+    ],
+  },
+  {
+    id: 'icons', title: 'アイコン', name: 'TIcon', category: 'display',
+    description: 'ことばに添えて、意味を伝える。',
+    usage: '操作や情報の手がかりに。図柄だけに頼らず、併記する文字や親要素の操作名と組み合わせます。',
+    parts: [['TIcon', '共通のSVG原本を、サイズ・色を揃えて表示する装飾アイコン。']],
+  },
+  {
+    id: 'brand', title: 'ブランド', name: 'TBrand', category: 'display',
+    description: 'ロゴと名称を、いつも同じ佇まいに。',
+    usage: '製品のロゴや名称を表示する場所に。リンクの操作は親要素で用意し、原本の配色と余白を保ちます。',
+    parts: [
+      ['TLogo', '固定配色と余白を保つブランドロゴ。'],
+      ['TBrand', 'ロゴと製品名を横並びにするブランド表示。'],
+    ],
+  },
+];
+const projectOptions = [
+  { value: 'all', label: 'すべてのプロジェクト' },
+  { value: 'design', label: 'デザイン' },
+  { value: 'development', label: '開発' },
+  { value: 'personal', label: 'プライベート' },
+];
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Tokiwagi UIのコンポーネントを、見た目と使いどころから探す。ボタン、リンク、セレクト、テキスト、カード、ヘッダー、サイドバー、アイコン、ブランドを紹介します。" />
+    <title>コンポーネント | Tokiwagi UI</title>
+  </head>
+  <body class="components-page">
+    <TLink class="skip-link" href="#main">本文へスキップ</TLink>
+    <THeader class="sticky top-0 z-10" scrollLabel="サイトヘッダーナビゲーション">
+      <THeaderSection position="left">
+        <a class="brand-link" href="/" aria-label="Tokiwagi UI ホーム"><TBrand /></a>
+      </THeaderSection>
+      <THeaderSection position="right">
+        <nav class="flex" aria-label="サイトナビゲーション">
+          <THeaderLink href="/">概要</THeaderLink>
+          <THeaderLink href="/colors/">カラー</THeaderLink>
+          <THeaderLink href="/components/" aria-current="page">コンポーネント</THeaderLink>
+          <THeaderLink href={storybook} target="_blank" rel="noopener noreferrer">Storybook</THeaderLink>
+        </nav>
+      </THeaderSection>
+    </THeader>
+
+    <main id="main" class="components-shell">
+      <nav class="components-breadcrumb" aria-label="パンくずリスト">
+        <TLink href="/">ホーム</TLink><span aria-hidden="true">/</span><span aria-current="page">コンポーネント</span>
+      </nav>
+      <section class="components-hero" aria-labelledby="components-title">
+        <div>
+          <p class="components-kicker"><TText inherit tone="inherit">COMPONENTS / TOKIWAGI UI</TText></p>
+          <h1 id="components-title"><TText inherit tone="inherit">小さな部品から、<br />使いやすい画面へ。</TText></h1>
+        </div>
+        <div class="components-intro">
+          <TText as="p" tone="muted">伝える、選ぶ、操作する、整える。<br />日々の画面づくりを支えるコンポーネントと、それぞれの使いどころを紹介します。</TText>
+          <ul class="components-frameworks" aria-label="対応フレームワーク"><li>React</li><li>Vue</li><li>Astro</li></ul>
+        </div>
+      </section>
+      <div class="components-palette" aria-label="対等に扱う7色のプライマリーカラー">
+        {colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}
+      </div>
+
+      <section class="components-gallery" data-component-gallery aria-labelledby="gallery-title">
+        <div class="components-gallery-heading">
+          <div><h2 id="gallery-title"><TText inherit tone="inherit">目的に合う部品を見つける。</TText></h2><p class="components-count" role="status" aria-live="polite" data-component-count>{families.length}種類のコンポーネントを表示</p></div>
+          <div class="components-filters" data-component-filters hidden>
+            <TSelect id="component-category" name="component-category" label="分類" size="lg" options={categories} defaultValue="all" aria-controls="component-list" data-component-filter />
+          </div>
+        </div>
+        <div id="component-list" class="components-grid">
+          {families.map(family => (
+            <article class="component-entry" id={family.id} data-component-category={family.category} aria-labelledby={`${family.id}-title`}>
+              <div class:list={['component-preview', `component-preview--${family.id}`]} role="group" aria-label={`${family.title}の見本`}>
+                {family.id === 'buttons' && <div class="component-button-demo">
+                  <div class="component-demo-actions"><TButton size="sm" tone="neutral-900" weight="normal" leadingIcon="plus" data-demo-add aria-describedby="button-demo-feedback">追加する</TButton><TButton size="sm" tone="neutral-0" weight="normal" data-demo-reset>戻す</TButton></div>
+                  <p id="button-demo-feedback" class="component-demo-feedback" role="status" aria-live="polite" data-demo-feedback>操作を試せます</p>
+                </div>}
+                {family.id === 'links' && <div class="component-link-demo"><TLink href="#next-steps">使い方を見る</TLink><TLinkButton href="/colors/" size="sm" tone="neutral-0" weight="normal">カラーを見る</TLinkButton></div>}
+                {family.id === 'selects' && <TSelect id="project-demo" name="project-demo" label="プロジェクト" size="lg" options={projectOptions} defaultValue="all" />}
+                {family.id === 'text' && <div class="component-text-demo"><TText size="lg" weight="bold">伝わる、文字のかたち。</TText><TText as="p">毎日の情報を、読みやすく。</TText><TText as="p" size="sm" tone="muted">補足することばにも、同じルールを。</TText></div>}
+                {family.id === 'cards' && <TCard class="component-project-card" size="sm">
+                  <TCardHeader><TCardTitle as="h4">新しいプロジェクト</TCardTitle><TCardDescription>アイデアを、次の一歩へ。</TCardDescription></TCardHeader>
+                  <TCardBody><div class="component-project-tags"><span>デザイン</span><span>チーム</span></div></TCardBody>
+                </TCard>}
+                {family.id === 'headers' && <div class="component-header-demo">
+                  <THeader scrollLabel="ヘッダーの見本"><THeaderSection position="left"><TText size="sm" weight="semibold">プロジェクト</TText></THeaderSection><THeaderSection position="right"><THeaderButtonGroup aria-label="見本の表示切り替え"><THeaderButton selected data-demo-view="list">一覧</THeaderButton><THeaderButton selected={false} data-demo-view="settings">設定</THeaderButton></THeaderButtonGroup></THeaderSection></THeader>
+                  <p class="component-demo-feedback" role="status" aria-live="polite" data-header-feedback>一覧を表示しています</p>
+                </div>}
+                {family.id === 'sidebars' && <TSidebarLayout gap={12} class="component-sidebar-demo">
+                  <TSidebar side="left" width={116} aria-label="サイドバーの見本"><TSidebarHeader><TText size="sm" weight="semibold">目次</TText></TSidebarHeader><TSidebarBody><nav class="component-demo-toc" aria-label="見本の目次"><TLink href="#cards" size="sm">カード</TLink><TLink href="#headers" size="sm">ヘッダー</TLink></nav></TSidebarBody><TSidebarFooter><TText size="sm" tone="muted">共通の部品</TText></TSidebarFooter></TSidebar>
+                  <TSidebarMain><TText as="p" size="sm" weight="semibold">本文の領域</TText><TText as="p" size="sm" tone="muted">情報や作業内容を、ここに。</TText></TSidebarMain>
+                </TSidebarLayout>}
+                {family.id === 'icons' && <div class="component-icon-demo">{[['calendar', 'カレンダー'], ['task', 'タスク'], ['bell', '通知'], ['check', '完了']].map(([name, label]) => <span><TIcon name={name as 'calendar' | 'task' | 'bell' | 'check'} size={32} /><TText size="sm" tone="muted">{label}</TText></span>)}</div>}
+                {family.id === 'brand' && <div class="component-brand-demo"><TLogo /><TBrand /></div>}
+              </div>
+              <div class="component-entry-heading"><h3 id={`${family.id}-title`}><TText inherit tone="inherit">{family.title}</TText></h3><code>{family.id === 'links' ? 'TLink / TLinkButton' : family.id === 'brand' ? 'TLogo / TBrand' : family.name}</code></div>
+              <TText as="p" tone="muted">{family.description}</TText>
+              <details class="component-details">
+                <summary><TText inherit tone="inherit">使いどころを見る</TText><span class="component-details-icon" aria-hidden="true"><TIcon name="plus" size={16} /></span></summary>
+                <div class="component-details-content">
+                  <TText as="p">{family.usage}</TText>
+                  <dl class="component-parts">
+                    {family.parts.map(([name, description]) => <div><dt><TLink href={ruleUrl(family.id === 'cards' ? 'TCard' : name)} target="_blank" rel="noopener noreferrer" size="sm"><code>{name}</code></TLink></dt><dd><TText inherit tone="inherit">{description}</TText></dd></div>)}
+                  </dl>
+                  {family.id === 'cards' && <TText as="p" size="sm" tone="muted">各構成パーツの使い方は、共通のカード利用ルールにまとめています。</TText>}
+                  {family.id === 'brand' && <TText as="p" size="sm" tone="muted">TLogo・TBrandはブランド固有の資産で、MITライセンスの対象外です。</TText>}
+                  <div class="component-reference-links"><TLink href={ruleUrl(family.name)} target="_blank" rel="noopener noreferrer" size="sm">使用ルールを読む</TLink>{family.parts.filter(([name]) => family.id !== 'cards' || name === 'TCard').map(([name]) => <TLink href={storyUrl(name)} target="_blank" rel="noopener noreferrer" size="sm">{name}の見本</TLink>)}</div>
+                </div>
+              </details>
+              <TLink class="component-story-link" href={storyUrl(family.name)} target="_blank" rel="noopener noreferrer" size="sm" aria-label={`${family.title}をStorybookで試す`}>Storybookで試す</TLink>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="components-next" id="next-steps" aria-labelledby="next-title">
+        <div><p class="components-kicker"><TText inherit tone="inherit">NEXT / TRY THE COMPONENTS</TText></p><h2 id="next-title"><TText inherit tone="inherit">見つけた部品を、確かめる。</TText></h2><TText as="p" tone="muted">詳しい使用ルールと操作状態は、Storybookで確認できます。</TText></div>
+        <TLinkButton href={storybook} size="sm" tone="neutral-900" weight="normal" target="_blank" rel="noopener noreferrer">Storybookを開く</TLinkButton>
+      </section>
+      <p class="components-local-note"><TText inherit tone="inherit">Storybookは、ローカルで <code>bun run storybook</code> を起動すると閲覧できます。</TText></p>
+    </main>
+    <footer class="components-footer"><a class="brand-link" href="/" aria-label="Tokiwagi UI ホーム"><TBrand /></a><span>Color with purpose, meaning with clarity.</span><TLink href="#main" size="sm">ページの先頭へ</TLink></footer>
+  </body>
+</html>
+
+<script>
+  import { initializeComponentGallery } from '../scripts/components-page';
+  initializeComponentGallery(document);
+</script>
