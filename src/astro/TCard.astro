@@ -1,0 +1,8 @@
+---
+import type { TCardProps } from './TCardProps';
+import { cardState } from '../lib/card';
+interface Props extends TCardProps {}
+const { as, variant, size, class: className, ...attributes } = Astro.props;
+const { tag: Tag, attributes: state } = cardState({ as, variant, size });
+---
+<Tag {...attributes} {...state} class:list={['tkw-card', className]}><slot /></Tag>

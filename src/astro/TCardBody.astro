@@ -1,0 +1,6 @@
+---
+import type { TCardBodyProps } from './TCardBodyProps';
+interface Props extends TCardBodyProps {}
+const { class: className, ...attributes } = Astro.props;
+---
+<div {...attributes} class:list={['tkw-card-body', className]}><slot /></div>

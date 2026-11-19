@@ -1,0 +1,14 @@
+/* 利用側で組み合わせる内容の装飾。TCardの公開スタイルとは分離する。 */
+.tkw-card-example-eyebrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--tkw-color-neutral-600); font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+.tkw-card-example-copy { margin: 0; color: var(--tkw-color-neutral-600); }
+.tkw-card-example-meta { color: var(--tkw-color-neutral-600); font-size: 12px; }
+.tkw-card-example-action { box-sizing: border-box; display: inline-flex; align-items: center; min-height: 36px; padding: 7px 12px; border: 1px solid var(--tkw-color-neutral-900); border-radius: 7px; background: var(--tkw-color-neutral-900); color: var(--tkw-color-neutral-0); font-size: 13px; font-weight: 500; line-height: 1.5; text-decoration: none; }
+.tkw-card-example-action:hover { background: var(--tkw-color-neutral-800); }
+.tkw-card-example-action:active { background: var(--tkw-color-neutral-1000); }
+.tkw-card-example-status { padding: 2px 7px; border-radius: 5px; background: var(--tkw-color-primary-blue-subtle); color: var(--tkw-color-primary-blue-on-subtle); font-size: 11px; }
+.tkw-card-example-media { height: 130px; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 18px; overflow: hidden; background: var(--tkw-color-primary-teal-subtle); }
+.tkw-card-example-media > span { display: block; width: 112px; height: 86px; padding: 12px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 8px; background: var(--tkw-color-neutral-0); transform: rotate(-5deg); }
+.tkw-card-example-media > span::before { content: ''; display: block; width: 32px; height: 7px; margin-bottom: 10px; border-radius: 2px; background: var(--tkw-color-primary-teal); }
+.tkw-card-example-media > span::after { content: ''; display: block; height: 4px; background: var(--tkw-color-neutral-200); box-shadow: 0 11px 0 var(--tkw-color-neutral-200), 0 22px 0 var(--tkw-color-neutral-200); }
+.tkw-card-example-media > span + span { transform: rotate(7deg); margin-top: 18px; }
+@media (pointer: coarse) { .tkw-card-example-action { min-height: 44px; } }
