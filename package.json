@@ -9,6 +9,7 @@
     "./react": "./src/react/index.ts",
     "./vue": "./src/vue/index.ts",
     "./tokens/*.css": "./tokens/*.css",
+    "./link.css": "./src/styles/link.css",
     "./button.css": "./src/styles/button.css",
     "./header.css": "./src/styles/header.css",
     "./text.css": "./src/styles/text.css"

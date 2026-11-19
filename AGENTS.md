@@ -112,3 +112,7 @@ READMEは概要とWikiへの導線を扱います。Wiki管理ページの唯一
 ## TText
 
 React・Vue・Astroの公開入口からTText・TTextPropsとTextOptions等の共通型を公開します。利用側で`tokiwagi-ui/text.css`を一度読み込みます。書体・色は既存トークンを参照し、サイズはsm/md/lg（0.875/1/1.125rem）、既定md、行高1.5、太さnormalです。asはspan/p（既定span）、toneはdefault/muted/inherit/success/warning/error/infoです。sizeはbaseを必須とするオブジェクトでも指定でき、640pxのsm・1024pxのlgへ直前の値を引き継ぎます。inheritは書体・サイズ・太さ・行高を親から継承し、明示設定を優先します。色の継承はtoneで指定します。truncateとlineClampは併用を拒否します。文字列・children/slot・標準属性を保持し、見出し・操作・全文表示の導線は利用側が担います。利用ルールは`components/TText/README.md`、APIはWikiのUsage、見本はStorybook「コンポーネント/TText」です。Astroの見本は公開実コンポーネントのspan/p出力を収録し、共通解決処理の属性・CSS変数とtextContentで入力を安全に反映します。
+
+## TLink
+
+React・Vue・Astroの公開入口からTLink・TLinkPropsとLinkTone・LinkOptions・LinkCurrent・linkTonesを公開します。href必須のネイティブa要素で、未指定・空文字・空白のみは日本語エラーです。tokiwagi-ui/link.cssを一度読み込み、周囲の書式を継承した下線付きの本文リンクを表示します。toneはneutral（既定）と7色のプライマリーで、文字とアイコンは既存のneutral-900／on-subtleトークンを参照します。leadingIcon・trailingIconは任意の16px装飾TIconです。現在地はaria-currentで指定し、太字と太い下線で表します。target=_blankのrelはopenerを除いてnoopenerを補完します。属性・children/slot・React/Vueのネイティブイベントを転送し、ルーター・URLの検証と決定・現在地判定は利用側が担います。disabledは提供しません。利用ルールはcomponents/TLink/README.md、APIはWikiのUsage、見本はStorybook「コンポーネント/TLink」です。Astroも実リンク・実TIconの出力を使い、Controlsの文言と属性をDOM APIで反映します。

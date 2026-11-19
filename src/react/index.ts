@@ -17,3 +17,6 @@ export { TText, type TTextProps } from './TText';
 
 export { textSizes, textWeights, textTones } from '../lib/text';
 export type { TextSize, TextResponsiveSize, TextWeight, TextTone, TextTag, TextAlign, TextWhiteSpace, TextDecoration, TextOptions } from '../lib/text';
+
+export { TLink, type TLinkProps } from './TLink';
+export { linkTones, type LinkTone, type LinkOptions, type LinkCurrent } from '../lib/link';

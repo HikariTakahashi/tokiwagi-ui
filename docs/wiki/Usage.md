@@ -226,6 +226,52 @@ Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コ�
 - アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全336アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに336個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の全336ストーリーではReact版の公開TIconを1つ中央に表示します。公開名は固定し、初期値は24px・currentColorです。Controlsで16・20・24・32pxと、継承・ニュートラル・7色のプライマリーを切り替え、選択をURLに保持します。Actions・Interactionsは標準パネルとして表示します。各個別ルールから対応する使用例に移動できます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
 
+## TLink
+
+React・Vue・Astroで本文や補助導線の画面遷移に使います。各方式の公開入口から`TLink`・`TLinkProps`と`linkTones`・`LinkTone`・`LinkOptions`・`LinkCurrent`をインポートできます。`tokiwagi-ui/link.css`を一度読み込みます。
+
+```tsx
+// React
+import { TLink } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/link.css';
+
+<TLink href="/calendar" tone="blue" trailingIcon="arrow-top-right">カレンダーを開く</TLink>
+```
+
+```vue
+<script setup lang="ts">
+import { TLink } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/link.css';
+</script>
+
+<template>
+  <TLink href="/calendar" tone="blue" trailing-icon="arrow-top-right">カレンダーを開く</TLink>
+</template>
+```
+
+```astro
+---
+import { TLink } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/link.css';
+---
+<TLink href="/calendar" tone="blue" trailingIcon="arrow-top-right">カレンダーを開く</TLink>
+```
+
+| 指定 | 型・既定値 | 用途 |
+| --- | --- | --- |
+| `href` | `string`（必須） | 相対URL・絶対URL・フラグメントなど。未指定・空文字・空白のみは日本語エラー |
+| `tone` | `LinkTone`、既定`neutral` | neutral / green / teal / blue / violet / rose / coral / amber |
+| `leadingIcon` / `trailingIcon` | `IconName`、既定なし | 前後の16px装飾アイコン。SVGは公開TIconを再利用 |
+| `aria-current` | `LinkCurrent`、既定未指定 | 現在地を太字と太い下線で表示。false・文字列falseは強調しない |
+| `target` / `rel` / `download` など | ネイティブのa要素の属性 | `_blank`ではopenerを除きnoopenerを補完。その他のrelを保持 |
+| `className`（React）/ `class`（Vue・Astro） | 各方式のネイティブ型 | クラスを追加 |
+
+内容はReactのchildren、Vue・Astroの既定スロットです。文字の書式を周囲から継承し、通常時も下線を表示します。色にはneutral-900またはプライマリーのon-subtleトークンを使います。リンクの背景は透明なので、利用先の背景とのコントラストは利用側で確認してください。ホバー・押下は下線の太さ、キーボードフォーカスは輪郭で示します。長い文言は行内で折り返します。
+
+ネイティブの属性とReact・Vueのイベントをa要素へ転送します。Tab・Enter、修飾キー・中央クリック・右クリックによるリンク操作を維持し、Spaceを独自にクリックへ変換しません。URLの決定・入力値の検証・ルーターとの連携・現在地の自動判定は利用側の責任です。disabledは提供しません。保存や切り替えの操作にはTButton、ヘッダーの移動にはTHeaderLinkを使います。
+
+React・Vueはサーバーとクライアントで同じpropsと内容を渡してハイドレーションします。複数rootのID接頭辞などTIconのSSRルールも適用されます。Astroは静的なa要素を出力し、ハイドレーションを必要としません。実行時の処理は利用側scriptで接続します。Storybookの「コンポーネント/TLink」は3方式の実部品を1つ表示し、Controlsの設定をURLへ保存・復元します。
+
 ## TButton
 
 React・Vue・Astroの公開入口 `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` から `TButton`、`TButtonProps`、`ButtonTone`、`buttonTones` を利用できます。`tokiwagi-ui/button.css` をアプリで一度読み込むと、状態のスタイルと必要な色・書体トークンが適用されます。文字は1.75rem・太さ700、高さは50px以上です。

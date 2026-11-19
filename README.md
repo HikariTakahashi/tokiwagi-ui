@@ -49,3 +49,5 @@ npm公開・配布用ビルドは未実施です。現状はソースを含む�
 [適用範囲](LICENSE-SCOPE.md)に定める自作コード・汎用SVG・トークン・文書は **MIT License** です。商用利用・改変・再配布が可能です。正式な全文は [LICENSE](LICENSE)、説明は [WikiのLicense](https://github.com/HikariTakahashi/tokiwagi-ui/wiki/License)（[ローカル原稿](docs/wiki/License.md)）を参照してください。
 
 **ロゴ・TLogo・TBrandとその専用ファイルはMIT対象外です。** 掲載やexportは利用許諾を意味しません。[ブランド参照資料](docs/brand-reference.md)と[第三者ライセンス](docs/THIRD-PARTY-LICENSES.md)を確認してください。
+
+本文の画面遷移にはReact・Vue・Astro共通の `TLink` を使えます。公開APIと導入例は[Usage](docs/wiki/Usage.md#tlink)を参照してください。

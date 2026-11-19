@@ -15,6 +15,7 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 
 | コンポーネント | Controls | 初期値 |
 | --- | --- | --- |
+| TLink | framework・text・href・tone・leadingIcon・trailingIcon・target・rel・aria-current | React・予定の詳細を見る・#link-target・neutral・アイコンなし・_self・空文字・unset |
 | TButton | framework・text・tone・leadingIcon・disabled | React・操作・neutral・アイコンなし・false |
 | TText | framework・text・as・size・responsive・sizeSm・sizeLg・weight・lineHeight・tone・align・truncate・lineClamp・whiteSpace・inherit・italic・decoration | React・代表文言・span・サイズ/太さ/行高未指定・通常表示 |
 | TIcon | framework・name・size・color | React・bell・24px・currentColor |
@@ -56,3 +57,5 @@ TButtonの方式はReact・Vue・Astroから選択し、切り替え時も文言
 THeaderLinkも共通描画を使い、Canvasにはリンクを1つ表示します。現在地のunsetは未指定として渡します。textとhrefは文字コードでURLへ保存し、日本語・記号・空文字を復元します。空白だけの文言は「リンク」、hrefは見本用の#header-link-targetへ置き換えます。Astroのリンク属性はDOM APIで反映します。
 
 TTextは幅32remを上限にビューポートへ収まる見本を1つ表示します。設定は標準Controlsで変更し、日本語・改行・記号・空文字は共通の文字コード保存でURLから復元します。size/weightのunsetは未指定で、inheritを確認できます。responsive時はsizeをbase（unsetならmd）としてsizeSm/sizeLgを640px/1024px以上へ適用します。Astroは実出力のspan/pテンプレートに共通設定処理の属性とCSS変数、textContentを反映します。
+
+TLinkは本文用の下線付きリンクを1つ表示します。3方式で文言・href・色・前後アイコン・target・rel・現在地を保持し、textとhrefは共通の文字コード保存で日本語・記号・空文字をURLから復元します。空白だけの文言は「リンク」、hrefは#link-targetを見本に使います。Astroは実リンクと実TIconの出力を使い、属性をDOM API、文言をtextContentで反映します。

@@ -1,3 +1,7 @@
+import { TLink as ReactTLink } from 'tokiwagi-ui/react';
+import { TLink as VueTLink } from 'tokiwagi-ui/vue';
+import { astroLinkPreviewHtml, type LinkPreviewOptions, type AstroLinkPreviews } from '../link-preview';
+import linksUrl from 'virtual:tkw-astro-links';
 import { useEffect, useId, useRef, useState } from 'react';
 import { createApp, h, shallowRef } from 'vue';
 import { TText as ReactTText } from 'tokiwagi-ui/react';
@@ -25,6 +29,7 @@ import { ReactHeaderPreview, vueHeaderPreview } from './HeaderPreview';
 import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
 export type ComponentPreviewProps = { framework: Framework } & (
+  | LinkPreviewOptions
   | ButtonPreviewOptions
   | TextPreviewOptions
   | HeaderPreviewOptions
@@ -32,6 +37,12 @@ export type ComponentPreviewProps = { framework: Framework } & (
   | { component: 'TLogo' } & Required<Pick<TLogoProps, 'size' | 'decorative'>>
   | { component: 'TBrand' } & Required<Pick<TBrandProps, 'size'>> & Pick<TBrandProps, 'text'>
 );
+
+const loadLinks = createAstroPreviewLoader<AstroLinkPreviews>(linksUrl);
+const loadLinkAssets = async () => {
+  const [links, icons] = await Promise.all([loadLinks(), loadIcons()]);
+  return { links, icons };
+};
 
 const loadTexts = createAstroPreviewLoader<AstroTextPreviews>(textsUrl);
 const loadButtons = createAstroPreviewLoader<AstroButtonPreviews>(buttonsUrl);
@@ -56,6 +67,10 @@ function VuePreview(args: ComponentPreviewProps) {
   useEffect(() => {
     const app = createApp({ render: () => {
       const value = props.value;
+      if (value.component === 'TLink') {
+        return h(VueTLink, { href: value.href, tone: value.tone, leadingIcon: value.leadingIcon, trailingIcon: value.trailingIcon,
+          target: value.target, rel: value.rel, 'aria-current': value.current }, () => value.text);
+      }
       if (value.component === 'TButton') {
         return h(VueTButton, {
           tone: value.tone, leadingIcon: value.leadingIcon, disabled: value.disabled,
@@ -86,6 +101,14 @@ function VuePreview(args: ComponentPreviewProps) {
 export function ComponentPreview(args: ComponentPreviewProps) {
   const id = useId();
   const prefix = `tkw-preview-astro-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
+  if (args.component === 'TLink') {
+    if (args.framework === 'vue') return <VuePreview {...args} />;
+    const { component, framework, text, current, ...options } = args;
+    if (framework === 'react') return <ReactTLink {...options} aria-current={current}>{text}</ReactTLink>;
+    return <AstroComponentPreview load={loadLinkAssets}>{({ links, icons }) =>
+      <span style={{ display: 'inline' }} dangerouslySetInnerHTML={{ __html: astroLinkPreviewHtml(links, icons, args, prefix) }} />
+    }</AstroComponentPreview>;
+  }
   if (args.component === 'TButton') {
     if (args.framework === 'vue') return <VuePreview {...args} />;
     const { component, framework, text, ...options } = args;

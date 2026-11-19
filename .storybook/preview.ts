@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/html-vite';
 import '../src/styles/global.css';
 import 'tokiwagi-ui/button.css';
+import 'tokiwagi-ui/link.css';
 import 'tokiwagi-ui/header.css';
 import 'tokiwagi-ui/text.css';
 import '../src/stories/components/header-preview.css';

@@ -27,3 +27,8 @@ declare module 'virtual:tkw-astro-buttons' {
   const previewsUrl: string;
   export default previewsUrl;
 }
+
+declare module 'virtual:tkw-astro-links' {
+  const previewsUrl: string;
+  export default previewsUrl;
+}

@@ -14,7 +14,7 @@
 
 ## 使用しない場面
 
-画面遷移はリンクを使います。ヘッダー内の操作や選択状態のある切り替えには、該当するヘッダー用コンポーネントを使ってください。
+画面遷移はTLinkを使います。ヘッダー内の操作や選択状態のある切り替えには、該当するヘッダー用コンポーネントを使ってください。
 
 ## 表示とアクセシビリティ
 
@@ -24,4 +24,4 @@ Reactのchildren、Vue・Astroの既定スロットに「保存する」など�
 
 [使用例を見る](../../src/stories/TButton.stories.ts)
 
-[THeaderButton](../THeaderButton/README.md) / [TIcon](../TIcon/README.md) / [カラーの使用ルール](../../src/stories/colors.mdx)
+[TLink](../TLink/README.md) / [THeaderButton](../THeaderButton/README.md) / [TIcon](../TIcon/README.md) / [カラーの使用ルール](../../src/stories/colors.mdx)

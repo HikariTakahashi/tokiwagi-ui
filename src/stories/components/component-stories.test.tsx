@@ -10,11 +10,13 @@ mock.module('virtual:tkw-astro-brands', () => ({ default: '/astro-brands.json' }
 mock.module('virtual:tkw-astro-headers', () => ({ default: '/astro-headers.json' }));
 mock.module('virtual:tkw-astro-texts', () => ({ default: '/astro-texts.json' }));
 mock.module('virtual:tkw-astro-buttons', () => ({ default: '/astro-buttons.json' }));
+mock.module('virtual:tkw-astro-links', () => ({ default: '/astro-links.json' }));
 const icon = await import('../TIcon.stories');
 const logo = await import('../TLogo.stories');
 const brand = await import('../TBrand.stories');
 const text = await import('../TText.stories');
 const button = await import('../TButton.stories');
+const link = await import('../TLink.stories');
 const header = await import('../THeader.stories');
 const headerSection = await import('../THeaderSection.stories');
 const headerButton = await import('../THeaderButton.stories');
@@ -41,6 +43,7 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
 // 各ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
+    ['TLink', link, ['framework', 'text', 'href', 'tone', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
     ['TButton', button, ['framework', 'text', 'tone', 'leadingIcon', 'disabled']],
     ['TText', text, ['framework', 'text', 'as', 'size', 'responsive', 'sizeSm', 'sizeLg', 'weight', 'lineHeight', 'tone', 'align', 'truncate', 'lineClamp', 'whiteSpace', 'inherit', 'italic', 'decoration']],
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
@@ -58,7 +61,7 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
     expect(meta.parameters.layout).toBe(bellOff.default.parameters.layout);
     expect(meta.parameters.options).toEqual(bellOff.default.parameters.options);
     expect(meta.parameters.controls).toEqual({ disable: false, include: [...controls], disableSaveFromUI: true });
-    expect(Object.keys(meta.argTypes).filter(key => key !== 'textcode')).toEqual([...controls]);
+    expect(Object.keys(meta.argTypes).filter(key => !['textcode', 'hrefcode'].includes(key))).toEqual([...controls]);
     expect(meta.argTypes.framework.options).toEqual(['react', 'vue', 'astro']);
     if (name === 'THeaderButton') expect(story.Default.play).toBeFunction();
     else expect(story.Default.play).toBeUndefined();
@@ -113,6 +116,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     mock.module('virtual:tkw-astro-headers',()=>({default:'/headers.json'}));
     mock.module('virtual:tkw-astro-texts',()=>({default:'/texts.json'}));
     mock.module('virtual:tkw-astro-buttons',()=>({default:'/buttons.json'}));
+    mock.module('virtual:tkw-astro-links',()=>({default:'/links.json'}));
     let memo, cleanup;
     mock.module('storybook/preview-api',()=>({
       useArgs:()=>[{},()=>{}],
