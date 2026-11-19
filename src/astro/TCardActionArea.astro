@@ -1,0 +1,8 @@
+---
+import type { TCardActionAreaProps } from './TCardActionAreaProps';
+import { cardActionAreaState } from '../lib/card';
+interface Props extends TCardActionAreaProps {}
+const { href, target, rel, class: className, ...attributes } = Astro.props;
+const state = cardActionAreaState({ href, target: target ?? undefined, rel: rel ?? undefined });
+---
+<a {...attributes} href={state.href} target={target} rel={state.rel} class:list={['tkw-card-action-area', className]}><slot /></a>

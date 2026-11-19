@@ -18,6 +18,7 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 | TSelect | framework・value・placeholder・label・description・error・tone・size・disabled・required・disableCard | React・button・補足等なし・neutral・md・false |
 | TLinkButton | framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-current | React・カレンダーを開く・#link-button-target・neutral・lg・両アイコンなし・false・_self・rel空文字・unset |
 | TLink | framework・text・href・tone・size・leadingIcon・trailingIcon・target・rel・aria-current | React・予定の詳細を見る・#link-target・neutral・inherit・アイコンなし・_self・空文字・unset |
+| TCard | framework・view・variant・size・as・title・description・text・href | React・基本・outline・md・div・代表文言・#tcard-details |
 | TButton | framework・text・tone・size・leadingIcon・trailingIcon・disabled | React・操作・neutral・lg・両アイコンなし・false |
 | TText | framework・text・as・size・responsive・sizeSm・sizeLg・weight・lineHeight・tone・align・truncate・lineClamp・whiteSpace・inherit・italic・decoration | React・代表文言・span・サイズ/太さ/行高未指定・通常表示 |
 | TIcon | framework・name・size・color | React・bell・24px・currentColor |
@@ -67,3 +68,5 @@ TLinkButtonは角丸12pxのボタン型リンクを1つ表示します。設定�
 TLinkのsizeはinherit/sm/md/lg（既定inherit）、TLinkButtonのsizeはsm/md/lg（既定lg）を標準selectで変更します。サイズは方式切り替えとURL再読み込みで保持し、文言や他の設定と同じ見本1つに反映します。Astroもサイズに応じた実TIcon出力を選びます。
 
 TLinkButtonのdisabledは標準boolean Controls（既定false）で切り替え、方式切り替えとURL復元でも保持します。Astroは有効・無効それぞれの実コンポーネント出力を使います。
+
+TCardは幅414pxを上限にビューポートへ収まる実カードを1つ表示します。構造パーツを組み合わせた基本・タスク・メディア・全体リンクの用途はviewで切り替えます。外観・余白・ルート要素と4つの文言・URLを標準ControlsとURLで保持し、方式を切り替えても維持します。Astroは4用途×3要素を実描画して収録し、文字列はtextContentで反映し、見出しIDとaria-labelledbyをインスタンスごとに分離します。例の内容に使う装飾はStorybook専用で、公開card.cssへ含めません。

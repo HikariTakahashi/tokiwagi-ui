@@ -1,0 +1,6 @@
+---
+import type { TCardMediaProps } from './TCardMediaProps';
+interface Props extends TCardMediaProps {}
+const { class: className, ...attributes } = Astro.props;
+---
+<div {...attributes} class:list={['tkw-card-media', className]}><slot /></div>

@@ -1,0 +1,8 @@
+---
+import type { TCardTitleProps } from './TCardTitleProps';
+import { cardTitleTag } from '../lib/card';
+interface Props extends TCardTitleProps {}
+const { as, class: className, ...attributes } = Astro.props;
+const Tag = cardTitleTag(as);
+---
+<Tag {...attributes} class:list={['tkw-card-title', className]}><slot /></Tag>
