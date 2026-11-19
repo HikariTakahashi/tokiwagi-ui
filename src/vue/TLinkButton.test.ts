@@ -95,3 +95,16 @@ test('VueのTLinkButtonはSSR後も属性とイベントをa要素へ転送す�
   expect(result.stderr.toString()).toBe('');
   expect(result.exitCode).toBe(0);
 });
+
+// Vueの公開入口から両部品を描画し、追加色がpropsとして解決されdata-toneまで保持されることを確認する。
+test('Vueの両ボタンは全toneをSSRで保持する', async () => {
+  const { createSSRApp, h } = await import('vue');
+  const { renderToString } = await import('@vue/server-renderer');
+  const { TButton, TLinkButton, buttonTones } = await import('tokiwagi-ui/vue');
+  for (const tone of buttonTones) for (const disabled of [false, true]) {
+    const html = await renderToString(createSSRApp({ render: () => h('div', [
+      h(TButton, { tone, disabled }, () => '保存'), h(TLinkButton, { href: '/', tone, disabled }, () => '予定'),
+    ]) }));
+    expect(html.match(new RegExp(`data-tone="${tone}"`, 'g'))).toHaveLength(2);
+  }
+});

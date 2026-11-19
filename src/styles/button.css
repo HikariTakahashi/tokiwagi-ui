@@ -65,8 +65,33 @@
   overflow-wrap: anywhere;
 }
 
-.tkw-button[data-tone]:not([data-tone="neutral"]) {
+.tkw-button[data-tone]:not([data-tone="neutral"]):not([data-tone="neutral-0"]) {
   --tkw-button-fg: var(--tkw-color-neutral-0);
+}
+
+.tkw-button[data-tone="neutral-0"] {
+  --tkw-button-bg: var(--tkw-color-neutral-0);
+  --tkw-button-hover-bg: var(--tkw-color-neutral-100);
+  --tkw-button-active-bg: var(--tkw-color-neutral-200);
+  --tkw-button-fg: var(--tkw-color-neutral-900);
+}
+
+.tkw-button[data-tone="neutral-600"] {
+  --tkw-button-bg: var(--tkw-color-neutral-600);
+  --tkw-button-hover-bg: var(--tkw-color-neutral-800);
+  --tkw-button-active-bg: var(--tkw-color-neutral-900);
+}
+
+.tkw-button[data-tone="neutral-800"] {
+  --tkw-button-bg: var(--tkw-color-neutral-800);
+  --tkw-button-hover-bg: var(--tkw-color-neutral-900);
+  --tkw-button-active-bg: var(--tkw-color-neutral-1000);
+}
+
+.tkw-button[data-tone="neutral-900"] {
+  --tkw-button-bg: var(--tkw-color-neutral-900);
+  --tkw-button-hover-bg: var(--tkw-color-neutral-800);
+  --tkw-button-active-bg: var(--tkw-color-neutral-1000);
 }
 
 .tkw-button[data-tone="green"] {

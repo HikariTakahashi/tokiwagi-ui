@@ -19,3 +19,11 @@ const invalidSize: TButtonProps = { size: 'inherit' };
 // @ts-expect-error 推論型も未定義サイズを拒否する。
 const invalidInferredSize: InstanceType<typeof TButton>['$props'] = { size: 'xl' };
 void [inferred, invalidIcon, invalidTone, invalidTrailingIcon, invalidInferredIcon, invalidSize, invalidInferredSize];
+
+const neutralTones = ['neutral-0', 'neutral-600', 'neutral-800', 'neutral-900'] as const;
+const neutralProps: TButtonProps[] = neutralTones.map(tone => ({ tone }));
+// @ts-expect-error 無効状態用の400は通常のtoneに公開しない。
+const disabledTone: TButtonProps = { tone: 'neutral-400' };
+void [neutralProps, disabledTone];
+const inferredNeutralProps: InstanceType<typeof TButton>['$props'][] = neutralTones.map(tone => ({ tone }));
+void inferredNeutralProps;

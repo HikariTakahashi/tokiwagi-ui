@@ -1,6 +1,6 @@
-import { TLinkButton, type TLinkButtonProps, type LinkTone } from 'tokiwagi-ui/react';
+import { TLinkButton, type TLinkButtonProps, type ButtonTone } from 'tokiwagi-ui/react';
 
-const tone: LinkTone = 'blue';
+const tone: ButtonTone = 'neutral-600';
 const props: TLinkButtonProps = { href: '/calendar', tone, size: 'md', leadingIcon: 'calendar', trailingIcon: 'arrow-top-right', target: '_blank', rel: 'external', 'aria-current': 'page' };
 // @ts-expect-error hrefは必須。
 const missing: TLinkButtonProps = {};
@@ -22,3 +22,9 @@ void invalidSize;
 // @ts-expect-error ボタン型リンクはinheritを提供しない。
 const inheritedSize: TLinkButtonProps = { href: '/', size: 'inherit' };
 void inheritedSize;
+
+const neutralTones = ['neutral-0', 'neutral-600', 'neutral-800', 'neutral-900'] as const;
+const neutralProps: TLinkButtonProps[] = neutralTones.map(tone => ({ href: '/', tone }));
+// @ts-expect-error 無効状態用の400は通常のtoneに公開しない。
+const disabledTone: TLinkButtonProps = { href: '/', tone: 'neutral-400' };
+void [neutralProps, disabledTone];

@@ -3,7 +3,7 @@ import { plugin } from 'bun';
 import { transform } from '@astrojs/compiler-rs';
 import { experimental_AstroContainer } from 'astro/container';
 import { Window } from 'happy-dom';
-import { linkTones } from '../lib/link';
+import { buttonTones } from '../lib/button';
 plugin({ name: 'astro-link-test', setup(build) {
   build.onLoad({ filter: /\.astro$/ }, async args => ({ contents: transform(await Bun.file(args.path).text(), {
     filename: args.path, internalURL: 'astro/compiler-runtime', resolvePath: specifier => specifier,
@@ -33,11 +33,11 @@ test('Astroの無効なTLinkButtonはスクリプトなしで遷移と操作を�
   } finally { await window.happyDOM.close(); }
 });
 
-// 8色の静的リンクでslot・属性・relと両アイコンの独立したクリッピングを検証する。
+// 12色の静的リンクでslot・属性・relと両アイコンの独立したクリッピングを検証する。
 test('AstroのTLinkButtonは遷移と装飾を静的HTMLで提供する', async () => {
   const window = new Window();
   try {
-    for (const tone of linkTones) {
+    for (const tone of buttonTones) {
       const html = await container.renderToString(TLinkButton, { props: { href: '/予定?日付=今日', tone, target: '_blank', rel: 'opener external',
         leadingIcon: 'moon', trailingIcon: 'moon', 'aria-current': 'page', class: 'details', 'data-kind': 'event' },
         slots: { default: '<em>予定の詳細</em>' } });

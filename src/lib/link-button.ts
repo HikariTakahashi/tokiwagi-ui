@@ -1,10 +1,11 @@
-import { buttonDisabledState } from './button';
+import { buttonDisabledState, buttonToneState } from './button';
 import { linkState, type LinkButtonOptions, type LinkCurrent } from './link';
 
-export function linkButtonState({ disabled, ...options }: LinkButtonOptions & {
+export function linkButtonState({ tone, disabled, ...options }: LinkButtonOptions & {
   target?: string; rel?: string; 'aria-current'?: LinkCurrent;
 }) {
-  return { ...linkState(options, 'TLinkButton'), disabled: buttonDisabledState(disabled, 'TLinkButton') };
+  return { ...linkState(options, 'TLinkButton'), tone: buttonToneState(tone, 'TLinkButton'),
+    disabled: buttonDisabledState(disabled, 'TLinkButton') };
 }
 
 /** 静的HTMLでも利用側から渡された遷移・操作・フォーカス設定を無効化する。 */

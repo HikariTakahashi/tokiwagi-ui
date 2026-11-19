@@ -277,7 +277,7 @@ import 'tokiwagi-ui/link-button.css';
 
 サイズ未指定では現在の角丸12px、高さ50px以上、文字1.75rem・太さ700、前後アイコン32pxを維持します。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
 
-色とホバー・押下・フォーカスはTButtonと同じトークンとCSSです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの既定の文字サイズ継承と16pxアイコンはそれぞれ維持します。
+toneの型と一覧はTButtonと同じ `ButtonTone`・`buttonTones` です。`neutral` と7色に加え、`neutral-0`・`neutral-600`・`neutral-800`・`neutral-900` を指定できます。色とホバー・押下・フォーカスはTButtonと同じトークンとCSSで、ニュートラルの状態別配色は本ページのTButtonの表を参照してください。本文用TLinkの `LinkTone`・`linkTones` はneutralと7色のままです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの既定の文字サイズ継承と16pxアイコンはそれぞれ維持します。
 
 React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
 
@@ -358,6 +358,18 @@ React・Vueはサーバーとクライアントで同じpropsと内容を渡し�
 
 React・Vue・Astroの公開入口 `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` から `TButton`、`TButtonProps`、`ButtonOptions`、`ButtonTone`、`buttonTones`、`ButtonSize`、`buttonSizes` を利用できます。`tokiwagi-ui/button.css` をアプリで一度読み込むと、状態のスタイルと必要な色・書体トークンが適用されます。既定のsizeはlgで、文字は1.75rem・太さ700、高さは50px以上です。
 
+ニュートラルの配色は次の組み合わせです。表の数値はすべて既存の `neutral-*` トークンを表し、文字色は装飾アイコンにも適用します。
+
+| tone | 通常背景 | ホバー背景 | 押下背景 | 文字色 |
+| --- | --- | --- | --- | --- |
+| `neutral`（既定） | 100 | 200 | 400 | 900 |
+| `neutral-0` | 0 | 100 | 200 | 900 |
+| `neutral-600` | 600 | 800 | 900 | 0 |
+| `neutral-800` | 800 | 900 | 1000 | 0 |
+| `neutral-900` | 900 | 800 | 1000 | 0 |
+
+`neutral-900` はホバー時に少し明るく、押下時に黒くなります。`neutral-1000` は通常のtoneとして公開せず、800・900の押下時の最大強調に限定します。追加4色の通常・ホバー・押下は、既定トークンで文字とのコントラストが4.5:1以上です。`neutral-0` でも境界線を保持します。無効時はtoneにかかわらず共通の無効色になります。
+
 Reactではchildrenと標準のイベントpropsを使います。
 
 ```tsx
@@ -408,7 +420,7 @@ import 'tokiwagi-ui/button.css'
 
 | 指定 | 値と挙動 |
 | --- | --- |
-| `tone` | `neutral`、`green`、`teal`、`blue`、`violet`、`rose`、`coral`、`amber`。既定は `neutral`。有効なプライマリー色では背景に各色のトークンを使い、文字と装飾アイコンを白で表示する |
+| `tone` | `neutral`、`neutral-0`、`neutral-600`、`neutral-800`、`neutral-900`、`green`、`teal`、`blue`、`violet`、`rose`、`coral`、`amber`。既定は `neutral`。有効なプライマリー色では背景に各色のトークンを使い、文字と装飾アイコンを白で表示する |
 | `size` | `sm`、`md`、`lg`（既定）。文字・TIcon・高さ・余白を連動させる。inheritや未定義値は受け付けない |
 | `leadingIcon`・`trailingIcon` | どちらも省略可。既存の `IconName` を先頭・末尾の装飾アイコンとして表示 |
 | children／既定スロット | 「保存する」などの操作名を表示 |
