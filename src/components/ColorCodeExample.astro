@@ -1,5 +1,6 @@
 ---
-import { TIcon } from 'tokiwagi-ui/astro';
+import { TIcon, TSelect } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/select.css';
 import { colorExampleCss, colorExamples, neutralColorExamples, semanticColorExamples, type ColorExampleVariant, type SemanticColor } from '../lib/color-code-example';
 import { contrast, neutrals, neutralTokenName, tokenName, variants } from '../lib/palette';
 
@@ -110,13 +111,10 @@ const initial = states[initialIndex]!;
       <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
     </button>
     <div class="code-options">
-      <select data-example aria-label="見本">
-        {Object.entries(examples).map(([value, example]) => <option value={value}>{example.label}</option>)}
-      </select>
-      <select data-format aria-label="色の指定方法">
-        <option value="tokens">CSS変数</option>
-        <option value="hex">HEX値</option>
-      </select>
+      <TSelect data-example aria-label="見本" value={initialExample}
+        options={Object.entries(examples).map(([value, example]) => ({ value, label: example.label }))} />
+      <TSelect data-format aria-label="色の指定方法" value="tokens"
+        options={[{ value: 'tokens', label: 'CSS変数' }, { value: 'hex', label: 'HEX値' }]} />
     </div>
   </div>
 
@@ -133,12 +131,12 @@ const initial = states[initialIndex]!;
 </script>
 
 <style>
-  button, select {
+  button {
     color: inherit;
     font: inherit;
     cursor: pointer;
   }
-  button:focus-visible, select:focus-visible, .code-editor:focus-within {
+  button:focus-visible, .code-editor:focus-within {
     outline: 2px solid var(--tkw-color-neutral-900);
     outline-offset: 2px;
   }
@@ -204,13 +202,11 @@ const initial = states[initialIndex]!;
     font-size: .75rem;
     overflow-wrap: anywhere;
   }
-  .copy-button, select {
+  .copy-button {
     min-height: 36px;
     border: 1px solid var(--tkw-color-neutral-200);
     border-radius: 6px;
     background: var(--tkw-color-neutral-0);
-  }
-  .copy-button {
     display: grid;
     place-items: center;
     width: 36px;
@@ -240,7 +236,6 @@ const initial = states[initialIndex]!;
     padding: 4px 8px;
     white-space: nowrap;
   }
-  select { padding: 4px 8px; }
   .code-layout {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(120px, 1fr);
@@ -275,7 +270,6 @@ const initial = states[initialIndex]!;
   @media (max-width: 480px) {
     .code-layout { grid-template-columns: minmax(0, 1fr); }
     .code-preview { height: 78px; }
-    select { padding-inline: 4px; }
   }
   @media (max-width: 460px) {
     .code-toolbar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
@@ -283,6 +277,6 @@ const initial = states[initialIndex]!;
   }
   @media (pointer: coarse) {
     .copy-button { width: 44px; }
-    .copy-button, select { min-height: 44px; }
+    .copy-button { min-height: 44px; }
   }
 </style>

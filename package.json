@@ -13,7 +13,8 @@
     "./link.css": "./src/styles/link.css",
     "./button.css": "./src/styles/button.css",
     "./header.css": "./src/styles/header.css",
-    "./text.css": "./src/styles/text.css"
+    "./text.css": "./src/styles/text.css",
+    "./select.css": "./src/styles/select.css"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

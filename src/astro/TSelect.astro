@@ -1,0 +1,26 @@
+---
+import { selectDescribedBy, selectState, selectValue } from '../lib/select';
+import type { TSelectProps } from './TSelectProps';
+import TIcon from './TIcon.astro';
+
+interface Props extends TSelectProps {}
+const { options, placeholder, label, description, error, tone, size, value, defaultValue,
+  id: providedId, class: className, 'aria-describedby': describedBy,
+  'aria-invalid': invalid, multiple: _multiple, ...attributes } = Astro.props;
+const state = selectState({ options, placeholder, label, description, error, tone, size });
+const selected = selectValue(value) ?? selectValue(defaultValue);
+const id = providedId ?? `tkw-select-${crypto.randomUUID()}`;
+---
+<span class="tkw-select-field">
+  {label && <label class="tkw-select-field__label" for={id}>{label}{attributes.required && <span class="tkw-select-field__required">必須</span>}</label>}
+  <span class="tkw-select">
+    <select {...attributes} id={id} class:list={['tkw-select__input', className]}
+      data-tone={state.tone} data-size={state.size} aria-invalid={error ? 'true' : invalid}
+      aria-describedby={selectDescribedBy(id, description, error, describedBy ?? undefined)}>
+      {state.options.map(option => <option value={option.value} disabled={option.disabled} selected={selected === undefined ? undefined : selected === option.value}>{option.label}</option>)}
+    </select>
+    <span class="tkw-select__arrow" aria-hidden="true"><TIcon name="chevron-bottom" size={16} /></span>
+  </span>
+  {description && <span class="tkw-select-field__description" id={`${id}-description`}>{description}</span>}
+  {error && <span class="tkw-select-field__error" id={`${id}-error`}>エラー：{error}</span>}
+</span>

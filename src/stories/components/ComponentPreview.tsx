@@ -1,4 +1,9 @@
 import { TLinkButton as ReactTLinkButton } from 'tokiwagi-ui/react';
+import { TSelect as ReactTSelect } from 'tokiwagi-ui/react';
+import { TSelect as VueTSelect } from 'tokiwagi-ui/vue';
+import { astroSelectPreviewHtml, selectExampleOptions, type SelectPreviewOptions, type AstroSelectPreviews } from '../select-preview';
+import selectsUrl from 'virtual:tkw-astro-selects';
+import { AstroSelectPreview } from './SelectPreview';
 import { TLinkButton as VueTLinkButton } from 'tokiwagi-ui/vue';
 import { astroLinkButtonPreviewHtml, type LinkButtonPreviewOptions, type AstroLinkButtonPreviews } from '../link-button-preview';
 import linkButtonsUrl from 'virtual:tkw-astro-link-buttons';
@@ -33,6 +38,7 @@ import { ReactHeaderPreview, vueHeaderPreview } from './HeaderPreview';
 import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
 export type ComponentPreviewProps = { framework: Framework } & (
+  | SelectPreviewOptions
   | LinkButtonPreviewOptions
   | LinkPreviewOptions
   | ButtonPreviewOptions
@@ -56,6 +62,7 @@ const loadLinkAssets = async () => {
 };
 
 const loadTexts = createAstroPreviewLoader<AstroTextPreviews>(textsUrl);
+const loadSelects = createAstroPreviewLoader<AstroSelectPreviews>(selectsUrl);
 const loadButtons = createAstroPreviewLoader<AstroButtonPreviews>(buttonsUrl);
 const loadButtonAssets = async () => {
   const [buttons, icons] = await Promise.all([loadButtons(), loadIcons()]);
@@ -78,6 +85,11 @@ function VuePreview(args: ComponentPreviewProps) {
   useEffect(() => {
     const app = createApp({ render: () => {
       const value = props.value;
+      if (value.component === 'TSelect') {
+        const { component, framework, value: modelValue, onValueChange, disableCard, ...options } = value;
+        return h(VueTSelect, { ...options, options: selectExampleOptions(disableCard), modelValue,
+          name: 'example', 'aria-label': options.label || '見本', 'onUpdate:modelValue': onValueChange });
+      }
       if (value.component === 'TLinkButton') {
         return h(VueTLinkButton, { href: value.href, tone: value.tone, size: value.size, weight: value.weight, leadingIcon: value.leadingIcon, trailingIcon: value.trailingIcon,
           disabled: value.disabled, target: value.target, rel: value.rel, 'aria-current': value.current }, () => value.text);
@@ -116,6 +128,15 @@ function VuePreview(args: ComponentPreviewProps) {
 export function ComponentPreview(args: ComponentPreviewProps) {
   const id = useId();
   const prefix = `tkw-preview-astro-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
+  if (args.component === 'TSelect') {
+    if (args.framework === 'vue') return <VuePreview {...args} />;
+    const { component, framework, disableCard, onValueChange, ...options } = args;
+    if (framework === 'react') return <ReactTSelect {...options} options={selectExampleOptions(disableCard)}
+      name="example" aria-label={options.label || '見本'} onChange={event => onValueChange?.(event.currentTarget.value)} />;
+    return <AstroComponentPreview load={loadSelects}>{previews =>
+      <AstroSelectPreview html={astroSelectPreviewHtml(previews, args, prefix)} onValueChange={onValueChange} />
+    }</AstroComponentPreview>;
+  }
   if (args.component === 'TLinkButton') {
     if (args.framework === 'vue') return <VuePreview {...args} />;
     const { component, framework, text, current, ...options } = args;

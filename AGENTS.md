@@ -77,6 +77,10 @@ bun run test:visual      # PlaywrightのFirefox・WebKitで基準画像と比較
 
 READMEは概要とWikiへの導線を扱います。Wiki管理ページの唯一の編集元は `docs/wiki/` です。原稿PRの `main` マージを公開判断とし、Actionsの `Sync Wiki` が追加・更新・管理対象ページの削除を自動反映します。通常更新ごとにWiki側のコミット承認を取り直しません。本体側のCodexコミット承認ルールは維持します。管理ページのWiki直接編集は次回同期で上書きされ、管理一覧にないページや画像は保持します。ページの追加・削除・改名ではHome・Sidebarなどのリンクを更新してください。ローカル保存だけでは公開完了にならず、Actions成功と公開確認までは未検証として報告します。運用・障害対応と導入状況は `docs/WIKI-PUBLISHING.md`、ライセンスの境界は `LICENSE-SCOPE.md` を参照します。ロゴ・TLogo・TBrandは掲載・exportを維持しますが、MIT対象外です。
 
+## TSelect
+
+React・Vue・Astroの公開入口からTSelect・TSelectProps・SelectOption・SelectOptions・SelectTone・SelectSizeとselectTones／selectSizesを公開します。`select.css`を一度読み込みます。単一選択のネイティブselectと既存TIconの矢印を使い、options・placeholder・label・description・errorを3方式で共有します。toneはneutralと7色、sizeはsm/md/lg（既定md、32/36/40px）、入力枠の角丸32pxです。対応デスクトップではCSSのbase-selectで標準pickerに選択チェックを表示し、未対応・タッチ環境では標準候補一覧を使います。独自listboxと開閉処理は追加しません。Reactはvalue/onChangeまたはdefaultValue、Vueはv-modelまたはdefaultValue、Astroはvalue/defaultValueで初期値を指定します。フォーム送信・必須検証・非制御のリセットはネイティブ動作、制御値のリセットは利用側が担当します。label・説明・エラーを一意なIDで入力へ関連付け、属性・イベント・class/styleはselectに転送します。READMEはcomponents/TSelect/README.md、APIはWikiのUsage、見本はStorybook「コンポーネント/TSelect」です。LPのカラー見本の2つの選択欄にも使用します。
+
 ## エージェント向け文書
 
 確定事項と作業ルールは本書に集約します。`CLAUDE.md` は本書への参照のみとします。詳細なカラーの使用ルールとアイコン案は Storybook を参照してください。

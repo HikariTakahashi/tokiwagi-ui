@@ -5,6 +5,7 @@ import 'tokiwagi-ui/link.css';
 import 'tokiwagi-ui/link-button.css';
 import 'tokiwagi-ui/header.css';
 import 'tokiwagi-ui/text.css';
+import 'tokiwagi-ui/select.css';
 import '../src/stories/components/header-preview.css';
 import '../src/styles/storybook.css';
 import { theme } from './theme';

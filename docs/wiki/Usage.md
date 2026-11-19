@@ -33,6 +33,94 @@ bun add ../tokiwagi-ui
 
 Tailwind CSS v4の利用側では、既存のTailwindエントリに `@import "tokiwagi-ui/tokens/tailwind.css";` を追加して共有テーマを読み込めます。`@theme inline` は既存トークンを参照します。このテーマ自体はPreflightを読み込みません。
 
+## TSelect
+
+候補から1つの値を選ぶ部品です。`tokiwagi-ui/select.css`を一度読み込み、各方式の入口から`TSelect`をimportします。CSSはニュートラル・プライマリー・セマンティック・書体の既存トークンを読み込みます。[利用ルール](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TSelect/README.md)とStorybook「コンポーネント/TSelect」も参照してください。
+
+```ts
+import 'tokiwagi-ui/select.css';
+const options = [
+  { value: 'button', label: 'ボタン' },
+  { value: 'label', label: 'ラベル' },
+  { value: 'card', label: 'カード', disabled: true },
+];
+```
+
+| 指定 | 型・既定値 | 用途 |
+| --- | --- | --- |
+| `options` | `readonly SelectOption[]`、必須 | `value: string`・`label: string`・任意の`disabled: boolean` |
+| `placeholder` | `string`、未指定 | 空文字の未選択候補を先頭に追加。候補の空文字との併用不可 |
+| `label` | `string`、未指定 | 入力に関連付けた見出し。省略時は外部labelまたはARIAで名前を指定 |
+| `description`・`error` | `string`、未指定 | 補足・エラーを表示して`aria-describedby`へ追加。errorがある場合は`aria-invalid=true` |
+| `tone` | `SelectTone`、`neutral` | neutralと7色（green/teal/blue/violet/rose/coral/amber）。淡い背景・濃い前景・フォーカスを共通化 |
+| `size` | `SelectSize`、`md` | sm/md/lg、最小高さ32/36/40px。タッチ環境は44px以上、入力文字16px以上 |
+| React `value`・`defaultValue` | `string`、未指定 | value＋onChangeによる制御、またはdefaultValueによる初期値。併用しない |
+| Vue `modelValue`・`defaultValue` | `string`、未指定 | v-model、または非制御の初期値 |
+| Astro `value`・`defaultValue` | `string`、未指定 | 初期値。valueを優先。変更はネイティブchangeイベントで取得 |
+
+`TSelectProps`・`SelectOptions`・`SelectOption`・`SelectTone`・`SelectSize`・`selectTones`・`selectSizes`を3方式から公開します。値とラベルはHTMLとして解釈しません。valueの重複、placeholderと空文字候補の重複、不正な型・色・サイズは日本語エラーにします。選択値は候補のvalueを指定してください。未指定時はネイティブselectと同じく先頭の有効な候補を表示します。
+
+React:
+
+```tsx
+import { useState } from 'react';
+import { TSelect } from 'tokiwagi-ui/react';
+function Example() {
+  const [value, setValue] = useState('button');
+  return <form onReset={() => setValue('button')}>
+    <TSelect options={options} label="見本" name="example" value={value}
+      onChange={event => setValue(event.currentTarget.value)} />
+    <button type="reset">初期値に戻す</button>
+  </form>;
+}
+// 非制御の場合は <TSelect options={options} defaultValue="button" label="見本" />
+```
+
+Vue:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { TSelect } from 'tokiwagi-ui/vue';
+const value = ref('button');
+const options = [{ value: 'button', label: 'ボタン' }, { value: 'label', label: 'ラベル' }];
+</script>
+<template>
+  <form @reset="value = 'button'">
+    <TSelect v-model="value" :options="options" label="見本" name="example" />
+    <button type="reset">初期値に戻す</button>
+  </form>
+</template>
+```
+
+Astro:
+
+```astro
+---
+import { TSelect } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/select.css';
+const options = [{ value: 'tokens', label: 'CSS変数' }, { value: 'hex', label: 'HEX値' }];
+---
+<form id="color-format">
+  <TSelect id="format" options={options} value="tokens" name="format" label="色の指定方法"
+    description="コードの出力形式を選びます" required />
+  <button type="reset">初期値に戻す</button>
+</form>
+<script>
+  document.querySelector<HTMLSelectElement>('#format')?.addEventListener('change', event => {
+    const value = (event.currentTarget as HTMLSelectElement).value;
+    // コードの切り替え等は利用側で接続する。
+    console.log(value);
+  });
+</script>
+```
+
+`id`・`name`・`form`・`required`・`disabled`・`autocomplete`・ARIA・data属性とネイティブイベントはselectへ転送します。ReactのclassName、Vue・Astroのclassおよびstyleもselectに付きます。children／slot・multiple・ネイティブの複数行sizeは公開しません。別のlabelから参照する場合はidを明示します。description・errorのIDは生成し、利用側のaria-describedbyも保持します。
+
+React・VueはuseIdによってSSRとhydrateの参照を一致させます。複数rootでは既存部品と同様にidentifierPrefix／app.config.idPrefixを分けます。Astroは出力時のUUIDを使い、クライアント初期化や独自の開閉JavaScriptは不要です。必須検証・フォーム送信・非制御のform.reset()はネイティブ動作です。制御値を使うReact・Vueではreset時に利用側の状態も戻してください。
+
+通常は白背景・ニュートラルの文字と枠、入力枠の角丸32pxで、矢印は既存の16px TIconです。デスクトップの対応ブラウザーでは`appearance: base-select`で標準pickerを幅160px以上・角丸8pxの一覧に整え、選択中の候補をチェックで示します。これはネイティブselectのCSS拡張で、独自listboxではありません。未対応ブラウザーとタッチ端末ではOS・ブラウザー標準の一覧を使用します。表示差のある機能なので、一覧の外観を全環境で固定するAPIは提供しません。[MDNのcustomizable select解説](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select)を参照してください。
+
 ## Astroでの利用
 
 TIconの図柄・サイズ・色の選び方と、親要素が担う意味・操作のルールは、[TIconの利用ルール](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TIcon/README.md)を参照してください。React・Vueでも同じルールに従います。
