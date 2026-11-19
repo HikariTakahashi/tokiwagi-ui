@@ -3,6 +3,8 @@ export { TLogo, type TLogoProps, type LogoSize } from './TLogo';
 export { iconNames, isIconName, type IconName } from './icon-sources';
 export { TBrand, type TBrandProps } from './TBrand';
 export { TButton, type TButtonProps } from './TButton';
+export { TSelect, type TSelectProps } from './TSelect';
+export { selectTones, selectSizes, type SelectTone, type SelectSize, type SelectOption, type SelectOptions } from '../lib/select';
 export { buttonTones, type ButtonTone, type ButtonOptions } from '../lib/button';
 export { buttonSizes, type ButtonSize } from '../lib/button-size';
 export { THeader, type THeaderProps } from './THeader';

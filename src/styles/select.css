@@ -1,0 +1,229 @@
+@import "../../tokens/neutrals.css";
+@import "../../tokens/colors.css";
+@import "../../tokens/semantic.css";
+@import "../../tokens/typography.css";
+
+.tkw-select-field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  color: var(--tkw-color-neutral-900);
+  font: 400 0.875rem/1.5 var(--tkw-font-family-sans);
+  vertical-align: top;
+}
+.tkw-select-field__label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 600;
+}
+.tkw-select-field__required,
+.tkw-select-field__description {
+  color: var(--tkw-color-neutral-600);
+  font-size: 0.75rem;
+}
+.tkw-select-field__description,
+.tkw-select-field__error {
+  overflow-wrap: anywhere;
+}
+.tkw-select-field__error {
+  color: var(--tkw-color-semantic-error-on);
+  font-size: 0.75rem;
+}
+.tkw-select {
+  --tkw-select-accent: var(--tkw-color-neutral-900);
+  --tkw-select-subtle: var(--tkw-color-neutral-100);
+  --tkw-select-on-subtle: var(--tkw-color-neutral-900);
+  --tkw-select-height: 36px;
+  position: relative;
+  display: inline-flex;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.tkw-select:has([data-size="sm"]) {
+  --tkw-select-height: 32px;
+}
+.tkw-select:has([data-size="lg"]) {
+  --tkw-select-height: 40px;
+  font-size: 1rem;
+}
+.tkw-select:has([data-tone="green"]) {
+  --tkw-select-accent: var(--tkw-color-primary-green-on-subtle);
+  --tkw-select-subtle: var(--tkw-color-primary-green-subtle);
+  --tkw-select-on-subtle: var(--tkw-color-primary-green-on-subtle);
+}
+.tkw-select:has([data-tone="teal"]) {
+  --tkw-select-accent: var(--tkw-color-primary-teal-on-subtle);
+  --tkw-select-subtle: var(--tkw-color-primary-teal-subtle);
+  --tkw-select-on-subtle: var(--tkw-color-primary-teal-on-subtle);
+}
+.tkw-select:has([data-tone="blue"]) {
+  --tkw-select-accent: var(--tkw-color-primary-blue-on-subtle);
+  --tkw-select-subtle: var(--tkw-color-primary-blue-subtle);
+  --tkw-select-on-subtle: var(--tkw-color-primary-blue-on-subtle);
+}
+.tkw-select:has([data-tone="violet"]) {
+  --tkw-select-accent: var(--tkw-color-primary-violet-on-subtle);
+  --tkw-select-subtle: var(--tkw-color-primary-violet-subtle);
+  --tkw-select-on-subtle: var(--tkw-color-primary-violet-on-subtle);
+}
+.tkw-select:has([data-tone="rose"]) {
+  --tkw-select-accent: var(--tkw-color-primary-rose-on-subtle);
+  --tkw-select-subtle: var(--tkw-color-primary-rose-subtle);
+  --tkw-select-on-subtle: var(--tkw-color-primary-rose-on-subtle);
+}
+.tkw-select:has([data-tone="coral"]) {
+  --tkw-select-accent: var(--tkw-color-primary-coral-on-subtle);
+  --tkw-select-subtle: var(--tkw-color-primary-coral-subtle);
+  --tkw-select-on-subtle: var(--tkw-color-primary-coral-on-subtle);
+}
+.tkw-select:has([data-tone="amber"]) {
+  --tkw-select-accent: var(--tkw-color-primary-amber-on-subtle);
+  --tkw-select-subtle: var(--tkw-color-primary-amber-subtle);
+  --tkw-select-on-subtle: var(--tkw-color-primary-amber-on-subtle);
+}
+.tkw-select__input {
+  appearance: none;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 110px;
+  max-inline-size: 100%;
+  min-block-size: var(--tkw-select-height);
+  padding: 6px 36px 6px 10px;
+  border: 1px solid var(--tkw-color-neutral-200);
+  border-radius: 32px;
+  background: var(--tkw-color-neutral-0);
+  color: var(--tkw-color-neutral-900);
+  font: inherit;
+  cursor: pointer;
+}
+.tkw-select__arrow {
+  position: absolute;
+  inset-inline-end: 10px;
+  inset-block: 0;
+  display: grid;
+  place-items: center;
+  color: var(--tkw-select-accent);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .tkw-select__input:hover:not(:disabled) {
+    background: var(--tkw-select-subtle);
+    color: var(--tkw-select-on-subtle);
+  }
+}
+.tkw-select__input:active:not(:disabled),
+.tkw-select__input:open {
+  border-color: var(--tkw-select-accent);
+  background: var(--tkw-select-subtle);
+  color: var(--tkw-select-on-subtle);
+}
+.tkw-select__input:open + .tkw-select__arrow {
+  transform: rotate(180deg);
+}
+.tkw-select__input:focus-visible {
+  outline: 2px solid var(--tkw-select-accent);
+  outline-offset: 2px;
+}
+.tkw-select__input[aria-invalid="true"] {
+  border-color: var(--tkw-color-semantic-error-on);
+  background: var(--tkw-color-semantic-error-subtle);
+}
+.tkw-select__input[aria-invalid="true"]:focus-visible {
+  outline-color: var(--tkw-color-semantic-error-on);
+}
+.tkw-select__input:disabled {
+  border-color: var(--tkw-color-neutral-200);
+  background: var(--tkw-color-neutral-100);
+  color: var(--tkw-color-neutral-600);
+  cursor: not-allowed;
+}
+.tkw-select__input:disabled + .tkw-select__arrow {
+  color: var(--tkw-color-neutral-600);
+}
+
+/* HTMLは標準select/optionのまま。未対応環境とタッチ端末の候補一覧はOSに任せる。 */
+@supports (appearance: base-select) {
+  @media (hover: hover) and (pointer: fine) {
+    .tkw-select__input,
+    .tkw-select__input::picker(select) {
+      appearance: base-select;
+    }
+    .tkw-select__input::picker-icon {
+      display: none;
+    }
+    .tkw-select__input::picker(select) {
+      box-sizing: border-box;
+      min-inline-size: max(anchor-size(width), 160px);
+      max-inline-size: calc(100vi - 16px);
+      max-block-size: min(320px, calc(100dvb - 16px));
+      overflow: auto;
+      margin-block: 6px;
+      padding: 4px;
+      border: 1px solid var(--tkw-color-neutral-200);
+      border-radius: 8px;
+      background: var(--tkw-color-neutral-0);
+      color: var(--tkw-color-neutral-900);
+      box-shadow: 0 4px 14px
+        color-mix(in srgb, var(--tkw-color-neutral-900) 9%, transparent);
+    }
+    .tkw-select__input option {
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-block-size: var(--tkw-select-height);
+      padding: 7px 10px;
+      border-radius: 4px;
+      background: var(--tkw-color-neutral-0);
+      color: var(--tkw-color-neutral-900);
+      font: inherit;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    .tkw-select__input option::checkmark {
+      flex: 0 0 16px;
+      inline-size: 16px;
+    }
+    .tkw-select__input option:checked {
+      background: var(--tkw-select-subtle);
+      color: var(--tkw-select-on-subtle);
+      font-weight: 600;
+    }
+    .tkw-select__input option:hover:not(:disabled) {
+      background: var(--tkw-select-subtle);
+      color: var(--tkw-select-on-subtle);
+    }
+    .tkw-select__input option:active:not(:disabled) {
+      background: var(--tkw-color-neutral-200);
+    }
+    .tkw-select__input option:focus-visible {
+      outline: 2px solid var(--tkw-select-accent);
+      outline-offset: -2px;
+    }
+    .tkw-select__input option:disabled {
+      color: var(--tkw-color-neutral-400);
+      cursor: not-allowed;
+    }
+  }
+}
+@media (pointer: coarse) {
+  .tkw-select__input {
+    min-block-size: max(var(--tkw-select-height), 44px);
+    font-size: max(1rem, 16px);
+  }
+}
+@media (forced-colors: active) {
+  .tkw-select__input {
+    border-color: ButtonText;
+  }
+  .tkw-select__input:focus-visible {
+    outline-color: Highlight;
+  }
+  .tkw-select__input:disabled {
+    color: GrayText;
+    border-color: GrayText;
+  }
+}
