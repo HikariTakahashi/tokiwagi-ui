@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
 import { renderToString } from 'react-dom/server';
-import { TLinkButton } from 'tokiwagi-ui/react';
+import { TButton, TLinkButton, buttonTones } from 'tokiwagi-ui/react';
 import { act } from './test-act';
 import 'tokiwagi-ui/link-button.css';
 
@@ -117,5 +117,32 @@ test('ReactのTLinkButtonはネイティブリンクと装飾アイコンをSSR�
   } finally {
     if (root) await act(async () => root!.unmount());
     errors.mockRestore(); host.remove();
+  }
+});
+
+// 公開入口の全toneで両部品をSSR・hydrateし、同じDOMのまま色と無効状態を切り替える。
+test('Reactの両ボタンは全toneを保持してハイドレーション後も更新できる', async () => {
+  const page = (updated = false) => <div>{buttonTones.map((tone, index) => {
+    const value = updated ? buttonTones[(index + 1) % buttonTones.length] : tone;
+    return <div key={tone}><TButton tone={value} disabled={updated}>保存</TButton>
+      <TLinkButton href="/calendar" tone={value} disabled={updated}>予定</TLinkButton></div>;
+  })}</div>;
+  const host = document.createElement('div'); host.innerHTML = renderToString(page()); document.body.append(host);
+  const nodes = [...host.querySelectorAll('.tkw-button')];
+  const recovered: unknown[] = [];
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    expect(nodes.map(node => node.getAttribute('data-tone'))).toEqual(buttonTones.flatMap(tone => [tone, tone]));
+    await act(async () => { root = hydrateRoot(host, page(), { onRecoverableError: error => recovered.push(error) }); });
+    await act(async () => root!.render(page(true)));
+    expect([...host.querySelectorAll('.tkw-button')]).toEqual(nodes);
+    nodes.forEach((node, index) => {
+      expect(node.getAttribute('data-tone')).toBe(buttonTones[(Math.floor(index / 2) + 1) % buttonTones.length]);
+      expect(node.matches(':disabled, [data-disabled]')).toBe(true);
+    });
+    expect(recovered).toEqual([]);
+  } finally {
+    if (root) await act(async () => root!.unmount());
+    host.remove();
   }
 });

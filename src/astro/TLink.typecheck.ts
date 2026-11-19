@@ -15,3 +15,7 @@ void [props, missing, invalidTone, invalidIcon, disabled];
 // @ts-expect-error 定義されていないサイズは指定できない。
 const invalidSize: TLinkProps = { href: '/', size: 'xl' };
 void invalidSize;
+
+// @ts-expect-error ボタン用のニュートラルtoneを本文リンクには追加しない。
+const buttonOnlyTone: TLinkProps = { href: '/', tone: 'neutral-900' };
+void buttonOnlyTone;

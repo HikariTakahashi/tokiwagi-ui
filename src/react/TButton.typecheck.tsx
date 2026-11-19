@@ -17,3 +17,9 @@ const invalidTrailingIcon = <TButton trailingIcon="missing-icon" />;
 // @ts-expect-error 通常ボタンはinheritサイズを受け付けない。
 const invalidSize = <TButton size="inherit" />;
 void [button, invalidTone, invalidIcon, invalidDisabled, invalidTrailingIcon, invalidSize];
+
+const neutralTones = ['neutral-0', 'neutral-600', 'neutral-800', 'neutral-900'] as const;
+const neutralProps: TButtonProps[] = neutralTones.map(tone => ({ tone }));
+// @ts-expect-error 無効状態用の400は通常のtoneに公開しない。
+const disabledTone: TButtonProps = { tone: 'neutral-400' };
+void [neutralProps, disabledTone];

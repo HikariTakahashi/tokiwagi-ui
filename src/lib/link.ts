@@ -1,5 +1,6 @@
 import { isIconName, type IconName } from './icon-sources';
 import type { LinkSize, LinkButtonSize } from './link-size';
+import type { ButtonOptions } from './button';
 
 export const linkTones = ['neutral', 'green', 'teal', 'blue', 'violet', 'rose', 'coral', 'amber'] as const;
 export type LinkTone = typeof linkTones[number];
@@ -11,7 +12,7 @@ type LinkBaseOptions = {
   trailingIcon?: IconName;
 };
 export type LinkOptions = LinkBaseOptions & { size?: LinkSize; disabled?: never };
-export type LinkButtonOptions = LinkBaseOptions & { size?: LinkButtonSize; disabled?: boolean };
+export type LinkButtonOptions = Omit<LinkBaseOptions, 'tone'> & Pick<ButtonOptions, 'tone' | 'disabled'> & { size?: LinkButtonSize };
 
 /** ネイティブの遷移を維持し、3方式で同じ属性・装飾を解決する。 */
 export function linkState({ href, tone = 'neutral', leadingIcon, trailingIcon, target, rel, 'aria-current': current }: LinkBaseOptions & {

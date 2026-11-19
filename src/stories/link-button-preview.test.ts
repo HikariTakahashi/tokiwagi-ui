@@ -27,9 +27,9 @@ test('AstroのTLinkButton見本は安全な属性・文言と独立した両ア�
     for (const iconSize of [16, 20, 24, 32] as const) {
       icons.moon[iconSize] = await container.renderToString(TIcon, { props: { name: 'moon', size: iconSize } });
     }
-    for (const disabled of [false, true]) for (const size of ['sm', 'md', 'lg'] as const) for (const current of [undefined, 'false', 'page'] as const) for (const icon of [undefined, 'moon'] as const) {
+    for (const tone of ['blue', 'neutral-0', 'neutral-600', 'neutral-800', 'neutral-900'] as const) for (const disabled of [false, true]) for (const size of ['sm', 'md', 'lg'] as const) for (const current of [undefined, 'false', 'page'] as const) for (const icon of [undefined, 'moon'] as const) {
       window.document.body.innerHTML = astroLinkButtonPreviewHtml(previews, icons, {
-        component: 'TLinkButton', disabled, size, href: '/予定?a=" & <img>', text: '<img src=x> & 日本語', tone: 'blue', target: '_blank',
+        component: 'TLinkButton', disabled, size, href: '/予定?a=" & <img>', text: '<img src=x> & 日本語', tone, target: '_blank',
         rel: 'external opener', current, leadingIcon: icon, trailingIcon: icon,
       }, 'link-test');
       const anchor = window.document.querySelector('a')!;
@@ -37,6 +37,7 @@ test('AstroのTLinkButton見本は安全な属性・文言と独立した両ア�
       expect(anchor.getAttribute('aria-disabled')).toBe(disabled ? 'true' : null);
       expect(anchor.hasAttribute('data-disabled')).toBe(disabled);
       expect(anchor.getAttribute('data-size')).toBe(size);
+      expect(anchor.getAttribute('data-tone')).toBe(tone);
       if (icon) expect(anchor.querySelector('svg')?.getAttribute('width')).toBe(String(({ sm: 20, md: 24, lg: 32 })[size]));
       expect(anchor.querySelector('.tkw-link-button__label')?.textContent).toBe('<img src=x> & 日本語');
       expect(anchor.querySelector('img')).toBeNull();

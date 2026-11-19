@@ -1,6 +1,7 @@
 import { linkButtonSizeState, type LinkButtonSize } from '../lib/link-size';
 import { defineComponent, h, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type PropType } from 'vue';
-import type { LinkButtonOptions, LinkTone, LinkCurrent } from '../lib/link';
+import type { LinkButtonOptions, LinkCurrent } from '../lib/link';
+import type { ButtonTone } from '../lib/button';
 import { linkButtonState, linkButtonAttributes, stopDisabledLinkActivation } from '../lib/link-button';
 import type { IconName } from '../lib/icon-sources';
 import { TIcon } from './TIcon';
@@ -11,7 +12,7 @@ export const TLinkButton = defineComponent({
   name: 'TLinkButton', inheritAttrs: false,
   props: {
     href: { type: String, required: true },
-    tone: { type: String as PropType<LinkTone>, default: 'neutral' },
+    tone: { type: String as PropType<ButtonTone>, default: 'neutral' },
     size: { type: String as PropType<LinkButtonSize>, default: 'lg' },
     leadingIcon: { type: String as PropType<IconName> },
     trailingIcon: { type: String as PropType<IconName> },

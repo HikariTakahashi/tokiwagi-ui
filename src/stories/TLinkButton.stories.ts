@@ -1,7 +1,7 @@
 import { linkButtonSizes } from '../lib/link-size';
 import type { Meta, StoryObj } from '@storybook/html-vite';
 import { iconNames } from '../lib/icon-sources';
-import { linkTones } from '../lib/link';
+import { buttonTones } from '../lib/button';
 import type { LinkButtonPreviewOptions } from './link-button-preview';
 import type { Framework } from './components/astro-component-preview';
 import { componentStoryParameters, frameworkControl, renderComponentStory } from './components/component-story';
@@ -21,7 +21,7 @@ const meta = {
     disabled: false, target: '_self', rel: '', 'aria-current': 'unset', textcode: '', hrefcode: '' },
   argTypes: {
     framework: frameworkControl,
-    text: { control: 'text' }, href: { control: 'text' }, tone: { control: 'select', options: linkTones },
+    text: { control: 'text' }, href: { control: 'text' }, tone: { control: 'select', options: buttonTones },
     size: { control: 'select', options: linkButtonSizes },
     leadingIcon: iconControl, trailingIcon: iconControl,
     disabled: { control: 'boolean' },

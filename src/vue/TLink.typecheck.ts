@@ -22,3 +22,7 @@ void invalidSize;
 // @ts-expect-error Vueの推論型でもサイズを制限する。
 const invalidInferredSize: InstanceType<typeof TLink>['$props'] = { href: '/', size: 'xl' };
 void invalidInferredSize;
+
+// @ts-expect-error ボタン用のニュートラルtoneを本文リンクには追加しない。
+const buttonOnlyTone: TLinkProps = { href: '/', tone: 'neutral-900' };
+void buttonOnlyTone;
