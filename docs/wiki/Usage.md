@@ -873,3 +873,117 @@ TCardActionAreaのtarget・rel・aria-currentはネイティブのリンク属�
 完了・選択・保存状態や読み込み処理はカードに内包しません。チェックボックス・ラジオボタン・ボタンなどの状態を利用側で管理し、読み込み中はaria-busyとスケルトンや案内を組み合わせます。タイトル・状態・画像の意味を色だけに依存させず、フォーカス輪郭を隠さないでください。
 
 利用ルールは[TCardの個別README](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TCard/README.md)、見本はStorybook「コンポーネント/TCard」を参照してください。
+
+
+## サイドバー
+
+`TSidebarLayout`・`TSidebar`・`TSidebarMain`・`TSidebarHeader`・`TSidebarBody`・`TSidebarFooter`と各Props型を`tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro`から公開します。`tokiwagi-ui/sidebar.css`を一度読み込みます。CSSは既存のニュートラル・書体トークンを読み込みます。各方式で設定名・既定値・意味を揃えます。
+
+| 部品・設定 | 型・既定値 | 内容 |
+| --- | --- | --- |
+| Layout `gap` | number、24 | サイドバーと中央の間隔（px）。0以上の有限数 |
+| Layout `animationDuration` | number、200 | 幅と間隔の遷移時間（ms）。0以上の有限数。0で即時 |
+| Sidebar `side` | left/right、必須 | 左右の配置 |
+| Sidebar `open` | boolean、true | 利用側が管理する表示状態 |
+| Sidebar `width` | number、280 | 開いた幅（px）。0より大きい有限数 |
+| Sidebar `as` | aside/div、aside | 外側の要素 |
+| Main `as` | div/main、div | 中央の要素 |
+| Header/Body/Footer | 固有設定なし | divによる情報の配置 |
+| 全部品 | children・標準属性・ネイティブイベント | 内容、id、ReactのclassName／Vue・Astroのclass、style、aria/data属性を外側へ転送 |
+
+Layoutの直下は左のSidebar→Main→右のSidebarの順で配置し、Mainを1つ、左右はそれぞれ最大1つにします。Fragment・配列・条件付き省略に対応し、重複・順序違反・別ラッパーは日本語エラーになります。SidebarSide・SidebarTag・SidebarMainTag・SidebarLayoutOptions・SidebarOptions・SidebarMainOptionsと選択肢のsidebarSides・sidebarTags・sidebarMainTagsも各入口から公開します。
+
+```tsx
+import { useId, useState } from 'react';
+import { TSidebarLayout, TSidebar, TSidebarMain, TSidebarHeader, TSidebarBody, TSidebarFooter } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/sidebar.css';
+
+function Example() {
+  const leftId = useId();
+  const rightId = useId();
+  const [leftOpen, setLeftOpen] = useState(true);
+  const [rightOpen, setRightOpen] = useState(true);
+  return <TSidebarLayout gap={24} animationDuration={200}>
+    <TSidebar side="left" open={leftOpen} id={leftId} aria-label="目次">
+      <TSidebarHeader>目次</TSidebarHeader>
+      <TSidebarBody><nav aria-label="ページ内移動"><a href="#guide">ガイドライン</a></nav></TSidebarBody>
+    </TSidebar>
+    <TSidebarMain as="main">
+      <button type="button" aria-controls={leftId} aria-expanded={leftOpen}
+        onClick={() => setLeftOpen(value => !value)}>左の目次を切り替え</button>
+      <button type="button" aria-controls={rightId} aria-expanded={rightOpen}
+        onClick={() => setRightOpen(value => !value)}>右の補足情報を切り替え</button>
+      <h1 id="guide">ガイドライン</h1>
+    </TSidebarMain>
+    <TSidebar side="right" width={240} open={rightOpen} id={rightId} aria-label="補足情報">
+      <TSidebarBody>任意の情報を配置できます。</TSidebarBody>
+      <TSidebarFooter>補足</TSidebarFooter>
+    </TSidebar>
+  </TSidebarLayout>;
+}
+```
+
+開くとサイドバーの占有幅と間隔が増え、中央領域が縮みます。閉じると両方が0になります。内容のDOMは維持し、閉鎖中はinertとaria-hiddenで操作・読み上げを抑止します。動きを減らすOS設定では即座に切り替えます。React・VueはSSRとハイドレーションに対応します。React 18では文字列、React 19ではbooleanのinert属性を内部で描画します。Astroは静的HTMLで初期状態を描画し、利用側のscriptがdata-open・inert・aria-hiddenと開閉ボタンのaria-expandedを更新します。
+
+開閉ボタン・状態変更・現在地・リンク先・フォーカスの戻し先は利用側が管理します。ボタンは閉じた後も操作できる位置に置き、プログラムから閉じる際に内部にフォーカスがある場合は先に外側へ移します。画面固定、スクロールの高さ、狭い画面での幅・表示・縦配置は利用側のCSSと状態で調整します。アニメーション中を含めて中央に重ね表示しません。
+
+`/colors/`は公開Astro部品を直接使い、デスクトップでは中央のボタンで左側を開閉します。React連携やハイドレーションは不要です。モバイルでは従来のdetailsによる目次を使い、目次リンク・スクロール現在地・グループ開閉・サイドバー状態はページのscriptで管理します。
+
+利用ルールは[TSidebarLayout](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TSidebarLayout/README.md)と各部品の個別README、見本はStorybook「コンポーネント/サイドバー」を参照してください。
+
+
+Vueではopenを利用側のrefで管理します。
+
+```vue
+<script setup lang="ts">
+import { ref, useId } from 'vue';
+import { TSidebarLayout, TSidebar, TSidebarMain, TSidebarBody } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/sidebar.css';
+const open = ref(true);
+const sidebarId = useId();
+</script>
+
+<template>
+  <TSidebarLayout>
+    <TSidebar side="left" :open="open" :id="sidebarId" aria-label="目次">
+      <TSidebarBody><a href="#guide">ガイドライン</a></TSidebarBody>
+    </TSidebar>
+    <TSidebarMain as="main">
+      <button type="button" :aria-controls="sidebarId" :aria-expanded="open" @click="open = !open">目次を切り替え</button>
+      <h1 id="guide">ガイドライン</h1>
+    </TSidebarMain>
+  </TSidebarLayout>
+</template>
+```
+
+Astroでは公開部品に渡すopenが初期値です。次のように利用側で状態と操作を接続します。複数置く場合はIDと操作の対象をそれぞれ分けてください。
+
+```astro
+---
+import { TSidebarLayout, TSidebar, TSidebarMain, TSidebarBody } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/sidebar.css';
+---
+<TSidebarLayout>
+  <TSidebar side="left" id="example-sidebar" aria-label="目次">
+    <TSidebarBody><a href="#guide">ガイドライン</a></TSidebarBody>
+  </TSidebar>
+  <TSidebarMain as="main">
+    <button type="button" data-sidebar-toggle aria-controls="example-sidebar" aria-expanded="true">目次を切り替え</button>
+    <h1 id="guide">ガイドライン</h1>
+  </TSidebarMain>
+</TSidebarLayout>
+<script>
+  const sidebar = document.getElementById('example-sidebar');
+  const button = document.querySelector<HTMLButtonElement>('[data-sidebar-toggle]');
+  button?.addEventListener('click', () => {
+    if (!sidebar) return;
+    const open = sidebar.dataset.open !== 'true';
+    if (!open && sidebar.contains(document.activeElement)) button.focus();
+    sidebar.dataset.open = String(open);
+    sidebar.toggleAttribute('inert', !open);
+    if (open) sidebar.removeAttribute('aria-hidden');
+    else sidebar.setAttribute('aria-hidden', 'true');
+    button.setAttribute('aria-expanded', String(open));
+  });
+</script>
+```

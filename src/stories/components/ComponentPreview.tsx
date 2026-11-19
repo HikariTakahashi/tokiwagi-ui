@@ -1,3 +1,6 @@
+import sidebarsUrl from 'virtual:tkw-astro-sidebars';
+import type { AstroSidebarPreviews } from '../sidebar-preview';
+import { SidebarPreview, vueSidebarPreview, AstroSidebarPreview, type SidebarPreviewOptions } from './SidebarPreview';
 import { ReactCardPreview, vueCardPreview } from './CardPreview';
 import { astroCardPreviewHtml, type CardPreviewOptions, type AstroCardPreviews } from '../card-preview';
 import cardsUrl from 'virtual:tkw-astro-cards';
@@ -40,7 +43,7 @@ import type { HeaderPreviewOptions, AstroHeaderPreviews } from '../header-previe
 import { ReactHeaderPreview, vueHeaderPreview } from './HeaderPreview';
 import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
-export type ComponentPreviewProps = { framework: Framework } & (
+type SharedComponentPreviewProps = { framework: Framework } & (
   | CardPreviewOptions
   | SelectPreviewOptions
   | LinkButtonPreviewOptions
@@ -65,6 +68,7 @@ const loadLinkAssets = async () => {
   return { links, icons };
 };
 
+const loadSidebars = createAstroPreviewLoader<AstroSidebarPreviews>(sidebarsUrl);
 const loadCards = createAstroPreviewLoader<AstroCardPreviews>(cardsUrl);
 const loadTexts = createAstroPreviewLoader<AstroTextPreviews>(textsUrl);
 const loadSelects = createAstroPreviewLoader<AstroSelectPreviews>(selectsUrl);
@@ -82,6 +86,8 @@ const loadHeaderButtons = async () => {
 };
 const loadBrands = createAstroPreviewLoader<AstroBrandPreviews>(brandsUrl);
 
+export type ComponentPreviewProps = SharedComponentPreviewProps | SidebarPreviewOptions;
+
 function VuePreview(args: ComponentPreviewProps) {
   const host = useRef<HTMLSpanElement & HTMLDivElement>(null);
   const id = useId();
@@ -90,6 +96,7 @@ function VuePreview(args: ComponentPreviewProps) {
   useEffect(() => {
     const app = createApp({ render: () => {
       const value = props.value;
+      if ('sidebarPart' in value) return vueSidebarPreview(value);
       if (value.component === 'TCard') return vueCardPreview(value, `tkw-card-vue-${id}`);
       if (value.component === 'TSelect') {
         const { component, framework, value: modelValue, onValueChange, disableCard, ...options } = value;
@@ -125,8 +132,8 @@ function VuePreview(args: ComponentPreviewProps) {
   if (args.component === 'TButton') {
     return <span ref={host} style={{ display: 'inline-flex' }} />;
   }
-  return args.component.startsWith('THeader') || args.component === 'TText' || args.component === 'TCard'
-    ? <div ref={host} style={{ display: args.component === 'TText' || args.component === 'TCard' ? 'block' : 'inline-flex' }} />
+  return args.component.startsWith('TSidebar') || args.component.startsWith('THeader') || args.component === 'TText' || args.component === 'TCard'
+    ? <div ref={host} style={{ display: args.component.startsWith('TSidebar') || args.component === 'TText' || args.component === 'TCard' ? 'block' : 'inline-flex' }} />
     : <span ref={host} style={{ display: 'inline-flex' }} />;
 }
 
@@ -134,6 +141,11 @@ function VuePreview(args: ComponentPreviewProps) {
 export function ComponentPreview(args: ComponentPreviewProps) {
   const id = useId();
   const prefix = `tkw-preview-astro-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
+  if ('sidebarPart' in args) {
+    if (args.framework === 'vue') return <VuePreview {...args} />;
+    if (args.framework === 'react') return <SidebarPreview {...args} />;
+    return <AstroComponentPreview load={loadSidebars}>{previews => <AstroSidebarPreview previews={previews} options={args} />}</AstroComponentPreview>;
+  }
   if (args.component === 'TCard') {
     if (args.framework === 'vue') return <VuePreview {...args} />;
     if (args.framework === 'react') return <ReactCardPreview {...args} prefix={prefix} />;

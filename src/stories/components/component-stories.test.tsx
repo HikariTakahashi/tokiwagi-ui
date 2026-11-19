@@ -11,6 +11,7 @@ mock.module('virtual:tkw-astro-headers', () => ({ default: '/astro-headers.json'
 mock.module('virtual:tkw-astro-texts', () => ({ default: '/astro-texts.json' }));
 mock.module('virtual:tkw-astro-buttons', () => ({ default: '/astro-buttons.json' }));
 mock.module('virtual:tkw-astro-cards', () => ({ default: '/astro-cards.json' }));
+mock.module('virtual:tkw-astro-sidebars', () => ({ default: '/astro-sidebars.json' }));
 mock.module('virtual:tkw-astro-selects', () => ({ default: '/astro-selects.json' }));
 mock.module('virtual:tkw-astro-links', () => ({ default: '/astro-links.json' }));
 mock.module('virtual:tkw-astro-link-buttons', () => ({ default: '/astro-link-buttons.json' }));
@@ -133,6 +134,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     mock.module('virtual:tkw-astro-texts',()=>({default:'/texts.json'}));
     mock.module('virtual:tkw-astro-buttons',()=>({default:'/buttons.json'}));
     mock.module('virtual:tkw-astro-cards',()=>({default:'/cards.json'}));
+    mock.module('virtual:tkw-astro-sidebars',()=>({default:'/sidebars.json'}));
     mock.module('virtual:tkw-astro-selects',()=>({default:'/selects.json'}));
     mock.module('virtual:tkw-astro-links',()=>({default:'/links.json'}));
     mock.module('virtual:tkw-astro-link-buttons',()=>({default:'/link-buttons.json'}));

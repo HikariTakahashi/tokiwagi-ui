@@ -1,6 +1,19 @@
 /** Markdown原本のリポジトリ内リンクを、Storybookの閲覧先へ変換する。 */
 export function componentReadmeForStorybook(readme: string): string {
   const destinations: Record<string, string> = {
+    '../../src/stories/TSidebarLayout.stories.ts': '/story/components-tsidebarlayout--default',
+    '../TSidebarLayout/README.md': '/docs/components-tsidebarlayout-rules--docs',
+    '../../src/stories/TSidebar.stories.ts': '/story/components-tsidebar--default',
+    '../TSidebar/README.md': '/docs/components-tsidebar-rules--docs',
+    '../../src/stories/TSidebarMain.stories.ts': '/story/components-tsidebarmain--default',
+    '../TSidebarMain/README.md': '/docs/components-tsidebarmain-rules--docs',
+    '../../src/stories/TSidebarHeader.stories.ts': '/story/components-tsidebarheader--default',
+    '../TSidebarHeader/README.md': '/docs/components-tsidebarheader-rules--docs',
+    '../../src/stories/TSidebarBody.stories.ts': '/story/components-tsidebarbody--default',
+    '../TSidebarBody/README.md': '/docs/components-tsidebarbody-rules--docs',
+    '../../src/stories/TSidebarFooter.stories.ts': '/story/components-tsidebarfooter--default',
+    '../TSidebarFooter/README.md': '/docs/components-tsidebarfooter-rules--docs',
+
     '../../src/stories/TCard.stories.ts': '/story/components-tcard--default',
     '../TCard/README.md': '/docs/components-tcard-rules--docs',
     '../../src/stories/TSelect.stories.ts': '/story/components-tselect--default',

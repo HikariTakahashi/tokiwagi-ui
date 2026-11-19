@@ -1,0 +1,19 @@
+---
+import { TSidebarLayout, TSidebar, TSidebarMain, TSidebarHeader, TSidebarBody, TSidebarFooter } from 'tokiwagi-ui/astro';
+import type { SidebarTag, SidebarMainTag } from '../../lib/sidebar';
+interface Props { view: 'left' | 'right' | 'both'; sidebarAs: SidebarTag; mainAs: SidebarMainTag }
+const { view, sidebarAs, mainAs } = Astro.props;
+---
+<TSidebarLayout>
+  {view !== 'right' && <TSidebar side="left" as={sidebarAs} aria-label="目次">
+    <TSidebarHeader><strong>目次</strong></TSidebarHeader>
+    <TSidebarBody><p class="tkw-sidebar-example-copy">ガイドライン・プライマリー・ニュートラル</p></TSidebarBody>
+    <TSidebarFooter><small>Tokiwagi UI</small></TSidebarFooter>
+  </TSidebar>}
+  <TSidebarMain as={mainAs}><p class="tkw-sidebar-example-main">中央領域</p></TSidebarMain>
+  {view !== 'left' && <TSidebar side="right" as={sidebarAs} aria-label="補足情報">
+    <TSidebarHeader><strong>補足情報</strong></TSidebarHeader>
+    <TSidebarBody><p class="tkw-sidebar-example-copy">表示内容は利用側で自由に組み立てます。</p></TSidebarBody>
+    <TSidebarFooter><small>Tokiwagi UI</small></TSidebarFooter>
+  </TSidebar>}
+</TSidebarLayout>

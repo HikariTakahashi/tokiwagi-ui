@@ -20,8 +20,9 @@ export function componentStoryParameters(controls: string[]) {
 // args更新では同じrootを使い、離脱時にReactと内部Vueをまとめて解放する。
 export function renderComponentStory(props: ComponentPreviewProps) {
   const preview = useMemo(() => {
-    const host = document.createElement(props.component.startsWith('THeader') || props.component === 'TText' || props.component === 'TCard' ? 'div' : 'span');
-    host.style.display = props.component === 'TText' || props.component === 'TCard' ? 'block' : 'inline-flex';
+    const host = document.createElement(props.component.startsWith('TSidebar') || props.component.startsWith('THeader') || props.component === 'TText' || props.component === 'TCard' ? 'div' : 'span');
+    host.style.display = props.component.startsWith('TSidebar') || props.component === 'TText' || props.component === 'TCard' ? 'block' : 'inline-flex';
+    if (props.component.startsWith('TSidebar')) host.style.width = 'min(960px, calc(100vw - 2rem))';
     if (props.component === 'TCard') host.style.width = 'min(414px, calc(100vw - 2rem))';
     if (props.component === 'TText') host.style.width = 'min(32rem, calc(100vw - 2rem))';
     return { host, root: createRoot(host) };
