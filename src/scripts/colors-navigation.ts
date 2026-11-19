@@ -40,6 +40,8 @@ function initializeColorsNavigation() {
     const currentControl = disclosure && !disclosure.open ? disclosure.querySelector('summary') : current?.control;
 
     for (const { control } of entries) {
+      // AstroのTLinkが静的に出力する現在地属性をスクロール位置に合わせる。
+      if (control.matches('.tkw-link')) control.toggleAttribute('data-current', control === currentControl);
       if (control === currentControl) control.setAttribute('aria-current', 'location');
       else control.removeAttribute('aria-current');
     }

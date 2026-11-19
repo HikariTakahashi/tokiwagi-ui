@@ -1,7 +1,9 @@
 ---
 import '../styles/global.css';
 import 'tokiwagi-ui/header.css';
-import { TBrand, THeader, THeaderLink, THeaderSection, TIcon } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/link.css';
+import 'tokiwagi-ui/link-button.css';
+import { TBrand, THeader, THeaderLink, THeaderSection, TIcon, TLink, TLinkButton } from 'tokiwagi-ui/astro';
 import ColorCodeExample from '../components/ColorCodeExample.astro';
 import type { SemanticColor } from '../lib/color-code-example';
 import rawPrimary from '../../tokens/colors.css?raw';
@@ -126,7 +128,7 @@ const stateSwatches = variants.map(([suffix, label]) => {
           <summary>このページの目次</summary>
           <nav aria-label="カラーの目次">
             <ul class="toc-list">
-              <li data-toc-group><a href="#states">ガイドライン</a></li>
+              <li data-toc-group><TLink href="#states">ガイドライン</TLink></li>
               {palettes.map(({ id, title, layout, swatches }) => (
                 <li data-toc-group>
                   {layout === 'rows' ? (
@@ -137,14 +139,14 @@ const stateSwatches = variants.map(([suffix, label]) => {
                       </summary>
                       <ul id={`toc-${id}-children`} aria-labelledby={`toc-${id}`}>
                         {swatches.map(({ name, token }) => (
-                          <li><a href={`#${token.replace('--tkw-color-', '')}`}>{name}</a></li>
+                          <li><TLink href={`#${token.replace('--tkw-color-', '')}`}>{name}</TLink></li>
                         ))}
                       </ul>
                     </details>
-                  ) : <a href={`#${id}`}>{title}</a>}
+                  ) : <TLink href={`#${id}`}>{title}</TLink>}
                 </li>
               ))}
-              <li data-toc-group><a href="#accessibility">アクセシビリティ</a></li>
+              <li data-toc-group><TLink href="#accessibility">アクセシビリティ</TLink></li>
             </ul>
           </nav>
         </details>
@@ -155,9 +157,7 @@ const stateSwatches = variants.map(([suffix, label]) => {
           <div>
             <div class="hero-title-row">
               <h1>カラー</h1>
-              <a class="storybook-button" href="http://localhost:6006/?path=/docs/カラー-使用ルール--docs" target="_blank" rel="noopener noreferrer">
-                Storybookを見る <TIcon name="chevron-right" size={16} />
-              </a>
+              <TLinkButton class="storybook-link" size="sm" href="http://localhost:6006/?path=/docs/カラー-使用ルール--docs" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right">Storybookを見る</TLinkButton>
             </div>
             <p>Tokiwagi UIの「日々に寄り添う使いやすさ」を実現するためのカラー設計です。</p>
           </div>
@@ -200,12 +200,12 @@ const stateSwatches = variants.map(([suffix, label]) => {
 
         <nav class="palette-nav" aria-label="色の系統">
           {palettes.map(({ id, title, swatches }) => (
-            <a href={`#${id}`}>
+            <div class="palette-card">
               <span class="palette-strip" aria-hidden="true">
                 {swatches.map(({ token }) => <span style={{ background: `var(${token})` }} />)}
               </span>
-              <span>{id === 'semantic' ? '状態色' : title} <span aria-hidden="true">↓</span></span>
-            </a>
+              <TLink class="palette-card-link" href={`#${id}`} trailingIcon="chevron-bottom">{id === 'semantic' ? '状態色' : title}</TLink>
+            </div>
           ))}
         </nav>
 
@@ -248,8 +248,8 @@ const stateSwatches = variants.map(([suffix, label]) => {
       </main>
 
       <footer>
-        <a class="text-link" href="/#foundations"><span aria-hidden="true">←</span> 基盤に戻る</a>
-        <a class="text-link" href="#main">ページの先頭へ <span aria-hidden="true">↑</span></a>
+        <TLink href="/#foundations"><span aria-hidden="true">←</span> 基盤に戻る</TLink>
+        <TLink href="#main">ページの先頭へ <span aria-hidden="true">↑</span></TLink>
       </footer>
     </div>
   </body>
@@ -274,8 +274,8 @@ const stateSwatches = variants.map(([suffix, label]) => {
   h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); }
   h3 { font-size: 1rem; }
   p { color: var(--tkw-color-neutral-800); text-wrap: pretty; }
-  a { color: inherit; }
-  a:focus-visible {
+  .brand-link, .skip-link { color: inherit; }
+  .brand-link:focus-visible, .skip-link:focus-visible {
     outline: 2px solid var(--tkw-color-neutral-900);
     outline-offset: 4px;
   }
@@ -313,15 +313,12 @@ const stateSwatches = variants.map(([suffix, label]) => {
     position: relative;
     padding: 6px 12px;
     border-radius: 4px;
-    color: var(--tkw-color-neutral-600);
     font-size: .875rem;
     font-weight: 400;
     line-height: 20px;
-    text-decoration: none;
   }
   .toc-list > li > a, .toc-list summary {
     padding: 8px 12px;
-    color: var(--tkw-color-neutral-900);
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.5;
@@ -332,6 +329,7 @@ const stateSwatches = variants.map(([suffix, label]) => {
     justify-content: space-between;
     gap: 8px;
     list-style: none;
+    color: var(--tkw-color-neutral-900);
   }
   .toc-list summary::-webkit-details-marker { display: none; }
   .toc-chevron {
@@ -384,29 +382,11 @@ const stateSwatches = variants.map(([suffix, label]) => {
   }
   .hero p { margin-top: 18px; }
   .hero-title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-  .storybook-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    min-height: 44px;
-    padding: 8px 16px;
-    border-radius: 7px;
-    background: var(--tkw-color-neutral-900);
-    color: var(--tkw-color-neutral-0);
-    font-size: .875rem;
-    font-weight: 650;
-    text-decoration: none;
-    margin-inline-start: auto;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-  .storybook-button:hover { background: var(--tkw-color-neutral-800); }
-  .storybook-button:active { background: var(--tkw-color-neutral-1000); }
-  .text-link { font-weight: 650; text-underline-offset: 4px; }
-  .text-link:hover { text-decoration-thickness: 2px; }
+  .storybook-link { margin-inline-start: auto; }
   .palette-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-  .palette-nav a {
+  .palette-card {
+    position: relative;
+    min-width: 0;
     display: grid;
     gap: 10px;
     padding: 12px;
@@ -415,11 +395,11 @@ const stateSwatches = variants.map(([suffix, label]) => {
     background: var(--tkw-color-neutral-0);
     font-size: .875rem;
     font-weight: 650;
-    text-decoration: none;
   }
-  .palette-nav a:hover { background: var(--tkw-color-neutral-100); }
-  .palette-nav a:active { background: var(--tkw-color-neutral-200); }
-  .palette-nav a > span:last-child { display: flex; justify-content: space-between; gap: 4px; }
+  .palette-card:hover { background: var(--tkw-color-neutral-100); }
+  .palette-card:active { background: var(--tkw-color-neutral-200); }
+  .palette-card-link { display: flex; align-items: center; justify-content: space-between; }
+  .palette-card-link::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
   .palette-strip { display: flex; height: 34px; border-radius: 5px; overflow: hidden; }
   .palette-strip span { flex: 1; }
   .page-section { padding-block: clamp(32px, 6vw, 64px); border-top: 1px solid var(--tkw-color-neutral-200); }
