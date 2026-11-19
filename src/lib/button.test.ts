@@ -7,12 +7,12 @@ import { contrast } from './palette';
 
 // 全方式で同じ既定値と許可値を使い、型を迂回した不正設定を描画前に検出する。
 test('TButtonは12色と3種類のtypeを受け付け、不正な設定を拒否する', () => {
-  expect(buttonState()).toEqual({ tone: 'neutral', type: 'button', disabled: false,
+  expect(buttonState()).toEqual({ tone: 'neutral', weight: undefined, type: 'button', disabled: false,
     leadingIcon: undefined, trailingIcon: undefined, size: 'lg', iconSize: 32 });
   for (const tone of buttonTones) {
     for (const type of ['button', 'submit', 'reset'] as const) {
       expect(buttonState({ tone, type, leadingIcon: 'save', disabled: true })).toEqual({
-        tone, type, leadingIcon: 'save', trailingIcon: undefined, disabled: true, size: 'lg', iconSize: 32,
+        tone, weight: undefined, type, leadingIcon: 'save', trailingIcon: undefined, disabled: true, size: 'lg', iconSize: 32,
       });
     }
   }

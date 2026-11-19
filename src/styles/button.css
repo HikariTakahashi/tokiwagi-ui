@@ -24,12 +24,17 @@
   box-shadow: 2px 2px 4px color-mix(in srgb, var(--tkw-color-neutral-1000) 25%, transparent);
   font-family: var(--tkw-font-family-sans);
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: inherit;
   line-height: 1.2;
   text-align: center;
   white-space: normal;
   cursor: pointer;
 }
+
+.tkw-button[data-weight='normal'] { font-weight: 400; }
+.tkw-button[data-weight='medium'] { font-weight: 500; }
+.tkw-button[data-weight='semibold'] { font-weight: 600; }
+.tkw-button[data-weight='bold'] { font-weight: 700; }
 
 .tkw-button__icon {
   display: inline-grid;

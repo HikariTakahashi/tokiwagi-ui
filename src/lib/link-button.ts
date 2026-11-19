@@ -1,10 +1,11 @@
-import { buttonDisabledState, buttonToneState } from './button';
+import { buttonDisabledState, buttonToneState, buttonWeightState } from './button';
 import { linkState, type LinkButtonOptions, type LinkCurrent } from './link';
 
-export function linkButtonState({ tone, disabled, ...options }: LinkButtonOptions & {
+export function linkButtonState({ tone, weight, disabled, ...options }: LinkButtonOptions & {
   target?: string; rel?: string; 'aria-current'?: LinkCurrent;
 }) {
   return { ...linkState(options, 'TLinkButton'), tone: buttonToneState(tone, 'TLinkButton'),
+    weight: buttonWeightState(weight, 'TLinkButton'),
     disabled: buttonDisabledState(disabled, 'TLinkButton') };
 }
 

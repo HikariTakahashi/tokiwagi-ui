@@ -45,9 +45,9 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
 // 各ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
-    ['TLinkButton', linkButton, ['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'disabled', 'target', 'rel', 'aria-current']],
+    ['TLinkButton', linkButton, ['framework', 'text', 'href', 'tone', 'size', 'weight', 'leadingIcon', 'trailingIcon', 'disabled', 'target', 'rel', 'aria-current']],
     ['TLink', link, ['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
-    ['TButton', button, ['framework', 'text', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'disabled']],
+    ['TButton', button, ['framework', 'text', 'tone', 'size', 'weight', 'leadingIcon', 'trailingIcon', 'disabled']],
     ['TText', text, ['framework', 'text', 'as', 'size', 'responsive', 'sizeSm', 'sizeLg', 'weight', 'lineHeight', 'tone', 'align', 'truncate', 'lineClamp', 'whiteSpace', 'inherit', 'italic', 'decoration']],
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
     ['TLogo', logo, ['framework', 'size', 'decorative']],

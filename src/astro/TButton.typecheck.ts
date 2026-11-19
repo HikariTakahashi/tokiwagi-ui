@@ -22,3 +22,12 @@ const neutralProps: TButtonProps[] = neutralTones.map(tone => ({ tone }));
 // @ts-expect-error 無効状態用の400は通常のtoneに公開しない。
 const disabledTone: TButtonProps = { tone: 'neutral-400' };
 void [neutralProps, disabledTone];
+
+// TTextと同じ4段階の公開型を受け付け、未指定と文字列inheritを区別する。
+const weightedProps: TButtonProps[] = (['normal', 'medium', 'semibold', 'bold'] as const)
+  .map(weight => ({ weight }));
+// @ts-expect-error 継承する場合はweightを省略する。
+const invalidWeight: TButtonProps = { weight: 'inherit' };
+// @ts-expect-error 太さの指定は数値ではなくTText共通の名前を使う。
+const numericWeight: TButtonProps = { weight: 700 };
+void [weightedProps, invalidWeight, numericWeight];

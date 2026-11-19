@@ -41,3 +41,16 @@ const disabledTone: TLinkButtonProps = { href: '/', tone: 'neutral-400' };
 void [neutralProps, disabledTone];
 const inferredNeutralProps: InstanceType<typeof TLinkButton>['$props'][] = neutralTones.map(tone => ({ href: '/', tone }));
 void inferredNeutralProps;
+
+// TTextと同じ4段階の公開型を受け付け、未指定と文字列inheritを区別する。
+const weightedProps: TLinkButtonProps[] = (['normal', 'medium', 'semibold', 'bold'] as const)
+  .map(weight => ({ href: '/', weight }));
+// @ts-expect-error 継承する場合はweightを省略する。
+const invalidWeight: TLinkButtonProps = { href: '/', weight: 'inherit' };
+// @ts-expect-error 太さの指定は数値ではなくTText共通の名前を使う。
+const numericWeight: TLinkButtonProps = { href: '/', weight: 700 };
+void [weightedProps, invalidWeight, numericWeight];
+const inferredWeights: InstanceType<typeof TLinkButton>['$props'][] = weightedProps;
+// @ts-expect-error Vueの推論型も4段階以外の値を拒否する。
+const invalidInferredWeight: InstanceType<typeof TLinkButton>['$props'] = { href: '/', weight: 'inherit' };
+void [inferredWeights, invalidInferredWeight];

@@ -20,7 +20,7 @@ export function astroLinkButtonPreviewHtml(previews: AstroLinkButtonPreviews, ic
   for (const [key, value] of Object.entries({ href: state.disabled ? undefined : state.href,
     target: state.disabled ? undefined : options.target, rel: state.disabled ? undefined : state.rel,
     role: state.disabled ? 'link' : undefined, 'aria-disabled': state.disabled || undefined, 'data-disabled': state.disabled || undefined,
-    'aria-current': options.current, 'data-size': sizing.size, 'data-tone': state.tone, 'data-current': state.isCurrent || undefined })) {
+    'aria-current': options.current, 'data-size': sizing.size, 'data-tone': state.tone, 'data-weight': state.weight, 'data-current': state.isCurrent || undefined })) {
     if (value === undefined) link.removeAttribute(key);
     else link.setAttribute(key, String(value));
   }
