@@ -1,0 +1,14 @@
+/* TButtonの寸法・配色・状態を共有し、リンク用の角丸と現在地だけを定義する。 */
+@import "./button.css";
+
+.tkw-button.tkw-link-button {
+  min-inline-size: 0;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.tkw-link-button[data-current] .tkw-link-button__label {
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}

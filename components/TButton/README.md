@@ -22,6 +22,8 @@ Reactのchildren、Vue・Astroの既定スロットに「保存する」など�
 
 ## 関連コンポーネントと使い分け
 
+[TLinkButton](../TLinkButton/README.md)
+
 [使用例を見る](../../src/stories/TButton.stories.ts)
 
 [TLink](../TLink/README.md) / [THeaderButton](../THeaderButton/README.md) / [TIcon](../TIcon/README.md) / [カラーの使用ルール](../../src/stories/colors.mdx)

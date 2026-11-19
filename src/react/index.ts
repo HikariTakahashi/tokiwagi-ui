@@ -20,3 +20,5 @@ export type { TextSize, TextResponsiveSize, TextWeight, TextTone, TextTag, TextA
 
 export { TLink, type TLinkProps } from './TLink';
 export { linkTones, type LinkTone, type LinkOptions, type LinkCurrent } from '../lib/link';
+
+export { TLinkButton, type TLinkButtonProps } from './TLinkButton';

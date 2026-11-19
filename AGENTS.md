@@ -116,3 +116,7 @@ React・Vue・Astroの公開入口からTText・TTextPropsとTextOptions等の�
 ## TLink
 
 React・Vue・Astroの公開入口からTLink・TLinkPropsとLinkTone・LinkOptions・LinkCurrent・linkTonesを公開します。href必須のネイティブa要素で、未指定・空文字・空白のみは日本語エラーです。tokiwagi-ui/link.cssを一度読み込み、周囲の書式を継承した下線付きの本文リンクを表示します。toneはneutral（既定）と7色のプライマリーで、文字とアイコンは既存のneutral-900／on-subtleトークンを参照します。leadingIcon・trailingIconは任意の16px装飾TIconです。現在地はaria-currentで指定し、太字と太い下線で表します。target=_blankのrelはopenerを除いてnoopenerを補完します。属性・children/slot・React/Vueのネイティブイベントを転送し、ルーター・URLの検証と決定・現在地判定は利用側が担います。disabledは提供しません。利用ルールはcomponents/TLink/README.md、APIはWikiのUsage、見本はStorybook「コンポーネント/TLink」です。Astroも実リンク・実TIconの出力を使い、Controlsの文言と属性をDOM APIで反映します。
+
+## TLinkButton
+
+React・Vue・Astroの公開入口からTLinkButton・TLinkButtonPropsを公開します。href必須のa要素で、リンクの共通検証・target=_blankのrel補完・現在地解決はTLinkと同じlinkStateを使います。link-button.cssはTButtonのCSSを読み込み、高さ50px以上・文字1.75rem/700・前後の32px装飾TIcon・neutralと7色を共有します。角丸だけは16pxで、TButtonの32pxを維持します。現在地のaria-currentではラベルに下線を表示します。native属性・React/Vueイベント・children/slotを転送し、disabledは提供しません。StorybookのDefaultは「コンポーネント/TLinkButton」に実部品1つを表示し、framework/text/href/tone/leadingIcon/trailingIcon/target/rel/aria-currentをControlsとURLで保持します。Astroは実リンクと実32pxTIconの出力を使います。利用ルールはcomponents/TLinkButton/README.md、導入/APIはdocs/wiki/Usage.mdです。

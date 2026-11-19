@@ -226,6 +226,46 @@ Storybookの「コンポーネント/TIcon」でVueを選ぶと、Vueの実コ�
 - アイコンの公開名は Storybook の「アイコン/命名基準」と「アイコン/アイコン名および用途」（一覧）で管理します。各アイコンの用途・使用ルール・検索用の別名は `icons/<公開名>/README.md` が管理元です。一覧から全336アイコンの「個別ルール」へ移動できます。README と個別ページは概要・使用場面・状態の表し方・使用しない場面・表示とアクセシビリティ・関連アイコンと使い分けの6セクションです。`bell` のルールは確定済み、ほかは詳細ルール案です。既存アプリの参照 ID は「アイコン/既存フロントエンドとの対応」に保持しています。SVG 図形は各 README と同じディレクトリに336個収録済みです。一覧で検索・分類・サイズ・色を切り替え、「アイコン/使用例」の全336ストーリーではReact版の公開TIconを1つ中央に表示します。公開名は固定し、初期値は24px・currentColorです。Controlsで16・20・24・32pxと、継承・ニュートラル・7色のプライマリーを切り替え、選択をURLに保持します。Actions・Interactionsは標準パネルとして表示します。各個別ルールから対応する使用例に移動できます。
 - Tailwind CSS v4 の共有テーマは `tokens/tailwind.css` です。
 
+## TLinkButton
+
+画面遷移をTButtonと同じ大きさ・配色のボタンとして表示します。React・Vue・Astroの公開入口から`TLinkButton`と`TLinkButtonProps`をインポートし、`tokiwagi-ui/link-button.css`を一度読み込みます。このCSSはTButtonの共通CSSも読み込むため、ボタン用CSSの追加読み込みは不要です。
+
+```tsx
+// React
+import { TLinkButton } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/link-button.css';
+
+<TLinkButton href="/calendar" leadingIcon="calendar" trailingIcon="arrow-top-right">
+  カレンダーを開く
+</TLinkButton>
+```
+
+```vue
+<script setup lang="ts">
+import { TLinkButton } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/link-button.css';
+</script>
+<template>
+  <TLinkButton href="/calendar" leading-icon="calendar" trailing-icon="arrow-top-right">カレンダーを開く</TLinkButton>
+</template>
+```
+
+```astro
+---
+import { TLinkButton } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/link-button.css';
+---
+<TLinkButton href="/calendar" leadingIcon="calendar" trailingIcon="arrow-top-right">カレンダーを開く</TLinkButton>
+```
+
+propsと標準属性はTLinkと同じです。href必須、toneの既定はneutral、leadingIcon・trailingIconは既定なし、target・rel・aria-current・downloadなどa要素の属性を受け付けます。文字ラベルはchildren／既定スロットで渡します。React・VueのネイティブイベントとclassName／classを転送します。空のhref・不正な色・未登録のアイコンには日本語エラーを返します。disabledは提供しません。
+
+角丸16px、高さ50px以上、文字1.75rem・太さ700、前後アイコン32pxです。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
+
+色とホバー・押下・フォーカスはTButtonと同じトークンとCSSです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの文字サイズ継承と16pxアイコンはそれぞれ維持します。
+
+React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・leadingIcon・trailingIcon・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
+
 ## TLink
 
 React・Vue・Astroで本文や補助導線の画面遷移に使います。各方式の公開入口から`TLink`・`TLinkProps`と`linkTones`・`LinkTone`・`LinkOptions`・`LinkCurrent`をインポートできます。`tokiwagi-ui/link.css`を一度読み込みます。

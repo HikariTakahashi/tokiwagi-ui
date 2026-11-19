@@ -51,3 +51,5 @@ npm公開・配布用ビルドは未実施です。現状はソースを含む�
 **ロゴ・TLogo・TBrandとその専用ファイルはMIT対象外です。** 掲載やexportは利用許諾を意味しません。[ブランド参照資料](docs/brand-reference.md)と[第三者ライセンス](docs/THIRD-PARTY-LICENSES.md)を確認してください。
 
 本文の画面遷移にはReact・Vue・Astro共通の `TLink` を使えます。公開APIと導入例は[Usage](docs/wiki/Usage.md#tlink)を参照してください。
+
+ボタン型の画面遷移には、角丸16pxの `TLinkButton` を利用できます。[Usage](docs/wiki/Usage.md#tlinkbutton)に3方式の導入例を記載しています。

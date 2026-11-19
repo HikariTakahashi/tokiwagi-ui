@@ -11,12 +11,14 @@ mock.module('virtual:tkw-astro-headers', () => ({ default: '/astro-headers.json'
 mock.module('virtual:tkw-astro-texts', () => ({ default: '/astro-texts.json' }));
 mock.module('virtual:tkw-astro-buttons', () => ({ default: '/astro-buttons.json' }));
 mock.module('virtual:tkw-astro-links', () => ({ default: '/astro-links.json' }));
+mock.module('virtual:tkw-astro-link-buttons', () => ({ default: '/astro-link-buttons.json' }));
 const icon = await import('../TIcon.stories');
 const logo = await import('../TLogo.stories');
 const brand = await import('../TBrand.stories');
 const text = await import('../TText.stories');
 const button = await import('../TButton.stories');
 const link = await import('../TLink.stories');
+const linkButton = await import('../TLinkButton.stories');
 const header = await import('../THeader.stories');
 const headerSection = await import('../THeaderSection.stories');
 const headerButton = await import('../THeaderButton.stories');
@@ -43,6 +45,7 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
 // 各ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
+    ['TLinkButton', linkButton, ['framework', 'text', 'href', 'tone', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
     ['TLink', link, ['framework', 'text', 'href', 'tone', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
     ['TButton', button, ['framework', 'text', 'tone', 'leadingIcon', 'disabled']],
     ['TText', text, ['framework', 'text', 'as', 'size', 'responsive', 'sizeSm', 'sizeLg', 'weight', 'lineHeight', 'tone', 'align', 'truncate', 'lineClamp', 'whiteSpace', 'inherit', 'italic', 'decoration']],
@@ -117,6 +120,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     mock.module('virtual:tkw-astro-texts',()=>({default:'/texts.json'}));
     mock.module('virtual:tkw-astro-buttons',()=>({default:'/buttons.json'}));
     mock.module('virtual:tkw-astro-links',()=>({default:'/links.json'}));
+    mock.module('virtual:tkw-astro-link-buttons',()=>({default:'/link-buttons.json'}));
     let memo, cleanup;
     mock.module('storybook/preview-api',()=>({
       useArgs:()=>[{},()=>{}],

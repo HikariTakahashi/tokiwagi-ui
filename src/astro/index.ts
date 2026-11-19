@@ -31,3 +31,6 @@ export type { TextSize, TextResponsiveSize, TextWeight, TextTone, TextTag, TextA
 export { default as TLink } from './TLink.astro';
 export type { TLinkProps } from './TLinkProps';
 export { linkTones, type LinkTone, type LinkOptions, type LinkCurrent } from '../lib/link';
+
+export { default as TLinkButton } from './TLinkButton.astro';
+export type { TLinkButtonProps } from './TLinkButtonProps';

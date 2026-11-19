@@ -26,6 +26,8 @@ target・rel・download・class・data属性・aria属性を転送します。ta
 
 ## 関連コンポーネントと使い分け
 
+[TLinkButton](../TLinkButton/README.md)
+
 [使用例を見る](../../src/stories/TLink.stories.ts)
 
 [TButton](../TButton/README.md) / [THeaderLink](../THeaderLink/README.md) / [TIcon](../TIcon/README.md) / [TText](../TText/README.md) / [カラーの使用ルール](../../src/stories/colors.mdx)
