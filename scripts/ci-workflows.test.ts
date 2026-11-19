@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 
 type Step = { id?: string; name?: string; if?: string; run?: string; uses?: string; with?: Record<string, unknown>; env?: Record<string, string>; 'working-directory'?: string };
-type Job = { name?: string; needs?: string; if?: string; steps: Step[]; permissions?: Record<string, string>; env?: Record<string, string> };
+type Job = { name?: string; needs?: string; if?: string; container?: { image: string; options?: string }; steps: Step[]; permissions?: Record<string, string>; env?: Record<string, string> };
 type Event = { branches?: string[]; paths?: string[]; workflows?: string[]; types?: string[]; inputs?: Record<string, { required?: boolean; type?: string }> };
 type Workflow = { on: Record<string, Event | null>; jobs: Record<string, Job>; permissions: Record<string, string>; env?: Record<string, string> };
 const workflow = (name: string) => Bun.YAML.parse(readFileSync(new URL(`../.github/workflows/${name}.yml`, import.meta.url), 'utf8')) as Workflow;
@@ -37,6 +37,26 @@ test('6チェックは判定成功時だけ省略でき判定失敗を通過さ�
       expect(config.on[event]).not.toHaveProperty('paths-ignore');
     }
   }
+});
+
+// CIのブラウザー導入をUbuntu配布先に依存させず、画像比較と依存パッケージの版を揃えて実テストを維持する。
+test('StorybookはVisual Testsと同じ固定コンテナーでOSパッケージを取得せずに検証する', () => {
+  const job = workflow('ci').jobs.storybook!;
+  const visual = workflow('visual').jobs.visual!;
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  expect(job.container?.image).toBe(visual.container?.image);
+  expect(job.container?.image).toMatch(/^mcr\.microsoft\.com\/playwright:v[\d.]+-noble@sha256:[a-f0-9]{64}$/);
+  expect(job.container!.image.split(':v')[1]!.split('-')[0]).toBe(pkg.devDependencies['@playwright/test']);
+  expect(job.container?.options).toBe('--ipc=host');
+  const commands = job.steps.flatMap(step => step.run ? [step.run] : []);
+  expect(commands.join('\n')).not.toMatch(/\bapt(?:-get)?\b|\bplaywright\s+install\b/);
+  expect(commands).toContain(`npm install --global --allow-scripts=bun ${pkg.packageManager}`);
+  const install = commands.indexOf('bun install --frozen-lockfile');
+  const build = commands.indexOf('bun run build:storybook');
+  const test = commands.indexOf('bun run test:storybook');
+  expect(install).toBeGreaterThan(-1);
+  expect(build).toBeGreaterThan(install);
+  expect(test).toBeGreaterThan(build);
 });
 
 // 外部へ書き込む補助処理はmainだけで動かし、別リポジトリ・PR・作業ブランチで許可しない。

@@ -201,6 +201,9 @@ jobs:
     if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.storybook == 'true') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --ipc=host
     steps:
       - name: 変更判定の失敗を検証失敗として報告
         if: ${{ needs.changes.result != 'success' }}
@@ -216,17 +219,14 @@ jobs:
           package-manager-cache: false
       - name: Node.jsの実行版を確認
         run: node --version
+      # コンテナーにはunzipがないため、aptを使わないnpm経由で固定版を導入する。
       - name: Bunを準備
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '1.4.4'
+        run: npm install --global --allow-scripts=bun bun@1.4.4
       - name: Bunの実行版を確認
         run: bun --version
       - name: 依存関係をインストール
         run: bun install --frozen-lockfile
       - name: tkw-storybookを実行
         run: bun run build:storybook
-      - name: コンポーネントテスト用のChromiumを準備
-        run: bunx playwright install --with-deps chromium
       - name: ストーリーのコンポーネントテストを実行
         run: bun run test:storybook
