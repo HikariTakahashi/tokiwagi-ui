@@ -140,3 +140,7 @@ TLinkのsizeはinherit（既定）/sm/md/lgで、文字は継承/0.875/1/1.125re
 ## TCard
 
 React・Vue・Astroの公開入口からTCard・TCardHeader・TCardTitle・TCardDescription・TCardBody・TCardFooter・TCardMedia・TCardActionAreaと各Props型を公開します。card.cssを一度読み込み、既存トークン・共通フォント・角丸12px・全variantでTButtonと同一の影を使います。variantはoutline/elevated/subtle（既定outline）、sizeはsm/md/lg（既定md、余白12/16/24px）、asはdiv/article/section（既定div）です。TCardTitleはh1〜h6（既定h3）、それ以外の構造パーツはdiv、Descriptionはpです。ActionAreaはhref必須のa要素で、_blank時にopenerを除きnoopenerを補完します。リンク内に他の操作要素を置かず、操作・選択・読み込み状態・URL・一意な参照IDは利用側が管理します。標準属性・children/slot・React/Vueのイベントを転送し、Astroは静的に描画します。共通検証はsrc/lib/card.ts、利用ルールはcomponents/TCard/README.md、APIはWiki Usage、Storybookは既存の共通描画と標準Controlsを使います。カード例の装飾は公開CSSへ含めません。
+
+## サイドバー
+
+React・Vue・Astroの公開入口からTSidebarLayout・TSidebar・TSidebarMain・TSidebarHeader・TSidebarBody・TSidebarFooterと各Props型を公開します。sidebar.cssを一度読み込みます。Layoutはgap=24px・animationDuration=200ms（0で即時）、Sidebarは必須side=left/right・open=true・width=280px・as=aside/div（既定aside）、Mainはas=div/main（既定div）です。左右各最大1つと中央1つをDOM順で配置し、共通検証で個数と順序を揃えます。Astroは描画済みslotの直下をultrahtmlで検証し、本文を変換しません。リンク・開閉ボタン・状態更新・現在地判定は利用側が担当します。閉じた側の幅と間隔を0へ遷移し、inert/aria-hiddenで操作・読み上げを抑止します。動きを減らす設定を尊重します。内部3部品はdivで標準属性・内容・React/Vueのイベントを転送します。React 18/19・VueのSSR/hydrate・Astro実描画を検証します。/colors/は公開Astro部品を直接使い、React連携は不要です。目次リンク・現在地処理・モバイルdetails・サイドバー開閉状態はページのscriptに保持します。個別ルールはcomponents/<部品名>/README.md、APIはWiki Usageです。Storybookは共通描画・標準ControlsでReact/Vue/Astroを切り替え、設定を保持します。Astroは実部品の12構成をBun別プロセスで描画し、生成済みJSONの共通fetchローダーを使います。開閉・寸法変更時は同じDOMの属性とCSS変数だけを更新してアニメーションを維持し、構成変更時だけテンプレートを切り替えます。

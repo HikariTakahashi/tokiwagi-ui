@@ -1,0 +1,29 @@
+---
+import { parse, ELEMENT_NODE, COMMENT_NODE, TEXT_NODE, type DocumentNode, type Node as HtmlNode } from 'ultrahtml';
+import type { TSidebarLayoutProps } from './TSidebarLayoutProps';
+import { sidebarLayoutState, validateSidebarPositions } from '../lib/sidebar';
+interface Props extends TSidebarLayoutProps {}
+const { gap, animationDuration, class: className, style, ...attributes } = Astro.props;
+const state = sidebarLayoutState({ gap, animationDuration });
+const layoutStyle = typeof style === 'string'
+  ? Object.entries(state).map(([key, value]) => `${key}:${value}`).join(';') + ';' + style
+  : { ...state, ...style };
+// slotは一度だけ描画し、直下の構造だけを検証する。本文のHTMLは元のまま保持する。
+const content = await Astro.slots.render('default') ?? '';
+const positions = (parse(content) as DocumentNode).children.flatMap((node: HtmlNode) => {
+  if (node.type === COMMENT_NODE || (node.type === TEXT_NODE && !node.value.trim())) return [];
+  if (node.type !== ELEMENT_NODE) throw new Error('TSidebarLayoutの直下にはTSidebarとTSidebarMainを配置してください');
+  // Astroが子コンポーネントから先行出力する非表示のリソースは、配置の個数に含めない。
+  if (['script', 'style', 'link'].includes(node.name)) return [];
+  const classes = (node.attributes.class ?? '').split(/\s+/);
+  if (classes.includes('tkw-sidebar-main')) return [1];
+  if (classes.includes('tkw-sidebar')) {
+    const side = node.attributes['data-side'];
+    if (side !== 'left' && side !== 'right') throw new Error('TSidebarのsideにはleftまたはrightを指定してください');
+    return [side === 'left' ? 0 : 2];
+  }
+  throw new Error(`TSidebarLayoutの直下にはTSidebarとTSidebarMainを配置してください（${node.name}）`);
+});
+validateSidebarPositions(positions);
+---
+<div {...attributes} class:list={['tkw-sidebar-layout', className]} style={layoutStyle}><Fragment set:html={content} /></div>

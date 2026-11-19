@@ -1,0 +1,9 @@
+import { Markdown, Meta } from '@storybook/addon-docs/blocks';
+import { componentReadmeForStorybook } from '../component-readme';
+import readme from '../../../components/TSidebarLayout/README.md?raw';
+
+<Meta title="コンポーネント/個別ルール/TSidebarLayout" id="components-tsidebarlayout-rules" />
+
+<div className="tkw-icon-doc">
+  <Markdown options={{ overrides: { a: { props: { target: '_top' } } } }}>{componentReadmeForStorybook(readme)}</Markdown>
+</div>

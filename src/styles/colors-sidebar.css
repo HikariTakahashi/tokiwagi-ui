@@ -1,0 +1,15 @@
+/* カラー説明ページの配置。幅・開閉の共通描画はsidebar.cssが担う。 */
+.colors-layout { width: min(100% - clamp(32px, 8vw, 96px), 1200px); margin-inline: auto; flex-direction: column; align-items: stretch; }
+.colors-layout > .colors-sidebar { margin-top: 24px; margin-right: 0; width: 100%; }
+.colors-sidebar > .tkw-sidebar-surface { width: 100%; }
+.colors-sidebar .tkw-sidebar-body { padding: 0; }
+.colors-main { width: 100%; }
+.colors-sidebar-toolbar { display: none; }
+@media (min-width: 1024px) {
+  .colors-layout { width: 100%; margin-inline: 0; padding-right: 24px; flex-direction: row; align-items: flex-start; }
+  .colors-layout > .colors-sidebar { position: sticky; top: 36px; margin-top: 0; margin-right: var(--tkw-sidebar-gap); width: var(--tkw-sidebar-width); }
+  .colors-layout > .colors-sidebar[data-open='false'] { width: 0; margin-right: 0; }
+  .colors-sidebar > .tkw-sidebar-surface { width: var(--tkw-sidebar-width); height: calc(100dvh - 36px); min-height: 0; border-left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+  .colors-sidebar .tkw-sidebar-body { overflow-y: auto; }
+  .colors-sidebar-toolbar { display: flex; padding-top: 16px; }
+}

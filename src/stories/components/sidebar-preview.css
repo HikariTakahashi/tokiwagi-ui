@@ -1,0 +1,3 @@
+/* 見本の内容だけに適用し、公開コンポーネントの装飾へ混入させない。 */
+.tkw-sidebar-example-copy { margin: 0; }
+.tkw-sidebar-example-main { margin: 0; padding: 12px; overflow-wrap: anywhere; }

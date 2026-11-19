@@ -1,0 +1,16 @@
+---
+import type { TSidebarProps } from './TSidebarProps';
+import { sidebarState } from '../lib/sidebar';
+interface Props extends TSidebarProps {}
+const { side, open, width, as, class: className, style, ...attributes } = Astro.props;
+const state = sidebarState({ side, open, width, as });
+const Tag = state.tag;
+const sidebarStyle = typeof style === 'string'
+  ? Object.entries(state.style).map(([key, value]) => `${key}:${value}`).join(';') + ';' + style
+  : { ...state.style, ...style };
+---
+<Tag {...attributes} class:list={['tkw-sidebar', className]} style={sidebarStyle}
+  data-side={state.side} data-open={String(state.open)}
+  inert={state.open ? attributes.inert : true} aria-hidden={state.open ? attributes['aria-hidden'] : true}>
+  <div class="tkw-sidebar-surface"><slot /></div>
+</Tag>
