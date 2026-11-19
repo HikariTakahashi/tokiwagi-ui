@@ -136,3 +136,7 @@ React・Vue・Astroの公開入口からTLinkButton・TLinkButtonPropsを公開�
 ## リンクのサイズ
 
 TLinkのsizeはinherit（既定）/sm/md/lgで、文字は継承/0.875/1/1.125rem、TIconは16/16/16/20pxです。TLinkButtonのsizeはsm/md/lg（既定）で、文字1.25/1.5/1.75rem、TIcon20/24/32px、最小高さ40/44/50px、左右padding12/14/16px、gap6/8/10pxを連動させます。縦padding6px・現行の角丸と色は維持します。リンクの型とアイコン寸法はsrc/lib/link-size.tsを入口とし、ボタン型のサイズ定義はsrc/lib/button-size.tsを共有します。文字や余白はTLinkのlink.cssと、TButton・TLinkButton共通のbutton.cssに保持し、link-button.cssは角丸と現在地の差分を扱います。各公開入口からLinkSize・LinkButtonSize・linkSizes・linkButtonSizes・LinkButtonOptionsを公開します。サイズ未指定の既存表示は維持し、未定義値（ボタン型のinheritを含む）は日本語エラーにします。Storybookの両部品にsize selectを追加し、方式切替・URL復元・Astro実出力のサイズ連動を検証します。
+
+## TCard
+
+React・Vue・Astroの公開入口からTCard・TCardHeader・TCardTitle・TCardDescription・TCardBody・TCardFooter・TCardMedia・TCardActionAreaと各Props型を公開します。card.cssを一度読み込み、既存トークン・共通フォント・角丸12px・全variantでTButtonと同一の影を使います。variantはoutline/elevated/subtle（既定outline）、sizeはsm/md/lg（既定md、余白12/16/24px）、asはdiv/article/section（既定div）です。TCardTitleはh1〜h6（既定h3）、それ以外の構造パーツはdiv、Descriptionはpです。ActionAreaはhref必須のa要素で、_blank時にopenerを除きnoopenerを補完します。リンク内に他の操作要素を置かず、操作・選択・読み込み状態・URL・一意な参照IDは利用側が管理します。標準属性・children/slot・React/Vueのイベントを転送し、Astroは静的に描画します。共通検証はsrc/lib/card.ts、利用ルールはcomponents/TCard/README.md、APIはWiki Usage、Storybookは既存の共通描画と標準Controlsを使います。カード例の装飾は公開CSSへ含めません。

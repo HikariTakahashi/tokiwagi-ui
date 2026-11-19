@@ -53,3 +53,5 @@ npm公開・配布用ビルドは未実施です。現状はソースを含む�
 本文の画面遷移にはReact・Vue・Astro共通の `TLink` を使えます。公開APIと導入例は[Usage](docs/wiki/Usage.md#tlink)を参照してください。
 
 ボタン型の画面遷移には、角丸12pxの `TLinkButton` を利用できます。[Usage](docs/wiki/Usage.md#tlinkbutton)に3方式の導入例を記載しています。
+
+関連する情報のまとまりには、React・Vue・Astro共通の `TCard` と構造パーツを使えます。TButtonと同じ影・角丸12pxのカードです。[公開APIと利用例](docs/wiki/Usage.md#tcard)を参照してください。
