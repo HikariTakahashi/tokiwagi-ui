@@ -9,6 +9,12 @@ export type ButtonOptions = {
   disabled?: boolean;
 };
 
+/** 操作部品の無効状態を共通の規則で検証する。 */
+export function buttonDisabledState(disabled: boolean = false, componentName = 'TButton') {
+  if (typeof disabled !== 'boolean') throw new Error(`${componentName}のdisabledにはbooleanを指定してください`);
+  return disabled;
+}
+
 export function buttonState({
   tone = 'neutral', leadingIcon, type = 'button', disabled = false,
 }: ButtonOptions = {}) {
@@ -18,9 +24,7 @@ export function buttonState({
   if (!['button', 'submit', 'reset'].includes(type)) {
     throw new Error('TButtonのtypeにはbutton/submit/resetを指定してください');
   }
-  if (typeof disabled !== 'boolean') {
-    throw new Error('TButtonのdisabledにはbooleanを指定してください');
-  }
+  buttonDisabledState(disabled);
   if (leadingIcon !== undefined && !isIconName(leadingIcon)) {
     throw new Error(`存在しないアイコン公開名: ${leadingIcon}`);
   }
