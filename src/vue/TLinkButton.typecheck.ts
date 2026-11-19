@@ -28,6 +28,8 @@ void inheritedSize;
 const invalidInferredSize: InstanceType<typeof TLinkButton>['$props'] = { href: '/', size: 'xl' };
 void invalidInferredSize;
 
+const autofocus: TLinkButtonProps = { href: '/', autofocus: true };
+const inferredAutofocus: InstanceType<typeof TLinkButton>['$props'] = { href: '/', autofocus: true, disabled: true };
 // @ts-expect-error Vueの推論型でも無効状態はbooleanに限る。
 const invalidInferredDisabled: InstanceType<typeof TLinkButton>['$props'] = { href: '/', disabled: 'true' };
-void invalidInferredDisabled;
+void [autofocus, inferredAutofocus, invalidInferredDisabled];

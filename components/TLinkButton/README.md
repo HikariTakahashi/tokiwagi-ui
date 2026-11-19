@@ -22,7 +22,7 @@ Reactのchildren、Vue・Astroの既定スロットに遷移先が分かる文�
 
 有効時はTabでフォーカスし、Enterで遷移します。Spaceを独自にクリックへ変換せず、修飾キー・中央クリック・右クリックなど標準のリンク操作を維持します。target・rel・download・class・data属性・aria属性を転送します。target=_blankではrelからopenerを除き、他の値を維持してnoopenerを補完します。noreferrerは自動追加しません。別タブや外部サイトへの遷移は必要に応じて文言でも伝えます。React・Vueはネイティブイベントを転送し、Astroは利用側scriptで接続します。
 
-disabled=trueではhref・target・rel・download・pingなどのリンク属性、tabindex・autofocus・accesskey・contenteditable、渡されたクリック・キー・ポインター操作のハンドラーを出力しません。role=link・aria-disabled=trueで無効なリンクと伝え、Tab移動の対象から外します。hrefは無効時もpropsとして必須で、有効に戻すと元の属性・イベントを復元します。React・Vueではクリック・中央クリック・ダブルクリック・起動キーの伝播も抑止します。AstroはJavaScriptなしで遷移しない静的HTMLを出力します。利用側で後付けするイベントやルーターの委譲処理はaria-disabledを確認してください。
+disabled=trueではhref・target・rel・download・pingなどのリンク属性、tabindex・autofocus・accesskey・contenteditable、渡されたクリック・キー・ポインター操作のハンドラーを出力しません。role=link・aria-disabled=trueで無効なリンクと伝え、Tab移動の対象から外します。hrefは無効時もpropsとして必須で、有効に戻すと元の属性・イベントを復元します。React・Vueではクリック・中央クリック・ダブルクリック・起動キーの伝播も抑止します。AstroはJavaScriptなしで遷移しない静的HTMLを出力します。利用側で後付けするイベントやルーターの委譲処理はaria-disabledを確認してください。Vueのautofocusは公開型・コンポーネントの推論型で指定できます。
 
 プライマリーと白い文字の配色にはTButtonと同じ既知のコントラスト制約があります。特にイエローは通常・ホバーの大きな文字の3:1、押下の通常サイズの文字の4.5:1に不足します。使用先ではカラーの使用ルールを確認してください。
 

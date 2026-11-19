@@ -119,7 +119,7 @@ React・Vue・Astroの公開入口からTLink・TLinkPropsとLinkTone・LinkOpti
 
 ## TLinkButton
 
-React・Vue・Astroの公開入口からTLinkButton・TLinkButtonPropsを公開します。href必須のa要素で、リンクの共通検証・target=_blankのrel補完・現在地解決はTLinkと同じlinkStateを使います。link-button.cssはTButtonのCSSを読み込み、高さ50px以上・文字1.75rem/700・前後の32px装飾TIcon・neutralと7色を共有します。角丸は現在の12pxで、TButtonの32pxを維持します。現在地のaria-currentではラベルに下線を表示します。native属性・React/Vueイベント・children/slotを転送します。disabledはboolean（既定false）でTButtonと検証・無効色・影・カーソル・ホバー/押下抑止を共有します。無効時はhrefなどのリンク属性・フォーカス属性・操作ハンドラーを除き、role=link・aria-disabled=trueを出力してTab移動から外します。hrefはpropsとして必須で、再有効化時に元の属性・イベントへ戻します。React・Vueはクリック系と起動キーの伝播も抑止し、Astroもscriptなしで遷移しません。StorybookのDefaultは「コンポーネント/TLinkButton」に実部品1つを表示し、framework/text/href/tone/leadingIcon/trailingIcon/disabled/target/rel/aria-currentをControlsとURLで保持します。Astroは実リンクと実32pxTIconの出力を使います。利用ルールはcomponents/TLinkButton/README.md、導入/APIはdocs/wiki/Usage.mdです。
+React・Vue・Astroの公開入口からTLinkButton・TLinkButtonPropsを公開します。href必須のa要素で、リンクの共通検証・target=_blankのrel補完・現在地解決はTLinkと同じlinkStateを使います。link-button.cssはTButtonのCSSを読み込み、高さ50px以上・文字1.75rem/700・前後の32px装飾TIcon・neutralと7色を共有します。角丸は現在の12pxで、TButtonの32pxを維持します。現在地のaria-currentではラベルに下線を表示します。native属性・React/Vueイベント・children/slotを転送します。disabledはboolean（既定false）でTButtonと検証・無効色・影・カーソル・ホバー/押下抑止を共有します。無効時はhrefなどのリンク属性・フォーカス属性・操作ハンドラーを除き、role=link・aria-disabled=trueを出力してTab移動から外します。hrefはpropsとして必須で、再有効化時に元の属性・イベントへ戻します。React・Vueはクリック系と起動キーの伝播も抑止し、Astroもscriptなしで遷移しません。Vueのautofocusは公開型と推論型で指定できます。StorybookのDefaultは「コンポーネント/TLinkButton」に実部品1つを表示し、framework/text/href/tone/leadingIcon/trailingIcon/disabled/target/rel/aria-currentをControlsとURLで保持します。Astroは実リンクと実32pxTIconの出力を使います。利用ルールはcomponents/TLinkButton/README.md、導入/APIはdocs/wiki/Usage.mdです。
 
 ## リンクのサイズ
 

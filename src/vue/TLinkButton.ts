@@ -1,11 +1,11 @@
 import { linkButtonSizeState, type LinkButtonSize } from '../lib/link-size';
-import { defineComponent, h, type AnchorHTMLAttributes, type PropType } from 'vue';
+import { defineComponent, h, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type PropType } from 'vue';
 import type { LinkButtonOptions, LinkTone, LinkCurrent } from '../lib/link';
 import { linkButtonState, linkButtonAttributes, stopDisabledLinkActivation } from '../lib/link-button';
 import type { IconName } from '../lib/icon-sources';
 import { TIcon } from './TIcon';
 
-export type TLinkButtonProps = Omit<AnchorHTMLAttributes, 'href'> & LinkButtonOptions;
+export type TLinkButtonProps = Omit<AnchorHTMLAttributes, 'href'> & Pick<ButtonHTMLAttributes, 'autofocus'> & LinkButtonOptions;
 
 export const TLinkButton = defineComponent({
   name: 'TLinkButton', inheritAttrs: false,
@@ -16,6 +16,7 @@ export const TLinkButton = defineComponent({
     leadingIcon: { type: String as PropType<IconName> },
     trailingIcon: { type: String as PropType<IconName> },
     disabled: { type: Boolean, default: false },
+    autofocus: { type: [Boolean, String] as PropType<ButtonHTMLAttributes['autofocus']>, default: undefined },
   },
   setup(props, { attrs, slots }) {
     return () => {
@@ -24,6 +25,7 @@ export const TLinkButton = defineComponent({
         'aria-current': attrs['aria-current'] as LinkCurrent | undefined });
       const forwarded = linkButtonAttributes(attrs, state.disabled);
       return h('a', { ...forwarded, href: state.disabled ? undefined : state.href, rel: state.disabled ? undefined : state.rel,
+        autofocus: state.disabled ? undefined : props.autofocus,
         role: state.disabled ? 'link' : attrs.role, 'aria-disabled': state.disabled ? true : attrs['aria-disabled'],
         ...(state.disabled ? Object.fromEntries(['onClick', 'onDblclick', 'onAuxclick', 'onKeydown', 'onKeyup'].map(name => [name, stopDisabledLinkActivation])) : {}),
         class: ['tkw-button', 'tkw-link-button', attrs.class],

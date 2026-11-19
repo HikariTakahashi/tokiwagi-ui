@@ -287,6 +287,11 @@ React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink�
 <TLinkButton href="/calendar" disabled={true}>カレンダーを開く</TLinkButton>
 ```
 
+VueのautofocusはTLinkButtonPropsとコンポーネントの推論型で受け付けます。ReactではautoFocus、Astroではautofocusを指定します。disabled時はいずれも出力しません。
+
+```vue
+<TLinkButton href="/calendar" autofocus :disabled="false">カレンダーを開く</TLinkButton>
+```
 
 ## TLink
 
