@@ -1,4 +1,4 @@
 import type { HTMLAttributes } from 'astro/types';
-import type { LinkOptions } from '../lib/link';
+import type { LinkButtonOptions } from '../lib/link';
 
-export type TLinkButtonProps = Omit<HTMLAttributes<'a'>, 'href'> & LinkOptions;
+export type TLinkButtonProps = Omit<HTMLAttributes<'a'>, 'href'> & LinkButtonOptions;

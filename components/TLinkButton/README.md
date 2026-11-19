@@ -2,7 +2,7 @@
 
 ## 概要
 
-画面遷移をボタンの見た目で表示するReact・Vue・Astro共通のa要素です。TButtonの共通CSSで色・寸法・影を揃え、角丸は16pxにします。
+画面遷移をボタンの見た目で表示するReact・Vue・Astro共通のa要素です。TButtonの共通CSSで色・寸法・影を揃え、角丸は現在の12pxにします。
 
 ## 使用場面
 
@@ -18,7 +18,7 @@ toneはneutralと7色のプライマリーで、既定neutralです。通常・�
 
 ## 表示とアクセシビリティ
 
-Reactのchildren、Vue・Astroの既定スロットに遷移先が分かる文字を入れます。リンクやボタンを入れ子にしないでください。leadingIcon・trailingIconは32pxの装飾TIconで、既定では表示しません。高さは50px以上、文字は1.75rem・太さ700、角丸は16pxです。長い文言は折り返して高さが伸びます。幅は利用側のclass（ReactはclassName）などで指定します。
+Reactのchildren、Vue・Astroの既定スロットに遷移先が分かる文字を入れます。リンクやボタンを入れ子にしないでください。leadingIcon・trailingIconはsizeに連動する装飾TIconで、既定では表示しません。sizeはsm・md・lg（既定）で、文字は1.25・1.5・1.75rem、アイコンは20・24・32px、最小高さは40・44・50px、左右paddingは12・14・16px、gapは6・8・10pxです。角丸は現在の12px、文字の太さは700、縦paddingは6pxを維持します。長い文言は折り返して高さが伸びます。幅は利用側のclass（ReactはclassName）などで指定します。
 
 Tabでフォーカスし、Enterで遷移します。Spaceを独自にクリックへ変換せず、修飾キー・中央クリック・右クリックなど標準のリンク操作を維持します。target・rel・download・class・data属性・aria属性を転送します。target=_blankではrelからopenerを除き、他の値を維持してnoopenerを補完します。noreferrerは自動追加しません。別タブや外部サイトへの遷移は必要に応じて文言でも伝えます。React・Vueはネイティブイベントを転送し、Astroは利用側scriptで接続します。
 

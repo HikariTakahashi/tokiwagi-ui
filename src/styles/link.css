@@ -21,6 +21,9 @@
 }
 .tkw-link__leading-icon { margin-inline-end: .35em; }
 .tkw-link__trailing-icon { margin-inline-start: .35em; }
+.tkw-link[data-size='sm'] { font-size: .875rem; }
+.tkw-link[data-size='md'] { font-size: 1rem; }
+.tkw-link[data-size='lg'] { font-size: 1.125rem; }
 .tkw-link[data-tone='green'] { --tkw-link-fg: var(--tkw-color-primary-green-on-subtle); }
 .tkw-link[data-tone='teal'] { --tkw-link-fg: var(--tkw-color-primary-teal-on-subtle); }
 .tkw-link[data-tone='blue'] { --tkw-link-fg: var(--tkw-color-primary-blue-on-subtle); }

@@ -17,7 +17,7 @@ test('VueのTLinkはSSR後も属性とイベントをa要素へ転送する', ()
     console.warn=(...args)=>warnings.push(args);
     console.error=(...args)=>warnings.push(args);
     const page={render:()=>h(TLink,{
-      href:updated.value?'#next':'/予定',target:'_blank',rel:'opener external',
+      size:updated.value?'lg':'sm',href:updated.value?'#next':'/予定',target:'_blank',rel:'opener external',
       leadingIcon:'moon',trailingIcon:updated.value?undefined:'tool',class:['details'],
       'aria-current':updated.value?'page':undefined,'aria-describedby':'hint',
       onClick:event=>{clicked.push(event.currentTarget);assert.equal(event.defaultPrevented,false);event.preventDefault();},
@@ -36,6 +36,9 @@ test('VueのTLinkはSSR後も属性とイベントをa要素へ転送する', ()
     anchor.click();assert.deepEqual(clicked,[anchor]);
     updated.value=true;await nextTick();
     assert.equal(anchor.getAttribute('href'),'#next');
+    assert.equal(anchor.getAttribute('data-size'),'lg');
+    assert.equal(anchor.querySelector('svg').getAttribute('width'),'20');
+    assert.equal(anchor.querySelector('svg'),icons[0]);
     assert.equal(anchor.hasAttribute('data-current'),true);
     assert.equal(anchor.getAttribute('aria-current'),'page');
     assert.equal(anchor.querySelector('.tkw-link__trailing-icon'),null);

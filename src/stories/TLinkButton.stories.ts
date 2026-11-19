@@ -1,3 +1,4 @@
+import { linkButtonSizes } from '../lib/link-size';
 import type { Meta, StoryObj } from '@storybook/html-vite';
 import { iconNames } from '../lib/icon-sources';
 import { linkTones } from '../lib/link';
@@ -15,12 +16,13 @@ type Args = Omit<LinkButtonPreviewOptions, 'component' | 'leadingIcon' | 'traili
 const iconControl = { control: { type: 'select' as const, labels: { none: 'なし' } }, options: ['none', ...iconNames] };
 const meta = {
   title: 'コンポーネント/TLinkButton', id: 'components-tlinkbutton', tags: ['!autodocs'],
-  parameters: componentStoryParameters(['framework', 'text', 'href', 'tone', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']),
-  args: { framework: 'react', text: 'カレンダーを開く', href: '#link-button-target', tone: 'neutral', leadingIcon: 'none', trailingIcon: 'none',
+  parameters: componentStoryParameters(['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']),
+  args: { framework: 'react', text: 'カレンダーを開く', href: '#link-button-target', tone: 'neutral', size: 'lg', leadingIcon: 'none', trailingIcon: 'none',
     target: '_self', rel: '', 'aria-current': 'unset', textcode: '', hrefcode: '' },
   argTypes: {
     framework: frameworkControl,
     text: { control: 'text' }, href: { control: 'text' }, tone: { control: 'select', options: linkTones },
+    size: { control: 'select', options: linkButtonSizes },
     leadingIcon: iconControl, trailingIcon: iconControl,
     target: { control: 'select', options: ['_self', '_blank', '_parent', '_top'] },
     rel: { control: 'text' },

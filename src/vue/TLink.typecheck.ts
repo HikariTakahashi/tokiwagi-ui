@@ -1,7 +1,7 @@
 import { TLink, type TLinkProps, type LinkTone } from 'tokiwagi-ui/vue';
 
 const tone: LinkTone = 'blue';
-const props: TLinkProps = { href: '/calendar', tone, leadingIcon: 'calendar', trailingIcon: 'arrow-top-right', target: '_blank', rel: 'external', 'aria-current': 'page' };
+const props: TLinkProps = { href: '/calendar', tone, size: 'md', leadingIcon: 'calendar', trailingIcon: 'arrow-top-right', target: '_blank', rel: 'external', 'aria-current': 'page' };
 // @ts-expect-error hrefは必須。
 const missing: TLinkProps = {};
 // @ts-expect-error 定義済みの色だけを受け付ける。
@@ -15,3 +15,10 @@ const inferred: InstanceType<typeof TLink>['$props'] = props;
 const missingInferred: InstanceType<typeof TLink>['$props'] = {};
 void [inferred, missingInferred];
 void [props, missing, invalidTone, invalidIcon, disabled];
+
+// @ts-expect-error 定義されていないサイズは指定できない。
+const invalidSize: TLinkProps = { href: '/', size: 'xl' };
+void invalidSize;
+// @ts-expect-error Vueの推論型でもサイズを制限する。
+const invalidInferredSize: InstanceType<typeof TLink>['$props'] = { href: '/', size: 'xl' };
+void invalidInferredSize;

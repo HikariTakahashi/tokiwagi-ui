@@ -22,3 +22,6 @@ export { TLink, type TLinkProps } from './TLink';
 export { linkTones, type LinkTone, type LinkOptions, type LinkCurrent } from '../lib/link';
 
 export { TLinkButton, type TLinkButtonProps } from './TLinkButton';
+
+export { linkSizes, linkButtonSizes, type LinkSize, type LinkButtonSize } from '../lib/link-size';
+export type { LinkButtonOptions } from '../lib/link';

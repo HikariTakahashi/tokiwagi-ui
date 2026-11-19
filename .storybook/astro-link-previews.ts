@@ -13,7 +13,7 @@ const execute = promisify(execFile);
 
 export function astroLinkPreviewsPlugin(): Plugin {
   const dependencies = ['scripts/render-astro-link-previews.ts', 'src/astro/TLink.astro',
-    'src/astro/TLinkProps.ts', 'src/lib/link.ts', 'src/astro/TIcon.astro', 'src/astro/index.ts',
+    'src/astro/TLinkProps.ts', 'src/lib/link.ts', 'src/lib/link-size.ts', 'src/astro/TIcon.astro', 'src/astro/index.ts',
   ].map(path => root + path);
   return astroPreviewDataPlugin('links', async (): Promise<AstroLinkPreviews> => {
     const directory = await mkdtemp(join(tmpdir(), 'tkw-astro-links-'));

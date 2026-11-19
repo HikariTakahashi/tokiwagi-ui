@@ -258,17 +258,32 @@ import 'tokiwagi-ui/link-button.css';
 <TLinkButton href="/calendar" leadingIcon="calendar" trailingIcon="arrow-top-right">カレンダーを開く</TLinkButton>
 ```
 
-propsと標準属性はTLinkと同じです。href必須、toneの既定はneutral、leadingIcon・trailingIconは既定なし、target・rel・aria-current・downloadなどa要素の属性を受け付けます。文字ラベルはchildren／既定スロットで渡します。React・VueのネイティブイベントとclassName／classを転送します。空のhref・不正な色・未登録のアイコンには日本語エラーを返します。disabledは提供しません。
 
-角丸16px、高さ50px以上、文字1.75rem・太さ700、前後アイコン32pxです。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
+`size`は文字・アイコン・最小高さ・左右余白を連動させます。文字はrem、表のpxは標準16pxのルート文字サイズでの値です。縦のpaddingは6px、長い文言では高さが伸びます。角丸・色はサイズに連動させません。
 
-色とホバー・押下・フォーカスはTButtonと同じトークンとCSSです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの文字サイズ継承と16pxアイコンはそれぞれ維持します。
+| size | 文字 | アイコン | 最小高さ | 左右padding | gap |
+| --- | --- | --- | --- | --- | --- |
+| sm | 1.25rem（20px） | 20px | 40px | 12px | 6px |
+| md | 1.5rem（24px） | 24px | 44px | 14px | 8px |
+| lg（既定） | 1.75rem（28px） | 32px | 50px | 16px | 10px |
 
-React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・leadingIcon・trailingIcon・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
+```tsx
+<TLinkButton href="/calendar" size="md" trailingIcon="arrow-top-right">カレンダーを開く</TLinkButton>
+```
+
+`LinkButtonSize`・`linkButtonSizes`・`LinkButtonOptions`は各方式の公開入口からインポートできます。TLinkButtonではinheritや未定義サイズを型・実行時の両方で拒否します。
+
+標準属性はTLinkと同じです。sizeはTLinkButton専用のLinkButtonSize（sm/md/lg、既定lg）を指定します。href必須、toneの既定はneutral、leadingIcon・trailingIconは既定なし、target・rel・aria-current・downloadなどa要素の属性を受け付けます。文字ラベルはchildren／既定スロットで渡します。React・VueのネイティブイベントとclassName／classを転送します。空のhref・不正な色・未登録のアイコンには日本語エラーを返します。disabledは提供しません。
+
+サイズ未指定では現在の角丸12px、高さ50px以上、文字1.75rem・太さ700、前後アイコン32pxを維持します。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
+
+色とホバー・押下・フォーカスはTButtonと同じトークンとCSSです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの既定の文字サイズ継承と16pxアイコンはそれぞれ維持します。
+
+React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・size・leadingIcon・trailingIcon・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
 
 ## TLink
 
-React・Vue・Astroで本文や補助導線の画面遷移に使います。各方式の公開入口から`TLink`・`TLinkProps`と`linkTones`・`LinkTone`・`LinkOptions`・`LinkCurrent`をインポートできます。`tokiwagi-ui/link.css`を一度読み込みます。
+React・Vue・Astroで本文や補助導線の画面遷移に使います。各方式の公開入口から`TLink`・`TLinkProps`と`linkTones`・`LinkTone`・`LinkOptions`・`LinkCurrent`・`linkSizes`・`LinkSize`をインポートできます。`tokiwagi-ui/link.css`を一度読み込みます。
 
 ```tsx
 // React
@@ -301,12 +316,27 @@ import 'tokiwagi-ui/link.css';
 | --- | --- | --- |
 | `href` | `string`（必須） | 相対URL・絶対URL・フラグメントなど。未指定・空文字・空白のみは日本語エラー |
 | `tone` | `LinkTone`、既定`neutral` | neutral / green / teal / blue / violet / rose / coral / amber |
-| `leadingIcon` / `trailingIcon` | `IconName`、既定なし | 前後の16px装飾アイコン。SVGは公開TIconを再利用 |
+| `size` | `LinkSize`、既定`inherit` | inherit / sm / md / lg。文字とアイコンを連動 |
+| `leadingIcon` / `trailingIcon` | `IconName`、既定なし | 前後の装飾アイコン。SVGは公開TIconを再利用 |
 | `aria-current` | `LinkCurrent`、既定未指定 | 現在地を太字と太い下線で表示。false・文字列falseは強調しない |
 | `target` / `rel` / `download` など | ネイティブのa要素の属性 | `_blank`ではopenerを除きnoopenerを補完。その他のrelを保持 |
 | `className`（React）/ `class`（Vue・Astro） | 各方式のネイティブ型 | クラスを追加 |
 
-内容はReactのchildren、Vue・Astroの既定スロットです。文字の書式を周囲から継承し、通常時も下線を表示します。色にはneutral-900またはプライマリーのon-subtleトークンを使います。リンクの背景は透明なので、利用先の背景とのコントラストは利用側で確認してください。ホバー・押下は下線の太さ、キーボードフォーカスは輪郭で示します。長い文言は行内で折り返します。
+
+| TLinkのsize | 文字 | アイコン |
+| --- | --- | --- |
+| inherit（既定） | 親から継承 | 16px |
+| sm | 0.875rem（標準14px） | 16px |
+| md | 1rem（標準16px） | 16px |
+| lg | 1.125rem（標準18px） | 20px |
+
+```tsx
+<TLink href="/calendar" size="sm">予定の詳細を見る</TLink>
+```
+
+サイズ未指定では親の書式と16pxアイコンを維持します。文字サイズはremで、アイコン間隔は文字サイズに応じたemです。未定義のsizeは型・実行時の両方で拒否します。
+
+内容はReactのchildren、Vue・Astroの既定スロットです。size=inheritでは文字の書式を周囲から継承します。通常時も下線を表示します。色にはneutral-900またはプライマリーのon-subtleトークンを使います。リンクの背景は透明なので、利用先の背景とのコントラストは利用側で確認してください。ホバー・押下は下線の太さ、キーボードフォーカスは輪郭で示します。長い文言は行内で折り返します。
 
 ネイティブの属性とReact・Vueのイベントをa要素へ転送します。Tab・Enter、修飾キー・中央クリック・右クリックによるリンク操作を維持し、Spaceを独自にクリックへ変換しません。URLの決定・入力値の検証・ルーターとの連携・現在地の自動判定は利用側の責任です。disabledは提供しません。保存や切り替えの操作にはTButton、ヘッダーの移動にはTHeaderLinkを使います。
 

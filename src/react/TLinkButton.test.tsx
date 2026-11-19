@@ -30,7 +30,7 @@ test('ReactのTLinkButtonはネイティブリンクと装飾アイコンをSSR�
   const clicks: EventTarget[] = [];
   const prevented: boolean[] = [];
   const page = (updated = false) => <TLinkButton href={updated ? '#next' : '/予定'} target="_blank" rel="external opener"
-    tone="blue" leadingIcon="moon" trailingIcon={updated ? undefined : 'tool'} aria-current={updated ? 'page' : undefined}
+    size={updated ? 'lg' : 'sm'} tone="blue" leadingIcon="moon" trailingIcon={updated ? undefined : 'tool'} aria-current={updated ? 'page' : undefined}
     className="details" data-kind="event" aria-describedby="hint" onClick={event => {
       clicks.push(event.currentTarget); prevented.push(event.defaultPrevented); event.preventDefault();
     }}>{updated ? '次の予定' : <em>予定の詳細</em>}</TLinkButton>;
@@ -52,7 +52,7 @@ test('ReactのTLinkButtonはネイティブリンクと装飾アイコンをSSR�
     const ids = [...host.querySelectorAll('[id]')].map(el => el.id);
     expect(new Set(ids).size).toBe(2);
     for (const icon of icons) {
-      expect(icon.getAttribute('width')).toBe('32');
+      expect(icon.getAttribute('width')).toBe('20');
       expect(icon.getAttribute('aria-hidden')).toBe('true');
     }
     await act(async () => { root = hydrateRoot(host, page(), { onRecoverableError: error => recovered.push(error) }); });
@@ -64,6 +64,9 @@ test('ReactのTLinkButtonはネイティブリンクと装飾アイコンをSSR�
     await act(async () => root!.render(page(true)));
     expect(host.querySelector('a')).toBe(anchor);
     expect(anchor.getAttribute('href')).toBe('#next');
+    expect(anchor.getAttribute('data-size')).toBe('lg');
+    expect(anchor.querySelector('svg')?.getAttribute('width')).toBe('32');
+    expect(anchor.querySelector('svg')).toBe(icons[0]);
     expect(anchor.getAttribute('aria-current')).toBe('page');
     expect(anchor.hasAttribute('data-current')).toBe(true);
     expect(anchor.querySelector('.tkw-link-button__label')?.textContent).toBe('次の予定');

@@ -119,4 +119,8 @@ React・Vue・Astroの公開入口からTLink・TLinkPropsとLinkTone・LinkOpti
 
 ## TLinkButton
 
-React・Vue・Astroの公開入口からTLinkButton・TLinkButtonPropsを公開します。href必須のa要素で、リンクの共通検証・target=_blankのrel補完・現在地解決はTLinkと同じlinkStateを使います。link-button.cssはTButtonのCSSを読み込み、高さ50px以上・文字1.75rem/700・前後の32px装飾TIcon・neutralと7色を共有します。角丸だけは16pxで、TButtonの32pxを維持します。現在地のaria-currentではラベルに下線を表示します。native属性・React/Vueイベント・children/slotを転送し、disabledは提供しません。StorybookのDefaultは「コンポーネント/TLinkButton」に実部品1つを表示し、framework/text/href/tone/leadingIcon/trailingIcon/target/rel/aria-currentをControlsとURLで保持します。Astroは実リンクと実32pxTIconの出力を使います。利用ルールはcomponents/TLinkButton/README.md、導入/APIはdocs/wiki/Usage.mdです。
+React・Vue・Astroの公開入口からTLinkButton・TLinkButtonPropsを公開します。href必須のa要素で、リンクの共通検証・target=_blankのrel補完・現在地解決はTLinkと同じlinkStateを使います。link-button.cssはTButtonのCSSを読み込み、高さ50px以上・文字1.75rem/700・前後の32px装飾TIcon・neutralと7色を共有します。角丸は現在の12pxで、TButtonの32pxを維持します。現在地のaria-currentではラベルに下線を表示します。native属性・React/Vueイベント・children/slotを転送し、disabledは提供しません。StorybookのDefaultは「コンポーネント/TLinkButton」に実部品1つを表示し、framework/text/href/tone/leadingIcon/trailingIcon/target/rel/aria-currentをControlsとURLで保持します。Astroは実リンクと実32pxTIconの出力を使います。利用ルールはcomponents/TLinkButton/README.md、導入/APIはdocs/wiki/Usage.mdです。
+
+## リンクのサイズ
+
+TLinkのsizeはinherit（既定）/sm/md/lgで、文字は継承/0.875/1/1.125rem、TIconは16/16/16/20pxです。TLinkButtonのsizeはsm/md/lg（既定）で、文字1.25/1.5/1.75rem、TIcon20/24/32px、最小高さ40/44/50px、左右padding12/14/16px、gap6/8/10pxを連動させます。縦padding6px・太さ700・現行の角丸と色は維持します。共通の型とアイコン寸法はsrc/lib/link-size.ts、文字や余白はlink.css/link-button.cssに保持します。各公開入口からLinkSize・LinkButtonSize・linkSizes・linkButtonSizes・LinkButtonOptionsを公開します。サイズ未指定の既存表示は維持し、未定義値（ボタン型のinheritを含む）は日本語エラーにします。Storybookの両部品にsize selectを追加し、方式切替・URL復元・Astro実出力のサイズ連動を検証します。

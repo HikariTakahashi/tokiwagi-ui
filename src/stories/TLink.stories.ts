@@ -1,3 +1,4 @@
+import { linkSizes } from '../lib/link-size';
 import type { Meta, StoryObj } from '@storybook/html-vite';
 import { iconNames } from '../lib/icon-sources';
 import { linkTones } from '../lib/link';
@@ -15,12 +16,13 @@ type Args = Omit<LinkPreviewOptions, 'component' | 'leadingIcon' | 'trailingIcon
 const iconControl = { control: { type: 'select' as const, labels: { none: 'なし' } }, options: ['none', ...iconNames] };
 const meta = {
   title: 'コンポーネント/TLink', id: 'components-tlink', tags: ['!autodocs'],
-  parameters: componentStoryParameters(['framework', 'text', 'href', 'tone', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']),
-  args: { framework: 'react', text: '予定の詳細を見る', href: '#link-target', tone: 'neutral', leadingIcon: 'none', trailingIcon: 'none',
+  parameters: componentStoryParameters(['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']),
+  args: { framework: 'react', text: '予定の詳細を見る', href: '#link-target', tone: 'neutral', size: 'inherit', leadingIcon: 'none', trailingIcon: 'none',
     target: '_self', rel: '', 'aria-current': 'unset', textcode: '', hrefcode: '' },
   argTypes: {
     framework: frameworkControl,
     text: { control: 'text' }, href: { control: 'text' }, tone: { control: 'select', options: linkTones },
+    size: { control: 'select', options: linkSizes },
     leadingIcon: iconControl, trailingIcon: iconControl,
     target: { control: 'select', options: ['_self', '_blank', '_parent', '_top'] },
     rel: { control: 'text' },

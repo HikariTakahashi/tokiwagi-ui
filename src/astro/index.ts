@@ -34,3 +34,6 @@ export { linkTones, type LinkTone, type LinkOptions, type LinkCurrent } from '..
 
 export { default as TLinkButton } from './TLinkButton.astro';
 export type { TLinkButtonProps } from './TLinkButtonProps';
+
+export { linkSizes, linkButtonSizes, type LinkSize, type LinkButtonSize } from '../lib/link-size';
+export type { LinkButtonOptions } from '../lib/link';

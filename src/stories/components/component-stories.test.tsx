@@ -45,8 +45,8 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
 // 各ストーリーがbell-offと同じ中央表示・標準パネルを使い、必要な設定だけを公開することを確認する。
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
-    ['TLinkButton', linkButton, ['framework', 'text', 'href', 'tone', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
-    ['TLink', link, ['framework', 'text', 'href', 'tone', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
+    ['TLinkButton', linkButton, ['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
+    ['TLink', link, ['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
     ['TButton', button, ['framework', 'text', 'tone', 'leadingIcon', 'disabled']],
     ['TText', text, ['framework', 'text', 'as', 'size', 'responsive', 'sizeSm', 'sizeLg', 'weight', 'lineHeight', 'tone', 'align', 'truncate', 'lineClamp', 'whiteSpace', 'inherit', 'italic', 'decoration']],
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
@@ -74,6 +74,10 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
   expect(brand.default.args).toEqual({ framework: 'react', text: 'Tokiwagi UI', size: 32, textcode: '' });
   expect(headerButton.default.argTypes.icon.options).toEqual(iconNames);
   expect(icon.default.argTypes.name.options).toEqual(iconNames);
+  expect(link.default.argTypes.size.options).toEqual(['inherit', 'sm', 'md', 'lg']);
+  expect(link.default.args.size).toBe('inherit');
+  expect(linkButton.default.argTypes.size.options).toEqual(['sm', 'md', 'lg']);
+  expect(linkButton.default.args.size).toBe('lg');
   expect(icon.default.argTypes.size).toEqual(bellOff.default.argTypes.size);
   expect(icon.default.argTypes.color).toEqual(bellOff.default.argTypes.color);
 });

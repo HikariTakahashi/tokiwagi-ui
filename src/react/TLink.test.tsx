@@ -30,7 +30,7 @@ test('ReactのTLinkはネイティブリンクと装飾アイコンをSSR後も�
   const clicks: EventTarget[] = [];
   const prevented: boolean[] = [];
   const page = (updated = false) => <TLink href={updated ? '#next' : '/予定'} target="_blank" rel="external opener"
-    tone="blue" leadingIcon="moon" trailingIcon={updated ? undefined : 'tool'} aria-current={updated ? 'page' : undefined}
+    size={updated ? 'lg' : 'sm'} tone="blue" leadingIcon="moon" trailingIcon={updated ? undefined : 'tool'} aria-current={updated ? 'page' : undefined}
     className="details" data-kind="event" aria-describedby="hint" onClick={event => {
       clicks.push(event.currentTarget); prevented.push(event.defaultPrevented); event.preventDefault();
     }}>{updated ? '次の予定' : <em>予定の詳細</em>}</TLink>;
@@ -64,6 +64,9 @@ test('ReactのTLinkはネイティブリンクと装飾アイコンをSSR後も�
     await act(async () => root!.render(page(true)));
     expect(host.querySelector('a')).toBe(anchor);
     expect(anchor.getAttribute('href')).toBe('#next');
+    expect(anchor.getAttribute('data-size')).toBe('lg');
+    expect(anchor.querySelector('svg')?.getAttribute('width')).toBe('20');
+    expect(anchor.querySelector('svg')).toBe(icons[0]);
     expect(anchor.getAttribute('aria-current')).toBe('page');
     expect(anchor.hasAttribute('data-current')).toBe(true);
     expect(anchor.querySelector('.tkw-link__label')?.textContent).toBe('次の予定');

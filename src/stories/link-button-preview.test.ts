@@ -20,14 +20,19 @@ test('AstroのTLinkButton見本は安全な属性・文言と独立した両ア�
   Object.defineProperty(globalThis, 'document', { configurable: true, value: window.document });
   try {
     const previews = { link: await container.renderToString(TLinkButton, { props: { href: '/', leadingIcon: 'moon', trailingIcon: 'tool' } }) };
-    const icons = { moon: { 32: await container.renderToString(TIcon, { props: { name: 'moon', size: 32 } }) } } as AstroIconPreviews;
-    for (const current of [undefined, 'false', 'page'] as const) for (const icon of [undefined, 'moon'] as const) {
+    const icons = { moon: {} } as AstroIconPreviews;
+    for (const iconSize of [16, 20, 24, 32] as const) {
+      icons.moon[iconSize] = await container.renderToString(TIcon, { props: { name: 'moon', size: iconSize } });
+    }
+    for (const size of ['sm', 'md', 'lg'] as const) for (const current of [undefined, 'false', 'page'] as const) for (const icon of [undefined, 'moon'] as const) {
       window.document.body.innerHTML = astroLinkButtonPreviewHtml(previews, icons, {
-        component: 'TLinkButton', href: '/予定?a=" & <img>', text: '<img src=x> & 日本語', tone: 'blue', target: '_blank',
+        component: 'TLinkButton', size, href: '/予定?a=" & <img>', text: '<img src=x> & 日本語', tone: 'blue', target: '_blank',
         rel: 'external opener', current, leadingIcon: icon, trailingIcon: icon,
       }, 'link-test');
       const anchor = window.document.querySelector('a')!;
       expect(anchor.getAttribute('href')).toBe('/予定?a=" & <img>');
+      expect(anchor.getAttribute('data-size')).toBe(size);
+      if (icon) expect(anchor.querySelector('svg')?.getAttribute('width')).toBe(String(({ sm: 20, md: 24, lg: 32 })[size]));
       expect(anchor.querySelector('.tkw-link-button__label')?.textContent).toBe('<img src=x> & 日本語');
       expect(anchor.querySelector('img')).toBeNull();
       expect(anchor.rel).toBe('external noopener');

@@ -79,11 +79,11 @@ function VuePreview(args: ComponentPreviewProps) {
     const app = createApp({ render: () => {
       const value = props.value;
       if (value.component === 'TLinkButton') {
-        return h(VueTLinkButton, { href: value.href, tone: value.tone, leadingIcon: value.leadingIcon, trailingIcon: value.trailingIcon,
+        return h(VueTLinkButton, { href: value.href, tone: value.tone, size: value.size, leadingIcon: value.leadingIcon, trailingIcon: value.trailingIcon,
           target: value.target, rel: value.rel, 'aria-current': value.current }, () => value.text);
       }
       if (value.component === 'TLink') {
-        return h(VueTLink, { href: value.href, tone: value.tone, leadingIcon: value.leadingIcon, trailingIcon: value.trailingIcon,
+        return h(VueTLink, { href: value.href, tone: value.tone, size: value.size, leadingIcon: value.leadingIcon, trailingIcon: value.trailingIcon,
           target: value.target, rel: value.rel, 'aria-current': value.current }, () => value.text);
       }
       if (value.component === 'TButton') {

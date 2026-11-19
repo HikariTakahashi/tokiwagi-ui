@@ -39,3 +39,18 @@ test('AstroのTLinkButtonは遷移と装飾を静的HTMLで提供する', async 
     await expect(container.renderToString(TLinkButton, { props: { href: ' ' } })).rejects.toThrow('TLinkButtonのhref');
   } finally { await window.happyDOM.close(); }
 });
+
+// 実Astro出力で全サイズの寸法属性と既定値、同じ図柄を前後に置いた参照分離を確認する。
+test('TLinkButtonは全サイズの装飾アイコンと既定サイズを静的に出力する', async () => {
+  const window = new Window();
+  try {
+    for (const [size, iconSize] of [[undefined, 32], ['sm', 20], ['md', 24], ['lg', 32]] as const) {
+      window.document.body.innerHTML = await container.renderToString(TLinkButton, { props: { href: '/', size, leadingIcon: 'moon', trailingIcon: 'moon' } });
+      const anchor = window.document.querySelector('a')!;
+      expect(anchor.getAttribute('data-size')).toBe(size ?? 'lg');
+      expect(anchor.hasAttribute('size')).toBe(false);
+      expect([...anchor.querySelectorAll('svg')].map(icon => icon.getAttribute('width'))).toEqual([String(iconSize), String(iconSize)]);
+      expect(new Set([...anchor.querySelectorAll('[id]')].map(el => el.id)).size).toBe(2);
+    }
+  } finally { await window.happyDOM.close(); }
+});
