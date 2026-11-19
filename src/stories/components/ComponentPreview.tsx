@@ -88,7 +88,7 @@ function VuePreview(args: ComponentPreviewProps) {
       }
       if (value.component === 'TButton') {
         return h(VueTButton, {
-          tone: value.tone, leadingIcon: value.leadingIcon, disabled: value.disabled,
+          tone: value.tone, size: value.size, leadingIcon: value.leadingIcon, trailingIcon: value.trailingIcon, disabled: value.disabled,
         }, () => value.text);
       }
       if (value.component === 'THeader' || value.component === 'THeaderButton' || value.component === 'THeaderLink' || value.component === 'THeaderButtonGroup' || value.component === 'THeaderSection') return vueHeaderPreview(value);

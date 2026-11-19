@@ -13,7 +13,7 @@ const execute = promisify(execFile);
 
 export function astroButtonPreviewsPlugin(): Plugin {
   const dependencies = ['scripts/render-astro-button-previews.ts', 'src/astro/TButton.astro',
-    'src/astro/TButtonProps.ts', 'src/lib/button.ts', 'src/astro/TIcon.astro', 'src/astro/index.ts',
+    'src/astro/TButtonProps.ts', 'src/lib/button.ts', 'src/lib/button-size.ts', 'src/astro/TIcon.astro', 'src/astro/index.ts',
   ].map(path => root + path);
   return astroPreviewDataPlugin('buttons', async (): Promise<AstroButtonPreviews> => {
     const directory = await mkdtemp(join(tmpdir(), 'tkw-astro-buttons-'));

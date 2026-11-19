@@ -4,13 +4,16 @@ import type { TButtonProps } from './TButtonProps';
 import TIcon from './TIcon.astro';
 
 interface Props extends TButtonProps {}
-const { tone, leadingIcon, type, disabled, class: className, ...attributes } = Astro.props;
-const state = buttonState({ tone, leadingIcon, type, disabled });
+const { tone, size, leadingIcon, trailingIcon, type, disabled, class: className, ...attributes } = Astro.props;
+const state = buttonState({ tone, size, leadingIcon, trailingIcon, type, disabled });
 ---
 <button {...attributes} class:list={['tkw-button', className]}
-  type={state.type} disabled={state.disabled} data-tone={state.tone}>
+  type={state.type} disabled={state.disabled} data-tone={state.tone} data-size={state.size}>
   {state.leadingIcon !== undefined && (
-    <span class="tkw-button__icon"><TIcon name={state.leadingIcon} size={32} /></span>
+    <span class="tkw-button__icon tkw-button__leading-icon"><TIcon name={state.leadingIcon} size={state.iconSize} /></span>
   )}
   <span class="tkw-button__label"><slot /></span>
+  {state.trailingIcon !== undefined && (
+    <span class="tkw-button__icon tkw-button__trailing-icon"><TIcon name={state.trailingIcon} size={state.iconSize} /></span>
+  )}
 </button>

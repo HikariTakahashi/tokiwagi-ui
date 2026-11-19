@@ -1,10 +1,13 @@
 import { isIconName, type IconName } from './icon-sources';
+import { buttonSizeState, type ButtonSize } from './button-size';
 
 export const buttonTones = ['neutral', 'green', 'teal', 'blue', 'violet', 'rose', 'coral', 'amber'] as const;
 export type ButtonTone = typeof buttonTones[number];
 export type ButtonOptions = {
   tone?: ButtonTone;
+  size?: ButtonSize;
   leadingIcon?: IconName;
+  trailingIcon?: IconName;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
 };
@@ -16,7 +19,7 @@ export function buttonDisabledState(disabled: boolean = false, componentName = '
 }
 
 export function buttonState({
-  tone = 'neutral', leadingIcon, type = 'button', disabled = false,
+  tone = 'neutral', size, leadingIcon, trailingIcon, type = 'button', disabled = false,
 }: ButtonOptions = {}) {
   if (!buttonTones.includes(tone)) {
     throw new Error('TButtonのtoneにはneutralまたは7色のプライマリーを指定してください');
@@ -25,8 +28,8 @@ export function buttonState({
     throw new Error('TButtonのtypeにはbutton/submit/resetを指定してください');
   }
   buttonDisabledState(disabled);
-  if (leadingIcon !== undefined && !isIconName(leadingIcon)) {
-    throw new Error(`存在しないアイコン公開名: ${leadingIcon}`);
+  for (const name of [leadingIcon, trailingIcon]) {
+    if (name !== undefined && !isIconName(name)) throw new Error(`存在しないアイコン公開名: ${name}`);
   }
-  return { tone, leadingIcon, type, disabled };
+  return { tone, leadingIcon, trailingIcon, type, disabled, ...buttonSizeState(size) };
 }

@@ -1,4 +1,4 @@
-/* TButtonの基本寸法・配色・状態を共有し、リンク用の角丸・現在地・サイズ差分を定義する。 */
+/* TButtonの寸法・配色・状態を共有し、リンク用の角丸と現在地を定義する。 */
 @import "./button.css";
 
 .tkw-button.tkw-link-button {
@@ -11,25 +11,4 @@
   text-decoration-line: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
-}
-
-.tkw-button.tkw-link-button[data-size='sm'] {
-  font-size: 1.25rem;
-  min-block-size: 40px;
-  padding-inline: 12px;
-  gap: 6px;
-}
-.tkw-button.tkw-link-button[data-size='md'] {
-  font-size: 1.5rem;
-  min-block-size: 44px;
-  padding-inline: 14px;
-  gap: 8px;
-}
-.tkw-link-button[data-size='sm'] .tkw-button__icon {
-  inline-size: 20px;
-  block-size: 20px;
-}
-.tkw-link-button[data-size='md'] .tkw-button__icon {
-  inline-size: 24px;
-  block-size: 24px;
 }

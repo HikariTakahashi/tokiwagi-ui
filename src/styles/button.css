@@ -39,6 +39,27 @@
   place-items: center;
 }
 
+.tkw-button[data-size='sm'] {
+  font-size: 1.25rem;
+  min-block-size: 40px;
+  padding-inline: 12px;
+  gap: 6px;
+}
+.tkw-button[data-size='md'] {
+  font-size: 1.5rem;
+  min-block-size: 44px;
+  padding-inline: 14px;
+  gap: 8px;
+}
+.tkw-button[data-size='sm'] .tkw-button__icon {
+  inline-size: 20px;
+  block-size: 20px;
+}
+.tkw-button[data-size='md'] .tkw-button__icon {
+  inline-size: 24px;
+  block-size: 24px;
+}
+
 .tkw-button__label {
   min-inline-size: 0;
   overflow-wrap: anywhere;

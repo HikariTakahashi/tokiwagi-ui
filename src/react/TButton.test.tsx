@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
 import { renderToString } from 'react-dom/server';
-import { TButton } from 'tokiwagi-ui/react';
+import { TButton, buttonSizes } from 'tokiwagi-ui/react';
 import { act } from './test-act';
 import 'tokiwagi-ui/button.css';
 
@@ -18,6 +18,57 @@ beforeAll(async () => {
     Object.defineProperty(globalThis, key, { configurable: true, writable: true, value });
   }
   ({ hydrateRoot } = await import('react-dom/client'));
+});
+
+// 全サイズと4通りの配置を同時にSSR・hydrateし、読み上げ名とクリッピングIDを分離して更新する。
+test('ReactのTButtonは全サイズと前後アイコンをhydrate後も連動させる', async () => {
+  const page = (updated = false) => <div>{buttonSizes.flatMap((size, index) =>
+    [0, 1, 2, 3].map(placement => <TButton key={`${size}-${placement}`}
+      size={updated ? buttonSizes[(index + 1) % buttonSizes.length] : size}
+      leadingIcon={placement & 1 ? 'moon' : undefined} trailingIcon={placement & 2 ? 'moon' : undefined}>
+      <em>保存する</em>
+    </TButton>))}</div>;
+  const host = document.createElement('div');
+  host.innerHTML = renderToString(page()); document.body.append(host);
+  const buttons = [...host.querySelectorAll('button')];
+  const icons = [...host.querySelectorAll('svg')];
+  const ids = [...host.querySelectorAll('[id]')].map(node => node.id);
+  const recovered: unknown[] = [];
+  const errors = spyOn(console, 'error').mockImplementation(() => {});
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    expect(new Set(ids).size).toBe(12);
+    buttons.forEach((button, index) => {
+      const placement = index % 4;
+      expect(button.dataset.size).toBe(buttonSizes[Math.floor(index / 4)]);
+      expect(button.querySelector('.tkw-button__label')?.textContent).toBe('保存する');
+      expect(button.firstElementChild?.classList.contains('tkw-button__leading-icon')).toBe(Boolean(placement & 1));
+      expect(button.lastElementChild?.classList.contains('tkw-button__trailing-icon')).toBe(Boolean(placement & 2));
+      expect(button.querySelectorAll('svg').length).toBe(Number(Boolean(placement & 1)) + Number(Boolean(placement & 2)));
+      for (const icon of button.querySelectorAll('svg')) {
+        expect(icon.getAttribute('width')).toBe(String([20, 24, 32][Math.floor(index / 4)]));
+        expect(icon.getAttribute('aria-hidden')).toBe('true');
+      }
+    });
+    for (const node of host.querySelectorAll('[clip-path]')) {
+      expect(ids).toContain(node.getAttribute('clip-path')!.slice(5, -1));
+    }
+    await act(async () => { root = hydrateRoot(host, page(), { onRecoverableError: error => recovered.push(error) }); });
+    expect([...host.querySelectorAll('svg')]).toEqual(icons);
+    await act(async () => root!.render(page(true)));
+    expect([...host.querySelectorAll('button')]).toEqual(buttons);
+    expect([...host.querySelectorAll('svg')]).toEqual(icons);
+    buttons.forEach((button, index) => {
+      const next = (Math.floor(index / 4) + 1) % 3;
+      expect(button.dataset.size).toBe(buttonSizes[next]);
+      for (const icon of button.querySelectorAll('svg')) expect(icon.getAttribute('width')).toBe(String([20, 24, 32][next]));
+    });
+    expect(recovered).toEqual([]);
+    expect(errors).not.toHaveBeenCalled();
+  } finally {
+    if (root) await act(async () => root!.unmount());
+    errors.mockRestore(); host.remove();
+  }
 });
 afterAll(async () => {
   await window.happyDOM.close();
