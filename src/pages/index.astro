@@ -29,6 +29,7 @@ import { renderIconSvg } from '../lib/icon-assets';
         <nav class="flex" aria-label="ページ内ナビゲーション" data-section-navigation>
           <THeaderLink href="#principles"><TText inherit tone="inherit" style="white-space: inherit">デザインの考え方</TText></THeaderLink>
           <THeaderLink href="#foundations"><TText inherit tone="inherit" style="white-space: inherit">基盤</TText></THeaderLink>
+          <THeaderLink href="/icons/"><TText inherit tone="inherit" style="white-space: inherit">アイコン</TText></THeaderLink>
           <THeaderLink href="/components/"><TText inherit tone="inherit" style="white-space: inherit">コンポーネント</TText></THeaderLink>
           <THeaderLink href="http://localhost:6006/" target="_blank" rel="noopener noreferrer"><TText inherit tone="inherit" style="white-space: inherit">Storybook</TText> <span aria-hidden="true"><TText inherit tone="inherit" style="white-space: inherit">↗</TText></span></THeaderLink>
         </nav>
@@ -83,9 +84,9 @@ import { renderIconSvg } from '../lib/icon-assets';
               <div class="foundation-card-top"><span><TText inherit tone="inherit">02 / ICONS</TText></span><span><TText inherit tone="inherit">336 SVG</TText></span></div>
               <div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div>
               <TCardTitle id="foundation-icons-title" class="foundation-title"><TText inherit tone="inherit">アイコン</TText></TCardTitle>
-              <TCardDescription class="foundation-description"><TText inherit tone="inherit">336個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</TText></TCardDescription>
+              <TCardDescription class="foundation-description"><TText inherit tone="inherit">336個のSVGを収録。図柄・公開名・用途を一覧で確認し、個別の使用ルールを参照できます。</TText></TCardDescription>
             </TCardHeader>
-            <TCardFooter class="foundation-footer"><TLink class="foundation-link" href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right"><TText inherit tone="inherit">アイコンを見る</TText></TLink></TCardFooter>
+            <TCardFooter class="foundation-footer"><TLink class="foundation-link" href="/icons/"><TText inherit tone="inherit">アイコンを見る</TText></TLink></TCardFooter>
           </TCard>
         </div>
       </section>

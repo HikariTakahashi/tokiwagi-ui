@@ -1,0 +1,106 @@
+---
+import '../styles/global.css';
+import '../styles/icons-page.css';
+import 'tokiwagi-ui/button.css';
+import 'tokiwagi-ui/header.css';
+import 'tokiwagi-ui/link.css';
+import 'tokiwagi-ui/select.css';
+import 'tokiwagi-ui/sidebar.css';
+import { TBrand, TButton, THeader, THeaderLink, THeaderSection, TIcon, TLink, TSelect, TSidebar, TSidebarBody, TSidebarLayout, TSidebarMain } from 'tokiwagi-ui/astro';
+import { iconCatalog } from '../lib/icon-catalog';
+import { iconCategories, iconSizes, renderIconSvg } from '../lib/icon-assets';
+import { iconOverview } from '../lib/icon-overview';
+
+const storybook = 'http://localhost:6006/';
+const documents = import.meta.glob<string>('../../icons/*/README.md', { query: '?raw', import: 'default', eager: true });
+const categories = [['all', 'すべて'], ...iconCategories] as const;
+const sizeOptions = iconSizes.map(size => ({ value: String(size), label: `${size} px` }));
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content={`Tokiwagi UIの${iconCatalog.length}種のアイコンを公開名や別名で検索。分類と表示サイズを切り替え、図柄と用途、個別の使用ルールを確認できます。`} />
+    <title>アイコン | Tokiwagi UI</title>
+  </head>
+  <body class="icons-page">
+    <TLink class="icons-skip-link" href="#main">本文へスキップ</TLink>
+    <THeader class="sticky top-0 z-10" scrollLabel="サイトヘッダーナビゲーション">
+      <THeaderSection position="left"><a class="icons-brand-link" href="/" aria-label="Tokiwagi UI ホーム"><TBrand /></a></THeaderSection>
+      <THeaderSection position="right">
+        <nav class="flex" aria-label="サイトナビゲーション">
+          <THeaderLink href="/">概要</THeaderLink>
+          <THeaderLink href="/colors/">カラー</THeaderLink>
+          <THeaderLink href="/icons/" aria-current="page">アイコン</THeaderLink>
+          <THeaderLink href="/components/">コンポーネント</THeaderLink>
+          <THeaderLink href={storybook} target="_blank" rel="noopener noreferrer">Storybook</THeaderLink>
+        </nav>
+      </THeaderSection>
+    </THeader>
+
+    <main id="main" class="icons-shell" data-icon-catalog>
+      <nav class="icons-breadcrumb" aria-label="パンくずリスト"><TLink href="/">ホーム</TLink><span aria-hidden="true">/</span><span aria-current="page">アイコン</span></nav>
+      <section class="icons-hero" aria-labelledby="icons-title">
+        <div>
+          <p class="icons-kicker">ICONS / THE SHAPES OF EVERYDAY</p>
+          <h1 id="icons-title">意味が伝わる、<br class="icons-mobile-break" />かたちを選ぶ。</h1>
+          <p class="icons-lead">日々の操作を支える{iconCatalog.length}のアイコン。名前や用途から、必要なひとつへ。</p>
+        </div>
+        <p class="icons-total" aria-label={`${iconCatalog.length}種のアイコン`}><span>{iconCatalog.length}</span><span aria-hidden="true">ICONS</span></p>
+      </section>
+
+      <TSidebarLayout class="icons-layout" gap={32}>
+        <TSidebar side="left" width={184} class="icons-sidebar" aria-label="アイコンの分類とガイドライン">
+          <TSidebarBody>
+            <div data-icon-controls hidden>
+              <h2 class="icons-kicker" id="icons-category-heading">COLLECTION</h2>
+              <div class="icons-categories" role="group" aria-labelledby="icons-category-heading">
+                {categories.map(([value, label]) => <button type="button" class="icons-category" data-icon-category={value} aria-pressed={value === 'all' ? 'true' : 'false'} aria-controls="icon-list">{label}</button>)}
+              </div>
+            </div>
+            <div class="icons-guidelines">
+              <h2 class="icons-kicker">GUIDELINES</h2>
+              <TLink href={`${storybook}?path=/docs/アイコン-命名基準--docs`} target="_blank" rel="noopener noreferrer">命名と使い分け</TLink>
+              <p>公開名と用途を、<br />同じルールで。</p>
+            </div>
+          </TSidebarBody>
+        </TSidebar>
+        <TSidebarMain class="icons-main">
+          <div class="icons-toolbar" data-icon-controls hidden>
+            <div class="icons-search-field">
+              <label for="icon-search">公開名・別名で検索</label>
+              <div class="icons-search-input"><TIcon name="search" size={20} /><input id="icon-search" type="search" placeholder="例：bell、通知、カレンダー" autocomplete="off" aria-controls="icon-list" data-icon-search /></div>
+            </div>
+            <TSelect id="icon-size" label="表示サイズ" size="lg" options={sizeOptions} defaultValue="24" aria-controls="icon-list" data-icon-size />
+          </div>
+          <div class="icons-list-heading"><h2 data-icon-category-title>すべてのアイコン</h2><p role="status" aria-live="polite" aria-atomic="true" data-icon-count>{iconCatalog.length} / {iconCatalog.length}件</p></div>
+          <p class="icons-list-help" id="icon-list-help">図柄を選ぶと、公開名と用途、使用ルールを確認できます。</p>
+          <ul class="icons-grid" id="icon-list" aria-describedby="icon-list-help">
+            {iconCatalog.map(icon => <li data-icon-entry data-name={icon.name} data-category={icon.category} data-search-labels={JSON.stringify(icon.searchLabels)} data-description={iconOverview(documents[`../../icons/${icon.name}/README.md`]!, icon.name)}>
+              <a class="icons-tile" href={`${storybook}${icon.href}`} target="_blank" rel="noopener noreferrer" data-icon-card>
+                <span class="icons-glyph" set:html={renderIconSvg(icon.svg, `catalog-${icon.name}`, 24)} />
+                <code>{icon.name}</code>
+              </a>
+            </li>)}
+          </ul>
+          <div class="icons-empty" data-icon-empty hidden><h3>一致するアイコンがありません。</h3><p>公開名・別名や分類を変えて検索してください。</p><TButton size="sm" tone="neutral" weight="normal" data-icon-reset>絞り込みを解除</TButton></div>
+        </TSidebarMain>
+      </TSidebarLayout>
+      <dialog class="icons-dialog" aria-labelledby="icon-detail-name" aria-describedby="icon-detail-description" data-icon-dialog>
+        <form method="dialog" class="icons-dialog-top"><span class="icons-kicker">ICON DETAILS</span><TButton type="submit" size="sm" tone="neutral" weight="normal" autofocus>閉じる</TButton></form>
+        <div class="icons-detail-preview" data-icon-detail-preview aria-hidden="true"></div>
+        <h2 id="icon-detail-name" data-icon-detail-name></h2>
+        <p id="icon-detail-description" data-icon-detail-description></p>
+        <p class="icons-detail-status" data-icon-detail-status></p>
+        <TLink href={storybook} target="_blank" rel="noopener noreferrer" data-icon-detail-link>個別の使用ルールを見る</TLink>
+      </dialog>
+    </main>
+    <footer class="icons-footer"><span>ひとつのかたちに、ひとつの意味を。</span><TLink href="/">Tokiwagi UI</TLink></footer>
+  </body>
+</html>
+<script>
+  import { initializeIconCatalog } from '../scripts/icons-page';
+  initializeIconCatalog(document, window);
+</script>
