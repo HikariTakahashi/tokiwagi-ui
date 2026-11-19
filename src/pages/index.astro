@@ -3,7 +3,8 @@ import '../styles/global.css';
 import 'tokiwagi-ui/header.css';
 import 'tokiwagi-ui/link.css';
 import 'tokiwagi-ui/link-button.css';
-import { TBrand, THeader, THeaderLink, THeaderSection, TLink, TLinkButton } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/text.css';
+import { TBrand, THeader, THeaderLink, THeaderSection, TLink, TLinkButton, TText } from 'tokiwagi-ui/astro';
 import { colors } from '../lib/palette';
 import { iconsByName } from '../lib/icon-catalog';
 import { renderIconSvg } from '../lib/icon-assets';
@@ -18,16 +19,16 @@ import { renderIconSvg } from '../lib/icon-assets';
     <title>Tokiwagi UI — 変わる毎日に、変わらない使いやすさを。</title>
   </head>
   <body>
-    <a class="skip-link" href="#main">本文へスキップ</a>
+    <a class="skip-link" href="#main"><TText inherit tone="inherit">本文へスキップ</TText></a>
     <THeader class="sticky top-0 z-10" scrollLabel="サイトヘッダーナビゲーション">
       <THeaderSection position="left">
         <TBrand />
       </THeaderSection>
       <THeaderSection position="right">
         <nav class="flex" aria-label="ページ内ナビゲーション" data-section-navigation>
-          <THeaderLink href="#principles">デザインの考え方</THeaderLink>
-          <THeaderLink href="#foundations">基盤</THeaderLink>
-          <THeaderLink href="http://localhost:6006/" target="_blank" rel="noopener noreferrer">Storybook <span aria-hidden="true">↗</span></THeaderLink>
+          <THeaderLink href="#principles"><TText inherit tone="inherit" style="white-space: inherit">デザインの考え方</TText></THeaderLink>
+          <THeaderLink href="#foundations"><TText inherit tone="inherit" style="white-space: inherit">基盤</TText></THeaderLink>
+          <THeaderLink href="http://localhost:6006/" target="_blank" rel="noopener noreferrer"><TText inherit tone="inherit" style="white-space: inherit">Storybook</TText> <span aria-hidden="true"><TText inherit tone="inherit" style="white-space: inherit">↗</TText></span></THeaderLink>
         </nav>
       </THeaderSection>
     </THeader>
@@ -35,42 +36,42 @@ import { renderIconSvg } from '../lib/icon-assets';
     <main id="main">
       <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <div class="eyebrow"><span class="eyebrow-line"></span> A DESIGN SYSTEM FOR EVERYDAY MOMENTS</div>
-          <h1 id="hero-title">変わる毎日に、<br /><em>変わらない使いやすさを。</em></h1>
-          <p class="hero-lead">Tokiwagi UI は、色・アイコン・コンポーネントと、その使い方をそろえるデザインシステムです。<br />ひとつひとつの部品とルールを積み重ね、日々に寄り添う使いやすさを、次の体験へつなぎます。</p>
+          <div class="eyebrow"><span class="eyebrow-line"></span><TText inherit tone="inherit"> A DESIGN SYSTEM FOR EVERYDAY MOMENTS</TText></div>
+          <h1 id="hero-title"><TText inherit tone="inherit">変わる毎日に、<br /><em>変わらない使いやすさを。</em></TText></h1>
+          <p class="hero-lead"><TText inherit tone="inherit">Tokiwagi UI は、色・アイコン・コンポーネントと、その使い方をそろえるデザインシステムです。<br />ひとつひとつの部品とルールを積み重ね、日々に寄り添う使いやすさを、次の体験へつなぎます。</TText></p>
           <div class="hero-actions">
-            <TLinkButton size="sm" href="http://localhost:6006/" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right">Storybook で見る</TLinkButton>
-            <TLink class="text-link" href="#foundations">基盤について見る <span aria-hidden="true">↓</span></TLink>
+            <TLinkButton size="sm" href="http://localhost:6006/" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right"><TText inherit tone="inherit">Storybook で見る</TText></TLinkButton>
+            <TLink class="text-link" href="#foundations"><TText inherit tone="inherit">基盤について見る <span aria-hidden="true">↓</span></TText></TLink>
           </div>
-          <p class="local-note">ローカルで <code>bun run storybook</code> を起動すると閲覧できます。</p>
+          <p class="local-note"><TText inherit tone="inherit">ローカルで <code>bun run storybook</code> を起動すると閲覧できます。</TText></p>
         </div>
         <div class="hero-art" aria-label="7色のプライマリーカラー">
-          <div class="art-grid">{colors.map(([key, name], index) => <div class="art-card" style={`--card-color:var(--tkw-color-primary-${key});--card-ink:var(--tkw-color-primary-${key}-on);--card-angle:${(index - 3) * 2}deg`}><span class="art-index">0{index + 1}</span><span class="art-letter" aria-hidden="true">t.</span><span class="art-name">{name}</span></div>)}</div>
-          <div class="art-caption"><span>SEVEN EQUAL COLORS</span><span>LIGHT THEME / 01</span></div>
+          <div class="art-grid">{colors.map(([key, name], index) => <div class="art-card" style={`--card-color:var(--tkw-color-primary-${key});--card-ink:var(--tkw-color-primary-${key}-on);--card-angle:${(index - 3) * 2}deg`}><span class="art-index"><TText inherit tone="inherit">0{index + 1}</TText></span><span class="art-letter" aria-hidden="true"><TText inherit tone="inherit">t.</TText></span><span class="art-name"><TText inherit tone="inherit">{name}</TText></span></div>)}</div>
+          <div class="art-caption"><span><TText inherit tone="inherit">SEVEN EQUAL COLORS</TText></span><span><TText inherit tone="inherit">LIGHT THEME / 01</TText></span></div>
         </div>
       </section>
 
       <section class="principles section-shell" id="principles" aria-labelledby="principles-title">
-        <div class="section-intro"><span class="section-kicker">01 / PRINCIPLES</span><h2 id="principles-title">それぞれの色に、<br />それぞれの出番。</h2><p>ひとつの色を主役に決めず、使う場面に合わせて選ぶ。状態を色だけに頼らず、ことばやアイコンでも伝える。毎日の操作に一貫した手がかりを作ります。</p></div>
+        <div class="section-intro"><span class="section-kicker"><TText inherit tone="inherit">01 / PRINCIPLES</TText></span><h2 id="principles-title"><TText inherit tone="inherit">それぞれの色に、<br />それぞれの出番。</TText></h2><p><TText inherit tone="inherit">ひとつの色を主役に決めず、使う場面に合わせて選ぶ。状態を色だけに頼らず、ことばやアイコンでも伝える。毎日の操作に一貫した手がかりを作ります。</TText></p></div>
         <div class="principle-list">
-          <article><span class="principle-number">01</span><div><h3>7色は対等な主役</h3><p>プロジェクトやカテゴリごとに選び、同じ対象には同じ色を使います。</p></div></article>
-          <article><span class="principle-number">02</span><div><h3>意味はいつも同じ</h3><p>成功・警告・エラー・情報は、専用の状態色と説明を組み合わせます。</p></div></article>
-          <article><span class="principle-number">03</span><div><h3>見て、確かめて、作る</h3><p>トークン、操作状態、文字とのコントラストを Storybook で確認できます。</p></div></article>
+          <article><span class="principle-number"><TText inherit tone="inherit">01</TText></span><div><h3><TText inherit tone="inherit">7色は対等な主役</TText></h3><p><TText inherit tone="inherit">プロジェクトやカテゴリごとに選び、同じ対象には同じ色を使います。</TText></p></div></article>
+          <article><span class="principle-number"><TText inherit tone="inherit">02</TText></span><div><h3><TText inherit tone="inherit">意味はいつも同じ</TText></h3><p><TText inherit tone="inherit">成功・警告・エラー・情報は、専用の状態色と説明を組み合わせます。</TText></p></div></article>
+          <article><span class="principle-number"><TText inherit tone="inherit">03</TText></span><div><h3><TText inherit tone="inherit">見て、確かめて、作る</TText></h3><p><TText inherit tone="inherit">トークン、操作状態、文字とのコントラストを Storybook で確認できます。</TText></p></div></article>
         </div>
       </section>
 
       <section class="foundations section-shell" id="foundations" aria-labelledby="foundations-title">
-        <div class="section-topline"><span class="section-kicker">02 / FOUNDATIONS</span><span>THE BUILDING BLOCKS</span></div>
-        <div class="foundations-heading"><h2 id="foundations-title">つくるための、<br />共通の基盤。</h2><p>カラーの選び方と組み合わせ、アイコンの命名と用途を確認できます。</p></div>
+        <div class="section-topline"><span class="section-kicker"><TText inherit tone="inherit">02 / FOUNDATIONS</TText></span><span><TText inherit tone="inherit">THE BUILDING BLOCKS</TText></span></div>
+        <div class="foundations-heading"><h2 id="foundations-title"><TText inherit tone="inherit">つくるための、<br />共通の基盤。</TText></h2><p><TText inherit tone="inherit">カラーの選び方と組み合わせ、アイコンの命名と用途を確認できます。</TText></p></div>
         <div class="foundation-grid">
-          <article class="foundation-card color-card"><div class="foundation-card-top"><span>01 / COLORS</span><span>確定</span></div><div class="color-mini" aria-hidden="true">{colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}</div><h3>カラー</h3><p>プライマリー、セカンダリー、状態色、ニュートラル。色見本と用途、背景と文字の組み合わせを確認できます。</p><TLink class="foundation-link" href="/colors/">カラーを詳しく見る <span aria-hidden="true">→</span></TLink></article>
-          <article class="foundation-card icon-card"><div class="foundation-card-top"><span>02 / ICONS</span><span>336 SVG</span></div><div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div><h3>アイコン</h3><p>336個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</p><TLink class="foundation-link" href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right">アイコンを見る</TLink></article>
+          <article class="foundation-card color-card"><div class="foundation-card-top"><span><TText inherit tone="inherit">01 / COLORS</TText></span><span><TText inherit tone="inherit">確定</TText></span></div><div class="color-mini" aria-hidden="true">{colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}</div><h3><TText inherit tone="inherit">カラー</TText></h3><p><TText inherit tone="inherit">プライマリー、セカンダリー、状態色、ニュートラル。色見本と用途、背景と文字の組み合わせを確認できます。</TText></p><TLink class="foundation-link" href="/colors/"><TText inherit tone="inherit">カラーを詳しく見る <span aria-hidden="true">→</span></TText></TLink></article>
+          <article class="foundation-card icon-card"><div class="foundation-card-top"><span><TText inherit tone="inherit">02 / ICONS</TText></span><span><TText inherit tone="inherit">336 SVG</TText></span></div><div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div><h3><TText inherit tone="inherit">アイコン</TText></h3><p><TText inherit tone="inherit">336個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</TText></p><TLink class="foundation-link" href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right"><TText inherit tone="inherit">アイコンを見る</TText></TLink></article>
         </div>
       </section>
 
-      <section class="closing section-shell" aria-labelledby="closing-title"><div><span class="section-kicker">START BUILDING</span><h2 id="closing-title">同じルールから、<br />新しい画面へ。</h2></div><div><p>Storybook を開き、色と用途を確かめながら実装を進めます。</p><TLinkButton size="sm" href="http://localhost:6006/" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right">Storybook を開く</TLinkButton></div></section>
+      <section class="closing section-shell" aria-labelledby="closing-title"><div><span class="section-kicker"><TText inherit tone="inherit">START BUILDING</TText></span><h2 id="closing-title"><TText inherit tone="inherit">同じルールから、<br />新しい画面へ。</TText></h2></div><div><p><TText inherit tone="inherit">Storybook を開き、色と用途を確かめながら実装を進めます。</TText></p><TLinkButton size="sm" href="http://localhost:6006/" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right"><TText inherit tone="inherit">Storybook を開く</TText></TLinkButton></div></section>
     </main>
-    <footer><a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><TBrand /></a><span>Color with purpose, meaning with clarity.</span><TLink href="#top">ページの先頭へ <span aria-hidden="true">↑</span></TLink></footer>
+    <footer><a class="brand" href="#top" aria-label="Tokiwagi UI ホーム"><TBrand /></a><span><TText inherit tone="inherit">Color with purpose, meaning with clarity.</TText></span><TLink href="#top"><TText inherit tone="inherit">ページの先頭へ <span aria-hidden="true">↑</span></TText></TLink></footer>
   </body>
 </html>
 
