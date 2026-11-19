@@ -4,13 +4,32 @@ import { transform } from '@astrojs/compiler-rs';
 import { experimental_AstroContainer } from 'astro/container';
 import { Window } from 'happy-dom';
 import { buttonTones } from '../lib/button';
+import { textWeights } from '../lib/text';
 plugin({ name: 'astro-link-test', setup(build) {
   build.onLoad({ filter: /\.astro$/ }, async args => ({ contents: transform(await Bun.file(args.path).text(), {
     filename: args.path, internalURL: 'astro/compiler-runtime', resolvePath: specifier => specifier,
   }).code, loader: 'js' }));
 } });
-const { TLinkButton } = await import('tokiwagi-ui/astro');
+const { TButton, TLinkButton } = await import('tokiwagi-ui/astro');
 const container = await experimental_AstroContainer.create();
+
+// 静的HTMLでも未指定と4段階を区別し、weightをネイティブ属性へ漏らさず不正値を拒否する。
+test('Astroの両ボタンは太さを共通仕様で静的に出力する', async () => {
+  const window = new Window();
+  try {
+    for (const component of [TButton, TLinkButton]) {
+      for (const weight of [undefined, ...textWeights]) {
+        const html = await container.renderToString(component, { props: { href: '/', weight } });
+        window.document.body.innerHTML = html;
+        const node = window.document.querySelector('.tkw-button')!;
+        expect(node.getAttribute('data-weight')).toBe(weight ?? null);
+        expect(node.hasAttribute('weight')).toBe(false);
+      }
+      await Promise.all(['inherit', 700, null].map(weight =>
+        expect(container.renderToString(component, { props: { href: '/', weight } })).rejects.toThrow('のweight')));
+    }
+  } finally { await window.happyDOM.close(); }
+});
 
 // JSなしでもhrefと操作属性を除き、無効なリンクの読み上げ状態とアイコンを静的に提供する。
 test('Astroの無効なTLinkButtonはスクリプトなしで遷移と操作を抑止する', async () => {

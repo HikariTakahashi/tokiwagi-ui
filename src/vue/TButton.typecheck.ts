@@ -27,3 +27,16 @@ const disabledTone: TButtonProps = { tone: 'neutral-400' };
 void [neutralProps, disabledTone];
 const inferredNeutralProps: InstanceType<typeof TButton>['$props'][] = neutralTones.map(tone => ({ tone }));
 void inferredNeutralProps;
+
+// TTextと同じ4段階の公開型を受け付け、未指定と文字列inheritを区別する。
+const weightedProps: TButtonProps[] = (['normal', 'medium', 'semibold', 'bold'] as const)
+  .map(weight => ({ weight }));
+// @ts-expect-error 継承する場合はweightを省略する。
+const invalidWeight: TButtonProps = { weight: 'inherit' };
+// @ts-expect-error 太さの指定は数値ではなくTText共通の名前を使う。
+const numericWeight: TButtonProps = { weight: 700 };
+void [weightedProps, invalidWeight, numericWeight];
+const inferredWeights: InstanceType<typeof TButton>['$props'][] = weightedProps;
+// @ts-expect-error Vueの推論型も4段階以外の値を拒否する。
+const invalidInferredWeight: InstanceType<typeof TButton>['$props'] = { weight: 'inherit' };
+void [inferredWeights, invalidInferredWeight];

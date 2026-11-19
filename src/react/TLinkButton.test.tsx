@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, expect, spyOn, test } from 'bun:test';
 import { Window } from 'happy-dom';
 import { renderToString } from 'react-dom/server';
-import { TButton, TLinkButton, buttonTones } from 'tokiwagi-ui/react';
+import { TButton, TLinkButton, buttonTones, textWeights, type TextWeight } from 'tokiwagi-ui/react';
 import { act } from './test-act';
 import 'tokiwagi-ui/link-button.css';
 
@@ -63,6 +63,39 @@ afterAll(async () => {
   for (const [key, descriptor] of globals) {
     if (descriptor) Object.defineProperty(globalThis, key, descriptor);
     else Reflect.deleteProperty(globalThis, key);
+  }
+});
+
+// 両部品を未指定・4段階でSSRし、hydrate後に明示値から継承へ戻しても同じDOMを使う。
+test('Reactの両ボタンは太さを指定・変更・解除できる', async () => {
+  const weights: (TextWeight | undefined)[] = [undefined, ...textWeights];
+  const page = (offset = 0) => <div>{weights.map((_, index) => {
+    const weight = weights[(index + offset) % weights.length];
+    return <div key={index}><TButton weight={weight}>保存</TButton>
+      <TLinkButton href="/calendar" weight={weight} aria-current="page">予定</TLinkButton></div>;
+  })}</div>;
+  const host = document.createElement('div'); host.innerHTML = renderToString(page()); document.body.append(host);
+  const nodes = [...host.querySelectorAll('.tkw-button')];
+  const recovered: unknown[] = [];
+  const errors = spyOn(console, 'error').mockImplementation(() => {});
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  const verify = (offset: number) => nodes.forEach((node, index) => {
+    expect(node.getAttribute('data-weight')).toBe(weights[(Math.floor(index / 2) + offset) % weights.length] ?? null);
+    expect(node.hasAttribute('weight')).toBe(false);
+  });
+  try {
+    verify(0);
+    await act(async () => { root = hydrateRoot(host, page(), { onRecoverableError: error => recovered.push(error) }); });
+    for (const offset of [1, 0]) {
+      await act(async () => root!.render(page(offset)));
+      expect([...host.querySelectorAll('.tkw-button')]).toEqual(nodes);
+      verify(offset);
+    }
+    expect(recovered).toEqual([]);
+    expect(errors).not.toHaveBeenCalled();
+  } finally {
+    if (root) await act(async () => root!.unmount());
+    errors.mockRestore(); host.remove();
   }
 });
 

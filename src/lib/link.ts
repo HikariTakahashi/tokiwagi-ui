@@ -12,7 +12,7 @@ type LinkBaseOptions = {
   trailingIcon?: IconName;
 };
 export type LinkOptions = LinkBaseOptions & { size?: LinkSize; disabled?: never };
-export type LinkButtonOptions = Omit<LinkBaseOptions, 'tone'> & Pick<ButtonOptions, 'tone' | 'disabled'> & { size?: LinkButtonSize };
+export type LinkButtonOptions = Omit<LinkBaseOptions, 'tone'> & Pick<ButtonOptions, 'tone' | 'disabled' | 'weight'> & { size?: LinkButtonSize };
 
 /** ネイティブの遷移を維持し、3方式で同じ属性・装飾を解決する。 */
 export function linkState({ href, tone = 'neutral', leadingIcon, trailingIcon, target, rel, 'aria-current': current }: LinkBaseOptions & {

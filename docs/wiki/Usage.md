@@ -273,13 +273,22 @@ import 'tokiwagi-ui/link-button.css';
 
 `LinkButtonSize`・`linkButtonSizes`・`LinkButtonOptions`は各方式の公開入口からインポートできます。TLinkButtonではinheritや未定義サイズを型・実行時の両方で拒否します。
 
+`weight`はTButton・TTextと共通の `TextWeight` 型で、`normal`（400）・`medium`（500）・`semibold`（600）・`bold`（700）を指定します。省略時は `font-weight: inherit` で親から継承し、文字列の `inherit` や数値は受け付けません。サイズ・現在地・無効状態とは独立した設定です。`TextWeight`・`textWeights` は各方式の公開入口から利用できます。
+
+```tsx
+<TLinkButton href="/calendar">親の太さを継承</TLinkButton>
+<TLinkButton href="/calendar" weight="medium">カレンダーを開く</TLinkButton>
+```
+
+従来の700固定から変わるため、既存の未指定箇所も親の太さに応じて表示が変わります。以前の太字を維持するには `weight="bold"` を指定してください。
+
 標準属性はTLinkと同じです。sizeはTLinkButton専用のLinkButtonSize（sm/md/lg、既定lg）を指定します。href必須、toneの既定はneutral、leadingIcon・trailingIconは既定なし、target・rel・aria-current・downloadなどa要素の属性を受け付けます。文字ラベルはchildren／既定スロットで渡します。React・VueのネイティブイベントとclassName／classを転送します。空のhref・不正な色・未登録のアイコンには日本語エラーを返します。disabledはboolean（既定false）で、TButtonと同じ規則で不正値を拒否します。
 
-サイズ未指定では現在の角丸12px、高さ50px以上、文字1.75rem・太さ700、前後アイコン32pxを維持します。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
+サイズ未指定では現在の角丸12px、高さ50px以上、文字1.75rem、前後アイコン32pxを維持します。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
 
 toneの型と一覧はTButtonと同じ `ButtonTone`・`buttonTones` です。`neutral` と7色に加え、`neutral-0`・`neutral-600`・`neutral-800`・`neutral-900` を指定できます。色とホバー・押下・フォーカスはTButtonと同じトークンとCSSで、ニュートラルの状態別配色は本ページのTButtonの表を参照してください。本文用TLinkの `LinkTone`・`linkTones` はneutralと7色のままです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの既定の文字サイズ継承と16pxアイコンはそれぞれ維持します。
 
-React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
+React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・size・weight・leadingIcon・trailingIcon・disabled・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
 
 `disabled={true}`（Vueは`:disabled="true"`、Astroは`disabled`）で無効化します。TButtonと同じ無効色・影なし・操作不可カーソルを使い、ホバーと押下の配色を抑止します。無効時はhref・target・rel・download・pingなどのリンク属性とtabindex・autofocus・accesskey・contenteditable、渡されたクリック・キー・ポインター操作のハンドラーを除きます。role="link"とaria-disabled="true"を付け、Tab移動から外します。hrefはpropsとして引き続き必須で、有効に戻すと属性・イベントを復元します。React・Vueはクリック・中央クリック・ダブルクリック・起動キーの伝播も抑止し、Astroはクライアントscriptなしで遷移しない静的HTMLを出力します。利用側で後付けするイベントやルーターの委譲処理はaria-disabledを確認してください。aria-disabledだけの指定では動作を無効にしません。
 
@@ -356,7 +365,7 @@ React・Vueはサーバーとクライアントで同じpropsと内容を渡し�
 
 ## TButton
 
-React・Vue・Astroの公開入口 `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` から `TButton`、`TButtonProps`、`ButtonOptions`、`ButtonTone`、`buttonTones`、`ButtonSize`、`buttonSizes` を利用できます。`tokiwagi-ui/button.css` をアプリで一度読み込むと、状態のスタイルと必要な色・書体トークンが適用されます。既定のsizeはlgで、文字は1.75rem・太さ700、高さは50px以上です。
+React・Vue・Astroの公開入口 `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` から `TButton`、`TButtonProps`、`ButtonOptions`、`ButtonTone`、`buttonTones`、`ButtonSize`、`buttonSizes` を利用できます。`tokiwagi-ui/button.css` をアプリで一度読み込むと、状態のスタイルと必要な色・書体トークンが適用されます。既定のsizeはlgで、文字は1.75rem、高さは50px以上です。太さは未指定時に親から継承します。
 
 ニュートラルの配色は次の組み合わせです。表の数値はすべて既存の `neutral-*` トークンを表し、文字色は装飾アイコンにも適用します。
 
@@ -422,6 +431,7 @@ import 'tokiwagi-ui/button.css'
 | --- | --- |
 | `tone` | `neutral`、`neutral-0`、`neutral-600`、`neutral-800`、`neutral-900`、`green`、`teal`、`blue`、`violet`、`rose`、`coral`、`amber`。既定は `neutral`。有効なプライマリー色では背景に各色のトークンを使い、文字と装飾アイコンを白で表示する |
 | `size` | `sm`、`md`、`lg`（既定）。文字・TIcon・高さ・余白を連動させる。inheritや未定義値は受け付けない |
+| `weight` | TTextと共通の `TextWeight` 型。`normal`（400）、`medium`（500）、`semibold`（600）、`bold`（700）。省略時は親から継承し、文字列のinheritは受け付けない |
 | `leadingIcon`・`trailingIcon` | どちらも省略可。既存の `IconName` を先頭・末尾の装飾アイコンとして表示 |
 | children／既定スロット | 「保存する」などの操作名を表示 |
 | `type` | `button`（既定）、`submit`、`reset` |
@@ -433,9 +443,16 @@ import 'tokiwagi-ui/button.css'
 | md | 1.5rem | 24px | 44px | 14px | 8px |
 | lg | 1.75rem | 32px | 50px | 16px | 10px |
 
-縦padding6px・太さ700・角丸32pxは共通です。lgのアイコン外枠は40×32px、sm/mdは20×20px／24×24pxです。sizeを省略すると既存の文字のみ・先頭アイコン付きの寸法を維持します。前後に同じアイコンを指定してもIDを分離し、読み上げ名は文字ラベルだけから取得します。TLinkButtonとサイズの規則・CSSを共有しますが、TLinkButtonの角丸12px・リンクとしての動作も維持します。
+縦padding6px・角丸32pxは共通です。lgのアイコン外枠は40×32px、sm/mdは20×20px／24×24pxです。sizeを省略すると既存の文字のみ・先頭アイコン付きの寸法を維持します。前後に同じアイコンを指定してもIDを分離し、読み上げ名は文字ラベルだけから取得します。TLinkButtonとサイズの規則・CSSを共有しますが、TLinkButtonの角丸12px・リンクとしての動作も維持します。
 
-標準のボタン属性とReact・Vueのネイティブイベントは外側の `button` に渡します。AstroはHTMLのイベント属性や利用側のscriptを使用します。型を迂回した不正な色・size・type・前後アイコン名・disabledは日本語エラーで検出します。フォームの送信・リセットとTab・Enter・Spaceのネイティブ操作を維持します。React 18/19・VueのSSRとハイドレーションには同じ内容・propsを使用し、アイコンのIDはTIconの方式に従います。Astroの表示にはクライアントJavaScriptは不要です。保存や送信の状態は利用側で管理します。
+`weight`はsizeとは独立して指定します。未指定時は親から継承し、明示値はTTextと同じ4段階です。`TextWeight`・`textWeights` は各方式の公開入口から利用できます。従来の700固定から変わるため、既存の未指定箇所も親の太さに応じて表示が変わります。以前の太字を保つ場合は `weight="bold"` を指定してください。Storybookのweight選択には未指定（継承）と4段階を用意し、方式切り替え・URL再読み込みでも設定を保持します。
+
+```tsx
+<TButton>親の太さを継承</TButton>
+<TButton weight="semibold">保存する</TButton>
+```
+
+標準のボタン属性とReact・Vueのネイティブイベントは外側の `button` に渡します。AstroはHTMLのイベント属性や利用側のscriptを使用します。型を迂回した不正な色・size・weight・type・前後アイコン名・disabledは日本語エラーで検出します。フォームの送信・リセットとTab・Enter・Spaceのネイティブ操作を維持します。React 18/19・VueのSSRとハイドレーションには同じ内容・propsを使用し、アイコンのIDはTIconの方式に従います。Astroの表示にはクライアントJavaScriptは不要です。保存や送信の状態は利用側で管理します。
 
 利用ルールは [TButtonの個別README](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TButton/README.md)、動作の見本はStorybookの「コンポーネント/TButton」にあります。
 

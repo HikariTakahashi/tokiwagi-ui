@@ -14,6 +14,7 @@ export const TLinkButton = defineComponent({
     href: { type: String, required: true },
     tone: { type: String as PropType<ButtonTone>, default: 'neutral' },
     size: { type: String as PropType<LinkButtonSize>, default: 'lg' },
+    weight: String as PropType<LinkButtonOptions['weight']>,
     leadingIcon: { type: String as PropType<IconName> },
     trailingIcon: { type: String as PropType<IconName> },
     disabled: { type: Boolean, default: false },
@@ -30,7 +31,7 @@ export const TLinkButton = defineComponent({
         role: state.disabled ? 'link' : attrs.role, 'aria-disabled': state.disabled ? true : attrs['aria-disabled'],
         ...(state.disabled ? Object.fromEntries(['onClick', 'onDblclick', 'onAuxclick', 'onKeydown', 'onKeyup'].map(name => [name, stopDisabledLinkActivation])) : {}),
         class: ['tkw-button', 'tkw-link-button', attrs.class],
-        'data-size': sizing.size, 'data-tone': state.tone, 'data-current': state.isCurrent || undefined, 'data-disabled': state.disabled || undefined,
+        'data-size': sizing.size, 'data-tone': state.tone, 'data-weight': state.weight, 'data-current': state.isCurrent || undefined, 'data-disabled': state.disabled || undefined,
       }, [
         state.leadingIcon === undefined ? null : h('span', { class: 'tkw-button__icon tkw-link-button__leading-icon' }, [h(TIcon, { name: state.leadingIcon, size: sizing.iconSize })]),
         h('span', { class: 'tkw-button__label tkw-link-button__label' }, slots.default?.()),

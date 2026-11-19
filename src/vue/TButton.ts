@@ -12,6 +12,7 @@ export const TButton = defineComponent({
   props: {
     tone: { type: String as PropType<ButtonTone>, default: 'neutral' },
     size: { type: String as PropType<ButtonSize>, default: 'lg' },
+    weight: String as PropType<ButtonOptions['weight']>,
     leadingIcon: { type: String as PropType<IconName> },
     trailingIcon: { type: String as PropType<IconName> },
     type: { type: String as PropType<ButtonOptions['type']>, default: 'button' },
@@ -19,7 +20,7 @@ export const TButton = defineComponent({
   },
   setup(props, { attrs, slots }) {
     return () => {
-      const { tone, size, iconSize, leadingIcon, trailingIcon, type, disabled } = buttonState(props);
+      const { tone, size, weight, iconSize, leadingIcon, trailingIcon, type, disabled } = buttonState(props);
 
       return h('button', {
         ...attrs,
@@ -28,6 +29,7 @@ export const TButton = defineComponent({
         disabled,
         'data-tone': tone,
         'data-size': size,
+        'data-weight': weight,
       }, [
         leadingIcon === undefined ? null : h('span', { class: 'tkw-button__icon tkw-button__leading-icon' }, [
           h(TIcon, { name: leadingIcon, size: iconSize }),

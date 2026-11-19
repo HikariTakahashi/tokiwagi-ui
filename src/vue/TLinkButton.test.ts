@@ -1,5 +1,43 @@
 import { expect, test } from 'bun:test';
 
+// VueのDOM取得前にwindowを用意し、全太さのSSR・hydrateと明示指定の解除を両部品で確認する。
+test('Vueの両ボタンは太さを指定・変更・解除できる', () => {
+  const script = `
+    import assert from 'node:assert/strict';
+    import { Window } from 'happy-dom';
+    const browser = new Window();
+    for (const [key,value] of Object.entries({window:browser,document:browser.document,
+      HTMLElement:browser.HTMLElement,Element:browser.Element,SVGElement:browser.SVGElement,Node:browser.Node})) {
+      Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
+    }
+    const {createSSRApp,h,nextTick,ref}=await import('vue');
+    const {renderToString}=await import('@vue/server-renderer');
+    const {TButton,TLinkButton,textWeights}=await import('tokiwagi-ui/vue');
+    const offset=ref(0), weights=[undefined,...textWeights], warnings=[];
+    console.warn=(...args)=>warnings.push(args);console.error=(...args)=>warnings.push(args);
+    const page={render:()=>h('div',weights.flatMap((_,index)=> {
+      const weight=weights[(index+offset.value)%weights.length];
+      return [h(TButton,{weight},()=> '保存'),h(TLinkButton,{href:'/calendar',weight,'aria-current':'page'},()=> '予定')];
+    }))};
+    const host=document.createElement('div');document.body.append(host);
+    host.innerHTML=await renderToString(createSSRApp(page));
+    const nodes=[...host.querySelectorAll('.tkw-button')];
+    const verify=()=>nodes.forEach((node,index)=> {
+      assert.equal(node.getAttribute('data-weight'),weights[(Math.floor(index/2)+offset.value)%weights.length]??null);
+      assert.equal(node.hasAttribute('weight'),false);
+    });
+    verify();const app=createSSRApp(page);app.mount(host);
+    for(const value of [1,0]) {
+      offset.value=value;await nextTick();
+      assert.deepEqual([...host.querySelectorAll('.tkw-button')],nodes);verify();
+    }
+    assert.deepEqual(warnings,[]);app.unmount();await browser.happyDOM.close();
+  `;
+  const result = Bun.spawnSync([process.execPath, '-e', script], { cwd: new URL('../../', import.meta.url).pathname });
+  expect(result.stderr.toString()).toBe('');
+  expect(result.exitCode).toBe(0);
+});
+
 // 無効状態でSSR・hydrateし、属性やイベントを抑止した後に元のリンクへ戻せることを確認する。
 test('VueのTLinkButtonはautofocusを転送し無効化と再有効化に対応する', () => {
   const script = `

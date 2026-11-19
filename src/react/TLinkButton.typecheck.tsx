@@ -28,3 +28,12 @@ const neutralProps: TLinkButtonProps[] = neutralTones.map(tone => ({ href: '/', 
 // @ts-expect-error 無効状態用の400は通常のtoneに公開しない。
 const disabledTone: TLinkButtonProps = { href: '/', tone: 'neutral-400' };
 void [neutralProps, disabledTone];
+
+// TTextと同じ4段階の公開型を受け付け、未指定と文字列inheritを区別する。
+const weightedProps: TLinkButtonProps[] = (['normal', 'medium', 'semibold', 'bold'] as const)
+  .map(weight => ({ href: '/', weight }));
+// @ts-expect-error 継承する場合はweightを省略する。
+const invalidWeight: TLinkButtonProps = { href: '/', weight: 'inherit' };
+// @ts-expect-error 太さの指定は数値ではなくTText共通の名前を使う。
+const numericWeight: TLinkButtonProps = { href: '/', weight: 700 };
+void [weightedProps, invalidWeight, numericWeight];
