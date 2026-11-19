@@ -1,11 +1,13 @@
 ---
 import '../styles/global.css';
+import 'tokiwagi-ui/sidebar.css';
+import '../styles/colors-sidebar.css';
 import 'tokiwagi-ui/header.css';
 import 'tokiwagi-ui/card.css';
 import 'tokiwagi-ui/link.css';
 import 'tokiwagi-ui/link-button.css';
 import 'tokiwagi-ui/text.css';
-import { TCard, TCardActionArea, TCardHeader, TCardTitle, TCardDescription, TCardBody, TBrand, THeader, THeaderLink, THeaderSection, TIcon, TLink, TLinkButton, TText } from 'tokiwagi-ui/astro';
+import { TSidebarLayout, TSidebar, TSidebarBody, TSidebarMain, TButton, TCard, TCardActionArea, TCardHeader, TCardTitle, TCardDescription, TCardBody, TBrand, THeader, THeaderLink, THeaderSection, TIcon, TLink, TLinkButton, TText } from 'tokiwagi-ui/astro';
 import ColorCodeExample from '../components/ColorCodeExample.astro';
 import type { SemanticColor } from '../lib/color-code-example';
 import rawPrimary from '../../tokens/colors.css?raw';
@@ -124,8 +126,9 @@ const stateSwatches = variants.map(([suffix, label]) => {
       </THeaderSection>
     </THeader>
 
-    <div class="page-shell colors-layout">
-      <aside class="colors-sidebar">
+    <TSidebarLayout class="colors-layout">
+      <TSidebar side="left" id="colors-sidebar" aria-label="カラーの目次" class="colors-sidebar">
+        <TSidebarBody>
         <details class="colors-toc" data-colors-toc>
           <summary><TText inherit tone="inherit">このページの目次</TText></summary>
           <nav aria-label="カラーの目次">
@@ -152,8 +155,14 @@ const stateSwatches = variants.map(([suffix, label]) => {
             </ul>
           </nav>
         </details>
-      </aside>
-
+        </TSidebarBody>
+      </TSidebar>
+      <TSidebarMain class="colors-main">
+        <div class="colors-sidebar-toolbar">
+          <TButton type="button" size="sm" tone="neutral-0" weight="normal" aria-controls="colors-sidebar" aria-expanded="true" data-colors-sidebar-toggle>
+            <TText inherit tone="inherit" data-sidebar-toggle-label>目次を閉じる</TText>
+          </TButton>
+        </div>
       <main id="main" tabindex="-1">
         <header class="hero">
           <div>
@@ -265,7 +274,8 @@ const stateSwatches = variants.map(([suffix, label]) => {
         <TLink href="/#foundations"><TText inherit tone="inherit"><span aria-hidden="true">←</span> 基盤に戻る</TText></TLink>
         <TLink href="#main"><TText inherit tone="inherit">ページの先頭へ <span aria-hidden="true">↑</span></TText></TLink>
       </footer>
-    </div>
+      </TSidebarMain>
+    </TSidebarLayout>
   </body>
 </html>
 
@@ -304,15 +314,7 @@ const stateSwatches = variants.map(([suffix, label]) => {
     background: var(--tkw-color-neutral-0);
   }
   .skip-link:focus { top: 8px; }
-  .page-shell { width: min(100% - clamp(32px, 8vw, 96px), 1200px); margin-inline: auto; }
-  .colors-layout { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 24px; }
   main { min-width: 0; }
-  .colors-sidebar { min-width: 0; padding-top: 24px; }
-  .colors-toc {
-    border: 1px solid var(--tkw-color-neutral-200);
-    border-radius: 16px;
-    background: var(--tkw-color-neutral-0);
-  }
   .colors-toc summary { padding: 10px 12px; font-weight: 650; cursor: pointer; }
   .colors-toc summary:focus-visible {
     outline: 2px solid var(--tkw-color-neutral-900);
@@ -372,16 +374,7 @@ const stateSwatches = variants.map(([suffix, label]) => {
     background: var(--tkw-color-neutral-900);
   }
   @media (min-width: 1024px) {
-    .colors-layout {
-      width: 100%;
-      margin-inline: 0;
-      padding-inline-end: 24px;
-      grid-template-columns: 280px minmax(0, 1fr);
-    }
     main, footer { width: 100%; max-width: 1200px; }
-    .colors-sidebar { position: sticky; top: 36px; grid-row: span 2; padding-top: 0; }
-    .colors-toc { border-inline-start: 0; border-start-start-radius: 0; border-end-start-radius: 0; }
-    .colors-toc[open] { height: calc(100dvh - 36px); overflow-y: auto; }
     .colors-toc[open] > summary { display: none; }
   }
   @media (pointer: coarse) {
