@@ -1,10 +1,11 @@
 ---
 import '../styles/global.css';
 import 'tokiwagi-ui/header.css';
+import 'tokiwagi-ui/card.css';
 import 'tokiwagi-ui/link.css';
 import 'tokiwagi-ui/link-button.css';
 import 'tokiwagi-ui/text.css';
-import { TBrand, THeader, THeaderLink, THeaderSection, TLink, TLinkButton, TText } from 'tokiwagi-ui/astro';
+import { TCard, TCardActionArea, TCardHeader, TCardTitle, TCardDescription, TCardFooter, TBrand, THeader, THeaderLink, THeaderSection, TLink, TLinkButton, TText } from 'tokiwagi-ui/astro';
 import { colors } from '../lib/palette';
 import { iconsByName } from '../lib/icon-catalog';
 import { renderIconSvg } from '../lib/icon-assets';
@@ -64,8 +65,26 @@ import { renderIconSvg } from '../lib/icon-assets';
         <div class="section-topline"><span class="section-kicker"><TText inherit tone="inherit">02 / FOUNDATIONS</TText></span><span><TText inherit tone="inherit">THE BUILDING BLOCKS</TText></span></div>
         <div class="foundations-heading"><h2 id="foundations-title"><TText inherit tone="inherit">つくるための、<br />共通の基盤。</TText></h2><p><TText inherit tone="inherit">カラーの選び方と組み合わせ、アイコンの命名と用途を確認できます。</TText></p></div>
         <div class="foundation-grid">
-          <article class="foundation-card color-card"><div class="foundation-card-top"><span><TText inherit tone="inherit">01 / COLORS</TText></span><span><TText inherit tone="inherit">確定</TText></span></div><div class="color-mini" aria-hidden="true">{colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}</div><h3><TText inherit tone="inherit">カラー</TText></h3><p><TText inherit tone="inherit">プライマリー、セカンダリー、状態色、ニュートラル。色見本と用途、背景と文字の組み合わせを確認できます。</TText></p><TLink class="foundation-link" href="/colors/"><TText inherit tone="inherit">カラーを詳しく見る <span aria-hidden="true">→</span></TText></TLink></article>
-          <article class="foundation-card icon-card"><div class="foundation-card-top"><span><TText inherit tone="inherit">02 / ICONS</TText></span><span><TText inherit tone="inherit">336 SVG</TText></span></div><div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div><h3><TText inherit tone="inherit">アイコン</TText></h3><p><TText inherit tone="inherit">336個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</TText></p><TLink class="foundation-link" href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right"><TText inherit tone="inherit">アイコンを見る</TText></TLink></article>
+          <TCard as="article" class="foundation-card color-card" size="lg" aria-labelledby="foundation-colors-title">
+            <TCardActionArea class="foundation-action" href="/colors/" aria-labelledby="foundation-colors-title">
+              <TCardHeader class="foundation-header">
+                <div class="foundation-card-top"><span><TText inherit tone="inherit">01 / COLORS</TText></span><span><TText inherit tone="inherit">確定</TText></span></div>
+                <div class="color-mini" aria-hidden="true">{colors.map(([key]) => <span style={`background:var(--tkw-color-primary-${key})`}></span>)}</div>
+                <TCardTitle id="foundation-colors-title" class="foundation-title"><TText inherit tone="inherit">カラー</TText></TCardTitle>
+                <TCardDescription class="foundation-description"><TText inherit tone="inherit">プライマリー、セカンダリー、状態色、ニュートラル。色見本と用途、背景と文字の組み合わせを確認できます。</TText></TCardDescription>
+              </TCardHeader>
+              <TCardFooter class="foundation-footer"><span class="foundation-link"><TText inherit tone="inherit">カラーを詳しく見る <span aria-hidden="true">→</span></TText></span></TCardFooter>
+            </TCardActionArea>
+          </TCard>
+          <TCard as="article" class="foundation-card icon-card" size="lg" aria-labelledby="foundation-icons-title">
+            <TCardHeader class="foundation-header">
+              <div class="foundation-card-top"><span><TText inherit tone="inherit">02 / ICONS</TText></span><span><TText inherit tone="inherit">336 SVG</TText></span></div>
+              <div class="icon-mini" aria-hidden="true">{['calendar', 'task', 'bell', 'check'].map(name => <span set:html={renderIconSvg(iconsByName.get(name)!.svg, `lp-${name}`, 32)} />)}</div>
+              <TCardTitle id="foundation-icons-title" class="foundation-title"><TText inherit tone="inherit">アイコン</TText></TCardTitle>
+              <TCardDescription class="foundation-description"><TText inherit tone="inherit">336個のSVGを収録。図柄・公開名・サイズ・色を一覧で確認し、個別の使用ルールを参照できます。</TText></TCardDescription>
+            </TCardHeader>
+            <TCardFooter class="foundation-footer"><TLink class="foundation-link" href="http://localhost:6006/?path=/docs/アイコン-アイコン名および用途--docs" target="_blank" rel="noopener noreferrer" trailingIcon="arrow-top-right"><TText inherit tone="inherit">アイコンを見る</TText></TLink></TCardFooter>
+          </TCard>
         </div>
       </section>
 
@@ -123,17 +142,19 @@ import { renderIconSvg } from '../lib/icon-assets';
   .foundations-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 42px; }
   .foundations-heading p { max-width: 340px; margin-bottom: 28px; }
   .foundation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .foundation-card { display: flex; flex-direction: column; min-width: 0; min-height: 360px; padding: 25px; border: 1px solid var(--tkw-color-neutral-200); border-radius: 12px; background: var(--tkw-color-neutral-0); }
+  .foundation-card { display: flex; flex-direction: column; min-height: 360px; }
+  .foundation-action { display: flex; flex: 1; flex-direction: column; }
+  .foundation-header { gap: 0; }
+  .foundation-footer { margin-top: auto; }
   .foundation-card-top { display: flex; justify-content: space-between; color: var(--tkw-color-neutral-600); font-size: 10px; letter-spacing: .1em; }
   .color-mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; height: 83px; margin: 32px 0 24px; }
   .color-mini span { border-radius: 5px; }
   .icon-mini { display: flex; align-items: center; gap: 11px; height: 83px; margin: 32px 0 24px; }
   .icon-mini span { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 12px; background: var(--tkw-color-neutral-100); color: var(--tkw-color-neutral-800); font-size: 27px; }
-  .foundation-card h3 { margin: 0 0 8px; font-size: 22px; }
-  .foundation-card p { max-width: 450px; margin-bottom: 24px; color: var(--tkw-color-neutral-600); font-size: 12px; line-height: 1.9; }
+  .foundation-title { margin-bottom: 8px; font-size: 22px; font-weight: 700; }
+  .foundation-description { max-width: 450px; font-size: 12px; line-height: 1.9; }
   .foundation-link { display: inline-flex; align-items: center; align-self: flex-start; margin-top: auto; font-size: 12px; font-weight: 700; }
-  .color-card { position: relative; }
-  .color-card a::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
+  .color-card .foundation-link { text-decoration: underline; text-underline-offset: .2em; }
   .closing { display: flex; align-items: end; justify-content: space-between; gap: 35px; margin-bottom: 80px; border-top: 1px solid var(--tkw-color-neutral-200); }
   .closing h2 { margin-bottom: 0; }
   .closing > div:last-child { display: flex; flex-direction: column; align-items: flex-start; }
