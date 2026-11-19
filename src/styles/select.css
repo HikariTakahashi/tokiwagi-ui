@@ -96,6 +96,7 @@
   border-radius: 32px;
   background: var(--tkw-color-neutral-0);
   color: var(--tkw-color-neutral-900);
+  box-shadow: 2px 2px 4px color-mix(in srgb, var(--tkw-color-neutral-1000) 25%, transparent);
   font: inherit;
   cursor: pointer;
 }
