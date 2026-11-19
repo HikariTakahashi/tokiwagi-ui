@@ -2,7 +2,7 @@ import { buttonState, type ButtonOptions } from '../lib/button';
 import { astroPreviewSvg, type AstroIconPreviews } from './components/astro-preview';
 
 export type ButtonPreviewOptions = Required<Pick<ButtonOptions, 'tone' | 'disabled'>> &
-  Pick<ButtonOptions, 'leadingIcon'> & { component: 'TButton'; text: string };
+  Pick<ButtonOptions, 'size' | 'leadingIcon' | 'trailingIcon'> & { component: 'TButton'; text: string };
 export type AstroButtonPreviews = { button: string };
 
 /** 実Astro部品の出力を使い、Controlsの文言をテキストとして反映する。 */
@@ -14,12 +14,16 @@ export function astroButtonPreviewHtml(
   template.innerHTML = previews.button;
   const button = template.content.querySelector('button');
   const label = template.content.querySelector('.tkw-button__label');
-  const icon = template.content.querySelector('.tkw-button__icon');
-  if (!button || !label || !icon) throw new Error('AstroのTButton見本に必要な要素がありません');
+  if (!button || !label) throw new Error('AstroのTButton見本に必要な要素がありません');
   button.setAttribute('data-tone', state.tone);
+  button.setAttribute('data-size', state.size);
   button.toggleAttribute('disabled', state.disabled);
   label.textContent = options.text;
-  if (state.leadingIcon === undefined) icon.remove();
-  else icon.innerHTML = astroPreviewSvg(icons, state.leadingIcon, 32, prefix);
+  for (const [side, name] of [['leading', state.leadingIcon], ['trailing', state.trailingIcon]] as const) {
+    const icon = button.querySelector(`.tkw-button__${side}-icon`);
+    if (!icon) throw new Error('AstroのTButton見本にアイコンの配置先がありません');
+    if (name === undefined) icon.remove();
+    else icon.innerHTML = astroPreviewSvg(icons, name, state.iconSize, `${prefix}-${side}`);
+  }
   return template.innerHTML;
 }

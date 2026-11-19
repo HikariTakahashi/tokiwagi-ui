@@ -47,7 +47,7 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
   for (const [name, story, controls] of [
     ['TLinkButton', linkButton, ['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'disabled', 'target', 'rel', 'aria-current']],
     ['TLink', link, ['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
-    ['TButton', button, ['framework', 'text', 'tone', 'leadingIcon', 'disabled']],
+    ['TButton', button, ['framework', 'text', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'disabled']],
     ['TText', text, ['framework', 'text', 'as', 'size', 'responsive', 'sizeSm', 'sizeLg', 'weight', 'lineHeight', 'tone', 'align', 'truncate', 'lineClamp', 'whiteSpace', 'inherit', 'italic', 'decoration']],
     ['TIcon', icon, ['framework', 'name', 'size', 'color']],
     ['TLogo', logo, ['framework', 'size', 'decorative']],
@@ -78,6 +78,9 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
   expect(link.default.args.size).toBe('inherit');
   expect(linkButton.default.argTypes.size.options).toEqual(['sm', 'md', 'lg']);
   expect(linkButton.default.args.size).toBe('lg');
+  expect(button.default.argTypes.size.options).toEqual(['sm', 'md', 'lg']);
+  expect(button.default.args.size).toBe('lg');
+  expect(button.default.argTypes.trailingIcon.options).toEqual(['none', ...iconNames]);
   expect(icon.default.argTypes.size).toEqual(bellOff.default.argTypes.size);
   expect(icon.default.argTypes.color).toEqual(bellOff.default.argTypes.color);
 });

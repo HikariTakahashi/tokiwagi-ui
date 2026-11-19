@@ -356,7 +356,7 @@ React・Vueはサーバーとクライアントで同じpropsと内容を渡し�
 
 ## TButton
 
-React・Vue・Astroの公開入口 `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` から `TButton`、`TButtonProps`、`ButtonTone`、`buttonTones` を利用できます。`tokiwagi-ui/button.css` をアプリで一度読み込むと、状態のスタイルと必要な色・書体トークンが適用されます。文字は1.75rem・太さ700、高さは50px以上です。
+React・Vue・Astroの公開入口 `tokiwagi-ui/react`・`tokiwagi-ui/vue`・`tokiwagi-ui/astro` から `TButton`、`TButtonProps`、`ButtonOptions`、`ButtonTone`、`buttonTones`、`ButtonSize`、`buttonSizes` を利用できます。`tokiwagi-ui/button.css` をアプリで一度読み込むと、状態のスタイルと必要な色・書体トークンが適用されます。既定のsizeはlgで、文字は1.75rem・太さ700、高さは50px以上です。
 
 Reactではchildrenと標準のイベントpropsを使います。
 
@@ -365,7 +365,7 @@ import { TButton } from 'tokiwagi-ui/react'
 import 'tokiwagi-ui/button.css'
 
 export function SaveButton({ onSave }: { onSave: () => void }) {
-  return <TButton tone="blue" leadingIcon="save" onClick={onSave}>保存する</TButton>
+  return <TButton size="sm" tone="blue" leadingIcon="save" trailingIcon="check" onClick={onSave}>保存する</TButton>
 }
 ```
 
@@ -381,7 +381,7 @@ const emit = defineEmits<{ save: [] }>()
 
 <template>
   <form @submit.prevent="emit('save')">
-    <TButton type="submit" tone="blue" leading-icon="save" class="save-button">
+    <TButton size="md" type="submit" tone="blue" leading-icon="save" trailing-icon="check" class="save-button">
       保存する
     </TButton>
   </form>
@@ -400,7 +400,7 @@ import { TButton } from 'tokiwagi-ui/astro'
 import 'tokiwagi-ui/button.css'
 ---
 <form method="post" action="/save">
-  <TButton type="submit" tone="blue" leadingIcon="save" name="action" value="save">
+  <TButton size="lg" type="submit" tone="blue" leadingIcon="save" trailingIcon="check" name="action" value="save">
     保存する
   </TButton>
 </form>
@@ -409,12 +409,21 @@ import 'tokiwagi-ui/button.css'
 | 指定 | 値と挙動 |
 | --- | --- |
 | `tone` | `neutral`、`green`、`teal`、`blue`、`violet`、`rose`、`coral`、`amber`。既定は `neutral`。有効なプライマリー色では背景に各色のトークンを使い、文字と装飾アイコンを白で表示する |
-| `leadingIcon` | 省略可。既存の `IconName` を32pxの装飾アイコンとして表示 |
+| `size` | `sm`、`md`、`lg`（既定）。文字・TIcon・高さ・余白を連動させる。inheritや未定義値は受け付けない |
+| `leadingIcon`・`trailingIcon` | どちらも省略可。既存の `IconName` を先頭・末尾の装飾アイコンとして表示 |
 | children／既定スロット | 「保存する」などの操作名を表示 |
 | `type` | `button`（既定）、`submit`、`reset` |
 | `disabled` | 既定は `false`。有効にするとネイティブのボタンを無効化 |
 
-標準のボタン属性とReact・Vueのネイティブイベントは外側の `button` に渡します。AstroはHTMLのイベント属性や利用側のscriptを使用します。型を迂回した不正な色・type・アイコン名・disabledは日本語エラーで検出します。React 18/19・VueのSSRとハイドレーションには同じ内容・propsを使用し、アイコンのIDはTIconの方式に従います。Astroの表示にはクライアントJavaScriptは不要です。保存や送信の状態は利用側で管理します。
+| size | 文字 | TIcon | 最小高さ | 左右padding | gap |
+| --- | --- | --- | --- | --- | --- |
+| sm | 1.25rem | 20px | 40px | 12px | 6px |
+| md | 1.5rem | 24px | 44px | 14px | 8px |
+| lg | 1.75rem | 32px | 50px | 16px | 10px |
+
+縦padding6px・太さ700・角丸32pxは共通です。lgのアイコン外枠は40×32px、sm/mdは20×20px／24×24pxです。sizeを省略すると既存の文字のみ・先頭アイコン付きの寸法を維持します。前後に同じアイコンを指定してもIDを分離し、読み上げ名は文字ラベルだけから取得します。TLinkButtonとサイズの規則・CSSを共有しますが、TLinkButtonの角丸12px・リンクとしての動作も維持します。
+
+標準のボタン属性とReact・Vueのネイティブイベントは外側の `button` に渡します。AstroはHTMLのイベント属性や利用側のscriptを使用します。型を迂回した不正な色・size・type・前後アイコン名・disabledは日本語エラーで検出します。フォームの送信・リセットとTab・Enter・Spaceのネイティブ操作を維持します。React 18/19・VueのSSRとハイドレーションには同じ内容・propsを使用し、アイコンのIDはTIconの方式に従います。Astroの表示にはクライアントJavaScriptは不要です。保存や送信の状態は利用側で管理します。
 
 利用ルールは [TButtonの個別README](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TButton/README.md)、動作の見本はStorybookの「コンポーネント/TButton」にあります。
 

@@ -16,7 +16,7 @@ const { TButton } = await import('tokiwagi-ui/astro');
 const container = await experimental_AstroContainer.create();
 const previews: AstroButtonPreviews = {
   button: await container.renderToString(TButton, {
-    props: { leadingIcon: 'save' }, slots: { default: '操作' },
+    props: { leadingIcon: 'save', trailingIcon: 'save' }, slots: { default: '操作' },
   }),
 };
 await Bun.write(output, JSON.stringify(previews));
