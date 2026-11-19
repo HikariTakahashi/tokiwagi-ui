@@ -1,10 +1,11 @@
 ---
 import '../styles/global.css';
 import 'tokiwagi-ui/header.css';
+import 'tokiwagi-ui/card.css';
 import 'tokiwagi-ui/link.css';
 import 'tokiwagi-ui/link-button.css';
 import 'tokiwagi-ui/text.css';
-import { TBrand, THeader, THeaderLink, THeaderSection, TIcon, TLink, TLinkButton, TText } from 'tokiwagi-ui/astro';
+import { TCard, TCardActionArea, TCardHeader, TCardTitle, TCardDescription, TCardBody, TBrand, THeader, THeaderLink, THeaderSection, TIcon, TLink, TLinkButton, TText } from 'tokiwagi-ui/astro';
 import ColorCodeExample from '../components/ColorCodeExample.astro';
 import type { SemanticColor } from '../lib/color-code-example';
 import rawPrimary from '../../tokens/colors.css?raw';
@@ -201,12 +202,16 @@ const stateSwatches = variants.map(([suffix, label]) => {
 
         <nav class="palette-nav" aria-label="色の系統">
           {palettes.map(({ id, title, swatches }) => (
-            <div class="palette-card">
-              <span class="palette-strip" aria-hidden="true">
-                {swatches.map(({ token }) => <span style={{ background: `var(${token})` }} />)}
-              </span>
-              <TLink class="palette-card-link" href={`#${id}`} trailingIcon="chevron-bottom"><TText inherit tone="inherit">{id === 'semantic' ? '状態色' : title}</TText></TLink>
-            </div>
+            <TCard class="palette-card" size="sm">
+              <TCardActionArea href={`#${id}`}>
+                <TCardBody class="palette-nav-body">
+                  <span class="palette-strip" aria-hidden="true">
+                    {swatches.map(({ token }) => <span style={{ background: `var(${token})` }} />)}
+                  </span>
+                  <span class="palette-card-link"><TText inherit tone="inherit" class="palette-card-title">{id === 'semantic' ? '状態色' : title}</TText><TIcon name="chevron-bottom" size={16} /></span>
+                </TCardBody>
+              </TCardActionArea>
+            </TCard>
           ))}
         </nav>
 
@@ -219,17 +224,25 @@ const stateSwatches = variants.map(([suffix, label]) => {
             {palette.layout === 'rows' ? (
               <ul class="palette-rows" role="list">
                 {palette.swatches.map(({ name, token, purpose, semantic }) => (
-                  <li class="palette-row">
-                    <h3 id={token.replace('--tkw-color-', '')} tabindex="-1"><TText inherit tone="inherit">{name}</TText></h3>
-                    {purpose && <p><TText inherit tone="inherit">{purpose}</TText></p>}
-                    <ColorCodeExample name={name} token={token} tokens={tokens} semantic={semantic} />
+                  <li>
+                    <TCard class="palette-row" aria-labelledby={token.replace('--tkw-color-', '')}>
+                      <TCardHeader class="palette-heading">
+                        <TCardTitle class="palette-title" id={token.replace('--tkw-color-', '')} tabindex="-1"><TText inherit tone="inherit">{name}</TText></TCardTitle>
+                        {purpose && <TCardDescription class="palette-description"><TText inherit tone="inherit">{purpose}</TText></TCardDescription>}
+                      </TCardHeader>
+                      <TCardBody class="palette-content">
+                        <ColorCodeExample name={name} token={token} tokens={tokens} semantic={semantic} />
+                      </TCardBody>
+                    </TCard>
                   </li>
                 ))}
               </ul>
             ) : (
-              <div class="palette-row">
-                <ColorCodeExample name="ニュートラル" token={neutralTokenName('50')} tokens={tokens} neutral />
-              </div>
+              <TCard class="palette-row" aria-label="ニュートラルの色見本とコード">
+                <TCardBody>
+                  <ColorCodeExample name="ニュートラル" token={neutralTokenName('50')} tokens={tokens} neutral />
+                </TCardBody>
+              </TCard>
             )}
           </section>
         ))}
@@ -385,22 +398,9 @@ const stateSwatches = variants.map(([suffix, label]) => {
   .hero-title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
   .storybook-link { margin-inline-start: auto; }
   .palette-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-  .palette-card {
-    position: relative;
-    min-width: 0;
-    display: grid;
-    gap: 10px;
-    padding: 12px;
-    border: 1px solid var(--tkw-color-neutral-200);
-    border-radius: 12px;
-    background: var(--tkw-color-neutral-0);
-    font-size: .875rem;
-    font-weight: 650;
-  }
-  .palette-card:hover { background: var(--tkw-color-neutral-100); }
-  .palette-card:active { background: var(--tkw-color-neutral-200); }
-  .palette-card-link { display: flex; align-items: center; justify-content: space-between; }
-  .palette-card-link::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
+  .palette-nav-body { display: grid; gap: 10px; }
+  .palette-card-link { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-weight: 650; }
+  .palette-card-title { text-decoration: underline; text-underline-offset: .2em; }
   .palette-strip { display: flex; height: 34px; border-radius: 5px; overflow: hidden; }
   .palette-strip span { flex: 1; }
   .page-section { padding-block: clamp(32px, 6vw, 64px); border-top: 1px solid var(--tkw-color-neutral-200); }
@@ -414,14 +414,12 @@ const stateSwatches = variants.map(([suffix, label]) => {
     padding: 0;
     list-style: none;
   }
-  .palette-row {
-    min-width: 0;
-    padding: clamp(8px, 2vw, 16px);
-    border: 1px solid var(--tkw-color-neutral-200);
-    border-radius: 12px;
-    background: var(--tkw-color-neutral-0);
-  }
-  .palette-row > p { margin-top: 2px; font-size: .875rem; }
+  .palette-rows > li { min-width: 0; }
+  .palette-row { --tkw-card-padding: clamp(8px, 2vw, 16px); }
+  .palette-heading { gap: 2px; }
+  .palette-title { font-size: 1rem; font-weight: 700; line-height: 1.65; }
+  .palette-description { color: var(--tkw-color-neutral-800); font-size: .875rem; line-height: 1.65; }
+  .palette-content { padding-top: 0; }
   .color-guidelines { display: grid; gap: 28px; }
   .guideline-block { display: grid; gap: 14px; min-width: 0; }
   .guideline-block > h3 { font-size: 1.125rem; }
