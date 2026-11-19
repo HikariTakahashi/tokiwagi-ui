@@ -4,7 +4,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 **状態：公開名と用途は案（`bell` の詳細ルールは確定済み・SVG収録済み）**
 
-`icons` フォルダの329個の汎用アイコンSVGに適用する命名基準です。
+`icons` フォルダの336個の汎用アイコンSVGに適用する命名基準です。
 
 # 命名基準
 
@@ -12,6 +12,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 - 名前の順序は「対象または枠 → 操作・記号 → 方向 → 状態」を基本とする。例：`calendar-plus`、`circle-chevron-left`、`search-check-off`。パネルを閉じる名前は `panel-close-left`・`panel-close-right` とする。
 - `calendar-` は予定、`task-` はタスクを操作する図柄。`circle-`・`square-`・`triangle-` は枠の形を表す。同じ記号でも、対象や枠が異なる図形は別名で管理する。
 - 方向は制作済み系列に合わせる。山形の記号は `chevron-top`・`chevron-bottom`・`chevron-left`・`chevron-right`、並べ替えの矢印は `up`・`down`、点やドラッグハンドルの向きは `horizontal`・`vertical` とする。横三点は現行名の `ellipsis` を使う。
+- 右上矢印による画面遷移の図柄は `arrow-top-right` とし、対象・枠付きは `calendar-arrow-top-right` などとする。鎖の `link` 系とは別の公開名で管理する。
 - 斜線付きの図柄には `-off` を付け、通常の図柄は状態接尾辞を省く。表示・非表示の対は `visibility-on`・`visibility-off` を使う。`-off` は状態を示す名前であり、ボタンの disabled 属性や操作可否を自動的に決めるものではない。
 - 操作名は `setting`・`tool`・`login`・`logout` などに統一する。綴りは `information` とする。
 - `close` は閉じる・キャンセル、`delete` は削除、`minus` は除外・減少、`copy` は複製、`paperclip` は添付とする。図形が似ていても操作を混同しない。

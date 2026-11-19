@@ -14,10 +14,10 @@ const assets = new URL('../../icons/', import.meta.url);
 const names = readdirSync(assets, { withFileTypes: true }).filter(entry => entry.isDirectory() && !isBrandAssetName(entry.name)).map(entry => entry.name).sort();
 const readmes = new Map(names.map(name => [name, readFileSync(new URL(`${name}/README.md`, assets), 'utf8')]));
 
-// 制作済み329図柄の原本と個別ページを突き合わせ、欠落・重複・孤立ページを検出する。
-test('全329アイコンの原本と個別ページが一対一に対応する', () => {
-  expect(names).toHaveLength(329);
-  expect(files).toHaveLength(329);
+// 制作済み336図柄の原本と個別ページを突き合わせ、欠落・重複・孤立ページを検出する。
+test('全336アイコンの原本と個別ページが一対一に対応する', () => {
+  expect(names).toHaveLength(336);
+  expect(files).toHaveLength(336);
   expect(names).toEqual(details.map(detail => detail.name).sort());
   expect(catalog).toContain('<IconBrowser />');
   for (const { name, source } of details) {

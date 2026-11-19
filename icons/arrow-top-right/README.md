@@ -1,0 +1,43 @@
+# arrow-top-right
+
+ファイル：`arrow-top-right.svg` · 状態：詳細ルール案（SVG収録済み・既存画面への適用前）
+
+## 概要
+
+別名：`arrow`、`arrow-up-right`、`navigation`、`external-link`、`矢印`、`右上矢印`、`リンク`、`画面遷移`、`別ページ`、`外部リンク`
+
+枠のない右上矢印。ページや関連情報への画面遷移を表す。
+
+## 使用場面
+
+- 「詳細を開く」など、移動先が分かるリンクに添える。
+- 外部サイトへのリンクには、遷移先の名称と必要に応じて別タブで開く旨を併記する。
+
+## 状態の表し方
+
+- 画面遷移の入口に使用する。矢印だけで外部サイト・別タブで開くことを確定させず、実際の遷移先や開き方を文言で伝える。
+- 現在地・選択中・訪問済みの状態は、リンクを持つ部品が管理する。
+- 状態は色だけに頼らず、文言・図柄・親の操作部品の状態で伝える。
+
+## 使用しない場面
+
+- 対象同士の関連付け、アカウント連携・連携解除、共有権限の変更、ファイルの添付。
+- 予定の日時変更、並べ替え、アップロードなど、画面遷移以外の方向を持つ操作。
+- アイコンだけで操作名や遷移先を説明すること。
+
+## 表示とアクセシビリティ
+
+- 図形名ではなく「詳細を開く」など、対象と目的が分かるテキストを併記する。アイコンだけの操作には親のリンクやボタンに読み上げ名を付ける。
+- TIconは装飾として扱う。フォーカス・ホバー・押下・操作可否・キーボード操作は親の操作部品が担う。
+- 外部サイトや別タブへ移動する場合は、実際の挙動を必要に応じて文言でも伝える。
+- サイズは16・20・24・32px、色は共通トークンを使う。32×32のviewBox、座標、線幅、縦横比を個別に変更しない。
+
+## 関連アイコンと使い分け
+
+- [`link`](?path=/docs/icons-link--docs)：鎖の図柄。対象同士の関連付け・連携と、右上矢印による画面遷移を区別する。
+- [`arrow-top-right-off`](?path=/docs/icons-arrow-top-right-off--docs)：移動先を利用できない状態や画面遷移の制限を示す。
+- [`calendar-arrow-top-right`](?path=/docs/icons-calendar-arrow-top-right--docs)：予定と組み合わせた右上矢印。
+- [`task-arrow-top-right`](?path=/docs/icons-task-arrow-top-right--docs)：タスクと組み合わせた右上矢印。
+- [`circle-arrow-top-right`](?path=/docs/icons-circle-arrow-top-right--docs)：円枠と組み合わせた右上矢印。
+- [`square-arrow-top-right`](?path=/docs/icons-square-arrow-top-right--docs)：四角枠と組み合わせた右上矢印。
+- [`triangle-arrow-top-right`](?path=/docs/icons-triangle-arrow-top-right--docs)：三角枠と組み合わせた右上矢印。

@@ -9,7 +9,7 @@ const sources = Object.fromEntries(names.map(name => [`${name}/${name}.svg`, rea
 const documents = Object.fromEntries(names.map(name => [`${name}/README.md`, readFileSync(new URL(`${name}/README.md`, directory), 'utf8')]));
 const catalog = createIconCatalog(sources, documents);
 
-// 同じ原本ディレクトリにロゴがある場合も、汎用一覧とREADMEの照合対象を329種に保つ。
+// 同じ原本ディレクトリにロゴがある場合も、汎用一覧とREADMEの照合対象を336種に保つ。
 test('ブランドロゴは汎用アイコンの検索と個別ページに含まれない', () => {
   const mixed = createIconCatalog(
     { ...sources, 'logo/logo.svg': readFileSync(new URL('logo/logo.svg', directory), 'utf8') },
@@ -22,9 +22,9 @@ test('ブランドロゴは汎用アイコンの検索と個別ページに含�
 });
 
 // 既存6分類と全個別ページの分類を照合し、図柄の移動・欠落とリンクの不整合を検出する。
-test('原本329個が既存の分類と個別ページに対応する', () => {
-  expect(catalog).toHaveLength(329);
-  expect(iconCategories.map(([key]) => catalog.filter(icon => icon.category === key).length)).toEqual([132, 40, 40, 38, 39, 40]);
+test('原本336個が既存の分類と個別ページに対応する', () => {
+  expect(catalog).toHaveLength(336);
+  expect(iconCategories.map(([key]) => catalog.filter(icon => icon.category === key).length)).toEqual([134, 41, 41, 39, 40, 41]);
   for (const icon of catalog) {
     const detail = readFileSync(new URL(`../icons/${icon.name}.mdx`, import.meta.url), 'utf8');
     const label = iconCategories.find(([key]) => key === icon.category)![1];
@@ -34,7 +34,7 @@ test('原本329個が既存の分類と個別ページに対応する', () => {
 });
 
 // 全原本について生成済みCSFと相互リンクを照合し、分離時の欠落と再生成漏れを検出する。
-test('329種類の使用例が個別ルールと対応しロゴを含まない', () => {
+test('336種類の使用例が個別ルールと対応しロゴを含まない', () => {
   const stories = new URL('../stories/icon-examples/', import.meta.url);
   expect(readdirSync(stories).filter(file => file.endsWith('.stories.ts')).sort()).toEqual(names.map(name => `${name}.stories.ts`).sort());
   for (const icon of catalog) {
@@ -53,7 +53,7 @@ test('検索と分類で目的の図柄を絞り込める', () => {
   expect(filterIcons(catalog, ' BELL ', 'calendar').map(icon => icon.name)).toEqual(['calendar-bell']);
   expect(filterIcons(catalog, 'bell', 'basic').map(icon => icon.name)).toEqual(['bell', 'bell-off']);
   expect(filterIcons(catalog, 'not-an-icon', 'all')).toHaveLength(0);
-  expect(filterIcons(catalog, '', 'all')).toHaveLength(329);
+  expect(filterIcons(catalog, '', 'all')).toHaveLength(336);
 });
 
 // 英語・日本語の別名と部分一致を使い、基本形・派生形の検索と分類の併用を確認する。
@@ -69,8 +69,30 @@ test('公開名を知らなくても別名で基本形と派生形を検索で�
   expect(filterIcons(catalog, '', 'circle')).toEqual(catalog.filter(icon => icon.category === 'circle'));
 });
 
+// 右上矢印は画面遷移の別名で検索でき、既存の鎖・メールとは公開名も図柄も混同しない。
+test('画面遷移の右上矢印7種と既存のリンク・メールを別々に選べる', () => {
+  const arrows = ['arrow-top-right', 'arrow-top-right-off', 'calendar-arrow-top-right', 'circle-arrow-top-right',
+    'square-arrow-top-right', 'task-arrow-top-right', 'triangle-arrow-top-right'];
+  for (const query of ['画面遷移', '右上矢印', 'arrow-up-right']) {
+    expect(filterIcons(catalog, query, 'all').map(icon => icon.name)).toEqual(arrows);
+  }
+  expect(filterIcons(catalog, '画面遷移', 'calendar').map(icon => icon.name)).toEqual(['calendar-arrow-top-right']);
+  expect(filterIcons(catalog, '移動不可', 'all').map(icon => icon.name)).toEqual(['arrow-top-right-off']);
+  expect(filterIcons(catalog, '鎖', 'all').map(icon => icon.name)).toEqual([
+    'calendar-link', 'circle-link', 'link', 'link-off', 'square-link', 'task-link', 'triangle-link',
+  ]);
+  expect(catalog.find(icon => icon.name === 'circle-mail')).toBeDefined();
+  for (const [arrow, previous] of [
+    ['arrow-top-right', 'link'], ['arrow-top-right-off', 'link-off'], ['calendar-arrow-top-right', 'calendar-link'],
+    ['task-arrow-top-right', 'task-link'], ['circle-arrow-top-right', 'circle-link'],
+    ['square-arrow-top-right', 'square-link'], ['triangle-arrow-top-right', 'triangle-link'],
+  ]) {
+    expect(catalog.find(icon => icon.name === arrow)!.svg).not.toBe(catalog.find(icon => icon.name === previous)!.svg);
+  }
+});
+
 // 全READMEの別名行と実際の検索対象を照合し、登録漏れや読み込み時の別名の脱落を防ぐ。
-test('全329件でREADMEに記載した英語と日本語の別名が検索に使われる', () => {
+test('全336件でREADMEに記載した英語と日本語の別名が検索に使われる', () => {
   for (const icon of catalog) {
     const line = documents[`${icon.name}/README.md`]!.split('\n').find(line => line.startsWith('別名：'))!;
     const labels = [...line.matchAll(/`([^`]+)`/g)].map(match => match[1]);
@@ -131,8 +153,8 @@ describe('クリッピングと複数表示', () => {
   });
 });
 
-// ダウンロード先の名前と配置を照合し、全329個で色・サイズ変更前の原本を参照することを確認する。
-test('ダウンロードは全329個の原本SVGをそのまま返す', () => {
+// ダウンロード先の名前と配置を照合し、全336個で色・サイズ変更前の原本を参照することを確認する。
+test('ダウンロードは全336個の原本SVGをそのまま返す', () => {
   for (const icon of catalog) {
     const url = originalIconUrl(icon);
     expect(url).toBe(`./icon-assets/${icon.name}/${icon.name}.svg`);

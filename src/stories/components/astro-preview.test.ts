@@ -31,8 +31,8 @@ test('NodeからAstroプレビューを生成しても大きなJSONが途切れ�
   }
 }, 15000);
 
-// Storybookと同じ生成経路で実コンポーネントを描画し、全329公開名×4サイズが原本に対応する。
-test('Storybook用Astro出力は全329種×4サイズの形状と装飾属性を保持する', () => {
+// Storybookと同じ生成経路で実コンポーネントを描画し、全336公開名×4サイズが原本に対応する。
+test('Storybook用Astro出力は全336種×4サイズの形状と装飾属性を保持する', () => {
   expect(Object.keys(previews)).toEqual([...iconNames]);
   const geometry = (svg: string) => svg.match(/\b(?:d|viewBox|stroke-width|stroke-linecap|stroke-linejoin|fill-rule|clip-rule)="[^"]*"/g);
   for (const name of iconNames) {
