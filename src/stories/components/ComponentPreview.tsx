@@ -1,3 +1,6 @@
+import { ReactCardPreview, vueCardPreview } from './CardPreview';
+import { astroCardPreviewHtml, type CardPreviewOptions, type AstroCardPreviews } from '../card-preview';
+import cardsUrl from 'virtual:tkw-astro-cards';
 import { TLinkButton as ReactTLinkButton } from 'tokiwagi-ui/react';
 import { TSelect as ReactTSelect } from 'tokiwagi-ui/react';
 import { TSelect as VueTSelect } from 'tokiwagi-ui/vue';
@@ -38,6 +41,7 @@ import { ReactHeaderPreview, vueHeaderPreview } from './HeaderPreview';
 import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
 export type ComponentPreviewProps = { framework: Framework } & (
+  | CardPreviewOptions
   | SelectPreviewOptions
   | LinkButtonPreviewOptions
   | LinkPreviewOptions
@@ -61,6 +65,7 @@ const loadLinkAssets = async () => {
   return { links, icons };
 };
 
+const loadCards = createAstroPreviewLoader<AstroCardPreviews>(cardsUrl);
 const loadTexts = createAstroPreviewLoader<AstroTextPreviews>(textsUrl);
 const loadSelects = createAstroPreviewLoader<AstroSelectPreviews>(selectsUrl);
 const loadButtons = createAstroPreviewLoader<AstroButtonPreviews>(buttonsUrl);
@@ -85,6 +90,7 @@ function VuePreview(args: ComponentPreviewProps) {
   useEffect(() => {
     const app = createApp({ render: () => {
       const value = props.value;
+      if (value.component === 'TCard') return vueCardPreview(value, `tkw-card-vue-${id}`);
       if (value.component === 'TSelect') {
         const { component, framework, value: modelValue, onValueChange, disableCard, ...options } = value;
         return h(VueTSelect, { ...options, options: selectExampleOptions(disableCard), modelValue,
@@ -119,8 +125,8 @@ function VuePreview(args: ComponentPreviewProps) {
   if (args.component === 'TButton') {
     return <span ref={host} style={{ display: 'inline-flex' }} />;
   }
-  return args.component.startsWith('THeader') || args.component === 'TText'
-    ? <div ref={host} style={{ display: args.component === 'TText' ? 'block' : 'inline-flex' }} />
+  return args.component.startsWith('THeader') || args.component === 'TText' || args.component === 'TCard'
+    ? <div ref={host} style={{ display: args.component === 'TText' || args.component === 'TCard' ? 'block' : 'inline-flex' }} />
     : <span ref={host} style={{ display: 'inline-flex' }} />;
 }
 
@@ -128,6 +134,13 @@ function VuePreview(args: ComponentPreviewProps) {
 export function ComponentPreview(args: ComponentPreviewProps) {
   const id = useId();
   const prefix = `tkw-preview-astro-${Array.from(id, char => char.codePointAt(0)!.toString(16)).join('-')}`;
+  if (args.component === 'TCard') {
+    if (args.framework === 'vue') return <VuePreview {...args} />;
+    if (args.framework === 'react') return <ReactCardPreview {...args} prefix={prefix} />;
+    return <AstroComponentPreview load={loadCards}>{previews =>
+      <div dangerouslySetInnerHTML={{ __html: astroCardPreviewHtml(previews, args, prefix) }} />
+    }</AstroComponentPreview>;
+  }
   if (args.component === 'TSelect') {
     if (args.framework === 'vue') return <VuePreview {...args} />;
     const { component, framework, disableCard, onValueChange, ...options } = args;

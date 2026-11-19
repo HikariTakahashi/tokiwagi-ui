@@ -1,6 +1,6 @@
 # コンポーネントの使い方
 
-本ページの利用例はMIT対象のTButton・TText・TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
+本ページの利用例はMIT対象のTCardと構造パーツ・TButton・TText・TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
 
 ## 導入方法と対象環境
 
@@ -776,3 +776,100 @@ Reactはchildren、Vue・Astroはデフォルトslotを使います。空文字�
 固定toneは白・neutral-50背景でコントラスト4.5:1以上を検証します。継承色・任意の背景・利用側のstyle上書きは、組み合わせを利用側で確認してください。状態は色に加えて文言でも伝えます。見た目の太字・斜体と文章の意味は分け、必要に応じてstrong・em等を含めます。
 
 利用ルールは[TTextの個別README](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TText/README.md)、見本はStorybook「コンポーネント/TText」を参照してください。
+
+
+## TCard
+
+React・Vue・Astroの公開入口から、ひとつの話題をまとめるTCardと構造パーツを使えます。利用側で `tokiwagi-ui/card.css` を一度読み込みます。必要なニュートラル色と共通フォントは同CSSが読み込みます。カラー値は既存トークンを参照し、角丸は12px、すべてのvariantにTButtonと同じ影（右2px・下2px・ぼかし4px・黒25%）を使います。
+
+| 部品 | 要素・設定 | 用途 |
+| --- | --- | --- |
+| TCard | as: div（既定）/article/section | カード全体。variantはoutline（既定）/elevated/subtle、sizeはsm/md（既定）/lg |
+| TCardHeader | div | 見出し・説明の配置 |
+| TCardTitle | as: h1〜h6、既定h3 | ページの見出し階層に合わせたタイトル |
+| TCardDescription | p | 補足説明 |
+| TCardBody | div | 本文。本文だけのカードも作成可能 |
+| TCardFooter | div | 補足・操作。幅不足時は折り返す |
+| TCardMedia | div | 画像・動画。直接のimg/videoは全幅・高さautoで表示 |
+| TCardActionArea | href必須のa | カード全体、または主操作の領域のリンク |
+
+outlineは枠線付きの白背景、elevatedは枠線なしの白背景、subtleは枠線なしのneutral-100背景です。sizeは内側余白12/16/24pxと本文前の間隔8/12/16pxを変え、文字サイズやカードの幅を変えません。幅・高さ・一覧の列数は利用側で指定します。未定義のvariant・size・as、見出し以外のTCardTitle.as、空白だけのhrefは3方式とも日本語エラーにします。
+
+各部品は対応するHTML要素の標準属性、ReactのclassName／Vue・Astroのclass、style、children／既定slotを保持します。React・Vueではネイティブイベントを転送します。Astroは追加のscript・ハイドレーションなしで静的HTMLを出力し、操作は利用側のscriptやフォームで接続します。アプリ向けの公開入口にはStorybook専用コードを含めません。
+
+TCardProps・TCardHeaderProps・TCardTitleProps・TCardDescriptionProps・TCardBodyProps・TCardFooterProps・TCardMediaProps・TCardActionAreaPropsを各方式の入口から公開します。共通のCardVariant・CardSize・CardTag・CardTitleTag・CardDataAttributes・CardOptions・CardTitleOptions・CardActionAreaOptions型と、cardVariants・cardSizes・cardTags・cardTitleTags一覧も公開します。
+
+Reactの基本例です。IDは親のuseIdで作り、複数カードの見出し参照を分けます。
+
+```tsx
+import { useId } from 'react';
+import {
+  TCard, TCardHeader, TCardTitle, TCardDescription,
+  TCardBody, TCardFooter, TLink,
+} from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/card.css';
+import 'tokiwagi-ui/link.css';
+
+export function ProjectCard() {
+  const titleId = useId();
+  return (
+    <TCard as="article" variant="outline" size="md"
+      aria-labelledby={titleId} style={{ maxWidth: 414 }}>
+      <TCardHeader>
+        <TCardTitle as="h3" id={titleId}>デザインシステムを整える</TCardTitle>
+        <TCardDescription>Tokiwagi UI / コンポーネント設計</TCardDescription>
+      </TCardHeader>
+      <TCardBody>チームで使うUIの見た目と振る舞いを揃えます。</TCardBody>
+      <TCardFooter>
+        <span>更新：今日</span>
+        <TLink href="/projects/design-system">詳細を見る</TLink>
+      </TCardFooter>
+    </TCard>
+  );
+}
+```
+
+Vueの全体リンク例です。内部には別のリンク・ボタン・入力欄を入れません。複数の操作が必要なカードでは全体リンクを使わず、フッターなどに独立した操作要素を置きます。
+
+```vue
+<script setup lang="ts">
+import { useId } from 'vue';
+import { TCard, TCardActionArea, TCardHeader, TCardTitle, TCardBody } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/card.css';
+const titleId = useId();
+</script>
+
+<template>
+  <TCard variant="subtle" size="lg" :aria-labelledby="titleId">
+    <TCardActionArea href="/guides/getting-started">
+      <TCardHeader>
+        <TCardTitle :id="titleId" as="h3">はじめてのTokiwagi UI</TCardTitle>
+      </TCardHeader>
+      <TCardBody>基本の考え方から、コンポーネントの使い方まで。</TCardBody>
+    </TCardActionArea>
+  </TCard>
+</template>
+```
+
+Astroのメディア例です。画像のalt・高さ・トリミングは用途に合わせて指定します。静的出力のIDは親で一意にします。
+
+```astro
+---
+import { TCard, TCardMedia, TCardHeader, TCardTitle, TCardBody } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/card.css';
+const titleId = `card-${crypto.randomUUID()}`;
+---
+<TCard as="article" variant="elevated" aria-labelledby={titleId}>
+  <TCardMedia>
+    <img src="/images/card-layout.webp" alt="余白を取って並べた2枚のカード" loading="lazy" />
+  </TCardMedia>
+  <TCardHeader><TCardTitle id={titleId}>余白から考える、UI設計。</TCardTitle></TCardHeader>
+  <TCardBody>読みやすく、操作しやすい画面のために。</TCardBody>
+</TCard>
+```
+
+TCardActionAreaのtarget・rel・aria-currentはネイティブのリンク属性です。target=_blankでは大文字・小文字を区別せず、relのopenerを除きnoopenerを補います。他のrelは保持します。URLの決定・検証とルーター連携・現在地の判定は利用側が担います。disabledは提供しません。
+
+完了・選択・保存状態や読み込み処理はカードに内包しません。チェックボックス・ラジオボタン・ボタンなどの状態を利用側で管理し、読み込み中はaria-busyとスケルトンや案内を組み合わせます。タイトル・状態・画像の意味を色だけに依存させず、フォーカス輪郭を隠さないでください。
+
+利用ルールは[TCardの個別README](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TCard/README.md)、見本はStorybook「コンポーネント/TCard」を参照してください。

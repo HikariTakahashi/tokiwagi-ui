@@ -1,0 +1,20 @@
+---
+import { TCard, TCardHeader, TCardTitle, TCardDescription, TCardBody, TCardFooter, TCardMedia, TCardActionArea } from 'tokiwagi-ui/astro';
+import { cardExampleDefaults, type CardPreviewOptions } from '../card-preview';
+interface Props { view: CardPreviewOptions['view']; as: CardPreviewOptions['as'] }
+const { view, as } = Astro.props;
+const { title, description, text, href } = cardExampleDefaults;
+const eyebrow = view === 'task' ? 'デザイン / タスク' : view === 'media' ? 'デザインノート' : view === 'link' ? 'スタートガイド' : 'プロジェクト';
+---
+<TCard as={as} aria-labelledby="card-example-title">
+  {view === 'media' && <TCardMedia><div class="tkw-card-example-media" role="img" aria-label="余白を取って並べた2枚のカードのイラスト"><span></span><span></span></div></TCardMedia>}
+  {view === 'link' ? <TCardActionArea href={href}>
+    <TCardHeader><div class="tkw-card-example-eyebrow">{eyebrow}</div><TCardTitle id="card-example-title">{title}</TCardTitle><TCardDescription>{description}</TCardDescription></TCardHeader>
+    <TCardBody><p class="tkw-card-example-copy">{text}</p></TCardBody>
+    <TCardFooter><span class="tkw-card-example-meta">更新：今日</span><span>導入ガイドを開く →</span></TCardFooter>
+  </TCardActionArea> : <>
+    <TCardHeader><div class="tkw-card-example-eyebrow">{eyebrow}{view === 'task' && <span class="tkw-card-example-status">進行中</span>}</div><TCardTitle id="card-example-title">{title}</TCardTitle><TCardDescription>{description}</TCardDescription></TCardHeader>
+    <TCardBody><p class="tkw-card-example-copy">{text}</p></TCardBody>
+    <TCardFooter><span class="tkw-card-example-meta">{view === 'task' ? '今日 18:00' : '更新：今日'}</span><a class="tkw-card-example-action" href={href}>詳細を見る →</a></TCardFooter>
+  </>}
+</TCard>

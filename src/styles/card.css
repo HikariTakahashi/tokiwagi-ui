@@ -1,0 +1,39 @@
+@import '../../tokens/neutrals.css';
+@import '../../tokens/typography.css';
+
+.tkw-card {
+  --tkw-card-padding: 16px;
+  --tkw-card-gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--tkw-color-neutral-200);
+  border-radius: 12px;
+  background: var(--tkw-color-neutral-0);
+  color: var(--tkw-color-neutral-900);
+  box-shadow: 2px 2px 4px color-mix(in srgb, var(--tkw-color-neutral-1000) 25%, transparent);
+  font: 400 14px/1.6 var(--tkw-font-family-sans);
+  overflow: clip;
+  overflow-wrap: anywhere;
+}
+.tkw-card[data-variant='elevated'] { border-color: transparent; }
+.tkw-card[data-variant='subtle'] { border-color: transparent; background: var(--tkw-color-neutral-100); }
+.tkw-card[data-size='sm'] { --tkw-card-padding: 12px; --tkw-card-gap: 8px; }
+.tkw-card[data-size='lg'] { --tkw-card-padding: 24px; --tkw-card-gap: 16px; }
+
+.tkw-card-header, .tkw-card-body, .tkw-card-footer, .tkw-card-media { box-sizing: border-box; min-width: 0; }
+.tkw-card-header { display: flex; flex-direction: column; gap: 6px; padding: var(--tkw-card-padding) var(--tkw-card-padding) 0; }
+.tkw-card-title { margin: 0; color: inherit; font: 600 18px/1.5 var(--tkw-font-family-sans); overflow-wrap: anywhere; }
+.tkw-card-description { margin: 0; color: var(--tkw-color-neutral-600); font: inherit; }
+.tkw-card-body { padding: var(--tkw-card-gap) var(--tkw-card-padding) 0; }
+.tkw-card-body:first-child { padding-top: var(--tkw-card-padding); }
+.tkw-card-header:last-child, .tkw-card-body:last-child { padding-bottom: var(--tkw-card-padding); }
+.tkw-card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: var(--tkw-card-padding); }
+.tkw-card-media { overflow: clip; }
+.tkw-card-media > :where(img, video) { display: block; max-width: 100%; width: 100%; height: auto; }
+
+.tkw-card-action-area { display: flow-root; color: inherit; text-decoration: none; border-radius: inherit; }
+.tkw-card-action-area:hover { background: var(--tkw-color-neutral-50); }
+.tkw-card-action-area:active { background: var(--tkw-color-neutral-100); }
+.tkw-card-action-area:focus-visible { outline: 2px solid var(--tkw-color-neutral-900); outline-offset: -3px; }
+.tkw-card-header[hidden], .tkw-card-footer[hidden], .tkw-card-action-area[hidden] { display: none; }

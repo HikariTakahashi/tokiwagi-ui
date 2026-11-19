@@ -1,0 +1,6 @@
+---
+import type { TCardDescriptionProps } from './TCardDescriptionProps';
+interface Props extends TCardDescriptionProps {}
+const { class: className, ...attributes } = Astro.props;
+---
+<p {...attributes} class:list={['tkw-card-description', className]}><slot /></p>

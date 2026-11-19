@@ -41,3 +41,5 @@ declare module 'virtual:tkw-astro-link-buttons' {
   const previewsUrl: string;
   export default previewsUrl;
 }
+
+declare module 'virtual:tkw-astro-cards' { const previewsUrl: string; export default previewsUrl; }
