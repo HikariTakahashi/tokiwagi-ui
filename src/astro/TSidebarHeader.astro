@@ -1,0 +1,6 @@
+---
+import type { TSidebarHeaderProps } from './TSidebarHeaderProps';
+interface Props extends TSidebarHeaderProps {}
+const { class: className, ...attributes } = Astro.props;
+---
+<div {...attributes} class:list={['tkw-sidebar-header', className]}><slot /></div>

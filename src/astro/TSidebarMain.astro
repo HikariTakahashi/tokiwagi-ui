@@ -1,0 +1,8 @@
+---
+import type { TSidebarMainProps } from './TSidebarMainProps';
+import { sidebarMainTag } from '../lib/sidebar';
+interface Props extends TSidebarMainProps {}
+const { as, class: className, ...attributes } = Astro.props;
+const Tag = sidebarMainTag(as);
+---
+<Tag {...attributes} class:list={['tkw-sidebar-main', className]}><slot /></Tag>

@@ -60,3 +60,18 @@ export { default as TCardActionArea } from './TCardActionArea.astro';
 export type { TCardActionAreaProps } from './TCardActionAreaProps';
 export { cardVariants, cardSizes, cardTags, cardTitleTags } from '../lib/card';
 export type { CardVariant, CardSize, CardTag, CardTitleTag, CardDataAttributes, CardOptions, CardTitleOptions, CardActionAreaOptions } from '../lib/card';
+
+export { default as TSidebarLayout } from './TSidebarLayout.astro';
+export type { TSidebarLayoutProps } from './TSidebarLayoutProps';
+export { default as TSidebar } from './TSidebar.astro';
+export type { TSidebarProps } from './TSidebarProps';
+export { default as TSidebarMain } from './TSidebarMain.astro';
+export type { TSidebarMainProps } from './TSidebarMainProps';
+export { default as TSidebarHeader } from './TSidebarHeader.astro';
+export type { TSidebarHeaderProps } from './TSidebarHeaderProps';
+export { default as TSidebarBody } from './TSidebarBody.astro';
+export type { TSidebarBodyProps } from './TSidebarBodyProps';
+export { default as TSidebarFooter } from './TSidebarFooter.astro';
+export type { TSidebarFooterProps } from './TSidebarFooterProps';
+export { sidebarSides, sidebarTags, sidebarMainTags } from '../lib/sidebar';
+export type { SidebarSide, SidebarTag, SidebarMainTag, SidebarLayoutOptions, SidebarOptions, SidebarMainOptions } from '../lib/sidebar';
