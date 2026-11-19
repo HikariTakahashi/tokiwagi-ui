@@ -1,6 +1,7 @@
 import { linkButtonSizeState, type LinkButtonSize } from '../lib/link-size';
 import { defineComponent, h, type AnchorHTMLAttributes, type PropType } from 'vue';
-import { linkState, type LinkButtonOptions, type LinkTone, type LinkCurrent } from '../lib/link';
+import type { LinkButtonOptions, LinkTone, LinkCurrent } from '../lib/link';
+import { linkButtonState, linkButtonAttributes, stopDisabledLinkActivation } from '../lib/link-button';
 import type { IconName } from '../lib/icon-sources';
 import { TIcon } from './TIcon';
 
@@ -14,14 +15,19 @@ export const TLinkButton = defineComponent({
     size: { type: String as PropType<LinkButtonSize>, default: 'lg' },
     leadingIcon: { type: String as PropType<IconName> },
     trailingIcon: { type: String as PropType<IconName> },
+    disabled: { type: Boolean, default: false },
   },
   setup(props, { attrs, slots }) {
     return () => {
       const sizing = linkButtonSizeState(props.size);
-      const state = linkState({ ...props, target: attrs.target as string | undefined, rel: attrs.rel as string | undefined,
-        'aria-current': attrs['aria-current'] as LinkCurrent | undefined }, 'TLinkButton');
-      return h('a', { ...attrs, href: state.href, rel: state.rel, class: ['tkw-button', 'tkw-link-button', attrs.class],
-        'data-size': sizing.size, 'data-tone': state.tone, 'data-current': state.isCurrent || undefined,
+      const state = linkButtonState({ ...props, target: attrs.target as string | undefined, rel: attrs.rel as string | undefined,
+        'aria-current': attrs['aria-current'] as LinkCurrent | undefined });
+      const forwarded = linkButtonAttributes(attrs, state.disabled);
+      return h('a', { ...forwarded, href: state.disabled ? undefined : state.href, rel: state.disabled ? undefined : state.rel,
+        role: state.disabled ? 'link' : attrs.role, 'aria-disabled': state.disabled ? true : attrs['aria-disabled'],
+        ...(state.disabled ? Object.fromEntries(['onClick', 'onDblclick', 'onAuxclick', 'onKeydown', 'onKeyup'].map(name => [name, stopDisabledLinkActivation])) : {}),
+        class: ['tkw-button', 'tkw-link-button', attrs.class],
+        'data-size': sizing.size, 'data-tone': state.tone, 'data-current': state.isCurrent || undefined, 'data-disabled': state.disabled || undefined,
       }, [
         state.leadingIcon === undefined ? null : h('span', { class: 'tkw-button__icon tkw-link-button__leading-icon' }, [h(TIcon, { name: state.leadingIcon, size: sizing.iconSize })]),
         h('span', { class: 'tkw-button__label tkw-link-button__label' }, slots.default?.()),

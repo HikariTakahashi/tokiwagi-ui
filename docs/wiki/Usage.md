@@ -273,13 +273,20 @@ import 'tokiwagi-ui/link-button.css';
 
 `LinkButtonSize`・`linkButtonSizes`・`LinkButtonOptions`は各方式の公開入口からインポートできます。TLinkButtonではinheritや未定義サイズを型・実行時の両方で拒否します。
 
-標準属性はTLinkと同じです。sizeはTLinkButton専用のLinkButtonSize（sm/md/lg、既定lg）を指定します。href必須、toneの既定はneutral、leadingIcon・trailingIconは既定なし、target・rel・aria-current・downloadなどa要素の属性を受け付けます。文字ラベルはchildren／既定スロットで渡します。React・VueのネイティブイベントとclassName／classを転送します。空のhref・不正な色・未登録のアイコンには日本語エラーを返します。disabledは提供しません。
+標準属性はTLinkと同じです。sizeはTLinkButton専用のLinkButtonSize（sm/md/lg、既定lg）を指定します。href必須、toneの既定はneutral、leadingIcon・trailingIconは既定なし、target・rel・aria-current・downloadなどa要素の属性を受け付けます。文字ラベルはchildren／既定スロットで渡します。React・VueのネイティブイベントとclassName／classを転送します。空のhref・不正な色・未登録のアイコンには日本語エラーを返します。disabledはboolean（既定false）で、TButtonと同じ規則で不正値を拒否します。
 
 サイズ未指定では現在の角丸12px、高さ50px以上、文字1.75rem・太さ700、前後アイコン32pxを維持します。通常時は下線なしで、aria-currentに有効な現在地を指定するとラベルに下線を表示します。Tab・Enter・修飾キー・中央クリック・右クリックによるリンク操作を維持します。Spaceを独自にクリックへ変換しません。target=_blankではopenerを除きnoopenerを補完します。URLの検証・ルーター連携・現在地判定は利用側が担います。
 
 色とホバー・押下・フォーカスはTButtonと同じトークンとCSSです。イエローと白文字などの既知のコントラスト制約もTButtonと同じです。カラーの使用ルールに従って使用先を確認してください。TButtonの角丸32px、TLinkの既定の文字サイズ継承と16pxアイコンはそれぞれ維持します。
 
-React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・size・leadingIcon・trailingIcon・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
+React・VueのSSRとハイドレーション、複数rootのID接頭辞はTLink／TIconと同じ規則です。Astroはハイドレーション不要の静的リンクを出力します。Storybook「コンポーネント/TLinkButton」には実部品を1つ表示し、framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-currentを標準Controlsで変更します。設定を方式切り替え中も保持し、日本語や記号を含むtext・hrefもURLから復元します。
+
+`disabled={true}`（Vueは`:disabled="true"`、Astroは`disabled`）で無効化します。TButtonと同じ無効色・影なし・操作不可カーソルを使い、ホバーと押下の配色を抑止します。無効時はhref・target・rel・download・pingなどのリンク属性とtabindex・autofocus・accesskey・contenteditable、渡されたクリック・キー・ポインター操作のハンドラーを除きます。role="link"とaria-disabled="true"を付け、Tab移動から外します。hrefはpropsとして引き続き必須で、有効に戻すと属性・イベントを復元します。React・Vueはクリック・中央クリック・ダブルクリック・起動キーの伝播も抑止し、Astroはクライアントscriptなしで遷移しない静的HTMLを出力します。利用側で後付けするイベントやルーターの委譲処理はaria-disabledを確認してください。aria-disabledだけの指定では動作を無効にしません。
+
+```tsx
+<TLinkButton href="/calendar" disabled={true}>カレンダーを開く</TLinkButton>
+```
+
 
 ## TLink
 

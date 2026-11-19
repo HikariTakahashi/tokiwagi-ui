@@ -12,6 +12,27 @@ plugin({ name: 'astro-link-test', setup(build) {
 const { TLinkButton } = await import('tokiwagi-ui/astro');
 const container = await experimental_AstroContainer.create();
 
+// JSなしでもhrefと操作属性を除き、無効なリンクの読み上げ状態とアイコンを静的に提供する。
+test('Astroの無効なTLinkButtonはスクリプトなしで遷移と操作を抑止する', async () => {
+  const window = new Window();
+  try {
+    const html = await container.renderToString(TLinkButton, { props: {
+      href: '/download', disabled: true, target: '_blank', download: 'file', rel: 'external', ping: '/track',
+      tabindex: 5, autofocus: true, contenteditable: true, onclick: 'alert(1)', onkeydown: 'alert(1)',
+      role: 'button', 'aria-disabled': 'false', 'aria-describedby': 'hint', leadingIcon: 'moon', trailingIcon: 'tool',
+    }, slots: { default: '準備中' } });
+    window.document.body.innerHTML = html;
+    const anchor = window.document.querySelector('a')!;
+    for (const name of ['href', 'target', 'download', 'rel', 'ping', 'tabindex', 'autofocus', 'contenteditable', 'onclick', 'onkeydown', 'disabled']) expect(anchor.hasAttribute(name)).toBe(false);
+    expect(anchor.getAttribute('role')).toBe('link');
+    expect(anchor.getAttribute('aria-disabled')).toBe('true');
+    expect(anchor.hasAttribute('data-disabled')).toBe(true);
+    expect(anchor.getAttribute('aria-describedby')).toBe('hint');
+    expect(anchor.querySelectorAll('svg')).toHaveLength(2);
+    expect(html).not.toMatch(/<script|astro-island/);
+  } finally { await window.happyDOM.close(); }
+});
+
 // 8色の静的リンクでslot・属性・relと両アイコンの独立したクリッピングを検証する。
 test('AstroのTLinkButtonは遷移と装飾を静的HTMLで提供する', async () => {
   const window = new Window();

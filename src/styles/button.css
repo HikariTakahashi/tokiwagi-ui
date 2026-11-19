@@ -91,12 +91,12 @@
 }
 
 @media (hover: hover) {
-  .tkw-button:hover:not(:disabled) {
+  .tkw-button:hover:not(:disabled):not([data-disabled]) {
     --tkw-button-bg: var(--tkw-button-hover-bg);
   }
 }
 
-.tkw-button:active:not(:disabled) {
+.tkw-button:active:not(:disabled):not([data-disabled]) {
   --tkw-button-bg: var(--tkw-button-active-bg);
 }
 
@@ -105,7 +105,8 @@
   outline-offset: 2px;
 }
 
-.tkw-button:disabled {
+.tkw-button:disabled,
+.tkw-link-button[data-disabled] {
   border-color: var(--tkw-color-neutral-400);
   background: var(--tkw-color-neutral-100);
   color: var(--tkw-color-neutral-600);

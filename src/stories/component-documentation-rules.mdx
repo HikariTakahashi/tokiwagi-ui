@@ -15,7 +15,7 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 
 | コンポーネント | Controls | 初期値 |
 | --- | --- | --- |
-| TLinkButton | framework・text・href・tone・size・leadingIcon・trailingIcon・target・rel・aria-current | React・カレンダーを開く・#link-button-target・neutral・lg・両アイコンなし・_self・rel空文字・unset |
+| TLinkButton | framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-current | React・カレンダーを開く・#link-button-target・neutral・lg・両アイコンなし・false・_self・rel空文字・unset |
 | TLink | framework・text・href・tone・size・leadingIcon・trailingIcon・target・rel・aria-current | React・予定の詳細を見る・#link-target・neutral・inherit・アイコンなし・_self・空文字・unset |
 | TButton | framework・text・tone・leadingIcon・disabled | React・操作・neutral・アイコンなし・false |
 | TText | framework・text・as・size・responsive・sizeSm・sizeLg・weight・lineHeight・tone・align・truncate・lineClamp・whiteSpace・inherit・italic・decoration | React・代表文言・span・サイズ/太さ/行高未指定・通常表示 |
@@ -64,3 +64,5 @@ TLinkは本文用の下線付きリンクを1つ表示します。3方式で文�
 TLinkButtonは角丸12pxのボタン型リンクを1つ表示します。設定・方式切り替え・textとhrefのURL保存はTLinkと同じ共通処理を利用し、前後アイコンは32pxです。Astroも実TLinkButtonと実TIconの出力を使います。Canvasに比較や独自設定欄を追加しません。
 
 TLinkのsizeはinherit/sm/md/lg（既定inherit）、TLinkButtonのsizeはsm/md/lg（既定lg）を標準selectで変更します。サイズは方式切り替えとURL再読み込みで保持し、文言や他の設定と同じ見本1つに反映します。Astroもサイズに応じた実TIcon出力を選びます。
+
+TLinkButtonのdisabledは標準boolean Controls（既定false）で切り替え、方式切り替えとURL復元でも保持します。Astroは有効・無効それぞれの実コンポーネント出力を使います。

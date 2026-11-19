@@ -9,10 +9,9 @@ type LinkBaseOptions = {
   tone?: LinkTone;
   leadingIcon?: IconName;
   trailingIcon?: IconName;
-  disabled?: never;
 };
-export type LinkOptions = LinkBaseOptions & { size?: LinkSize };
-export type LinkButtonOptions = LinkBaseOptions & { size?: LinkButtonSize };
+export type LinkOptions = LinkBaseOptions & { size?: LinkSize; disabled?: never };
+export type LinkButtonOptions = LinkBaseOptions & { size?: LinkButtonSize; disabled?: boolean };
 
 /** ネイティブの遷移を維持し、3方式で同じ属性・装飾を解決する。 */
 export function linkState({ href, tone = 'neutral', leadingIcon, trailingIcon, target, rel, 'aria-current': current }: LinkBaseOptions & {

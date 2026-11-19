@@ -18,5 +18,8 @@ const previews: AstroLinkButtonPreviews = {
   link: await container.renderToString(TLinkButton, {
     props: { href: '#link-button-target', leadingIcon: 'moon', trailingIcon: 'tool' }, slots: { default: 'カレンダーを開く' },
   }),
+  disabledLink: await container.renderToString(TLinkButton, {
+    props: { href: '#link-button-target', disabled: true, leadingIcon: 'moon', trailingIcon: 'tool' }, slots: { default: 'カレンダーを開く' },
+  }),
 };
 await Bun.write(output, JSON.stringify(previews));

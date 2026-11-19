@@ -8,8 +8,10 @@ const missing: TLinkButtonProps = {};
 const invalidTone: TLinkButtonProps = { href: '/', tone: 'red' };
 // @ts-expect-error 存在するアイコン名だけを受け付ける。
 const invalidIcon: TLinkButtonProps = { href: '/', trailingIcon: 'missing' };
-// @ts-expect-error リンクはdisabledを提供しない。
 const disabled: TLinkButtonProps = { href: '/', disabled: true };
+// @ts-expect-error 無効状態はTButtonと同じbooleanに限る。
+const invalidDisabled: TLinkButtonProps = { href: '/', disabled: 'true' };
+void invalidDisabled;
 const inferred: InstanceType<typeof TLinkButton>['$props'] = props;
 // @ts-expect-error Vueの推論型でもhrefは必須。
 const missingInferred: InstanceType<typeof TLinkButton>['$props'] = {};
@@ -25,3 +27,7 @@ void inheritedSize;
 // @ts-expect-error Vueの推論型でもサイズを制限する。
 const invalidInferredSize: InstanceType<typeof TLinkButton>['$props'] = { href: '/', size: 'xl' };
 void invalidInferredSize;
+
+// @ts-expect-error Vueの推論型でも無効状態はbooleanに限る。
+const invalidInferredDisabled: InstanceType<typeof TLinkButton>['$props'] = { href: '/', disabled: 'true' };
+void invalidInferredDisabled;

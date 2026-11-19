@@ -1,22 +1,25 @@
 import { linkButtonSizeState } from '../lib/link-size';
-import { linkState, type LinkButtonOptions, type LinkCurrent } from '../lib/link';
+import type { LinkButtonOptions, LinkCurrent } from '../lib/link';
+import { linkButtonState } from '../lib/link-button';
 import { astroPreviewSvg, type AstroIconPreviews } from './components/astro-preview';
 
 export type LinkButtonPreviewOptions = LinkButtonOptions & {
   component: 'TLinkButton'; text: string; target?: string; rel?: string; current?: LinkCurrent;
 };
-export type AstroLinkButtonPreviews = { link: string };
+export type AstroLinkButtonPreviews = { link: string; disabledLink: string };
 
 /** 実Astro出力を使い、文言と属性をDOM APIで安全に反映する。 */
 export function astroLinkButtonPreviewHtml(previews: AstroLinkButtonPreviews, icons: AstroIconPreviews, options: LinkButtonPreviewOptions, prefix: string): string {
   const sizing = linkButtonSizeState(options.size);
-  const state = linkState({ ...options, 'aria-current': options.current }, 'TLinkButton');
+  const state = linkButtonState({ ...options, 'aria-current': options.current });
   const template = document.createElement('template');
-  template.innerHTML = previews.link;
+  template.innerHTML = state.disabled ? previews.disabledLink : previews.link;
   const link = template.content.querySelector('a');
   const label = template.content.querySelector('.tkw-link-button__label');
   if (!link || !label) throw new Error('AstroのTLinkButton見本に必要な要素がありません');
-  for (const [key, value] of Object.entries({ href: state.href, target: options.target, rel: state.rel,
+  for (const [key, value] of Object.entries({ href: state.disabled ? undefined : state.href,
+    target: state.disabled ? undefined : options.target, rel: state.disabled ? undefined : state.rel,
+    role: state.disabled ? 'link' : undefined, 'aria-disabled': state.disabled || undefined, 'data-disabled': state.disabled || undefined,
     'aria-current': options.current, 'data-size': sizing.size, 'data-tone': state.tone, 'data-current': state.isCurrent || undefined })) {
     if (value === undefined) link.removeAttribute(key);
     else link.setAttribute(key, String(value));

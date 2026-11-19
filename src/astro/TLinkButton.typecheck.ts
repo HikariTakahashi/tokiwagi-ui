@@ -8,8 +8,10 @@ const missing: TLinkButtonProps = {};
 const invalidTone: TLinkButtonProps = { href: '/', tone: 'red' };
 // @ts-expect-error 存在するアイコン名だけを受け付ける。
 const invalidIcon: TLinkButtonProps = { href: '/', trailingIcon: 'missing' };
-// @ts-expect-error リンクはdisabledを提供しない。
 const disabled: TLinkButtonProps = { href: '/', disabled: true };
+// @ts-expect-error 無効状態はTButtonと同じbooleanに限る。
+const invalidDisabled: TLinkButtonProps = { href: '/', disabled: 'true' };
+void invalidDisabled;
 void [props, missing, invalidTone, invalidIcon, disabled];
 
 // @ts-expect-error 定義されていないサイズは指定できない。

@@ -17,6 +17,47 @@ beforeAll(async () => {
   }
   ({ hydrateRoot } = await import('react-dom/client'));
 });
+
+// 無効状態のSSRをhydrateし、利用側の属性・ハンドラーを抑止してから元のリンクへ復元する。
+test('ReactのTLinkButtonは無効化中の操作を止めて再有効化で属性とイベントを復元する', async () => {
+  let actions = 0, parentClicks = 0;
+  const page = (disabled = true) => <div onClick={() => parentClicks++}>
+    <TLinkButton href="#restored" disabled={disabled} target="_blank" rel="external opener" download="file"
+      tabIndex={3} autoFocus contentEditable suppressContentEditableWarning accessKey="x" aria-disabled="false" role="button" data-kind="retained"
+      onClick={event => { actions++; event.preventDefault(); }} onClickCapture={() => actions++} onAuxClick={() => actions++}
+      onDoubleClick={() => actions++} onKeyDown={() => actions++} onPointerDown={() => actions++}>
+      無効な遷移
+    </TLinkButton>
+  </div>;
+  const host = document.createElement('div'); host.innerHTML = renderToString(page()); document.body.append(host);
+  const anchor = host.querySelector('a')!;
+  const recovered: unknown[] = [];
+  let root: ReturnType<typeof hydrateRoot> | undefined;
+  try {
+    for (const name of ['href', 'target', 'rel', 'download', 'tabindex', 'autofocus', 'contenteditable', 'accesskey', 'disabled']) expect(anchor.hasAttribute(name)).toBe(false);
+    expect(anchor.getAttribute('role')).toBe('link');
+    expect(anchor.getAttribute('aria-disabled')).toBe('true');
+    expect(anchor.dataset.kind).toBe('retained');
+    await act(async () => { root = hydrateRoot(host, page(), { onRecoverableError: error => recovered.push(error) }); });
+    for (const type of ['click', 'auxclick', 'dblclick', 'pointerdown']) await act(async () => {
+      anchor.dispatchEvent(new window.MouseEvent(type, { bubbles: true, cancelable: true }) as unknown as Event);
+    });
+    await act(async () => anchor.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }) as unknown as Event));
+    expect([actions, parentClicks]).toEqual([0, 0]);
+    await act(async () => root!.render(page(false)));
+    expect(host.querySelector('a')).toBe(anchor);
+    expect(anchor.getAttribute('href')).toBe('#restored');
+    expect(anchor.rel).toBe('external noopener');
+    expect(anchor.getAttribute('download')).toBe('file');
+    expect(anchor.tabIndex).toBe(3);
+    expect(renderToString(page(false))).toContain('autofocus=""');
+    expect(anchor.hasAttribute('data-disabled')).toBe(false);
+    expect(anchor.getAttribute('aria-disabled')).toBe('false');
+    await act(async () => anchor.click());
+    expect([actions, parentClicks]).toEqual([2, 1]);
+    expect(recovered).toEqual([]);
+  } finally { if (root) await act(async () => root!.unmount()); host.remove(); }
+});
 afterAll(async () => {
   await window.happyDOM.close();
   for (const [key, descriptor] of globals) {
