@@ -37,6 +37,8 @@ bun run test:storybook:watch  # 変更を監視（デバッグ用Storybookも起
 bun run test:storybook -- src/stories/THeaderButton.stories.ts
 ```
 
+CIの `tkw-storybook` は、Visual Testsと同じPlaywright公式コンテナー（`v1.64.1-noble`、SHA-256ダイジェスト固定）で、Storybookビルドと全ストーリーのコンポーネントテストを実行します。同梱のChromiumとOS依存関係を利用し、`playwright install --with-deps` や `apt` は実行しません。Bun 1.4.4はnpm経由で導入し、unzipの追加インストールも避けます。Chromiumにはホストの共有メモリを使わせます。Playwright更新時は、依存パッケージと両ワークフローのイメージ・ダイジェストを同時に更新してください。
+
 カバレッジも計測する場合は、StorybookのテストウィジェットでCoverageを有効にして全ストーリーを実行します。CLIでは `bun run test:storybook --coverage` を使います。カバレッジ用の `@vitest/coverage-v8`・`@vitest/coverage-istanbul` はVitest本体と同じバージョンで開発依存に含めています。CLIのHTMLレポートは `coverage/index.html` に生成され、`coverage/` はGit・型検査の対象から除外します。`Cannot find package '@vitest/coverage-v8'` が出る場合は、Storybookを停止し、同じ環境（Dev Container利用時はコンテナ内）で `bun install --frozen-lockfile` を実行して再起動してください。
 
 Coverage・Accessibilityをクリックしてもチェックが戻り、ブラウザのコンソールに `UniversalStoreFollowerTimeoutError` や `Cannot set state before store is ready` が出る場合は、画面とサーバーの状態同期が失敗しています。Storybookのページを再読み込みしてからテストウィジェットを開き、両方のチェックを有効にしてください。実行中はチェックを変更できません。Coverageを計測する場合はWatch modeをオフにし、ウィジェットの「Start test run」で全件実行します。チェック欄の右側にある結果ボタンは、検査結果ができるまで無効表示になります。
