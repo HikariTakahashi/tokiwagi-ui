@@ -113,6 +113,10 @@ READMEは概要とWikiへの導線を扱います。Wiki管理ページの唯一
 
 React・Vue・Astroの公開入口からTText・TTextPropsとTextOptions等の共通型を公開します。利用側で`tokiwagi-ui/text.css`を一度読み込みます。書体・色は既存トークンを参照し、サイズはsm/md/lg（0.875/1/1.125rem）、既定md、行高1.5、太さnormalです。asはspan/p（既定span）、toneはdefault/muted/inherit/success/warning/error/infoです。sizeはbaseを必須とするオブジェクトでも指定でき、640pxのsm・1024pxのlgへ直前の値を引き継ぎます。inheritは書体・サイズ・太さ・行高を親から継承し、明示設定を優先します。色の継承はtoneで指定します。truncateとlineClampは併用を拒否します。文字列・children/slot・標準属性を保持し、見出し・操作・全文表示の導線は利用側が担います。利用ルールは`components/TText/README.md`、APIはWikiのUsage、見本はStorybook「コンポーネント/TText」です。Astroの見本は公開実コンポーネントのspan/p出力を収録し、共通解決処理の属性・CSS変数とtextContentで入力を安全に反映します。
 
+## TButton
+
+React・Vue・AstroのTButtonにsize（sm/md/lg、既定lg）と任意のleadingIcon・trailingIconを指定します。ButtonSize・buttonSizes・ButtonOptionsも各公開入口から利用できます。文字1.25/1.5/1.75rem、TIcon20/24/32px、最小高さ40/44/50px、左右padding12/14/16px、gap6/8/10pxを連動させ、縦padding6px・太さ700・角丸32pxを維持します。lgのアイコン外枠40×32px、sm/mdの20×20px／24×24pxも保持します。寸法解決はsrc/lib/button-size.ts、サイズCSSはbutton.cssでTLinkButtonと共有し、リンク側の公開型・角丸12px・a要素の動作は維持します。不正サイズと未登録の前後アイコン名は日本語エラーです。ネイティブbuttonのtype・disabled・フォーム属性・イベント・children/slotとSSRを維持します。Storybookはsizeと前後アイコンを標準Controls・URLに保持し、Astroも実部品とサイズ別の実TIcon出力を使います。利用ルールはcomponents/TButton/README.md、APIはdocs/wiki/Usage.mdに保持します。
+
 ## TLink
 
 React・Vue・Astroの公開入口からTLink・TLinkPropsとLinkTone・LinkOptions・LinkCurrent・linkTonesを公開します。href必須のネイティブa要素で、未指定・空文字・空白のみは日本語エラーです。tokiwagi-ui/link.cssを一度読み込み、周囲の書式を継承した下線付きの本文リンクを表示します。toneはneutral（既定）と7色のプライマリーで、文字とアイコンは既存のneutral-900／on-subtleトークンを参照します。leadingIcon・trailingIconは任意の16px装飾TIconです。現在地はaria-currentで指定し、太字と太い下線で表します。target=_blankのrelはopenerを除いてnoopenerを補完します。属性・children/slot・React/Vueのネイティブイベントを転送し、ルーター・URLの検証と決定・現在地判定は利用側が担います。disabledは提供しません。利用ルールはcomponents/TLink/README.md、APIはWikiのUsage、見本はStorybook「コンポーネント/TLink」です。Astroも実リンク・実TIconの出力を使い、Controlsの文言と属性をDOM APIで反映します。
@@ -123,4 +127,4 @@ React・Vue・Astroの公開入口からTLinkButton・TLinkButtonPropsを公開�
 
 ## リンクのサイズ
 
-TLinkのsizeはinherit（既定）/sm/md/lgで、文字は継承/0.875/1/1.125rem、TIconは16/16/16/20pxです。TLinkButtonのsizeはsm/md/lg（既定）で、文字1.25/1.5/1.75rem、TIcon20/24/32px、最小高さ40/44/50px、左右padding12/14/16px、gap6/8/10pxを連動させます。縦padding6px・太さ700・現行の角丸と色は維持します。共通の型とアイコン寸法はsrc/lib/link-size.ts、文字や余白はlink.css/link-button.cssに保持します。各公開入口からLinkSize・LinkButtonSize・linkSizes・linkButtonSizes・LinkButtonOptionsを公開します。サイズ未指定の既存表示は維持し、未定義値（ボタン型のinheritを含む）は日本語エラーにします。Storybookの両部品にsize selectを追加し、方式切替・URL復元・Astro実出力のサイズ連動を検証します。
+TLinkのsizeはinherit（既定）/sm/md/lgで、文字は継承/0.875/1/1.125rem、TIconは16/16/16/20pxです。TLinkButtonのsizeはsm/md/lg（既定）で、文字1.25/1.5/1.75rem、TIcon20/24/32px、最小高さ40/44/50px、左右padding12/14/16px、gap6/8/10pxを連動させます。縦padding6px・太さ700・現行の角丸と色は維持します。リンクの型とアイコン寸法はsrc/lib/link-size.tsを入口とし、ボタン型のサイズ定義はsrc/lib/button-size.tsを共有します。文字や余白はTLinkのlink.cssと、TButton・TLinkButton共通のbutton.cssに保持し、link-button.cssは角丸と現在地の差分を扱います。各公開入口からLinkSize・LinkButtonSize・linkSizes・linkButtonSizes・LinkButtonOptionsを公開します。サイズ未指定の既存表示は維持し、未定義値（ボタン型のinheritを含む）は日本語エラーにします。Storybookの両部品にsize selectを追加し、方式切替・URL復元・Astro実出力のサイズ連動を検証します。

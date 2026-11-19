@@ -17,7 +17,7 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 | --- | --- | --- |
 | TLinkButton | framework・text・href・tone・size・leadingIcon・trailingIcon・disabled・target・rel・aria-current | React・カレンダーを開く・#link-button-target・neutral・lg・両アイコンなし・false・_self・rel空文字・unset |
 | TLink | framework・text・href・tone・size・leadingIcon・trailingIcon・target・rel・aria-current | React・予定の詳細を見る・#link-target・neutral・inherit・アイコンなし・_self・空文字・unset |
-| TButton | framework・text・tone・leadingIcon・disabled | React・操作・neutral・アイコンなし・false |
+| TButton | framework・text・tone・size・leadingIcon・trailingIcon・disabled | React・操作・neutral・lg・両アイコンなし・false |
 | TText | framework・text・as・size・responsive・sizeSm・sizeLg・weight・lineHeight・tone・align・truncate・lineClamp・whiteSpace・inherit・italic・decoration | React・代表文言・span・サイズ/太さ/行高未指定・通常表示 |
 | TIcon | framework・name・size・color | React・bell・24px・currentColor |
 | TBrand | framework・text・size | React・Tokiwagi UI・32px |
@@ -32,7 +32,7 @@ Storybookは実コンポーネントの表示と設定変更、利用ルール�
 
 方式はReact・Vue・Astroの順とし、切り替えても他の設定を保持します。TIconの公開名は336種、サイズは16・20・24・32px、色は継承・ニュートラル・7色のプライマリーから選びます。色はbell-offと同じ既存トークンへのmappingで指定し、URLには選択肢のキーを保持します。TLogo・TBrandは32・64・128pxで、原本の固定配色と余白を維持します。
 
-TButtonの方式はReact・Vue・Astroから選択し、切り替え時も文言・色・アイコン・無効状態を保持します。文言は共通の文字コード保存で復元し、空白だけの場合は「操作」を表示します。Astroは実TButtonと実TIconの生成済みHTMLを使い、文言をtextContentで反映します。
+TButtonの方式はReact・Vue・Astroから選択し、切り替え時も文言・色・size・前後アイコン・無効状態を保持します。sizeはsm/md/lg（既定lg）の標準select、leadingIconとtrailingIconはなし（既定）と全公開名から選択し、URL再読み込みでも復元します。文言は共通の文字コード保存で復元し、空白だけの場合は「操作」を表示します。Astroは実TButtonとサイズに応じた実TIconの生成済みHTMLを使い、文言をtextContentで反映します。
 
 ## 個別ルール
 
