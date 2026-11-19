@@ -1,5 +1,7 @@
 import type { Preview } from '@storybook/html-vite';
 import '../src/styles/global.css';
+import 'tokiwagi-ui/sidebar.css';
+import '../src/stories/components/sidebar-preview.css';
 import 'tokiwagi-ui/card.css';
 import '../src/stories/components/card-preview.css';
 import 'tokiwagi-ui/button.css';

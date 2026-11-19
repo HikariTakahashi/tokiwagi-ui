@@ -1,0 +1,6 @@
+---
+import type { TSidebarFooterProps } from './TSidebarFooterProps';
+interface Props extends TSidebarFooterProps {}
+const { class: className, ...attributes } = Astro.props;
+---
+<div {...attributes} class:list={['tkw-sidebar-footer', className]}><slot /></div>

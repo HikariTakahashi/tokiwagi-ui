@@ -39,3 +39,12 @@ export { TCardMedia, type TCardMediaProps } from './TCardMedia';
 export { TCardActionArea, type TCardActionAreaProps } from './TCardActionArea';
 export { cardVariants, cardSizes, cardTags, cardTitleTags } from '../lib/card';
 export type { CardVariant, CardSize, CardTag, CardTitleTag, CardDataAttributes, CardOptions, CardTitleOptions, CardActionAreaOptions } from '../lib/card';
+
+export { TSidebarLayout, type TSidebarLayoutProps } from './TSidebarLayout';
+export { TSidebar, type TSidebarProps } from './TSidebar';
+export { TSidebarMain, type TSidebarMainProps } from './TSidebarMain';
+export { TSidebarHeader, type TSidebarHeaderProps } from './TSidebarHeader';
+export { TSidebarBody, type TSidebarBodyProps } from './TSidebarBody';
+export { TSidebarFooter, type TSidebarFooterProps } from './TSidebarFooter';
+export { sidebarSides, sidebarTags, sidebarMainTags } from '../lib/sidebar';
+export type { SidebarSide, SidebarTag, SidebarMainTag, SidebarLayoutOptions, SidebarOptions, SidebarMainOptions } from '../lib/sidebar';

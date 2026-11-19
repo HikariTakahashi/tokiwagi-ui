@@ -1,0 +1,6 @@
+---
+import type { TSidebarBodyProps } from './TSidebarBodyProps';
+interface Props extends TSidebarBodyProps {}
+const { class: className, ...attributes } = Astro.props;
+---
+<div {...attributes} class:list={['tkw-sidebar-body', className]}><slot /></div>

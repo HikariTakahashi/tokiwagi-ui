@@ -10,6 +10,9 @@ function initializeColorsNavigation() {
   const groups = [...toc.querySelectorAll<HTMLElement>('[data-toc-group]')];
   const disclosures = [...toc.querySelectorAll<HTMLDetailsElement>('[data-toc-disclosure]')];
   const desktop = window.matchMedia('(min-width: 1024px)');
+  const sidebar = document.getElementById('colors-sidebar');
+  const sidebarToggle = document.querySelector<HTMLButtonElement>('[data-colors-sidebar-toggle]');
+  let sidebarOpen = true;
   const manuallyOpened = new Set<HTMLDetailsElement>();
   let previousDisclosure: HTMLDetailsElement | null = null;
   let hashNavigationPending = false;
@@ -40,6 +43,8 @@ function initializeColorsNavigation() {
     const currentControl = disclosure && !disclosure.open ? disclosure.querySelector('summary') : current?.control;
 
     for (const { control } of entries) {
+      // AstroのTLinkが静的に出力する現在地属性をスクロール位置に合わせる。
+      if (control.matches('.tkw-link')) control.toggleAttribute('data-current', control === currentControl);
       if (control === currentControl) control.setAttribute('aria-current', 'location');
       else control.removeAttribute('aria-current');
     }
@@ -58,7 +63,27 @@ function initializeColorsNavigation() {
     });
   }
 
+  // 公開Astro部品は静的HTMLを担い、開閉操作と状態更新はこのページが担当する。
+  function updateSidebar() {
+    if (!sidebar) return;
+    const open = !desktop.matches || sidebarOpen;
+    if (!open && sidebar.contains(document.activeElement)) sidebarToggle?.focus();
+    sidebar.dataset.open = String(open);
+    sidebar.toggleAttribute('inert', !open);
+    if (open) sidebar.removeAttribute('aria-hidden');
+    else sidebar.setAttribute('aria-hidden', 'true');
+    sidebarToggle?.setAttribute('aria-expanded', String(sidebarOpen));
+    const label = sidebarToggle?.querySelector('[data-sidebar-toggle-label]');
+    if (label) label.textContent = sidebarOpen ? '目次を閉じる' : '目次を開く';
+  }
+  sidebarToggle?.addEventListener('click', () => {
+    sidebarOpen = !sidebarOpen;
+    updateSidebar();
+    scheduleUpdate();
+  });
+
   function updateDisclosure() {
+    updateSidebar();
     toc!.open = desktop.matches;
     scheduleUpdate();
   }

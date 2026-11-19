@@ -1,6 +1,8 @@
 ---
-import { TIcon, TSelect } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/button.css';
 import 'tokiwagi-ui/select.css';
+import 'tokiwagi-ui/text.css';
+import { TButton, TIcon, TSelect, TText } from 'tokiwagi-ui/astro';
 import { colorExampleCss, colorExamples, neutralColorExamples, semanticColorExamples, type ColorExampleVariant, type SemanticColor } from '../lib/color-code-example';
 import { contrast, neutrals, neutralTokenName, tokenName, variants } from '../lib/palette';
 
@@ -78,38 +80,40 @@ const initial = states[initialIndex]!;
     aria-live="polite"
     aria-atomic="true"
   >
-    <span class="sample-name" data-color-name>{initial.label}</span>
+    <TText inherit tone="inherit" class="sample-name" data-color-name>{initial.label}</TText>
     <span class="sample-detail">
-      {neutral && <><span data-color-purpose>{initial.purpose}</span> / </>}
-      <span data-color-english lang="en">{initial.english}</span>
+      {neutral && <><TText inherit tone="inherit" data-color-purpose>{initial.purpose}</TText><TText inherit tone="inherit"> / </TText></>}
+      <TText inherit tone="inherit" data-color-english lang="en">{initial.english}</TText>
     </span>
-    <span class="sample-detail">コントラスト比 <span data-color-contrast>{initial.contrastRatio}</span></span>
+    <span class="sample-detail"><TText inherit tone="inherit">コントラスト比 </TText><TText inherit tone="inherit" data-color-contrast>{initial.contrastRatio}</TText></span>
   </div>
 
   {token === tokenName('amber') && (
-    <p class="contrast-note">イエローの白文字はコントラスト基準未達です。通常・ホバーは3:1未満、押下は4.5:1未満です。</p>
+    <p class="contrast-note"><TText inherit tone="inherit">イエローの白文字はコントラスト基準未達です。通常・ホバーは3:1未満、押下は4.5:1未満です。</TText></p>
   )}
 
   <div class="color-values">
-    <code data-color-hex>{initial.hex}</code>
+    <code><TText inherit tone="inherit" data-color-hex>{initial.hex}</TText></code>
     <button class="copy-button" type="button" data-copy="hex" aria-label="カラーコードをコピー">
       <span data-copy-icon="copy"><TIcon name="copy" size={20} /></span>
       <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
     </button>
-    <code data-color-token aria-live="polite">{initial.token}</code>
+    <code aria-live="polite"><TText inherit tone="inherit" data-color-token>{initial.token}</TText></code>
     <button class="copy-button" type="button" data-copy="token" aria-label="CSSトークンをコピー">
       <span data-copy-icon="copy"><TIcon name="copy" size={20} /></span>
       <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
     </button>
   </div>
-  <span class="copy-feedback" data-copy-feedback role="status"></span>
+  <TText inherit tone="inherit" class="copy-feedback" data-copy-feedback role="status"></TText>
 
   <div class="code-toolbar">
-    <button class="copy-button copy-code" type="button" data-copy="code">
-      <span data-code-copy-label aria-live="polite">コードをコピー</span>
-      <span data-copy-icon="copy"><TIcon name="copy" size={20} /></span>
-      <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
-    </button>
+    <TButton class="copy-code" size="sm" tone="neutral-0" weight="normal" type="button" data-copy="code">
+      <span class="copy-code-content">
+        <TText inherit tone="inherit" data-code-copy-label aria-live="polite">コードをコピー</TText>
+        <span data-copy-icon="copy"><TIcon name="copy" size={20} /></span>
+        <span data-copy-icon="check" aria-hidden="true"><TIcon name="check" size={20} /></span>
+      </span>
+    </TButton>
     <div class="code-options">
       <TSelect data-example aria-label="見本" value={initialExample}
         options={Object.entries(examples).map(([value, example]) => ({ value, label: example.label }))} />
@@ -131,12 +135,12 @@ const initial = states[initialIndex]!;
 </script>
 
 <style>
-  button {
+  .color-states button, .copy-button {
     color: inherit;
     font: inherit;
     cursor: pointer;
   }
-  button:focus-visible, .code-editor:focus-within {
+  .color-states button:focus-visible, .copy-button:focus-visible, .code-editor:focus-within {
     outline: 2px solid var(--tkw-color-neutral-900);
     outline-offset: 2px;
   }
@@ -212,9 +216,11 @@ const initial = states[initialIndex]!;
     width: 36px;
     padding: 0;
   }
-  .copy-button [data-copy-icon="check"] { display: none; }
-  .copy-button[data-copied="true"] [data-copy-icon="copy"] { display: none; }
-  .copy-button[data-copied="true"] [data-copy-icon="check"] { display: grid; }
+  .copy-code-content { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; }
+  .copy-code-content [data-copy-icon] { display: inline-flex; flex-shrink: 0; }
+  :is(.copy-button, .copy-code) [data-copy-icon="check"] { display: none; }
+  :is(.copy-button, .copy-code)[data-copied="true"] [data-copy-icon="copy"] { display: none; }
+  :is(.copy-button, .copy-code)[data-copied="true"] [data-copy-icon="check"] { display: inline-flex; }
   .copy-button:hover, .color-states button:hover { background: var(--tkw-color-neutral-100); }
   .copy-button:active, .color-states button:active { background: var(--tkw-color-neutral-200); }
   .copy-feedback { display: block; color: var(--tkw-color-neutral-600); font-size: .8125rem; }
@@ -227,15 +233,6 @@ const initial = states[initialIndex]!;
     border-top: 1px solid var(--tkw-color-neutral-200);
   }
   .code-options { margin-inline-start: auto; }
-  .copy-button.copy-code {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    width: auto;
-    padding: 4px 8px;
-    white-space: nowrap;
-  }
   .code-layout {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(120px, 1fr);

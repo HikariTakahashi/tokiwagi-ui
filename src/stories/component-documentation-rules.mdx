@@ -70,3 +70,5 @@ TLinkのsizeはinherit/sm/md/lg（既定inherit）、TLinkButtonのsizeはsm/md/
 TLinkButtonのdisabledは標準boolean Controls（既定false）で切り替え、方式切り替えとURL復元でも保持します。Astroは有効・無効それぞれの実コンポーネント出力を使います。
 
 TCardは幅414pxを上限にビューポートへ収まる実カードを1つ表示します。構造パーツを組み合わせた基本・タスク・メディア・全体リンクの用途はviewで切り替えます。外観・余白・ルート要素と4つの文言・URLを標準ControlsとURLで保持し、方式を切り替えても維持します。Astroは4用途×3要素を実描画して収録し、文字列はtextContentで反映し、見出しIDとaria-labelledbyをインスタンスごとに分離します。例の内容に使う装飾はStorybook専用で、公開card.cssへ含めません。
+
+TSidebarLayout・TSidebar・TSidebarMain・TSidebarHeader・TSidebarBody・TSidebarFooterは「コンポーネント/サイドバー」配下に配置し、React・Vue・Astroを方式の選択肢にし、切り替えても他の設定を保持します。共通描画を使い、幅960pxを上限に1つの合成例を表示します。TSidebarLayoutはview（左/右/両側）・左右のopen・width・gap・animationDuration、TSidebarはside・open・width・as、TSidebarMainはasを標準Controlsで設定します。内部3部品は固有設定を持ちません。Astroは12構成の実描画をJSONに収録し、共通ローダーの読み込み・失敗・再試行に対応します。開閉と幅の変更はDOMの属性とCSS変数だけを更新し、アニメーションを維持します。開閉はControlsから行い、見本内に操作や独自設定欄を追加しません。
