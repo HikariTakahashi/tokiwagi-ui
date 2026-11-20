@@ -37,4 +37,4 @@ const meta = {
 } satisfies Meta<Args>;
 export default meta;
 type Story = StoryObj<Args>;
-export const Default: Story = {};
+export const Default: Story = { name: 'TSelect' };

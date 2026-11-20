@@ -12,7 +12,7 @@ type Args = Omit<HeaderPreviewOptions, 'component' | 'selected' | 'text' | 'cont
   text: string; textcode?: string; content: HeaderButtonContent;
 };
 const meta = {
-  title: 'コンポーネント/ヘッダー/THeaderButton', id: 'components-theaderbutton', tags: ['!autodocs'],
+  title: 'コンポーネント/ヘッダー', id: 'components-theaderbutton', tags: ['!autodocs'],
   parameters: componentStoryParameters(['framework', 'tone', 'content', 'text', 'icon', 'active', 'selected', 'disabled']),
   args: { framework: 'react', tone: 'neutral', content: 'icon-text', text: '操作', icon: 'share', active: false, selected: 'unset', disabled: false, textcode: '' },
   argTypes: {
@@ -72,9 +72,9 @@ const play: Story['play'] = async ({ canvas, args, userEvent, step }) => {
   }
 };
 
-export const Default: Story = { play };
-export const Disabled: Story = { name: '無効（React）', args: { disabled: true }, play };
-export const Vue: Story = { name: '操作（Vue）', args: { framework: 'vue', content: 'icon', selected: 'on' }, play };
-export const VueDisabled: Story = { name: '無効（Vue）', args: { framework: 'vue', disabled: true }, play };
-export const Astro: Story = { name: '操作（Astro）', args: { framework: 'astro', content: 'text', selected: 'off' }, play };
-export const AstroDisabled: Story = { name: '無効（Astro）', args: { framework: 'astro', disabled: true }, play };
+export const Default: Story = { name: 'THeaderButton', play };
+export const Disabled: Story = { name: '無効（React）', tags: ['!dev'], args: { disabled: true }, play };
+export const Vue: Story = { name: '操作（Vue）', tags: ['!dev'], args: { framework: 'vue', content: 'icon', selected: 'on' }, play };
+export const VueDisabled: Story = { name: '無効（Vue）', tags: ['!dev'], args: { framework: 'vue', disabled: true }, play };
+export const Astro: Story = { name: '操作（Astro）', tags: ['!dev'], args: { framework: 'astro', content: 'text', selected: 'off' }, play };
+export const AstroDisabled: Story = { name: '無効（Astro）', tags: ['!dev'], args: { framework: 'astro', disabled: true }, play };

@@ -68,8 +68,9 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
     ['THeaderButtonGroup', headerGroup, ['framework', 'tone', 'disabled', 'view']],
   ] as const) {
     const meta = story.default;
-    expect(meta.title).toBe(`コンポーネント/${name.startsWith('THeader') ? 'ヘッダー/' : ''}${name}`);
+    expect(meta.title).toBe(`コンポーネント/${name.startsWith('THeader') ? 'ヘッダー' : name}`);
     expect(meta.id).toBe(`components-${name.toLowerCase()}`);
+    expect(story.Default.name).toBe(name);
     expect(meta.tags).toEqual(['!autodocs']);
     expect(meta.parameters.layout).toBe(bellOff.default.parameters.layout);
     expect(meta.parameters.options).toEqual(bellOff.default.parameters.options);
@@ -83,6 +84,10 @@ test('コンポーネントストーリーはbell-offと同じ最小構成を持
   expect(logo.default.args).toEqual({ framework: 'react', size: 32, decorative: false });
   expect(brand.default.args).toEqual({ framework: 'react', text: 'Tokiwagi UI', size: 32, textcode: '' });
   expect(headerButton.default.argTypes.icon.options).toEqual(iconNames);
+  for (const variant of [headerButton.Disabled, headerButton.Vue, headerButton.VueDisabled, headerButton.Astro, headerButton.AstroDisabled]) {
+    expect(variant.tags).toEqual(['!dev']);
+    expect(variant.play).toBeFunction();
+  }
   expect(icon.default.argTypes.name.options).toEqual(iconNames);
   expect(link.default.argTypes.size.options).toEqual(['inherit', 'sm', 'md', 'lg']);
   expect(link.default.args.size).toBe('inherit');

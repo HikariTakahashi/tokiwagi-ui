@@ -7,7 +7,7 @@ import { componentStoryParameters, frameworkControl, renderComponentStory } from
 
 type Args = Omit<HeaderPreviewOptions, 'component'> & { framework: Framework };
 const meta = {
-  title: 'コンポーネント/ヘッダー/THeader', id: 'components-theader', tags: ['!autodocs'],
+  title: 'コンポーネント/ヘッダー', id: 'components-theader', tags: ['!autodocs'],
   parameters: componentStoryParameters(['framework', 'backgroundColor', 'tone', 'disabled', 'view']),
   args: { framework: 'react', backgroundColor: '--tkw-color-neutral-0', tone: 'neutral', disabled: false, view: 'month' },
   argTypes: { framework: frameworkControl,
@@ -19,4 +19,4 @@ const meta = {
 } satisfies Meta<Args>;
 export default meta;
 type Story = StoryObj<Args>;
-export const Default: Story = {};
+export const Default: Story = { name: 'THeader' };
