@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/components-page.css';
 import 'tokiwagi-ui/button.css';
 import 'tokiwagi-ui/card.css';
+import 'tokiwagi-ui/checkbox.css';
 import 'tokiwagi-ui/header.css';
 import 'tokiwagi-ui/link.css';
 import 'tokiwagi-ui/link-button.css';
@@ -11,7 +12,7 @@ import 'tokiwagi-ui/sidebar.css';
 import 'tokiwagi-ui/text.css';
 import {
   TBrand, TButton, TCard, TCardHeader, TCardTitle, TCardDescription, TCardBody,
-  THeader, THeaderSection, THeaderLink, THeaderButton, THeaderButtonGroup,
+  TCheckbox, THeader, THeaderSection, THeaderLink, THeaderButton, THeaderButtonGroup,
   TIcon, TLink, TLinkButton, TLogo, TSelect, TSidebarLayout, TSidebar,
   TSidebarHeader, TSidebarBody, TSidebarFooter, TSidebarMain, TText,
 } from 'tokiwagi-ui/astro';
@@ -47,6 +48,12 @@ const families = [
     description: '選択肢から、ひとつを選ぶ。',
     usage: 'プロジェクトや並び順など、候補が決まった項目の単一選択に。ラベルを添えて、何を選ぶか伝えます。',
     parts: [['TSelect', 'ラベル・説明・エラー表示を関連付けられる、ネイティブの選択欄。']],
+  },
+  {
+    id: 'checkboxes', title: 'チェックボックス', name: 'TCheckbox', category: 'action',
+    description: '項目ごとの選択を切り替える。',
+    usage: '表示するカレンダーなど、複数の項目から必要なものを選ぶときに。一括選択では、一部だけ選ばれている状態も表示できます。',
+    parts: [['TCheckbox', '項目名でも切り替えられ、補足やエラーを入力に関連付けられます。']],
   },
   {
     id: 'text', title: 'テキスト', name: 'TText', category: 'display',
@@ -123,7 +130,7 @@ const projectOptions = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
-    <meta name="description" content="Tokiwagi UIのコンポーネントを、見た目と使いどころから探す。ボタン、リンク、セレクト、テキスト、カード、ヘッダー、サイドバー、アイコン、ブランドを紹介します。" />
+    <meta name="description" content="Tokiwagi UIのコンポーネントを、見た目と使いどころから探す。ボタン、リンク、セレクト、チェックボックス、テキスト、カード、ヘッダー、サイドバー、アイコン、ブランドを紹介します。" />
     <title>コンポーネント | Tokiwagi UI</title>
   </head>
   <body class="components-page">
@@ -178,6 +185,7 @@ const projectOptions = [
                 </div>}
                 {family.id === 'links' && <div class="component-link-demo"><TLink href="#next-steps">使い方を見る</TLink><TLinkButton href="/colors/" size="sm" tone="neutral-0" weight="normal">カラーを見る</TLinkButton></div>}
                 {family.id === 'selects' && <TSelect id="project-demo" name="project-demo" label="プロジェクト" size="lg" options={projectOptions} defaultValue="all" />}
+                {family.id === 'checkboxes' && <TCheckbox label="カレンダーを表示" defaultChecked />}
                 {family.id === 'text' && <div class="component-text-demo"><TText size="lg" weight="bold">伝わる、文字のかたち。</TText><TText as="p">毎日の情報を、読みやすく。</TText><TText as="p" size="sm" tone="muted">補足することばにも、同じルールを。</TText></div>}
                 {family.id === 'cards' && <TCard class="component-project-card" size="sm">
                   <TCardHeader><TCardTitle as="h4">新しいプロジェクト</TCardTitle><TCardDescription>アイデアを、次の一歩へ。</TCardDescription></TCardHeader>

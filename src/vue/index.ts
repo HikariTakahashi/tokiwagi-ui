@@ -48,3 +48,6 @@ export { TSidebarBody, type TSidebarBodyProps } from './TSidebarBody';
 export { TSidebarFooter, type TSidebarFooterProps } from './TSidebarFooter';
 export { sidebarSides, sidebarTags, sidebarMainTags } from '../lib/sidebar';
 export type { SidebarSide, SidebarTag, SidebarMainTag, SidebarLayoutOptions, SidebarOptions, SidebarMainOptions } from '../lib/sidebar';
+
+export { TCheckbox, type TCheckboxProps } from './TCheckbox';
+export { checkboxTones, type CheckboxOptions, type CheckboxTone } from '../lib/checkbox';

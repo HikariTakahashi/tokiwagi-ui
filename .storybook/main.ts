@@ -12,6 +12,7 @@ import { astroLinkPreviewsPlugin } from './astro-link-previews.ts';
 import { astroButtonPreviewsPlugin } from './astro-button-previews.ts';
 import { astroSidebarPreviewsPlugin } from './astro-sidebar-previews.ts';
 import { astroCardPreviewsPlugin } from './astro-card-previews.ts';
+import { astroCheckboxPreviewsPlugin } from './astro-checkbox-previews.ts';
 import { astroSelectPreviewsPlugin } from './astro-select-previews.ts';
 import { iconSearchIndexPlugin } from './icon-search-index.ts';
 
@@ -30,7 +31,7 @@ const config: StorybookConfig = {
     },
   }, '@storybook/addon-vitest', '@storybook/addon-a11y', '@chromatic-com/storybook'],
   async viteFinal(config) {
-    config.plugins = [...(config.plugins ?? []), tailwindcss(), iconSearchIndexPlugin(), astroPreviewsPlugin(), astroLogoPreviewsPlugin(), astroBrandPreviewsPlugin(), astroHeaderPreviewsPlugin(), astroTextPreviewsPlugin(), astroButtonPreviewsPlugin(), astroLinkPreviewsPlugin(), astroLinkButtonPreviewsPlugin(), astroSelectPreviewsPlugin(), astroCardPreviewsPlugin(), astroSidebarPreviewsPlugin()];
+    config.plugins = [...(config.plugins ?? []), tailwindcss(), iconSearchIndexPlugin(), astroPreviewsPlugin(), astroLogoPreviewsPlugin(), astroBrandPreviewsPlugin(), astroHeaderPreviewsPlugin(), astroTextPreviewsPlugin(), astroButtonPreviewsPlugin(), astroLinkPreviewsPlugin(), astroLinkButtonPreviewsPlugin(), astroSelectPreviewsPlugin(), astroCheckboxPreviewsPlugin(), astroCardPreviewsPlugin(), astroSidebarPreviewsPlugin()];
     // HTML版StorybookでVueを直接マウントするため、Vueプラグインが設定する既定フラグを明示する。
     config.define = {
       __VUE_OPTIONS_API__: 'true',

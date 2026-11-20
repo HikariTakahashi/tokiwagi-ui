@@ -2,7 +2,11 @@
 
 確認日：2026年10月24日。`package.json`、`bun.lock` と、このmacOS arm64環境にインストール済みのパッケージの `package.json`・ライセンス・通知文を参照しました。リポジトリのMIT対象と第三者の著作物は[適用範囲](../LICENSE-SCOPE.md)で区別します。
 
-本書は調査メモです。第三者ライセンス・著作権表示・必要なNOTICEの全文の代用にはなりません。`node_modules/` は追跡・再配布しておらず、今回は第三者コードの新しい同梱や依存変更を行いません。将来配布する成果物については、その成果物に実際に含まれる著作物の通知を保持してください。
+本書は調査メモです。第三者ライセンス・著作権表示・必要なNOTICEの全文の代用にはなりません。`node_modules/` は追跡・再配布しておらず、以下の依存調査では第三者コードの同梱や依存変更は行っていません。将来配布する成果物については、その成果物に実際に含まれる著作物の通知を保持してください。
+
+## 同梱のアイコン
+
+TCheckboxのチェックマークは指定されたFigmaから出力した、Feather由来のLucide `check` です。[Lucideのライセンス](https://github.com/lucide-icons/lucide/blob/main/LICENSE)に従い、[MIT通知](../src/styles/assets/tcheckbox-check.LICENSE)をSVGと同じディレクトリに保持します。
 
 ## 直接依存
 

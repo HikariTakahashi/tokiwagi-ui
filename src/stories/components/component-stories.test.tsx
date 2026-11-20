@@ -12,6 +12,7 @@ mock.module('virtual:tkw-astro-texts', () => ({ default: '/astro-texts.json' }))
 mock.module('virtual:tkw-astro-buttons', () => ({ default: '/astro-buttons.json' }));
 mock.module('virtual:tkw-astro-cards', () => ({ default: '/astro-cards.json' }));
 mock.module('virtual:tkw-astro-sidebars', () => ({ default: '/astro-sidebars.json' }));
+mock.module('virtual:tkw-astro-checkboxes', () => ({ default: '/astro-checkboxes.json' }));
 mock.module('virtual:tkw-astro-selects', () => ({ default: '/astro-selects.json' }));
 mock.module('virtual:tkw-astro-links', () => ({ default: '/astro-links.json' }));
 mock.module('virtual:tkw-astro-link-buttons', () => ({ default: '/astro-link-buttons.json' }));
@@ -20,6 +21,7 @@ const logo = await import('../TLogo.stories');
 const brand = await import('../TBrand.stories');
 const text = await import('../TText.stories');
 const button = await import('../TButton.stories');
+const checkbox = await import('../TCheckbox.stories');
 const select = await import('../TSelect.stories');
 const card = await import('../TCard.stories');
 const link = await import('../TLink.stories');
@@ -51,6 +53,7 @@ test('ブランド名はStorybookのURLで復元できる文字コードとし�
 test('コンポーネントストーリーはbell-offと同じ最小構成を持つ', () => {
   for (const [name, story, controls] of [
     ['TCard', card, ['framework', 'view', 'variant', 'size', 'as', 'title', 'description', 'text', 'href']],
+    ['TCheckbox', checkbox, ['framework', 'checked', 'indeterminate', 'label', 'description', 'error', 'tone', 'disabled', 'required']],
     ['TSelect', select, ['framework', 'value', 'placeholder', 'label', 'description', 'error', 'tone', 'size', 'disabled', 'required', 'disableCard']],
     ['TLinkButton', linkButton, ['framework', 'text', 'href', 'tone', 'size', 'weight', 'leadingIcon', 'trailingIcon', 'disabled', 'target', 'rel', 'aria-current']],
     ['TLink', link, ['framework', 'text', 'href', 'tone', 'size', 'leadingIcon', 'trailingIcon', 'target', 'rel', 'aria-current']],
@@ -135,6 +138,7 @@ test('args更新ではVueアプリを再利用し、方式切り替えと離脱�
     mock.module('virtual:tkw-astro-buttons',()=>({default:'/buttons.json'}));
     mock.module('virtual:tkw-astro-cards',()=>({default:'/cards.json'}));
     mock.module('virtual:tkw-astro-sidebars',()=>({default:'/sidebars.json'}));
+    mock.module('virtual:tkw-astro-checkboxes',()=>({default:'/checkboxes.json'}));
     mock.module('virtual:tkw-astro-selects',()=>({default:'/selects.json'}));
     mock.module('virtual:tkw-astro-links',()=>({default:'/links.json'}));
     mock.module('virtual:tkw-astro-link-buttons',()=>({default:'/link-buttons.json'}));

@@ -1,6 +1,6 @@
 # コンポーネントの使い方
 
-本ページの利用例はMIT対象のTCardと構造パーツ・TButton・TText・TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
+本ページの利用例はMIT対象のTCheckbox・TCardと構造パーツ・TButton・TText・TIcon・THeader・THeaderSection・THeaderButton・THeaderLink・THeaderButtonGroupです。[ライセンス適用範囲](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/LICENSE-SCOPE.md)を確認してください。`TLogo`・`TBrand` は同じ入口からexportされていますがMIT対象外です。既存の詳細・利用例は[ブランド参照資料](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/docs/brand-reference.md)に保存しています。
 
 ## 導入方法と対象環境
 
@@ -32,6 +32,109 @@ bun add ../tokiwagi-ui
 プライマリーとライム・オレンジの `-on` は白です。イエローの通常・ホバー・押下は、ユーザー指定の白文字を使う基準不足の例外です。通常・ホバーは大きな文字の3:1、押下は通常サイズの文字の4.5:1を満たしません。他のプライマリーとライム・オレンジの基準色・`-hover` 上では24px以上の文字など、大きな文字やアイコンに使います。通常サイズの文字には、`-subtle` と濃い `-on-subtle` の組み合わせなど、4.5:1以上の配色を使います。
 
 Tailwind CSS v4の利用側では、既存のTailwindエントリに `@import "tokiwagi-ui/tokens/tailwind.css";` を追加して共有テーマを読み込めます。`@theme inline` は既存トークンを参照します。このテーマ自体はPreflightを読み込みません。
+
+## TCheckbox
+
+カレンダーなどの項目の選択に使うチェックボックスです。`tokiwagi-ui/checkbox.css` を一度読み込み、`tokiwagi-ui/react`、`tokiwagi-ui/vue` または `tokiwagi-ui/astro` から `TCheckbox` をimportします。各入口で `TCheckboxProps`、`CheckboxOptions`、`CheckboxTone`、`checkboxTones` を利用できます。[利用ルール](https://github.com/HikariTakahashi/tokiwagi-ui/blob/main/components/TCheckbox/README.md)とStorybook「コンポーネント/TCheckbox」も参照してください。
+
+| 指定 | 内容 |
+| --- | --- |
+| `label` | 項目名。省略するときは `aria-label` または `aria-labelledby` で入力に名前を付けます。 |
+| `description` / `error` | 任意の補足・エラーメッセージです。入力の `aria-describedby` に追加し、`error` の指定時は `aria-invalid` を設定します。 |
+| `tone` | `green`、`teal`、`blue`（既定）、`violet`、`rose`、`coral`、`amber`。 |
+| `indeterminate` | 一部選択の表示を指定するboolean。既定は `false`。送信値はチェックの有無で決まります。 |
+| `defaultChecked` | 初期選択を指定するboolean。未指定時は未選択です。 |
+| `checked` / `modelValue` | Reactの `checked`、Vueの `v-model` は選択状態を制御します。Astroの `checked` は初期値です。どの方式でも指定時は `defaultChecked` より優先します。 |
+| 標準属性 | `id`、`name`、`value`（文字列）、`form`、`disabled`、`required`、`className` / `class`、`style`、ARIA属性などを入力へ渡します。入力の種類と選択状態にはネイティブのチェックボックスのセマンティクスを使います。 |
+
+未定義の色や、公開設定に合わない状態値・文字列は日本語エラーで通知します。Reactは `onChange` の `event.currentTarget.checked`、Vueは `update:modelValue` のbooleanと標準 `change`、Astroは入力の `change` イベントで変更を受け取れます。チェックされた有効な入力は `name` と `value` をフォーム送信します。`value` を省略するとブラウザー標準の `on` になります。非制御の入力はフォームリセットで初期値に戻ります。制御値をリセットする場合はフォームの `reset` ハンドラーで利用側の状態を戻します。
+
+### Reactで一括選択する
+
+```tsx
+import { useState } from 'react';
+import { TCheckbox } from 'tokiwagi-ui/react';
+import 'tokiwagi-ui/checkbox.css';
+
+const calendars = [
+  { id: 'personal', label: '個人' },
+  { id: 'work', label: '仕事' },
+];
+
+export function CalendarVisibility() {
+  const [selected, setSelected] = useState<string[]>(['personal']);
+  const all = calendars.every(({ id }) => selected.includes(id));
+  return (
+    <form onReset={() => setSelected(['personal'])}>
+      <fieldset>
+        <legend>表示するカレンダー</legend>
+        <TCheckbox label="すべて" checked={all} indeterminate={!all && selected.length > 0}
+          onChange={event => setSelected(event.currentTarget.checked ? calendars.map(({ id }) => id) : [])} />
+        {calendars.map(({ id, label }) => (
+          <div key={id}>
+            <TCheckbox label={label} name="calendars" value={id} checked={selected.includes(id)}
+              onChange={event => {
+                const checked = event.currentTarget.checked;
+                setSelected(current => checked ? [...current, id] : current.filter(value => value !== id));
+              }} />
+          </div>
+        ))}
+      </fieldset>
+      <button type="reset">初期状態に戻す</button>
+    </form>
+  );
+}
+```
+
+非制御の入力は `<TCheckbox label="仕事" name="work" defaultChecked />` のように初期値を指定します。ReactとVueでは `indeterminate` の解除・更新も利用側で行います。
+
+### Vueで使う
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { TCheckbox } from 'tokiwagi-ui/vue';
+import 'tokiwagi-ui/checkbox.css';
+
+const visible = ref(true);
+</script>
+
+<template>
+  <form @reset="visible = true">
+    <TCheckbox v-model="visible" name="calendar" value="work" label="仕事" />
+    <button type="reset">初期状態に戻す</button>
+  </form>
+</template>
+```
+
+### Astroで使う
+
+```astro
+---
+import { TCheckbox } from 'tokiwagi-ui/astro';
+import 'tokiwagi-ui/checkbox.css';
+---
+
+<form>
+  <TCheckbox id="calendar-filter" name="calendar" value="work" label="表示するカレンダー" indeterminate />
+  <button type="reset">初期状態に戻す</button>
+</form>
+
+<script>
+  const checkbox = document.querySelector<HTMLInputElement>('#calendar-filter');
+  checkbox?.addEventListener('change', () => {
+    const checked = checkbox.checked;
+    // checked を使って画面の表示を更新する。
+  });
+</script>
+```
+
+Astroアプリにnpmでローカル導入する場合は、`npm install --install-links ../tokiwagi-ui` でパッケージを配置します。
+
+Astroは入力を静的HTMLとして出力し、同梱スクリプトが一部選択をネイティブの `HTMLInputElement.indeterminate` に設定します。以降は利用側のスクリプトからこのプロパティを更新できます。フォームリセットは初期チェックと初期の一部選択を復元します。クライアント側のフレームワークは不要です。
+
+React・Vueはサーバーとクライアントで同じ初期状態を指定します。一部選択はSSRで視覚表示し、ハイドレーション時に入力のDOMプロパティへ設定します。自動IDは各方式の入力・ラベル・補足・エラーの関連付けに使います。複数のSSRルートでは、Reactの `identifierPrefix`、Vueの `app.config.idPrefix` をルートごとに分け、同じルートのサーバーとクライアントで揃えてください。
+
 
 ## TSelect
 
