@@ -1,6 +1,6 @@
 import { sidebarStory } from './sidebar-story';
 const meta = { ...sidebarStory('TSidebarMain'),
-  title: 'コンポーネント/サイドバー/TSidebarMain', id: 'components-tsidebarmain', tags: ['!autodocs'],
+  title: 'コンポーネント/サイドバー', id: 'components-tsidebarmain', tags: ['!autodocs'],
 };
 export default meta;
-export const Default = {};
+export const Default = { name: 'TSidebarMain' };

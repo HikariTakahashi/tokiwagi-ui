@@ -1,18 +1,21 @@
+const headerDocs = '/docs/components-theader-rules--docs';
+const sidebarDocs = '/docs/components-tsidebarlayout-rules--docs';
+
 /** Markdown原本のリポジトリ内リンクを、Storybookの閲覧先へ変換する。 */
-export function componentReadmeForStorybook(readme: string): string {
+export function componentReadmeForStorybook(readme: string, currentDocsId?: string): string {
   const destinations: Record<string, string> = {
     '../../src/stories/TSidebarLayout.stories.ts': '/story/components-tsidebarlayout--default',
-    '../TSidebarLayout/README.md': '/docs/components-tsidebarlayout-rules--docs',
+    '../TSidebarLayout/README.md': `${sidebarDocs}#tsidebarlayout`,
     '../../src/stories/TSidebar.stories.ts': '/story/components-tsidebar--default',
-    '../TSidebar/README.md': '/docs/components-tsidebar-rules--docs',
+    '../TSidebar/README.md': `${sidebarDocs}#tsidebar`,
     '../../src/stories/TSidebarMain.stories.ts': '/story/components-tsidebarmain--default',
-    '../TSidebarMain/README.md': '/docs/components-tsidebarmain-rules--docs',
+    '../TSidebarMain/README.md': `${sidebarDocs}#tsidebarmain`,
     '../../src/stories/TSidebarHeader.stories.ts': '/story/components-tsidebarheader--default',
-    '../TSidebarHeader/README.md': '/docs/components-tsidebarheader-rules--docs',
+    '../TSidebarHeader/README.md': `${sidebarDocs}#tsidebarheader`,
     '../../src/stories/TSidebarBody.stories.ts': '/story/components-tsidebarbody--default',
-    '../TSidebarBody/README.md': '/docs/components-tsidebarbody-rules--docs',
+    '../TSidebarBody/README.md': `${sidebarDocs}#tsidebarbody`,
     '../../src/stories/TSidebarFooter.stories.ts': '/story/components-tsidebarfooter--default',
-    '../TSidebarFooter/README.md': '/docs/components-tsidebarfooter-rules--docs',
+    '../TSidebarFooter/README.md': `${sidebarDocs}#tsidebarfooter`,
 
     '../../src/stories/TCard.stories.ts': '/story/components-tcard--default',
     '../TCard/README.md': '/docs/components-tcard-rules--docs',
@@ -30,15 +33,15 @@ export function componentReadmeForStorybook(readme: string): string {
     '../TText/README.md': '/docs/components-ttext-rules--docs',
     '../../src/stories/typography.mdx': '/docs/typography-rules--docs',
     '../../src/stories/THeaderLink.stories.ts': '/story/components-theaderlink--default',
-    '../THeaderLink/README.md': '/docs/components-theaderlink-rules--docs',
+    '../THeaderLink/README.md': `${headerDocs}#theaderlink`,
     '../../src/stories/THeaderSection.stories.ts': '/story/components-theadersection--default',
-    '../THeaderSection/README.md': '/docs/components-theadersection-rules--docs',
+    '../THeaderSection/README.md': `${headerDocs}#theadersection`,
     '../../src/stories/THeader.stories.ts': '/story/components-theader--default',
-    '../THeader/README.md': '/docs/components-theader-rules--docs',
+    '../THeader/README.md': `${headerDocs}#theader`,
     '../../src/stories/THeaderButton.stories.ts': '/story/components-theaderbutton--default',
-    '../THeaderButton/README.md': '/docs/components-theaderbutton-rules--docs',
+    '../THeaderButton/README.md': `${headerDocs}#theaderbutton`,
     '../../src/stories/THeaderButtonGroup.stories.ts': '/story/components-theaderbuttongroup--default',
-    '../THeaderButtonGroup/README.md': '/docs/components-theaderbuttongroup-rules--docs',
+    '../THeaderButtonGroup/README.md': `${headerDocs}#theaderbuttongroup`,
     '../../src/stories/TBrand.stories.ts': '/story/components-tbrand--default',
     '../../src/stories/TIcon.stories.ts': '/story/components-ticon--default',
     '../../src/stories/TLogo.stories.ts': '/story/components-tlogo--default',
@@ -51,6 +54,12 @@ export function componentReadmeForStorybook(readme: string): string {
     '../../src/stories/icon-naming.mdx': '/docs/アイコン-命名基準--docs',
     '../../src/stories/colors.mdx': '/docs/カラー-使用ルール--docs',
   };
-  return readme.replace(/\]\(([^)]+)\)/g, (link, destination: string) =>
-    destinations[destination] ? `](./?path=${destinations[destination]})` : link);
+  const currentDocs = `/docs/${currentDocsId}--docs`;
+  return readme.replace(/\]\(([^)]+)\)/g, (link, destination: string) => {
+    const path = destinations[destination];
+    if (!path) return link;
+    return path.startsWith(`${currentDocs}#`)
+      ? `](${path.slice(currentDocs.length)})`
+      : `](./?path=${path})`;
+  });
 }

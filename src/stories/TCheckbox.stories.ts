@@ -47,4 +47,4 @@ const meta = {
 } satisfies Meta<Args>;
 
 export default meta;
-export const Default: StoryObj<Args> = {};
+export const Default: StoryObj<Args> = { name: 'TCheckbox' };

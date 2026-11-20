@@ -11,7 +11,7 @@ type Args = Omit<HeaderPreviewOptions, 'component' | 'disabled' | 'text' | 'href
   current?: HeaderPreviewOptions['current'] | 'unset';
 };
 const meta = {
-  title: 'コンポーネント/ヘッダー/THeaderLink', id: 'components-theaderlink', tags: ['!autodocs'],
+  title: 'コンポーネント/ヘッダー', id: 'components-theaderlink', tags: ['!autodocs'],
   parameters: componentStoryParameters(['framework', 'tone', 'content', 'text', 'icon', 'active', 'href', 'target', 'aria-current']),
   args: { framework: 'react', tone: 'neutral', content: 'icon-text', text: 'リンク', icon: 'share',
     active: false, href: '#header-link-target', target: '_self', current: 'unset', textcode: '', hrefcode: '' },
@@ -37,4 +37,4 @@ const meta = {
 } satisfies Meta<Args>;
 export default meta;
 type Story = StoryObj<Args>;
-export const Default: Story = {};
+export const Default: Story = { name: 'THeaderLink' };

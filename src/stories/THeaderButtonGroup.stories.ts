@@ -6,7 +6,7 @@ import { componentStoryParameters, frameworkControl, renderComponentStory } from
 
 type Args = Omit<HeaderPreviewOptions, 'component'> & { framework: Framework };
 const meta = {
-  title: 'コンポーネント/ヘッダー/THeaderButtonGroup', id: 'components-theaderbuttongroup', tags: ['!autodocs'],
+  title: 'コンポーネント/ヘッダー', id: 'components-theaderbuttongroup', tags: ['!autodocs'],
   parameters: componentStoryParameters(['framework', 'tone', 'disabled', 'view']),
   args: { framework: 'react', tone: 'neutral', disabled: false, view: 'month' },
   argTypes: { framework: frameworkControl,
@@ -17,4 +17,4 @@ const meta = {
 } satisfies Meta<Args>;
 export default meta;
 type Story = StoryObj<Args>;
-export const Default: Story = {};
+export const Default: Story = { name: 'THeaderButtonGroup' };
