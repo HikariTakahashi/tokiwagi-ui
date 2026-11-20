@@ -1,0 +1,199 @@
+@import '../../tokens/colors.css';
+@import '../../tokens/neutrals.css';
+@import '../../tokens/semantic.css';
+@import '../../tokens/typography.css';
+
+.tkw-checkbox-field {
+  display: inline-grid;
+  justify-items: start;
+  gap: 4px;
+  max-inline-size: 100%;
+  color: var(--tkw-color-neutral-900);
+  font: 1rem/1.5 var(--tkw-font-family-sans);
+  overflow-wrap: anywhere;
+}
+
+.tkw-checkbox-field__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-inline-size: 100%;
+  cursor: pointer;
+}
+
+.tkw-checkbox {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  inline-size: 32px;
+  block-size: 32px;
+}
+
+.tkw-checkbox__input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.tkw-checkbox__box {
+  --tkw-checkbox-fill: var(--tkw-color-primary-blue);
+  --tkw-checkbox-hover: var(--tkw-color-primary-blue-hover);
+  --tkw-checkbox-active: var(--tkw-color-primary-blue-active);
+  --tkw-checkbox-mark: var(--tkw-color-primary-blue-on);
+
+  position: relative;
+  box-sizing: border-box;
+  border: 1px solid var(--tkw-color-neutral-600);
+  border-radius: 8px;
+  background: var(--tkw-color-neutral-0);
+  box-shadow: 2px 2px 4px color-mix(in srgb, var(--tkw-color-neutral-1000) 25%, transparent);
+  pointer-events: none;
+}
+
+.tkw-checkbox__box[data-tone='green'] {
+  --tkw-checkbox-fill: var(--tkw-color-primary-green);
+  --tkw-checkbox-hover: var(--tkw-color-primary-green-hover);
+  --tkw-checkbox-active: var(--tkw-color-primary-green-active);
+  --tkw-checkbox-mark: var(--tkw-color-primary-green-on);
+}
+
+.tkw-checkbox__box[data-tone='teal'] {
+  --tkw-checkbox-fill: var(--tkw-color-primary-teal);
+  --tkw-checkbox-hover: var(--tkw-color-primary-teal-hover);
+  --tkw-checkbox-active: var(--tkw-color-primary-teal-active);
+  --tkw-checkbox-mark: var(--tkw-color-primary-teal-on);
+}
+
+.tkw-checkbox__box[data-tone='violet'] {
+  --tkw-checkbox-fill: var(--tkw-color-primary-violet);
+  --tkw-checkbox-hover: var(--tkw-color-primary-violet-hover);
+  --tkw-checkbox-active: var(--tkw-color-primary-violet-active);
+  --tkw-checkbox-mark: var(--tkw-color-primary-violet-on);
+}
+
+.tkw-checkbox__box[data-tone='rose'] {
+  --tkw-checkbox-fill: var(--tkw-color-primary-rose);
+  --tkw-checkbox-hover: var(--tkw-color-primary-rose-hover);
+  --tkw-checkbox-active: var(--tkw-color-primary-rose-active);
+  --tkw-checkbox-mark: var(--tkw-color-primary-rose-on);
+}
+
+.tkw-checkbox__box[data-tone='coral'] {
+  --tkw-checkbox-fill: var(--tkw-color-primary-coral);
+  --tkw-checkbox-hover: var(--tkw-color-primary-coral-hover);
+  --tkw-checkbox-active: var(--tkw-color-primary-coral-active);
+  --tkw-checkbox-mark: var(--tkw-color-primary-coral-on);
+}
+
+.tkw-checkbox__box[data-tone='amber'] {
+  --tkw-checkbox-fill: var(--tkw-color-primary-amber);
+  --tkw-checkbox-hover: var(--tkw-color-primary-amber-hover);
+  --tkw-checkbox-active: var(--tkw-color-primary-amber-active);
+  --tkw-checkbox-mark: var(--tkw-color-primary-amber-on-subtle);
+}
+
+.tkw-checkbox__input:is(:checked, :indeterminate, [data-tkw-checkbox-mixed='true']) + .tkw-checkbox__box {
+  background: var(--tkw-checkbox-fill);
+  border-color: var(--tkw-color-neutral-200);
+}
+
+.tkw-checkbox__input:checked + .tkw-checkbox__box::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 4px;
+  inline-size: 21px;
+  block-size: 21px;
+  background: var(--tkw-checkbox-mark);
+  mask: url('./assets/tcheckbox-check.svg') no-repeat;
+}
+
+.tkw-checkbox__input:is(:indeterminate, [data-tkw-checkbox-mixed='true']) + .tkw-checkbox__box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  inline-size: 14px;
+  block-size: 3px;
+  border-radius: 2px;
+  background: var(--tkw-checkbox-mark);
+  mask: none;
+}
+
+@media (hover: hover) {
+  .tkw-checkbox-field__label:hover .tkw-checkbox__input:enabled + .tkw-checkbox__box {
+    --tkw-checkbox-fill: var(--tkw-checkbox-hover);
+    border-color: var(--tkw-color-neutral-800);
+  }
+}
+
+.tkw-checkbox-field__label:active .tkw-checkbox__input:enabled + .tkw-checkbox__box {
+  --tkw-checkbox-fill: var(--tkw-checkbox-active);
+  box-shadow: none;
+}
+
+.tkw-checkbox__input:focus-visible + .tkw-checkbox__box {
+  outline: 2px solid var(--tkw-color-neutral-900);
+  outline-offset: 2px;
+}
+
+.tkw-checkbox-field__label:has(.tkw-checkbox__input:disabled) {
+  color: var(--tkw-color-neutral-600);
+  cursor: not-allowed;
+}
+
+.tkw-checkbox__input:disabled + .tkw-checkbox__box {
+  --tkw-checkbox-fill: var(--tkw-color-neutral-200);
+  --tkw-checkbox-mark: var(--tkw-color-neutral-600);
+  background-color: var(--tkw-color-neutral-100);
+  border-color: var(--tkw-color-neutral-400);
+  box-shadow: none;
+}
+
+.tkw-checkbox__input:disabled:is(:checked, :indeterminate, [data-tkw-checkbox-mixed='true']) + .tkw-checkbox__box {
+  background-color: var(--tkw-checkbox-fill);
+}
+
+.tkw-checkbox__input[aria-invalid='true'] + .tkw-checkbox__box {
+  border-color: var(--tkw-color-semantic-error-active);
+  box-shadow: inset 0 0 0 1px var(--tkw-color-semantic-error-active);
+}
+
+.tkw-checkbox-field__description,
+.tkw-checkbox-field__error {
+  font-size: 0.875rem;
+}
+
+.tkw-checkbox-field__description { color: var(--tkw-color-neutral-600); }
+.tkw-checkbox-field__error { color: var(--tkw-color-semantic-error-on-subtle); }
+
+@media (forced-colors: active) {
+  .tkw-checkbox__input + .tkw-checkbox__box,
+  .tkw-checkbox__input[aria-invalid='true'] + .tkw-checkbox__box {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+  }
+
+  .tkw-checkbox__input:is(:checked, :indeterminate, [data-tkw-checkbox-mixed='true']) + .tkw-checkbox__box {
+    --tkw-checkbox-mark: HighlightText;
+    border-color: Highlight;
+    background: Highlight;
+  }
+
+  .tkw-checkbox__input:disabled + .tkw-checkbox__box,
+  .tkw-checkbox__input:disabled:is(:checked, :indeterminate, [data-tkw-checkbox-mixed='true']) + .tkw-checkbox__box {
+    --tkw-checkbox-mark: GrayText;
+    background: Canvas;
+    border-color: GrayText;
+  }
+
+  .tkw-checkbox__input:focus-visible + .tkw-checkbox__box {
+    outline-color: CanvasText;
+  }
+}

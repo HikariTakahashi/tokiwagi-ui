@@ -16,6 +16,8 @@ export function componentReadmeForStorybook(readme: string): string {
 
     '../../src/stories/TCard.stories.ts': '/story/components-tcard--default',
     '../TCard/README.md': '/docs/components-tcard-rules--docs',
+    '../../src/stories/TCheckbox.stories.ts': '/story/components-tcheckbox--default',
+    '../TCheckbox/README.md': '/docs/components-tcheckbox-rules--docs',
     '../../src/stories/TSelect.stories.ts': '/story/components-tselect--default',
     '../TSelect/README.md': '/docs/components-tselect-rules--docs',
     '../../src/stories/TLinkButton.stories.ts': '/story/components-tlinkbutton--default',

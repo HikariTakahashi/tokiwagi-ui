@@ -16,7 +16,8 @@
     "./card.css": "./src/styles/card.css",
     "./header.css": "./src/styles/header.css",
     "./text.css": "./src/styles/text.css",
-    "./select.css": "./src/styles/select.css"
+    "./select.css": "./src/styles/select.css",
+    "./checkbox.css": "./src/styles/checkbox.css"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

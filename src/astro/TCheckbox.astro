@@ -1,0 +1,49 @@
+---
+import { checkboxState } from '../lib/checkbox';
+import type { TCheckboxProps } from './TCheckboxProps';
+
+interface Props extends TCheckboxProps {}
+const { label, description, error, tone, checked, defaultChecked, indeterminate, value,
+  id: providedId, class: className, 'aria-invalid': invalid, 'aria-describedby': describedBy, ...attributes } = Astro.props;
+const id = providedId ?? `tkw-checkbox-${crypto.randomUUID()}`;
+const state = checkboxState(id, { label, description, error, tone, defaultChecked, indeterminate, value }, checked, describedBy);
+---
+<span class="tkw-checkbox-field">
+  <label class="tkw-checkbox-field__label" for={id}>
+    <span class="tkw-checkbox">
+      <input {...attributes} id={id} type="checkbox" value={value} class:list={['tkw-checkbox__input', className]}
+        checked={state.checked ?? state.defaultChecked} role={undefined} aria-checked={undefined}
+        aria-invalid={error ? 'true' : invalid} aria-describedby={state.describedBy}
+        data-tkw-checkbox-mixed={state.indeterminate ? 'true' : undefined}
+        data-tkw-checkbox-initial-mixed={String(state.indeterminate)} />
+      <span class="tkw-checkbox__box" data-tone={state.tone} aria-hidden="true"></span>
+    </span>
+    {label && <span class="tkw-checkbox-field__name">{label}</span>}
+  </label>
+  {description && <span class="tkw-checkbox-field__description" id={state.descriptionId}>{description}</span>}
+  {error && <span class="tkw-checkbox-field__error" id={state.errorId}>エラー：{error}</span>}
+</span>
+
+<script>
+  function initializeMixedCheckboxes() {
+    for (const input of document.querySelectorAll<HTMLInputElement>('input[data-tkw-checkbox-initial-mixed][data-tkw-checkbox-mixed]')) {
+      input.indeterminate = true;
+      input.removeAttribute('data-tkw-checkbox-mixed');
+    }
+  }
+
+  initializeMixedCheckboxes();
+  document.addEventListener('astro:page-load', initializeMixedCheckboxes);
+  document.addEventListener('reset', event => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    queueMicrotask(() => {
+      if (event.defaultPrevented) return;
+      for (const control of form.elements) {
+        if (control instanceof HTMLInputElement && control.hasAttribute('data-tkw-checkbox-initial-mixed')) {
+          control.indeterminate = control.dataset.tkwCheckboxInitialMixed === 'true';
+        }
+      }
+    });
+  });
+</script>

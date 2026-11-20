@@ -1,3 +1,7 @@
+import checkboxesUrl from 'virtual:tkw-astro-checkboxes';
+import { AstroCheckboxPreview, type CheckboxPreviewOptions } from './CheckboxPreview';
+import { TCheckbox as ReactTCheckbox } from 'tokiwagi-ui/react';
+import { TCheckbox as VueTCheckbox } from 'tokiwagi-ui/vue';
 import sidebarsUrl from 'virtual:tkw-astro-sidebars';
 import type { AstroSidebarPreviews } from '../sidebar-preview';
 import { SidebarPreview, vueSidebarPreview, AstroSidebarPreview, type SidebarPreviewOptions } from './SidebarPreview';
@@ -45,6 +49,7 @@ import { astroHeaderButtonPreviewHtml } from '../astro-header-button-preview';
 
 type SharedComponentPreviewProps = { framework: Framework } & (
   | CardPreviewOptions
+  | CheckboxPreviewOptions
   | SelectPreviewOptions
   | LinkButtonPreviewOptions
   | LinkPreviewOptions
@@ -71,6 +76,7 @@ const loadLinkAssets = async () => {
 const loadSidebars = createAstroPreviewLoader<AstroSidebarPreviews>(sidebarsUrl);
 const loadCards = createAstroPreviewLoader<AstroCardPreviews>(cardsUrl);
 const loadTexts = createAstroPreviewLoader<AstroTextPreviews>(textsUrl);
+const loadCheckboxes = createAstroPreviewLoader<string>(checkboxesUrl);
 const loadSelects = createAstroPreviewLoader<AstroSelectPreviews>(selectsUrl);
 const loadButtons = createAstroPreviewLoader<AstroButtonPreviews>(buttonsUrl);
 const loadButtonAssets = async () => {
@@ -98,6 +104,11 @@ function VuePreview(args: ComponentPreviewProps) {
       const value = props.value;
       if ('sidebarPart' in value) return vueSidebarPreview(value);
       if (value.component === 'TCard') return vueCardPreview(value, `tkw-card-vue-${id}`);
+      if (value.component === 'TCheckbox') {
+        const { component, framework, checked: modelValue, onCheckedChange, ...options } = value;
+        return h(VueTCheckbox, { ...options, modelValue, 'aria-label': options.label ? undefined : '見本',
+          'onUpdate:modelValue': onCheckedChange });
+      }
       if (value.component === 'TSelect') {
         const { component, framework, value: modelValue, onValueChange, disableCard, ...options } = value;
         return h(VueTSelect, { ...options, options: selectExampleOptions(disableCard), modelValue,
@@ -151,6 +162,15 @@ export function ComponentPreview(args: ComponentPreviewProps) {
     if (args.framework === 'react') return <ReactCardPreview {...args} prefix={prefix} />;
     return <AstroComponentPreview load={loadCards}>{previews =>
       <div dangerouslySetInnerHTML={{ __html: astroCardPreviewHtml(previews, args, prefix) }} />
+    }</AstroComponentPreview>;
+  }
+  if (args.component === 'TCheckbox') {
+    if (args.framework === 'vue') return <VuePreview {...args} />;
+    const { component, framework, onCheckedChange, ...options } = args;
+    if (framework === 'react') return <ReactTCheckbox {...options} aria-label={options.label ? undefined : '見本'}
+      onChange={event => onCheckedChange?.(event.currentTarget.checked)} />;
+    return <AstroComponentPreview load={loadCheckboxes}>{html =>
+      <AstroCheckboxPreview html={html} options={args} id={`${prefix}-checkbox`} />
     }</AstroComponentPreview>;
   }
   if (args.component === 'TSelect') {

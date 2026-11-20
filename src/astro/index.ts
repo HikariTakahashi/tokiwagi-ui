@@ -75,3 +75,7 @@ export { default as TSidebarFooter } from './TSidebarFooter.astro';
 export type { TSidebarFooterProps } from './TSidebarFooterProps';
 export { sidebarSides, sidebarTags, sidebarMainTags } from '../lib/sidebar';
 export type { SidebarSide, SidebarTag, SidebarMainTag, SidebarLayoutOptions, SidebarOptions, SidebarMainOptions } from '../lib/sidebar';
+
+export { default as TCheckbox } from './TCheckbox.astro';
+export type { TCheckboxProps } from './TCheckboxProps';
+export { checkboxTones, type CheckboxOptions, type CheckboxTone } from '../lib/checkbox';
