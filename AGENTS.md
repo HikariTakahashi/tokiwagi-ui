@@ -47,7 +47,7 @@ Copilot Code Review の担当は、`.github/copilot-instructions.md` のUIとパ
 
 ## 起動・ビルド
 
-`tokiwagi-ui` ディレクトリで CI・Dev Container と同じ Bun 1.4.4（`packageManager` の指定）を使います。依存関係は `bun.lock` で固定します。
+`tokiwagi-ui` ディレクトリで CI・Dev Container と同じ Bun 1.4.5（`packageManager` の指定）を使います。依存関係は `bun.lock` で固定します。
 
 ```sh
 bun install --frozen-lockfile
