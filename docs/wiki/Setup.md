@@ -2,8 +2,8 @@
 
 ## 前提
 
-- Bun **1.4.4**（`packageManager` の指定）。CI・Dev Containerと同じ版を使用します。
-- Node.js **22.23.4**。Astro 7.4.5は22.23.4以上を要求します。StorybookなどNode.jsを使用するツールも、CI・Dev Containerと同じ版で実行します。
+- Bun **1.4.5**（`packageManager` の指定）。CI・Dev Containerと同じ版を使用します。
+- Node.js **22.23.4**。Astro 7.4.13は22.23.4以上を要求します。StorybookなどNode.jsを使用するツールも、CI・Dev Containerと同じ版で実行します。
 - Git。GitHub上でIssue・PRを操作する開発者はGitHub CLIも用意します。
 - React・Vueは使う入口に対応するものを利用側へ導入します。開発リポジトリには見本・テスト用の依存が含まれています。
 
@@ -16,7 +16,7 @@ cd tokiwagi-ui
 
 ## Dev Containerで環境を構築する
 
-VS CodeのDev Containersを使うと、Node.js・Bun・依存関係・開発用拡張をコンテナ内に自動で用意できます。既存CIと同じUbuntu 24.04・Node.js 22.23.4・Bun 1.4.4を使います。ホスト側へのNode.js・Bunのインストールは不要です。
+VS CodeのDev Containersを使うと、Node.js・Bun・依存関係・開発用拡張をコンテナ内に自動で用意できます。既存CIと同じUbuntu 24.04・Node.js 22.23.4・Bun 1.4.5を使います。ホスト側へのNode.js・Bunのインストールは不要です。
 
 ### 初回の起動
 
@@ -28,7 +28,7 @@ VS CodeのDev Containersを使うと、Node.js・Bun・依存関係・開発用�
 
 ```sh
 node --version   # v22.23.4
-bun --version    # 1.4.4
+bun --version    # 1.4.5
 bun run dev:all
 ```
 

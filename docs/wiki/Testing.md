@@ -1,6 +1,6 @@
 # テスト方法
 
-`tokiwagi-ui` ディレクトリで、CIと同じNode.js 22.23.4・Bun 1.4.4を使用して実行します。
+`tokiwagi-ui` ディレクトリで、CIと同じNode.js 22.23.4・Bun 1.4.5を使用して実行します。
 
 ```sh
 bun install --frozen-lockfile
@@ -37,7 +37,7 @@ bun run test:storybook:watch  # 変更を監視（デバッグ用Storybookも起
 bun run test:storybook -- src/stories/THeaderButton.stories.ts
 ```
 
-CIの `tkw-storybook` は、Visual Testsと同じPlaywright公式コンテナー（`v1.64.1-noble`、SHA-256ダイジェスト固定）で、Storybookビルドと全ストーリーのコンポーネントテストを実行します。同梱のChromiumとOS依存関係を利用し、`playwright install --with-deps` や `apt` は実行しません。Bun 1.4.4はnpm経由で導入し、unzipの追加インストールも避けます。Chromiumにはホストの共有メモリを使わせます。Playwright更新時は、依存パッケージと両ワークフローのイメージ・ダイジェストを同時に更新してください。
+CIの `tkw-storybook` は、Visual Testsと同じPlaywright公式コンテナー（`v1.64.1-noble`、SHA-256ダイジェスト固定）で、Storybookビルドと全ストーリーのコンポーネントテストを実行します。同梱のChromiumとOS依存関係を利用し、`playwright install --with-deps` や `apt` は実行しません。Bun 1.4.5はnpm経由で導入し、unzipの追加インストールも避けます。Chromiumにはホストの共有メモリを使わせます。Playwright更新時は、依存パッケージと両ワークフローのイメージ・ダイジェストを同時に更新してください。
 
 カバレッジも計測する場合は、StorybookのテストウィジェットでCoverageを有効にして全ストーリーを実行します。CLIでは `bun run test:storybook --coverage` を使います。カバレッジ用の `@vitest/coverage-v8`・`@vitest/coverage-istanbul` はVitest本体と同じバージョンで開発依存に含めています。CLIのHTMLレポートは `coverage/index.html` に生成され、`coverage/` はGit・型検査の対象から除外します。`Cannot find package '@vitest/coverage-v8'` が出る場合は、Storybookを停止し、同じ環境（Dev Container利用時はコンテナ内）で `bun install --frozen-lockfile` を実行して再起動してください。
 
@@ -137,7 +137,7 @@ React本体の下限とテスト用API・型定義の提供範囲は区別しま
 | `tkw-build` | `bun run build` | Astro紹介ページの静的ビルド |
 | `tkw-storybook` | `bun run build:storybook`・`bun run test:storybook` | Astro見本生成を含むStorybookの静的ビルドとChromium上のコンポーネントテスト |
 
-各ジョブはUbuntu 24.04・Node.js 22.23.4・Bun 1.4.4を使用し、`bun install --frozen-lockfile`で本体の依存関係を導入します。Bunを準備する各ジョブのログには`bun --version`の結果を残します。React互換性チェックの一時環境は既存スクリプトで別途依存取得を行うため、ネットワーク接続が必要です。各ジョブの制限時間は30分、リポジトリへの権限は読み取りのみです。利用するActionはコミットSHAで固定します。CIからWiki・サイト・パッケージの公開は行いません。
+各ジョブはUbuntu 24.04・Node.js 22.23.4・Bun 1.4.5を使用し、`bun install --frozen-lockfile`で本体の依存関係を導入します。Bunを準備する各ジョブのログには`bun --version`の結果を残します。React互換性チェックの一時環境は既存スクリプトで別途依存取得を行うため、ネットワーク接続が必要です。各ジョブの制限時間は30分、リポジトリへの権限は読み取りのみです。利用するActionはコミットSHAで固定します。CIからWiki・サイト・パッケージの公開は行いません。
 
 ### 変更内容に応じた実行・省略
 
@@ -240,7 +240,7 @@ Linux amd64の公式Playwrightコンテナーを使います。イメージ・Pl
 docker run --rm --platform linux/amd64 --ipc=host \
   -v "$PWD":/work -v /work/node_modules -w /work -e CI=true \
   mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea \
-  bash -lc 'npm install --prefix /tmp/tkw-visual-tools --no-package-lock node@22.23.4 bun@1.4.4 &&
+  bash -lc 'npm install --prefix /tmp/tkw-visual-tools --no-package-lock node@22.23.4 bun@1.4.5 &&
     export PATH="/tmp/tkw-visual-tools/node_modules/.bin:$PATH" &&
     bun install --frozen-lockfile &&
     bun run test:visual'

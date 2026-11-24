@@ -21,11 +21,11 @@ npm公開・配布用ビルドは未実施です。現状はソースを含む�
 | 分類 | 技術 |
 | --- | --- |
 | 言語 | TypeScript 5.9.3、CSS、MDX、SVG |
-| 紹介ページ | Astro 7.4.5 |
+| 紹介ページ | Astro 7.4.13 |
 | コンポーネント | React `^18.0.0 \|\| ^19.0.0`、Vue 3.5以上（4未満）、Astro |
 | スタイル | Tailwind CSS 4.3.4、CSSカスタムプロパティ |
 | ドキュメント | Storybook 10.6.5、GitHub Wiki |
-| 開発・テスト | Bun 1.4.4、Bun Test、Happy DOM、Astro Check、Vitest・a11y・Chromatic Visual Tests addon（Storybook）、Playwright（ブラウザテスト・画像比較） |
+| 開発・テスト | Bun 1.4.5、Bun Test、Happy DOM、Astro Check、Vitest・a11y・Chromatic Visual Tests addon（Storybook）、Playwright（ブラウザテスト・画像比較） |
 
 ## 環境構築・使い方・テスト
 

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "packageManager": "bun@1.4.4",
+  "packageManager": "bun@1.4.5",
   "exports": {
     "./astro": "./src/astro/index.ts",
     "./react": "./src/react/index.ts",
@@ -54,21 +54,21 @@
   "dependencies": {
     "@codemirror/lang-css": "6.3.1",
     "@tailwindcss/vite": "4.3.4",
-    "astro": "7.4.5",
+    "astro": "7.4.13",
     "codemirror": "6.0.2",
     "tailwindcss": "4.3.4",
     "ultrahtml": "1.7.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
-    "@astrojs/compiler-rs": "0.5.2",
+    "@astrojs/compiler-rs": "0.5.3",
     "@chromatic-com/storybook": "5.6.0",
     "@playwright/test": "1.64.1",
     "@storybook/addon-a11y": "10.6.5",
     "@storybook/addon-docs": "10.6.5",
     "@storybook/addon-vitest": "10.6.5",
     "@storybook/html-vite": "10.6.5",
-    "@types/bun": "1.4.4",
+    "@types/bun": "1.4.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitest/browser-playwright": "4.1.12",
