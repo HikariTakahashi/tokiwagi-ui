@@ -32,7 +32,7 @@ jobs:
       - name: Bunを準備
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: '1.4.4'
+          bun-version: '1.4.5'
       - name: 変更ファイルからCopilotの要否を判定
         id: changes
         env:
@@ -59,7 +59,7 @@ jobs:
       - name: Bunを準備
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: '1.4.4'
+          bun-version: '1.4.5'
       - name: 最新のPRにCopilotレビューを依頼
         env:
           # 自動トークンで依頼できない場合のみ、対応するリポジトリSecretを設定する。
@@ -87,7 +87,7 @@ jobs:
       - name: Bunを準備
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: '1.4.4'
+          bun-version: '1.4.5'
       - name: 両レビューの結果を確認
         env:
           GH_TOKEN: ${{ github.token }}
