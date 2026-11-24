@@ -54,14 +54,14 @@
   "dependencies": {
     "@codemirror/lang-css": "6.3.1",
     "@tailwindcss/vite": "4.3.4",
-    "astro": "7.4.5",
+    "astro": "7.4.13",
     "codemirror": "6.0.2",
     "tailwindcss": "4.3.4",
     "ultrahtml": "1.7.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
-    "@astrojs/compiler-rs": "0.5.2",
+    "@astrojs/compiler-rs": "0.5.3",
     "@chromatic-com/storybook": "5.6.0",
     "@playwright/test": "1.64.1",
     "@storybook/addon-a11y": "10.6.5",
